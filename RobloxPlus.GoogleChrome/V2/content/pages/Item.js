@@ -30,7 +30,7 @@ RPlus.Pages.Item = function () {
 		var buyButton = $(".PurchaseButton").attr("data-asset-type", "ROBLOX+ Enhancement");
 		$("#AssetThumbnail>.thumbnail-span>img").attr("src", ext.getUrl("images/notifier.png")).css("height", "155px");
 
-		if (ext.browser.name != "Chrome") {
+		if (browser.name != "Chrome") {
 			buyButton.attr("disabled", "").attr("title", "Available on Chrome only");
 		} else {
 			buyButton.parent().after($("<button class=\"btn-primary-md\">Example</button>").click(function () {

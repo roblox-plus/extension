@@ -1218,7 +1218,7 @@ foreach({
 
 
 if (ext.isBackground) {
-	browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
+	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
 		for (var n in details.requestHeaders) {
 			if (details.requestHeaders[n].name == "Referer") {
 				return;
@@ -1871,7 +1871,7 @@ if (ext.isBackground) {
 	foreach({ "NBC": "/Thumbs/BCOverlay.ashx?username=1Topcop&rbxp=48103520", "BC": "/images/icons/overlay_bcOnly.png", "TBC": "/images/icons/overlay_tbcOnly.png", "OBC": "/images/icons/overlay_obcOnly.png" }, function (n, o) { $.get("https://www.roblox.com" + o).success(function (r) { users.bc.list[r] = n; }); });
 
 	/* Though not in use, the below code was used for commissions */
-	browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
+	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
 		if (/^https:\/\/api\.roblox\.com\/marketplace\/purchase\?/i.test(details.url)) {
 			var newHeaders = [
 				{ name: "Accept-Encoding", value: "gzip" },
@@ -1891,7 +1891,7 @@ if (ext.isBackground) {
 	}, { urls: ["https://api.roblox.com/marketplace/*"], types: ["xmlhttprequest"] }, ["requestHeaders", "blocking"]);
 
 	/* Upload models with a post request */
-	browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
+	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
 		if (url.path(details.url) == "/Data/Upload.ashx") {
 			var headers = {
 				"User-Agent": "Roblox/WinInet",
@@ -1919,8 +1919,8 @@ if (ext.isBackground) {
 	}, { urls: ["*://data.roblox.com/Data/*"] }, ["requestHeaders", "blocking"]);
 
 	/* Private message caching */
-	if (ext.browser.name == "Chrome") { // requestBody added to onBeforeRequest in Firefox causes silent error, stopping the script
-		browser.webRequest.onBeforeRequest.addListener(function (details) {
+	if (browser.name == "Chrome") { // requestBody added to onBeforeRequest in Firefox causes silent error, stopping the script
+		chrome.webRequest.onBeforeRequest.addListener(function (details) {
 			var p = url.path(details.url).substring(14);
 			var data = details.requestBody && details.requestBody.raw;
 			if ((p == "archive-messages" || p == "unarchive-messages") && (data && data[0] && type(data[0].bytes) == "arraybuffer")) {
@@ -1946,7 +1946,7 @@ if (ext.isBackground) {
 	}
 
 	/* Get forum thread without marking as read */
-	browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
+	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
 		if (url.param("rplus", details.url) == "hide") {
 			var nh = [];
 			for (var n in details.requestHeaders) {

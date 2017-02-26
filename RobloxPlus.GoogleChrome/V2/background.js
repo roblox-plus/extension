@@ -26,7 +26,7 @@ foreach({
 	"changedLogin": ext.incognito,
 	"startupNotification": {
 		on: !ext.incognito,
-		visit: ext.browser.name != "Chrome",
+		visit: browser.name != "Chrome",
 		names: {}
 	},
 	"forums": {
@@ -112,26 +112,26 @@ notification.properties.robloxSound = function (a, note) {
 
 if (!ext.incognito) {
 	setInterval(function () {
-		browser.browserAction.setBadgeText({ text: (Object.keys(notification.server).length || "").toString() });
+		chrome.browserAction.setBadgeText({ text: (Object.keys(notification.server).length || "").toString() });
 	}, 250);
 }
 
-if (ext.browser.name == "Chrome") {
-	browser.contextMenus.create({
+if (browser.name == "Chrome") {
+	chrome.contextMenus.create({
 		id: "clearNotifications", title: "Clear Notifications", contexts: ["browser_action"], onclick: function () {
 			notification.clear();
 		}
 	});
 
-	browser.contextMenus.create({
+	chrome.contextMenus.create({
 		id: "mainContext",
 		documentUrlPatterns: ["*://*.roblox.com/*"],
-		title: ext.name,
+		title: ext.manifest.name,
 		contexts: ["link"],
 		targetUrlPatterns: ["*://*.roblox.com/users/*/profile"]
 	});
 
-	browser.contextMenus.create({
+	chrome.contextMenus.create({
 		id: "sendTrade",
 		title: "Trade",
 		contexts: ["link"],
@@ -362,7 +362,7 @@ forumNotifier.cache = compact.cache(0);
 forumNotifier.run();
 
 
-browser.webRequest.onBeforeRedirect.addListener(function (details) {
+chrome.webRequest.onBeforeRedirect.addListener(function (details) {
 	if (url.path(details.url).toLowerCase() == "/forum/addpost.aspx" && details.method == "POST") {
 		storage.get("forums", function (f) {
 			f.last = Number(url.hash(details.redirectUrl))
@@ -703,7 +703,7 @@ groupNotifier.run();
 
 
 /* Extension Icon */
-browser.browserAction.setTitle({ title: ext.name + " " + ext.version });
+chrome.browserAction.setTitle({ title: ext.manifest.name + " " + ext.manifest.version });
 
 
 
@@ -714,16 +714,16 @@ storage.updated(function (k, v) { if (k == "serialTracker") { serialTracker.enab
 
 
 /* hueee no image or ticket stealing */
-browser.webRequest.onBeforeRequest.addListener(function (details) {
+chrome.webRequest.onBeforeRequest.addListener(function (details) {
 	var path = url.path(details.url);
 	if (path.match(/^\/asset\/?$/)) {
 		return { cancel: true };
 	}
 }, { urls: ["*://*.roblox.com/asset/*"], types: ["sub_frame", "main_frame"] }, ["blocking"]);
-browser.webRequest.onBeforeRequest.addListener(function (details) {
+chrome.webRequest.onBeforeRequest.addListener(function (details) {
 	var path = url.path(details.url).toLowerCase();
 	if (!string.startsWith(path, /\/games\//i) && (string.startsWith(path, /.*\/.*game.*\/.*getauthticket/i) || string.startsWith(path, /.*\/.*game.*%\d\w.*getauthticket/i))) {
-		return ext.browser.name == "Chrome" ? { redirectUrl: ext.getUrl("warning.html") } : { cancel: true };
+		return browser.name == "Chrome" ? { redirectUrl: ext.getUrl("warning.html") } : { cancel: true };
 	}
 }, { urls: ["*://*.roblox.com/*game*"], types: ["sub_frame", "main_frame"] }, ["blocking"]);
 
@@ -731,7 +731,7 @@ browser.webRequest.onBeforeRequest.addListener(function (details) {
 
 /* Comment Timer */
 commentTimer = type(storage.get("commentTimer")) == "object" ? storage.get("commentTimer") : {};
-browser.webRequest.onBeforeRequest.addListener(function (details) {
+chrome.webRequest.onBeforeRequest.addListener(function (details) {
 	commentTimer.last = getMil();
 	catalog.info(Number(details.requestBody.formData.assetId[0]), function (info) {
 		if (!info.id) { return; }
@@ -766,7 +766,7 @@ setInterval(function () {
 
 
 /* Update Check */
-if (ext.browser.name == "Chrome") {
+if (browser.name == "Chrome") {
 	setInterval(function () {
 		chrome.runtime.requestUpdateCheck(function (e) {
 			if (e == "update_available") {
@@ -784,21 +784,21 @@ if (ext.browser.name == "Chrome") {
 	if (startnote.on && !startnote.visit) {
 		makenote(startnote);
 	} else if (startnote.on) {
-		var listener; listener = function () { browser.webRequest.onCompleted.removeListener(listener); makenote(startnote); };
-		browser.webRequest.onCompleted.addListener(listener, { types: ["main_frame"], urls: ["*://*.roblox.com/*"] });
+		var listener; listener = function () { chrome.webRequest.onCompleted.removeListener(listener); makenote(startnote); };
+		chrome.webRequest.onCompleted.addListener(listener, { types: ["main_frame"], urls: ["*://*.roblox.com/*"] });
 	}
 })(storage.get("startupNotification"), function (startnote) {
 	users.current(function (u, note) {
 		for (var n in startnote.names) { ext.tts.replacements.push([RegExp.escape(n).regex("gi"), startnote.names[n]]); }
 		setTimeout((note = notify({
-			header: ext.name + " started",
+			header: ext.manifest.name + " started",
 			lite: u.username ? "Hello, " + u.username + "!" : "You're currently signed out",
 			speak: u.id ? "Hello, " + u.username : "",
 			buttons: [
 				"Problems? Suggestions? Message me!"
 			],
 			items: {
-				"Version": ext.version,
+				"Version": ext.manifest.version,
 				"Made by": "WebGL3D"
 			},
 			clickable: true

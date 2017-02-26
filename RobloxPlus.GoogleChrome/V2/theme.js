@@ -35,7 +35,7 @@
 		}
 	};
 	interval();
-})(window.location.hostname.split("."), document.createElement("style"), document.createElement("script"), new XMLHttpRequest(), (window.browser || window.chrome || { extension: { getURL: function (x) { return (localStorage.getItem("RPLUS_EXTURL") || "/") + x; } } }).extension.getURL);
+})(window.location.hostname.split("."), document.createElement("style"), document.createElement("script"), new XMLHttpRequest(), chrome.extension.getURL);
 
 
 

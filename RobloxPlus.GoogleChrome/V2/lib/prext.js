@@ -3,7 +3,17 @@
 	For any questions message WebGL3D http://www.roblox.com/messages/compose?recipientId=48103520
 	My messages will always be open for all, if you can't PM me check your settings.
 */
-if (window.chrome) { window.browser = window.chrome; } else if (!window.hasOwnProperty("browser")) { window.browser = {}; }
+browser = (function (userAgentInfo) {
+	var wholeVersion = userAgentInfo[2].split(".");
+	return {
+		name: userAgentInfo[1],
+		version: userAgentInfo[2],
+		wholeVersion: Number(wholeVersion[0]) || 0,
+		userAgent: navigator.userAgent,
+		userAgentMatch: userAgentInfo[0]
+	};
+})(navigator.userAgent.match(/(opera|chrome|safari|firefox|msie)\/([\d.]+)/i) || ["Unknown", "0.0"]);
+
 ext = {
 	"id": chrome.runtime.id,
 	"manifest": chrome.runtime.getManifest(),
@@ -15,42 +25,20 @@ ext = {
 		return chrome.extension.getURL(path);
 	},
 
-	browser: navigator.userAgent.match(/(opera|chrome|safari|firefox|msie)\/([\d.]+)/i) || [],
 	tabs: {},
 	update: function (cb) {
 		cb = fixCB(cb);
-		if (ext.browser.name == "Chrome") {
+		if (browser.name == "Chrome") {
 			chrome.runtime.requestUpdateCheck(function (m) {
 				cb(m == "update_available");
 			});
 		} else {
 			cb(false);
 		}
-	},
-	beforeUnload: function (cb) {
-		if (isCB(cb)) {
-			if (!ext.beforeUnload.cb.length) {
-				window.onbeforeunload = function () {
-					for (var n in ext.beforeUnload.cb) {
-						ext.beforeUnload.cb[n]();
-					}
-				};
-			}
-			ext.beforeUnload.cb.push(cb);
-		}
 	}
 };
 
-ext.browser = {
-	name: ext.browser[1] || "unknown",
-	version: ext.browser[2] || "0"
-};
-
-foreach(["name", "version"], function (n, o) { ext[o] = ext.manifest[o]; });
-
-ext.beforeUnload.cb = [];
-
-console.log("Incognito: " + ext.incognito);
+console.log(ext.manifest.name + " " + ext.manifest.version + " started" + (ext.incognito ? " in icognito" : ""));
 
 
 
@@ -75,9 +63,9 @@ request = {
 						r.tab = -2;
 						request.handle(r);
 					} else if (a.tab == -1) {
-						browser.runtime.sendMessage(r);
+						chrome.runtime.sendMessage(r);
 					} else {
-						browser.tabs.sendMessage(a.tab, r);
+						chrome.tabs.sendMessage(a.tab, r);
 					}
 				}, a.tab);
 			});
@@ -94,16 +82,16 @@ request = {
 				arg.tab = -2;
 				request.handle(arg, true);
 			} else {
-				browser.tabs.sendMessage(tab, arg);
+				chrome.tabs.sendMessage(tab, arg);
 			}
 		} else {
 			try {
 				if (request.connected) {
-					browser.runtime.sendMessage(arg);
+					chrome.runtime.sendMessage(arg);
 				}
 			} catch (e) {
 				request.connected = false;
-				console.warn(ext.name + " has been disconnected from the background\n\tRefresh to reconnect");
+				console.warn(ext.manifest.name + " has been disconnected from the background\n\tRefresh to reconnect");
 			}
 		}
 	},
@@ -114,7 +102,7 @@ request.sent.cb = [];
 request.id.num = 0;
 
 
-browser.runtime.onMessage.addListener(function (a, b, c, d) {
+chrome.runtime.onMessage.addListener(function (a, b, c, d) {
 	if (a.requestId) {
 		a.tab = b.tab ? b.tab.id : -1;
 		request.handle(a);
@@ -137,14 +125,6 @@ if (ext.isBackground) {
 	});
 } else if (ext.isContentScript) {
 	setInterval(request.send, 1000, { request: "tab" });
-}
-
-if (ext.browser.name == "Firefox" && ext.isBackground) {
-	window.open = function (u) {
-		browser.tabs.create({ url: u }, function (t) {
-			browser.windows.update(t.windowId, { focused: true });
-		});
-	};
 }
 
 
@@ -186,7 +166,7 @@ notification = {
 
 	permission: function (callBack) {
 		callBack = fixCB(callBack);
-		if (ext.browser.name == "Chrome") {
+		if (browser.name == "Chrome") {
 			chrome.notifications.getPermissionLevel(function (permitted) { callBack(permitted == "granted"); });
 		} else {
 			callBack(Notification.permission == "granted");
@@ -220,7 +200,7 @@ notification = {
 			id: "",
 			header: type(a.header) == "string" && a.header ? a.header : "Notification",
 			lite: type(a.lite) == "string" ? a.lite : "",
-			icon: type(a.icon) == "string" && a.icon ? a.icon : ext.manifest.icons['48'],
+			icon: type(a.icon) == "string" && a.icon ? a.icon : ext.getUrl(ext.manifest.icons['48']),
 			image: "",
 			items: {},
 			buttons: [],
@@ -315,45 +295,7 @@ notification = {
 notification.id.num = 0;
 notify = notification.create;
 
-if (ext.browser.name == "Firefox" && ext.isContentScript) {
-	request.sent(function (a, callBack) {
-		if (a.request == "notification") {
-			if (a.method == "close") {
-				if (notification.server[a.id]) {
-					notification.server[a.id].close();
-				}
-			} else {
-				if (Notification.permission != "granted") {
-					setTimeout(callBack, 500, { method: "close" });
-					return;
-				}
-				foreach(a.items, function (n, o) { a.lite += "\n" + n + ": " + o; });
-				var note = new Notification(a.header, {
-					body: a.lite,
-					icon: a.icon,
-					tag: a.tag
-				});
-				var clicked = false;
-				note.onclick = function (e) {
-					clicked = true;
-					e.preventDefault();
-					callBack({ method: "click" }, true);
-				};
-				note.onclose = function () {
-					if (!clicked) {
-						callBack({ method: "close" });
-					}
-				};
-				notification.server[a.tag] = note;
-			}
-		}
-	});
-	notification.permission(function (granted) {
-		if (!granted) {
-			Notification.requestPermission();
-		}
-	});
-} else if (ext.isBackground) {
+if (ext.isBackground) {
 	request.sent(function (a, callBack) {
 		if (a.request != "notification") { return; }
 		if (a.method == "close") {
@@ -390,7 +332,7 @@ if (ext.browser.name == "Firefox" && ext.isContentScript) {
 				} else {
 					if (note.tab) {
 						request.send({ request: "notification", method: "close", id: id }, _, tab);
-					} else if (ext.browser.name == "Chrome") {
+					} else if (browser.name == "Chrome") {
 						chrome.notifications.clear(id, function () { });
 						notification.event(id, "close");
 					}
@@ -414,24 +356,7 @@ if (ext.browser.name == "Firefox" && ext.isContentScript) {
 		});
 		notification.server[id] = note;
 
-		if (ext.browser.name == "Firefox") {
-			note.tab = Number(Object.keys(ext.tabs)[0]);
-			if (note.tab) {
-				request.send({
-					request: "notification",
-					header: note.header,
-					lite: note.lite,
-					icon: note.icon,
-					tag: id,
-					items: note.items
-				}, function (e) {
-					notification.event(id, e.method);
-				}, note.tab);
-				callBack(id);
-			} else {
-				callBack("");
-			}
-		} else if (ext.browser.name == "Chrome") {
+		if (browser.name == "Chrome") {
 			var cre = {
 				type: a.progress >= 0 ? "progress" : (note.image ? "image" : (Object.keys(note.items).length ? "list" : "basic")),
 				title: note.header,
@@ -467,7 +392,7 @@ if (ext.browser.name == "Firefox" && ext.isContentScript) {
 		}
 	});
 
-	if (ext.browser.name == "Chrome") {
+	if (browser.name == "Chrome") {
 		chrome.notifications.onClicked.addListener(function (id) {
 			if (notification.server[id]) {
 				notification.server[id].click();
@@ -488,7 +413,7 @@ if (ext.browser.name == "Firefox" && ext.isContentScript) {
 }
 
 if (ext.isBackground) {
-	browser.runtime.onMessage.addListener(function (a, b, callBack) {
+	chrome.runtime.onMessage.addListener(function (a, b, callBack) {
 		if (a.notification == "get") {
 			callBack(notification.server);
 		} else if (a.notification == "close" && notification.server[a.id]) {
@@ -593,7 +518,7 @@ if (ext.isBackground) {
 /* Text-to-Speech */
 ext.tts = {
 	reading: false,
-	enabled: browser.hasOwnProperty("tts") || (ext.browser.name == "Chrome" && ext.manifest.permissions.indexOf("tts") >= 0),
+	enabled: chrome.hasOwnProperty("tts") || (browser.name == "Chrome" && ext.manifest.permissions.indexOf("tts") >= 0),
 	replacements: [
 		[/\+/g, " plus "],
 		[/WebGL\s*3D/gi, "WebGL 3D"],
@@ -625,7 +550,7 @@ ext.tts = {
 				var playQueue; playQueue = function () {
 					var cut = queue.shift();
 					if (cut) {
-						browser.tts.speak(cut, {
+						chrome.tts.speak(cut, {
 							gender: arg.hasOwnProperty("gender") ? arg.gender : (storage.get("voiceGender") == "female" ? "female" : "male"),
 							lang: "en-GB",
 							volume: type(arg.volume) == "number" ? arg.volume : (type(storage.get("voiceVolume")) == "number" ? storage.get("voiceVolume") : .5),
@@ -656,7 +581,7 @@ ext.tts = {
 		callBack = fixCB(callBack);
 		if (ext.isBackground && ext.tts.enabled) {
 			ext.tts.reading = false;
-			browser.tts.stop();
+			chrome.tts.stop();
 			callBack(true);
 		} else if (ext.tts.enabled) {
 			request.send({ request: "tts", method: "stop" }, function (x) {
@@ -678,7 +603,7 @@ if (ext.isBackground) {
 		}
 	});
 } else {
-	ext.beforeUnload(function () {
+	$(window).on("unload", function () {
 		if (ext.tts.reading) {
 			ext.tts.stop();
 		}
@@ -689,12 +614,8 @@ if (ext.isBackground) {
 
 /* Reloading */
 if (ext.isBackground) {
-	ext.beforeUnload(function () { ext.reload(); });
-} else if (ext.isContentScript && ext.browser.name == "Firefox") {
-	ext.beforeUnload(function () {
-		for (var n in notification.server) {
-			notification.server[n].close();
-		}
+	$(window).on("unload", function () {
+		ext.reload();
 	});
 }
 request.sent(function (a, callBack) {
@@ -709,15 +630,15 @@ ext.reload = function (callBack) {
 			request.send({ request: "ext_reload" }, callBack);
 			return;
 		}
-		if (ext.browser.name == "Chrome") {
+		if (browser.name == "Chrome") {
 			foreach(notification.list, function (n) { chrome.notifications.clear(n, function () { }); });
 		}
-		browser.runtime.reload();
+		chrome.runtime.reload();
 	} else {
 		fixCB(callBack)(false);
 	}
 };
-ext.reload.enabled = ext.browser.name == "Chrome";
+ext.reload.enabled = browser.name == "Chrome";
 
 
 

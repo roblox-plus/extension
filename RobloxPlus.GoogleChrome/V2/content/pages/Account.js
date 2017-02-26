@@ -5,7 +5,7 @@ RPlus.Pages.Account = function () {
 	var compileStorage;
 
 	var styleTag = $("<style>");
-	var controlPanel = $("<div class=\"tab-content rbx-tab-content\" id=\"rplusControlPanel\">").append($("<div class=\"section-content\">").append($("<div class=\"col-sm-3\">").append($("<h3>").text(ext.name + " " + ext.version))).append($("<div class=\"col-sm-9\">").append(ext.reload.enabled ? $("<button class=\"btn-control-md acct-settings-btn\" style=\"margin-left: 10px;\">Reload</button>").click(function () {
+	var controlPanel = $("<div class=\"tab-content rbx-tab-content\" id=\"rplusControlPanel\">").append($("<div class=\"section-content\">").append($("<div class=\"col-sm-3\">").append($("<h3>").text(ext.manifest.name + " " + ext.manifest.version))).append($("<div class=\"col-sm-9\">").append(ext.reload.enabled ? $("<button class=\"btn-control-md acct-settings-btn\" style=\"margin-left: 10px;\">Reload</button>").click(function () {
 		ext.reload(function (s) {
 			if (s) {
 				setTimeout(function () {
@@ -50,7 +50,7 @@ RPlus.Pages.Account = function () {
 		}
 	};
 	compileStorage = function (n, o) {
-		if (o.browser && o.browser.indexOf(ext.browser.name) < 0) { return ""; }
+		if (o.browser && o.browser.indexOf(browser.name) < 0) { return ""; }
 		var gid = "rplusboxid_" + (++labId);
 		var group = $("<div class=\"form-group\">");
 		o.storageHandle = isCB(o.storage) ? o.storage : (function (s) { return function (v) { storage[isCB(v) ? "get" : "set"](s, v); }; })(o.storage);
@@ -612,7 +612,7 @@ RPlus.Pages.Account = function () {
 	controlPanel.append($("<div id=\"rplusFeatures\" class=\"section-content\">").append("<div class=\"col-sm-3\"><h3>Features (" + addComma(Object.keys(features).length) + ")</h3></div>", featuresDiv = $("<div class=\"col-sm-9\">")));
 	foreach(features, function (n, o) { featuresDiv.append($("<div class=\"form-group\">").append($("<label class=\"text-label account-settings-label\">").text(n), $("<p>").html(o))); });
 
-	$("#horizontal-tabs").append($("<li class=\"rbx-tab\">").attr("ui-sref", "rplus").append($("<a class=\"rbx-tab-heading\">").html($("<span class=\"text-lead\">").text(ext.name)))).on("click", ".rbx-tab", function (x) {
+	$("#horizontal-tabs").append($("<li class=\"rbx-tab\">").attr("ui-sref", "rplus").append($("<a class=\"rbx-tab-heading\">").html($("<span class=\"text-lead\">").text(ext.manifest.name)))).on("click", ".rbx-tab", function (x) {
 		$("#horizontal-tabs .rbx-tab").removeClass("active");
 		$(this).addClass("active");
 		controlPanel[(x = $(this).attr("ui-sref") == "rplus") ? "show" : "hide"]();

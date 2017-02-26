@@ -5,7 +5,6 @@
 */
 fixCB(({
 	"text/html": function (subdomain, upath, list, mainLoop) {
-		if (ext.browser.name == "Firefox") { localStorage.setItem("RPLUS_EXTURL", ext.getUrl("")); }
 		if (document.querySelector("#navigation .rplus-icon") || (["help", "corp", "developer", "wiki", "devforum", "blog", "api", "m", "bloxcon", "setup", "content", "polls"]).indexOf(subdomain = subdomain[subdomain.length - 3]) >= 0) { return; }
 		var isTradeWindow = !!url.send().match(/\/Trade\/TradeWindow\.aspx/i);
 
