@@ -72,46 +72,6 @@ brickColor = {
 
 
 users = {
-	token: function(callBack){
-		if(type(callBack)=="string"){
-			return(callBack.match(/Roblox\.XsrfToken\.setToken\('(.+)'\);/)||["",""])[1];
-		}else if(isCB(callBack)){
-			if(!ext.background){request.send({request:"users",method:"token"},callBack);return;}
-			users.currentId(function(i){
-				var fallback = function(){
-					$.get("https://www.roblox.com/Empty.aspx").success(function(r){
-						users.token.cache.set(i,users.token(r));
-					}).always(function(){
-						callBack(users.token.cache.get(i));
-					});
-				};
-				if(!i){
-					callBack("");
-				}else if(users.token.cache.get(i)){
-					callBack(users.token.cache.get(i));
-				}else if(users.token.places.hasOwnProperty(i)){
-					if(users.token.places[i]){
-						$.get("https://www.roblox.com/places/"+users.token.places[i]+"/settings").success(function(r){
-							if(r.XsrfToken){
-								users.token.cache.set(i,r.XsrfToken);
-								callBack(r.XsrfToken);
-							}else{
-								fallback();
-							}
-						}).fail(fallback);
-					}else{
-						fallback();
-					}
-				}else{
-					$.get("https://www.roblox.com/users/profile/playergames-json?userId="+i).success(function(r){
-						users.token.places[i] = Number(type(r.Games)=="array"&&r.Games.length&&r.Games[0].PlaceID)||0;
-						users.token(callBack);
-					}).fail(fallback);
-				}
-			});
-		}
-		return "";
-	},
 	thumbnail: function(id,n){
 		/*
 			n is size
@@ -575,7 +535,7 @@ catalog = {
 			}
 		};
 		
-		$.get("https://api.roblox.com/marketplace/productinfo?assetId=" + ret.id).success(function(r){
+		$.get("https://api.roblox.com/marketplace/productinfo?assetId=" + ret.id).done(function (r) {
 			mcb++;
 			
 			ret.assetType = catalog.assetTypeId[ret.assetTypeId = r.AssetTypeId];
@@ -754,20 +714,11 @@ catalog = {
 		}
 	}),
 	"delete": compact(function(id,callBack){
-		if(compact.requester(callBack,"catalog","delete",id)){return;}
-		users.token(function(tok){
-			if(!tok){
-				callBack(false);
-				return;
-			}
-			$.ajax({
-				url: "https://assetgame.roblox.com/asset/delete-from-inventory",
-				type: "POST",
-				data: {assetId: id},
-				headers: {"X-CSRF-TOKEN": tok}
-			}).always(function(r, s){
-				callBack(s == "success");
-			});
+		if (compact.requester(callBack, "catalog", "delete", id)) { return; }
+		$.post("https://assetgame.roblox.com/asset/delete-from-inventory", { assetId: id }).done(function () {
+			callBack(true);
+		}).fail(function () {
+			callBack(false);
 		});
 	},{
 		queue: true
@@ -976,48 +927,32 @@ tradeSystem = {
 		});
 	}),
 	accept: compact(function(arg,callBack){
-		if(compact.requester(callBack,"tradeSystem","accept",arg)){return;}else if(type(arg)!="number"||arg<=0){callBack("Invalid trade");}
-		users.token(function(tok){
-			if(!tok){callBack("Not signed in");return;}
-			$.ajax({
-				url: "https://www.roblox.com/Trade/TradeHandler.ashx",
-				type: "POST",
-				data: {cmd:"maketrade",TradeID:arg,TradeJSON:"{}"},
-				headers:{"X-CSRF-TOKEN":tok}
-			}).success(function(r,check){
-				if(r.success){
-					check = function(){
-						tradeSystem.open(arg,function(trade){
-							if(trade.status=="Processing"||trade.status=="Pending"){
-								setTimeout(check,3*1000);
-							}else{
-								callBack(trade.status);
-							}
-						});
-					};
-					check();
-				}else{
-					callBack("Server Error");
-				}
-			}).fail(function(){
-				callBack("HTTP Error");
-			});
+		if (compact.requester(callBack, "tradeSystem", "accept", arg)) { return; } else if (type(arg) != "number" || arg <= 0) { callBack("Invalid trade"); }
+		$.post("https://www.roblox.com/Trade/TradeHandler.ashx", { cmd: "maketrade", TradeID: arg }).done(function (r) {
+			if (r.success) {
+				check = function () {
+					tradeSystem.open(arg, function (trade) {
+						if (trade.status == "Processing" || trade.status == "Pending") {
+							setTimeout(check, 3 * 1000);
+						} else {
+							callBack(trade.status);
+						}
+					});
+				};
+				check();
+			} else {
+				callBack("Server Error");
+			}
+		}).fail(function () {
+			callBack("HTTP Error");
 		});
 	}),
 	decline: compact(function(arg,callBack){
-		if(compact.requester(callBack,"tradeSystem","decline",arg)){return;}else if(type(arg)!="number"||arg<=0){callBack(true);}
-		users.token(function(tok){
-			if(!tok){callBack(false);return;}
-			$.ajax({
-				url: "https://www.roblox.com/Trade/TradeHandler.ashx",
-				type: "POST",
-				data: {cmd:"decline",TradeID:arg},
-				headers: {"X-CSRF-TOKEN":tok}
-			}).success(function(r){
-				callBack(r.success);
-			}).fail(function(){
-				callBack(false);
-			});
+		if (compact.requester(callBack, "tradeSystem", "decline", arg)) { return; } else if (type(arg) != "number" || arg <= 0) { callBack(true); }
+		$.post("https://www.roblox.com/Trade/TradeHandler.ashx", { cmd: "decline", TradeID: arg }).done(function (r) {
+			callBack(r.success);
+		}).fail(function () {
+			callBack(false);
 		});
 	}),
 	open: compact(function(arg,callBack){
@@ -1046,55 +981,47 @@ tradeSystem = {
 		};
 		if(!ret.id){callBack(ret);return;}
 		users.currentId(function(id){
-			if(!id){callBack(ret);return;}
-			users.token(function(tok){
-				if(!tok){callBack(ret);return;}
-				$.ajax({
-					url: "https://www.roblox.com/Trade/TradeHandler.ashx",
-					type: "POST",
-					data: {"TradeID":ret.id,cmd:"pull"},
-					headers: {"X-CSRF-TOKEN":tok}
-				}).success(function(r){
-					try{
-						r = JSON.parse(r.data);
-					}catch(e){
-						ret.success = false;
-						callBack(ret);
-						return;
-					}
-					ret.status = r.StatusType=="Open"?(r.AgentOfferList[0].AgentID==id?"Outbound":"Inbound"):(r.StatusType=="Finished"?"Completed":r.StatusType);
-					ret.expires = new Date(Number((r.Expiration.match(/\d+/)||[0])[0])).getTime();
-					for(var n in r.AgentOfferList){
-						var o = r.AgentOfferList[n];
-						var u = o.AgentID==id?"me":"partner";
-						ret[u].id = o.AgentID;
-						ret[u].robux = o.OfferRobux;
-						ret[u].value = o.OfferValue;
-						for(var i in o.OfferList){
-							var item = o.OfferList[i];
-							ret[u].assets.push({
-								id: Number(url.param("id",item.ItemLink))||0,
-								name: item.Name,
-								bc: users.toBC(item.MembershipLevel),
-								serial: Number(item.SerialNumber)||0,
-								stock: Number(item.SerialNumberTotal)||0,
-								userAssetId: Number(item.UserAssetID)||0,
-								image: item.ImageLink
-							});
-							ret[u].rap += Number(item.AveragePrice)||0;
-						}
-					}
-					users.getById(ret.me.id,function(u){
-						ret.me.username = u.username;
-						users.getById(ret.partner.id,function(u){
-							ret.partner.username = u.username;
-							callBack(ret);
-						});
-					});
-				}).fail(function(){
+			if (!id) { callBack(ret); return; }
+			$.post("https://www.roblox.com/Trade/TradeHandler.ashx", { "TradeID": ret.id, cmd: "pull" }).done(function (r) {
+				try {
+					r = JSON.parse(r.data);
+				} catch (e) {
 					ret.success = false;
 					callBack(ret);
+					return;
+				}
+				ret.status = r.StatusType == "Open" ? (r.AgentOfferList[0].AgentID == id ? "Outbound" : "Inbound") : (r.StatusType == "Finished" ? "Completed" : r.StatusType);
+				ret.expires = new Date(Number((r.Expiration.match(/\d+/) || [0])[0])).getTime();
+				for (var n in r.AgentOfferList) {
+					var o = r.AgentOfferList[n];
+					var u = o.AgentID == id ? "me" : "partner";
+					ret[u].id = o.AgentID;
+					ret[u].robux = o.OfferRobux;
+					ret[u].value = o.OfferValue;
+					for (var i in o.OfferList) {
+						var item = o.OfferList[i];
+						ret[u].assets.push({
+							id: Number(url.param("id", item.ItemLink)) || 0,
+							name: item.Name,
+							bc: users.toBC(item.MembershipLevel),
+							serial: Number(item.SerialNumber) || 0,
+							stock: Number(item.SerialNumberTotal) || 0,
+							userAssetId: Number(item.UserAssetID) || 0,
+							image: item.ImageLink
+						});
+						ret[u].rap += Number(item.AveragePrice) || 0;
+					}
+				}
+				users.getById(ret.me.id, function (u) {
+					ret.me.username = u.username;
+					users.getById(ret.partner.id, function (u) {
+						ret.partner.username = u.username;
+						callBack(ret);
+					});
 				});
+			}).fail(function () {
+				ret.success = false;
+				callBack(ret);
 			});
 		});
 	},{
@@ -1110,46 +1037,38 @@ tradeSystem = {
 			return;
 		}
 		arg.counter = type(arg.counter)=="number"?arg.counter:0;
-		users.token(function(tok){
-			if(!tok){callBack("Invalid token");return;}
-			users.currentId(function(id){
-				var data = {
-					cmd: arg.counter?"counter":"send",
-					TradeJSON:JSON.stringify({
-						"AgentOfferList":[
-							{
-								AgentID: id,
-								OfferList: (function(a,x){for(var n in a){x.push({UserAssetID:a[n]});}return x;})(arg.offer,[]),
-								OfferRobux: type(arg.offerRobux)=="number"?arg.offerRobux:0,
-								OfferValue: 999999999
-							},
-							{
-								AgentID: arg.id,
-								OfferList: (function(a,x){for(var n in a){x.push({UserAssetID:a[n]});}return x;})(arg.request,[]),
-								OfferRobux: type(arg.requestRobux)=="number"?arg.requestRobux:0,
-								OfferValue: 999999999
-							}
-						],
-						IsActive: false,
-						TradeStatus: "Open"
-					})
-				};
-				if(arg.counter){data.TradeID=arg.counter;}
-				$.ajax({
-					type: "POST",
-					url: "https://www.roblox.com/Trade/TradeHandler.ashx",
-					data: data,
-					headers: {"X-CSRF-TOKEN":tok}
-				}).success(function(r){
-					if(r.data){
-						for(var n in r.data){
-							r.data[n] = Number(r.data[n]);
+		users.currentId(function(id){
+			var data = {
+				cmd: arg.counter?"counter":"send",
+				TradeJSON:JSON.stringify({
+					"AgentOfferList":[
+						{
+							AgentID: id,
+							OfferList: (function(a,x){for(var n in a){x.push({UserAssetID:a[n]});}return x;})(arg.offer,[]),
+							OfferRobux: type(arg.offerRobux)=="number"?arg.offerRobux:0,
+							OfferValue: 999999999
+						},
+						{
+							AgentID: arg.id,
+							OfferList: (function(a,x){for(var n in a){x.push({UserAssetID:a[n]});}return x;})(arg.request,[]),
+							OfferRobux: type(arg.requestRobux)=="number"?arg.requestRobux:0,
+							OfferValue: 999999999
 						}
+					],
+					IsActive: false,
+					TradeStatus: "Open"
+				})
+			};
+			if (arg.counter) { data.TradeID = arg.counter; }
+			$.post("https://www.roblox.com/Trade/TradeHandler.ashx", data).done(function (r) {
+				if (r.data) {
+					for (var n in r.data) {
+						r.data[n] = Number(r.data[n]);
 					}
-					callBack(r.success?[]:r.data||r.msg);
-				}).fail(function(r){
-					callBack("HTTP Error");
-				});
+				}
+				callBack(r.success ? [] : r.data || r.msg);
+			}).fail(function () {
+				callBack("HTTP Error");
 			});
 		});
 	})
@@ -1241,108 +1160,57 @@ outfit = {
 	}),
 	bodyColor: compact(function(arg,callBack){
 		if(compact.requester(callBack,"outfit","bodyColor",arg)){return;}else if(type(arg)!="object"||type(arg.part)!="string"||!arg.hasOwnProperty("color")){callBack(false);return;}
-		users.token(function(tok){
-			$.get("https://avatar.roblox.com/v1/avatar").done(function(r){
-				r.bodyColors[arg.part + "ColorId"] = brickColor.new(arg.color).number;
-				$.ajax({
-					url: "https://avatar.roblox.com/v1/avatar/set-body-colors",
-					type: "POST",
-					data: JSON.stringify(r.bodyColors),
-					headers: {
-						"X-CSRF-TOKEN": tok,
-						"Content-Type": "application/json"
-					}
-				}).done(function(){
-					callBack(true);
-				}).fail(function(){
-					callBack(false);
-				});
-			}).fail(function(){
+		$.get("https://avatar.roblox.com/v1/avatar").done(function(r){
+			r.bodyColors[arg.part + "ColorId"] = brickColor.new(arg.color).number;
+			$.post("https://avatar.roblox.com/v1/avatar/set-body-colors", r.bodyColors).done(function (r) {
+				callBack(r.success);
+			}).fail(function () {
 				callBack(false);
 			});
+		}).fail(function(){
+			callBack(false);
 		});
 	}),
-	wear: compact(function(arg, callBack){
-		users.token(function(token){
-			$.ajax({
-				type: "POST",
-				url: "https://avatar.roblox.com/v1/avatar/wear-asset",
-				data: JSON.stringify({ "assetId": Number(arg) }),
-				headers: { "X-CSRF-TOKEN": token },
-				contentType: "application/json"
-			}).success(function(){
-				callBack(true);
-			}).fail(function(){
-				callBack(false);
-			});
+	wear: compact(function (arg, callBack) {
+		if (compact.requester(callBack, "outfit", "wear", arg)) { return; } else if (typeof(arg) != "number") { callBack(false); return; }
+		$.post("https://avatar.roblox.com/v1/avatar/assets/" + arg + "/wear").done(function (r) {
+			callBack(r.success);
+		}).fail(function () {
+			callBack(false);
 		});
 	}),
-	remove: compact(function(arg, callBack){
-		users.token(function(token){
-			$.ajax({
-				type: "POST",
-				url: "https://avatar.roblox.com/v1/avatar/unwear-asset",
-				data: JSON.stringify({ "assetId": Number(arg) }),
-				headers: { "X-CSRF-TOKEN": token },
-				contentType: "application/json"
-			}).success(function(){
-				callBack(true);
-			}).fail(function(){
-				callBack(false);
-			});
+	remove: compact(function (arg, callBack) {
+		if (compact.requester(callBack, "outfit", "remove", arg)) { return; } else if (typeof (arg) != "number") { callBack(false); return; }
+		$.post("https://avatar.roblox.com/v1/avatar/assets/" + arg + "/remove").done(function (r) {
+			callBack(r.success);
+		}).fail(function () {
+			callBack(false);
 		});
 	})
 };
 
 
 foreach({
-	"sell":{
-		library: "catalog",
-		toggle: "sale",
-		state: true
-	},
-	"takeoff":{
-		library: "catalog",
-		toggle: "sale",
-		state: false
-	}
+	"sell": true,
+	"takeoff": false
 },function(n,o){
-	window[o.library][n] = compact(function(arg,callBack){
-		if(compact.requester(callBack,o.library,n,arg)){return;}
-		var assetId = 0;
-		var userAssetId = 0;
-		if(o.toggle == "sale"){
-			assetId = Number(arg.id) || 0;
-			userAssetId = Number(arg.userAssetId) || 0;
-		}else{
-			assetId = Number(arg) || 0;
-		}
+	catalog[n] = compact(function(arg,callBack){
+		if(compact.requester(callBack,"catalog",n,arg)){return;}
+		var assetId = Number(arg.id) || 0;
+		var userAssetId = Number(arg.userAssetId) || 0;
 		if(assetId <= 0){
 			callBack(false);
 			return;
 		}
-		users.token(function(token){
-			$.ajax({
-				url: "https://www.roblox.com/asset/toggle-" + o.toggle,
-				data: o.toggle == "wear" ? {
-					equip: o.state,
-					assetId: assetId
-				} : {
-					assetId: assetId,
-					userAssetId: userAssetId,
-					sell: o.state,
-					price: Number(arg.price) || 0
-				},
-				headers: {
-					"X-CSRF-TOKEN": token
-				},
-				type: "POST"
-			}).success(function(r){
-				console.log(r);
-				callBack(r.isValid);
-			}).fail(function(){
-				callBack(false);
-			});
+		$.post("https://www.roblox.com/asset/toggle-sale", {
+			assetId: assetId,
+			userAssetId: userAssetId,
+			sell: o,
+			price: Number(arg.price) || 0
+		}).done(function (r) {
+			callBack(r.isValid);
+		}).fail(function () {
+			callBack(false);
 		});
 	});
 });
@@ -1396,19 +1264,11 @@ friendService = {
 		})
 	},
 	unfriend: function(arg,callBack){
-		if(compact.requester(callBack,"friendService","unfriend",arg)){return;}else if(type(arg)!="number"||arg<=0){callBack(false);return;}
-		users.token(function(tok){
-			$.ajax({
-				url: "https://www.roblox.com/api/friends/removefriend",
-				type: "POST",
-				data: JSON.stringify({targetUserID:arg}),
-				headers: {"X-CSRF-TOKEN":tok},
-				contentType: "application/json"
-			}).success(function(r){
-				callBack(!!r.success);
-			}).fail(function(){
-				callBack(false);
-			});
+		if (compact.requester(callBack, "friendService", "unfriend", arg)) { return; } else if (type(arg) != "number" || arg <= 0) { callBack(false); return; }
+		$.post("https://www.roblox.com/api/friends/removefriend", { targetUserID: arg }).done(function (r) {
+			callBack(!!r.success);
+		}).fail(function () {
+			callBack(false);
 		});
 	},
 	blocked: compact(function(callBack){
@@ -1444,18 +1304,11 @@ friendService = {
 
 foreach(["follow","unfollow"],function(n,o){
 	friendService[o] = compact(function(id,callBack){
-		if(compact.requester(callBack,"friendService",o,id)){return;}else if(type(id)!="number"){callBack(false);return;}
-		users.token(function(tok){
-			$.ajax({
-				url: "https://api.roblox.com/user/"+o,
-				type: "POST",
-				data: {followedUserId:id},
-				headers: {"X-CSRF-TOKEN":tok}
-			}).success(function(r){
-				callBack(r.success);
-			}).fail(function(r){
-				callBack(false);
-			});			
+		if (compact.requester(callBack, "friendService", o, id)) { return; } else if (type(id) != "number") { callBack(false); return; }
+		$.post("https://api.roblox.com/user/" + o, { followedUserId: id }).done(function (r) {
+			callBack(r.success);
+		}).fail(function () {
+			callBack(false);
 		});
 	},{
 		queue: true
@@ -1580,17 +1433,13 @@ privateMessage = {
 		var data = [];
 		for(var n in arg.id){if(type(arg.id[n])=="number"&&arg.id[n]>0){data.push(arg.id[n]);}}
 		if(type(arg.action)!="string"){callBack(false);return;}else if(!data.length){callBack(true);return;}
-		users.token(function(tok){
-			if(!tok){callBack(false);return;}
-			$.ajax({
-				type: "POST",
-				url: "https://www.roblox.com/messages/api/"+arg.action,
-				data: JSON.stringify({messageIds:data}),
-				headers: {"X-CSRF-TOKEN":tok},
-				contentType: "application/json"
-			}).always(function(r,s){
-				callBack(s=="success");
-			});
+		$.ajax({
+			type: "POST",
+			url: "https://www.roblox.com/messages/api/"+arg.action,
+			data: JSON.stringify({messageIds:data}),
+			contentType: "application/json"
+		}).always(function(r,s){
+			callBack(s=="success");
 		});
 	},{
 		queue: true
@@ -1621,32 +1470,25 @@ privateMessage = {
 			failure();
 			return;
 		}
-		users.token(function(tok){
-			if(tok){
-				var send;send = function(){
-					data.recipientId = arg.id.shift();
-					if(!data.recipientId){
-						callBack(sent);
-						return;
-					}
-					$.ajax({
-						type: "POST",
-						url: "https://www.roblox.com/messages/api/send-message",
-						data: JSON.stringify(data),
-						headers: {"X-CSRF-TOKEN":tok},
-						contentType: "application/json"
-					}).success(function(r){
-						sent[data.recipientId] = !!r.success;
-						send();
-					}).fail(function(){
-						failure();
-					});
-				};
-				send();
-			}else{
-				failure();
+		var send;send = function(){
+			data.recipientId = arg.id.shift();
+			if(!data.recipientId){
+				callBack(sent);
+				return;
 			}
-		});
+			$.ajax({
+				type: "POST",
+				url: "https://www.roblox.com/messages/api/send-message",
+				data: JSON.stringify(data),
+				contentType: "application/json"
+			}).success(function(r){
+				sent[data.recipientId] = !!r.success;
+				send();
+			}).fail(function(){
+				failure();
+			});
+		};
+		send();
 	},
 	search: compact(function(arg,callBack){
 		if(compact.requester(callBack,"privateMessage","search",arg)){return;}
@@ -1930,23 +1772,11 @@ groupService = {
 		arg.group = Number(arg.group)||0;
 		arg.id = Number(arg.id)||0;
 		arg.check = function(u){
-			if(arg.id){
-				users.token(function(tok){
-					if(!tok){
-						callBack(false);
-						return;
-					}
-					$.ajax({
-						url: "https://www.roblox.com/groups/api/change-member-rank?groupId=2518656&newRoleSetId="+arg.id+"&targetUserId="+u,
-						type: "POST",
-						headers: {
-							"X-CSRF-TOKEN": tok
-						}
-					}).success(function(r){
-						callBack(r.success);
-					}).fail(function(){
-						callBack(false);
-					});
+			if (arg.id) {
+				$.post("https://www.roblox.com/groups/api/change-member-rank?groupId=2518656&newRoleSetId=" + arg.id + "&targetUserId=" + u).done(function (r) {
+					callBack(r.success);
+				}).fail(function () {
+					callBack(false);
 				});
 			}else{
 				$.get("https://assetgame.roblox.com/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRank&playerid="+u+"&groupid="+arg.group).success(function(r){
@@ -2016,14 +1846,12 @@ soundService.robloxSound = function(id,callBack){
 
 
 if(ext.background){
-	users.token.places = {};
 	users.bc.list = {};
 	catalog.hasAsset.confirm = {};
 	
 	users.current.cache = compact.cache(3*1000);
 	users.getById.cache = compact.cache(60*1000);
 	users.getByUsername.cache = compact.cache(0);
-	users.token.cache = compact.cache(10*1000);
 	users.bc.cache = compact.cache(15*1000);
 	users.inventory.cache = compact.cache(3*60*1000);
 	catalog.info.cache = compact.cache(3*1000);

@@ -251,24 +251,13 @@ RPlus.Pages.Item = function () {
 			if (spans.length == 2 && loop) {
 				loop = function () {
 					catalog.info(id, function (info) {
-						spans.first().text("Limited quantity: " + addComma(info.sales) + " ");
-						spans.last().text("/ " + addComma(info.sales + info.remaining));
-						setTimeout(loop, 2500);
+						if (info.name) {
+							spans.first().text("Limited quantity: " + addComma(info.sales) + " ");
+							spans.last().text("/ " + addComma(info.sales + info.remaining));
+							setTimeout(loop, 2500);
+						}
 					});
 				};
-				loop();
-			}
-			var span = $("#ctl00_cphRoblox_LimitedEditionRemaining>span");
-			loop = loop && function () {
-				catalog.info(id, function (info) {
-					span.text(addComma(info.remaining));
-					saleCount.text(addComma(info.sales));
-					if (info.remaining && !info.privateSellers.length) {
-						setTimeout(loop, 1000);
-					}
-				});
-			};
-			if (span.length && loop) {
 				loop();
 			}
 		});
