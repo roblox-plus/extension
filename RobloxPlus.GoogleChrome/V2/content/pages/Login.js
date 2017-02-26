@@ -1,6 +1,7 @@
 ﻿var RPlus = RPlus || {};
 RPlus.Pages = RPlus.Pages || {};
-RPlus.Pages.Login = (function () {
+
+RPlus.Pages.Login = function () {
 	var cid = 0;
 	$("#LoginUsername,#Username").blur(function () {
 		var el = $(this);
@@ -18,7 +19,11 @@ RPlus.Pages.Login = (function () {
 			});
 		}
 	});
-})();
+
+	return {};
+};
+
+RPlus.Pages.Login.patterns = [/^\/NewLogin/i, /^\/Login/i];
 
 
 // WebGL3D

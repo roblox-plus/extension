@@ -10,7 +10,7 @@
 		"48": "images/icons/icon_64x64.png"
 	},
 
-	
+
 	"background": {
 		"page": "/background/background.html"
 	},
@@ -48,8 +48,20 @@
 
 		{
 			"js": [ "/content/pages/Login.js" ],
-			"matches": [ "*://www.roblox.com/NewLogin" ],
-			"run_at":  "document_end"
+			"matches": [ "*://www.roblox.com/*" ],
+			"run_at": "document_end"
+		},
+
+		{
+			"js": [ "/content/pages/Group.js" ],
+			"matches": [ "*://www.roblox.com/*/*.aspx*", "*://web.roblox.com/*/*.aspx*" ],
+			"run_at": "document_end"
+		},
+
+		{
+			"js": [ "/content/loadPages.js" ],
+			"matches": [ "*://*.roblox.com/*" ],
+			"run_at": "document_end"
 		}
 	],
 
