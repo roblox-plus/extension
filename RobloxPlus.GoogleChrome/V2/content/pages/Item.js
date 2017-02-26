@@ -28,7 +28,7 @@ RPlus.Pages.Item = function () {
 	} else if (id == 391072534) {
 		$(".item-type-field-container .field-content").text("ROBLOX+ Enhancement");
 		var buyButton = $(".PurchaseButton").attr("data-asset-type", "ROBLOX+ Enhancement");
-		$("#AssetThumbnail>.thumbnail-span>img").attr("src", ext.url("images/notifier.png")).css("height", "155px");
+		$("#AssetThumbnail>.thumbnail-span>img").attr("src", ext.getUrl("images/notifier.png")).css("height", "155px");
 
 		if (ext.browser.name != "Chrome") {
 			buyButton.attr("disabled", "").attr("title", "Available on Chrome only");

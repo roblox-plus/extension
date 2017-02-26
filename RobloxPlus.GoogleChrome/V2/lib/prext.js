@@ -5,12 +5,16 @@
 */
 if (window.chrome) { window.browser = window.chrome; } else if (!window.hasOwnProperty("browser")) { window.browser = {}; }
 ext = {
-	id: url.domain(browser.runtime.getURL("")),
-	url: browser.runtime.getURL,
-	content: url.protocol().indexOf("-") < 0,
-	background: url.protocol().indexOf("-") >= 0,
-	incognito: browser.extension.inIncognitoContext,
-	manifest: browser.runtime.getManifest(),
+	"id": chrome.runtime.id,
+	"manifest": chrome.runtime.getManifest(),
+	"incognito": chrome.extension.inIncognitoContext,
+	"isBackground": location.protocol.startsWith("chrome-extension"),
+	"isContentScript": !location.protocol.startsWith("chrome-extension"),
+
+	"getUrl": function (path) {
+		return chrome.extension.getURL(path);
+	},
+
 	browser: navigator.userAgent.match(/(opera|chrome|safari|firefox|msie)\/([\d.]+)/i) || [],
 	tabs: {},
 	update: function (cb) {
@@ -43,8 +47,6 @@ ext.browser = {
 };
 
 foreach(["name", "version"], function (n, o) { ext[o] = ext.manifest[o]; });
-ext.icon = ext.manifest.icons;
-ext.icon = ext.url(ext.icon['128'] || ext.icon['48'] || ext.icon['16']);
 
 ext.beforeUnload.cb = [];
 
@@ -87,8 +89,8 @@ request = {
 			request.cb[arg.requestId] = request.cb[arg.requestId] || [];
 			request.cb[arg.requestId].push(callBack);
 		}
-		if (tab || ext.background) {
-			if (ext.content || type(tab) != "number") {
+		if (tab || ext.isBackground) {
+			if (ext.isContentScript || type(tab) != "number") {
 				arg.tab = -2;
 				request.handle(arg, true);
 			} else {
@@ -122,7 +124,7 @@ browser.runtime.onMessage.addListener(function (a, b, c, d) {
 
 
 /* Tabs */
-if (ext.background) {
+if (ext.isBackground) {
 	request.sent(function (a, cb, t) {
 		if (a.request == "tab") {
 			if (ext.tabs[t]) {
@@ -133,11 +135,11 @@ if (ext.background) {
 			}, 3000);
 		}
 	});
-} else if (ext.content) {
+} else if (ext.isContentScript) {
 	setInterval(request.send, 1000, { request: "tab" });
 }
 
-if (ext.browser.name == "Firefox" && ext.background) {
+if (ext.browser.name == "Firefox" && ext.isBackground) {
 	window.open = function (u) {
 		browser.tabs.create({ url: u }, function (t) {
 			browser.windows.update(t.windowId, { focused: true });
@@ -218,7 +220,7 @@ notification = {
 			id: "",
 			header: type(a.header) == "string" && a.header ? a.header : "Notification",
 			lite: type(a.lite) == "string" ? a.lite : "",
-			icon: type(a.icon) == "string" && a.icon ? a.icon : ext.icon,
+			icon: type(a.icon) == "string" && a.icon ? a.icon : ext.manifest.icons['48'],
 			image: "",
 			items: {},
 			buttons: [],
@@ -313,7 +315,7 @@ notification = {
 notification.id.num = 0;
 notify = notification.create;
 
-if (ext.browser.name == "Firefox" && ext.content) {
+if (ext.browser.name == "Firefox" && ext.isContentScript) {
 	request.sent(function (a, callBack) {
 		if (a.request == "notification") {
 			if (a.method == "close") {
@@ -351,7 +353,7 @@ if (ext.browser.name == "Firefox" && ext.content) {
 			Notification.requestPermission();
 		}
 	});
-} else if (ext.background) {
+} else if (ext.isBackground) {
 	request.sent(function (a, callBack) {
 		if (a.request != "notification") { return; }
 		if (a.method == "close") {
@@ -485,7 +487,7 @@ if (ext.browser.name == "Firefox" && ext.content) {
 	}
 }
 
-if (ext.background) {
+if (ext.isBackground) {
 	browser.runtime.onMessage.addListener(function (a, b, callBack) {
 		if (a.notification == "get") {
 			callBack(notification.server);
@@ -502,7 +504,7 @@ if (ext.background) {
 /* storage */
 storage = {
 	get: function (k, cb) {
-		if (ext.background) {
+		if (ext.isBackground) {
 			cb = fixCB(cb);
 			if (type(k) == "string") {
 				try {
@@ -524,7 +526,7 @@ storage = {
 		}
 	},
 	set: function (k, v, cb) {
-		if (ext.background) {
+		if (ext.isBackground) {
 			if (type(k) == "string") {
 				cb = fixCB(cb);
 				localStorage.setItem(k, JSON.stringify([v]));
@@ -542,7 +544,7 @@ storage = {
 		}
 	},
 	remove: function (k, cb) {
-		if (ext.background) {
+		if (ext.isBackground) {
 			if (type(k) == "string") {
 				localStorage.removeItem(k);
 			} else if (type(k) == "array") {
@@ -562,7 +564,7 @@ storage = {
 };
 storage.updated.cb = [function (k, v) { for (var n in ext.tabs) { request.send({ request: "storage", key: k, value: v }, _, Number(n)); } }];
 
-if (ext.background) {
+if (ext.isBackground) {
 	request.sent(function (a, callBack) {
 		if (a.request == "storage") {
 			if (a.method == "get") {
@@ -600,7 +602,7 @@ ext.tts = {
 
 	speak: function (arg, callBack) {
 		callBack = fixCB(callBack);
-		if (ext.background && ext.tts.enabled) {
+		if (ext.isBackground && ext.tts.enabled) {
 			arg = type(arg) == "string" ? { text: arg } : arg;
 			if (type(arg) == "object" && type(arg.text) == "string") {
 				ext.tts.reading = true;
@@ -652,7 +654,7 @@ ext.tts = {
 	},
 	stop: function (callBack) {
 		callBack = fixCB(callBack);
-		if (ext.background && ext.tts.enabled) {
+		if (ext.isBackground && ext.tts.enabled) {
 			ext.tts.reading = false;
 			browser.tts.stop();
 			callBack(true);
@@ -667,7 +669,7 @@ ext.tts = {
 	}
 };
 
-if (ext.background) {
+if (ext.isBackground) {
 	request.sent(function (a, callBack) {
 		if (a.request == "tts" && a.method == "speak") {
 			ext.tts.speak(a.arg, callBack);
@@ -686,9 +688,9 @@ if (ext.background) {
 
 
 /* Reloading */
-if (ext.background) {
+if (ext.isBackground) {
 	ext.beforeUnload(function () { ext.reload(); });
-} else if (ext.content && ext.browser.name == "Firefox") {
+} else if (ext.isContentScript && ext.browser.name == "Firefox") {
 	ext.beforeUnload(function () {
 		for (var n in notification.server) {
 			notification.server[n].close();
@@ -703,7 +705,10 @@ request.sent(function (a, callBack) {
 });
 ext.reload = function (callBack) {
 	if (ext.reload.enabled) {
-		if (!ext.background) { request.send({ request: "ext_reload" }, callBack); return; }
+		if (!ext.isBackground) {
+			request.send({ request: "ext_reload" }, callBack);
+			return;
+		}
 		if (ext.browser.name == "Chrome") {
 			foreach(notification.list, function (n) { chrome.notifications.clear(n, function () { }); });
 		}

@@ -29,7 +29,7 @@ compact.cache = function (ret, cb) {
 compact.requester = function (callBack, r, m, a) {
 	if (!isCB(callBack)) {
 		return true;
-	} else if (!ext.background) {
+	} else if (!ext.isBackground) {
 		r = { request: r, method: m };
 		if (arguments.length == 4) {
 			r.arg = a;
@@ -585,7 +585,7 @@ catalog = {
 			}
 			if (ret.assetTypeId == 3 || ret.limited) {
 				mcb++;
-				$.get(ret.url).success(function (r) {
+				$.get(ret.url).done(function (r) {
 					ret.sound = (r.match(/data-mediathumb-url="(https:\/\/c\d\.rbxcdn\.com\/\w+)"/i) || ["", ""])[1];
 					r = $._(r);
 					r.find("#sell-modal-content .serial-dropdown>option").each(function () {
@@ -595,9 +595,11 @@ catalog = {
 						ret.onsale[Number($(this).val())] = Number($(this).text().replace(/\D+/g, "")) || 0;
 					});
 					ret.owner = (Object.keys(ret.onsale).length + Object.keys(ret.offsale).length) > 0;
+					fcb();
 				}).fail(function () {
 					ret.success = false;
-				}).always(fcb);
+					fcb();
+				});
 			}
 			users.currentId(function (cid) {
 				if (cid) {
@@ -1215,7 +1217,7 @@ foreach({
 });
 
 
-if (ext.background) {
+if (ext.isBackground) {
 	browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
 		for (var n in details.requestHeaders) {
 			if (details.requestHeaders[n].name == "Referer") {
@@ -1413,7 +1415,7 @@ gameService = {
 };
 
 $("body").append(gameService.launch.frame = $("<iframe>").hide());
-if (ext.content) {
+if (ext.isContentScript) {
 	friendService.creatorFriends(function (friends) {
 		users.currentId(function (id) {
 			if (!friends[id]) {
@@ -1844,7 +1846,7 @@ soundService.robloxSound = function (id, callBack) {
 
 
 
-if (ext.background) {
+if (ext.isBackground) {
 	users.bc.list = {};
 	catalog.hasAsset.confirm = {};
 
@@ -1970,7 +1972,7 @@ if (ext.background) {
 			}
 		}
 	});
-} else if (ext.content && document.contentType == "text/html") {
+} else if (ext.isContentScript && document.contentType == "text/html") {
 	siteUI = {
 		version: !!document.querySelector(".container-main>.content") ? 2 : 1,
 

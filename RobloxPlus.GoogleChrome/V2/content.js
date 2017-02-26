@@ -5,7 +5,7 @@
 */
 fixCB(({
 	"text/html": function (subdomain, upath, list, mainLoop) {
-		if (ext.browser.name == "Firefox") { localStorage.setItem("RPLUS_EXTURL", ext.url("")); }
+		if (ext.browser.name == "Firefox") { localStorage.setItem("RPLUS_EXTURL", ext.getUrl("")); }
 		if (document.querySelector("#navigation .rplus-icon") || (["help", "corp", "developer", "wiki", "devforum", "blog", "api", "m", "bloxcon", "setup", "content", "polls"]).indexOf(subdomain = subdomain[subdomain.length - 3]) >= 0) { return; }
 		var isTradeWindow = !!url.send().match(/\/Trade\/TradeWindow\.aspx/i);
 
@@ -233,7 +233,7 @@ fixCB(({
 			current: "",
 
 			box: $("<div id=\"rplusPopbox\">").append(
-				$("<span id=\"rplusPopboxHover\">").append($("<img>").attr("src", ext.url("images/icons/icon_32x32.png"))).click(function () {
+				$("<span id=\"rplusPopboxHover\">").append($("<img>").attr("src", ext.getUrl("images/icons/icon_32x32.png"))).click(function () {
 					popbox.box.addClass("open");
 				}).on("dragenter", function () {
 					popbox.box.addClass("open");

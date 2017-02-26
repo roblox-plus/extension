@@ -723,7 +723,7 @@ browser.webRequest.onBeforeRequest.addListener(function (details) {
 browser.webRequest.onBeforeRequest.addListener(function (details) {
 	var path = url.path(details.url).toLowerCase();
 	if (!string.startsWith(path, /\/games\//i) && (string.startsWith(path, /.*\/.*game.*\/.*getauthticket/i) || string.startsWith(path, /.*\/.*game.*%\d\w.*getauthticket/i))) {
-		return ext.browser.name == "Chrome" ? { redirectUrl: ext.url("warning.html") } : { cancel: true };
+		return ext.browser.name == "Chrome" ? { redirectUrl: ext.getUrl("warning.html") } : { cancel: true };
 	}
 }, { urls: ["*://*.roblox.com/*game*"], types: ["sub_frame", "main_frame"] }, ["blocking"]);
 
