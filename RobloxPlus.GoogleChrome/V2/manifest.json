@@ -64,6 +64,7 @@
 				"/content/pages/forum/Default.js",
 				"/content/pages/forum/ShowForum.js",
 				"/content/pages/forum/ShowPost.js",
+				"/content/pages/forum/AddPost.js",
 				"/content/loadPages.js"
 			],
 			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*", "*://forum.roblox.com/*" ],
