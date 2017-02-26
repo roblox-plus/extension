@@ -17,6 +17,19 @@
 
 	"content_scripts": [
 		{
+			"js": [ "theme.js" ],
+			"css": [
+				"css/icons.css",
+				"css/hljs.css",
+				"css/style.css",
+				"css/obc.css",
+				"css/easter.css"
+			],
+			"matches": [ "*://*.roblox.com/*" ],
+			"run_at": "document_start"
+		},
+
+		{
 			"js": [
 				"lib/jquery.js",
 				"lib/highlight.pack.js",
@@ -32,17 +45,11 @@
 			"matches": [ "*://*.roblox.com/*" ],
 			"run_at": "document_end"
 		},
+
 		{
-			"js": [ "theme.js" ],
-			"matches": [ "*://*.roblox.com/*" ],
-			"css": [
-				"css/icons.css",
-				"css/hljs.css",
-				"css/style.css",
-				"css/obc.css",
-				"css/easter.css"
-			],
-			"run_at": "document_start"
+			"js": [ "/content/pages/Login.js" ],
+			"matches": [ "*://www.roblox.com/NewLogin" ],
+			"run_at":  "document_end"
 		}
 	],
 

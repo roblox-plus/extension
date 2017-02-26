@@ -42,14 +42,13 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="V2\content\pages\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="V2\background\background.html" />
     <Content Include="V2\background.js" />
     <Content Include="V2\content.js" />
     <Content Include="V2\content\json.js" />
+    <Content Include="V2\content\pages\Login.js" />
     <Content Include="V2\css\customIcon.css" />
     <Content Include="V2\css\easter.css" />
     <Content Include="V2\css\hljs.css" />

@@ -2703,26 +2703,6 @@ $(".MediaPlayerIcon[data-mediathumb-url]").each(function(){$(this).replaceWith(s
 		}));
 	}
 },{
-	match: [/^\/NewLogin/i,/^\/\W?/i],
-	fill: function(){
-		var cid = 0;
-		$("#LoginUsername,#Username").blur(function(){
-			var el = $(this);
-			var id = ++cid;
-			if(el.val()){
-				storage.get("changedLogin",function(v){
-					if(v&&el.val()){
-						users.getByUsername(el.val(),function(u){
-							if(cid==id){
-								el.val(u.username);
-							}
-						});
-					}
-				});
-			}
-		});
-	}
-},{
 	match: /^\/my\/account[^\/]?/i,
 	fill: function(tab,compileStorage){
 		var styleTag = $("<style>");
