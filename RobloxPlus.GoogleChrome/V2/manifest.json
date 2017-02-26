@@ -54,6 +54,7 @@
 				"/content/pages/Inventory.js",
 				"/content/pages/Friends.js",
 				"/content/pages/TradeWindow.js",
+				"/content/pages/Profile.js",
 				"/content/loadPages.js"
 			],
 			"matches": [ "*://www.roblox.com/*" ],
