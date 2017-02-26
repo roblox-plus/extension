@@ -53,6 +53,7 @@
 				"/content/pages/Develop.js",
 				"/content/pages/Inventory.js",
 				"/content/pages/Friends.js",
+				"/content/pages/TradeWindow.js",
 				"/content/loadPages.js"
 			],
 			"matches": [ "*://www.roblox.com/*" ],

@@ -1802,32 +1802,6 @@ $(".MediaPlayerIcon[data-mediathumb-url]").each(function(){$(this).replaceWith(s
 		}));
 	}
 },{
-	match: /^\/Trade\/TradeWindow\.aspx/i,
-	fill: function(){
-		users.userId = Number(($(".TradeWindowContainer>script").html().match(/Offer\.initialize\((\d+),/)||[0,0])[1])||0;
-		/*var startRedesign = function(partner){
-			console.log("Trade between",users.userId,"and",partner.id);
-		}
-		storage.get("tradeRedesign",function(on){
-			if(on){
-				$(".TradeWindowContainer").remove();
-				users.getById(Number(url.param("TradePartnerID",$("#aspnetForm").attr("action"))),function(partner){
-					startRedesign(partner);
-				});
-			}
-		});*/
-		setInterval(function(){
-			storage.get("tradeChecker",function(on){
-				if(!on){return;}
-				request.send({request:"outboundTrades"},function(list){
-					$(".InventoryItemContainerOuter[userassetid]").each(function(){
-						$(this).find(".InventoryItemContainerInner").css("background-color",list.indexOf(Number($(this).attr("userassetid")))>=0?"rgb(255,230,230)":"#FFF");
-					});
-				});
-			});
-		},250);
-	}
-},{
 	match: /^\/my\/character\.aspx/i,
 	fill: function(){
 		var lid = 0;
