@@ -140,7 +140,7 @@ if(ext.browser.name=="Chrome"){
 			var id = users.urlId(e.linkUrl);
 			var u = "https://www.roblox.com/Trade/TradeWindow.aspx?TradePartnerID="+id;
 			$.get(u).success(function(r){
-				if(($_(r).find("#aspnetForm[action]").attr("action")||"").endsWith("TradePartnerID="+id)){
+				if(($._(r).find("#aspnetForm[action]").attr("action")||"").endsWith("TradePartnerID="+id)){
 					tradeSystem.display(id);
 				}
 			});
@@ -171,7 +171,7 @@ itemNotifier = setupNotifier(function(loop,uid){
 			itemNotifier.buttonCheck(function(){
 				$.get("https://assetgame.roblox.com/asset/?id=311113132").success(function(r){
 					try{
-						r = JSON.parse($_(r).find("string[name='Value']").html().replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,"\"").replace(/&#039;/g,"'").replace(/&amp;/g,"&"));
+						r = JSON.parse($._(r).find("string[name='Value']").html().replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,"\"").replace(/&#039;/g,"'").replace(/&amp;/g,"&"));
 						for(var n in r){
 							if(r[n].id>itemNotifier.cache&&r[n].id<=id){
 								(function(o,note){
@@ -541,7 +541,7 @@ groupNotifier = setupNotifier(function(loop,uid){
 	$.get("https://www.roblox.com/Feeds/GetUserFeed").success(function(r){
 		var whitelist = storage.get("groupShoutNotifierList")||{};
 		var got = {};
-		$_(r).find(".feeds>.list-item").each(function(){
+		$._(r).find(".feeds>.list-item").each(function(){
 			var group = $(this).find(".list-content>a[href*='gid=']");
 			if(group.length){
 				var id = Number(url.param("gid",group.attr("href")))||0;

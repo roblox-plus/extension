@@ -53,9 +53,6 @@ url.roblox.subdomain = "www";
 url.roblox.linkify = /(https?\:\/\/)?(?:www\.)?([a-z0-9\-]{2,}\.)*(((m|de|www|web|api|blog|wiki|help|corp|polls|bloxcon|developer|devforum|forum)\.roblox\.com|robloxlabs\.com)|(www\.shoproblox\.com))((\/[A-Za-z0-9-+&@#\/%?=~_|!:,.;]*)|(\b|\s))/gm;
 
 
-$_ = function(x,r){return $("<div>").html(type(x)=="string"?(r?x:x.replace(/<img/gi,"<flip")):"");};
-
-
 
 brickColor = {
 	colors:{"Br. yellowish green":{"r":164,"g":189,"b":71,"number":119},"Bright yellow":{"r":245,"g":205,"b":48,"number":24},"Bright orange":{"r":218,"g":133,"b":65,"number":106},"Bright red":{"r":196,"g":40,"b":28,"number":21},"Bright violet":{"r":107,"g":50,"b":124,"number":104},"Bright blue":{"r":13,"g":105,"b":172,"number":23},"Bright bluish green":{"r":0,"g":143,"b":156,"number":107},"Bright green":{"r":75,"g":151,"b":75,"number":37},"Institutional white":{"r":248,"g":248,"b":248,"number":1001},"White":{"r":242,"g":243,"b":243,"number":1},"Light stone grey":{"r":229,"g":228,"b":223,"number":208},"Mid gray":{"r":205,"g":205,"b":205,"number":1002},"Medium stone grey":{"r":163,"g":162,"b":165,"number":194},"Dark stone grey":{"r":99,"g":95,"b":98,"number":199},"Black":{"r":27,"g":42,"b":53,"number":26},"Really black":{"r":17,"g":17,"b":17,"number":1003},"Grime":{"r":127,"g":142,"b":100,"number":1022},"Br. yellowish orange":{"r":226,"g":155,"b":64,"number":105},"Light orange":{"r":234,"g":184,"b":146,"number":125},"Sand red":{"r":149,"g":121,"b":119,"number":153},"Lavender":{"r":140,"g":91,"b":159,"number":1023},"Sand blue":{"r":116,"g":134,"b":157,"number":135},"Medium blue":{"r":110,"g":153,"b":202,"number":102},"Sand green":{"r":120,"g":144,"b":130,"number":151},"Brick yellow":{"r":215,"g":197,"b":154,"number":5},"Cool yellow":{"r":253,"g":234,"b":141,"number":226},"Neon orange":{"r":213,"g":115,"b":61,"number":1005},"Medium red":{"r":218,"g":134,"b":122,"number":101},"Light reddish violet":{"r":232,"g":186,"b":200,"number":9},"Pastel Blue":{"r":128,"g":187,"b":219,"number":11},"Teal":{"r":18,"g":238,"b":212,"number":1018},"Medium green":{"r":161,"g":196,"b":140,"number":29},"Pastel brown":{"r":255,"g":204,"b":153,"number":1030},"Pastel yellow":{"r":255,"g":255,"b":204,"number":1029},"Pastel orange":{"r":255,"g":201,"b":201,"number":1025},"Pink":{"r":255,"g":102,"b":204,"number":1016},"Pastel violet":{"r":177,"g":167,"b":255,"number":1026},"Pastel light blue":{"r":175,"g":221,"b":255,"number":1024},"Pastel blue-green":{"r":159,"g":243,"b":233,"number":1027},"Pastel green":{"r":204,"g":255,"b":204,"number":1028},"Olive":{"r":193,"g":190,"b":66,"number":1008},"New Yeller":{"r":255,"g":255,"b":0,"number":1009},"Deep orange":{"r":255,"g":175,"b":0,"number":1017},"Really red":{"r":255,"g":0,"b":0,"number":1004},"Hot pink":{"r":255,"g":0,"b":191,"number":1032},"Really blue":{"r":0,"g":0,"b":255,"number":1010},"Toothpaste":{"r":0,"g":255,"b":255,"number":1019},"Lime green":{"r":0,"g":255,"b":0,"number":1020},"Brown":{"r":124,"g":92,"b":70,"number":217},"Nougat":{"r":204,"g":142,"b":105,"number":18},"Dark orange":{"r":160,"g":95,"b":53,"number":38},"Royal purple":{"r":98,"g":37,"b":209,"number":1031},"Alder":{"r":180,"g":128,"b":255,"number":1006},"Cyan":{"r":4,"g":175,"b":236,"number":1013},"Light blue":{"r":180,"g":210,"b":228,"number":45},"Camo":{"r":58,"g":125,"b":21,"number":1021},"Reddish brown":{"r":105,"g":64,"b":40,"number":192},"CGA brown":{"r":170,"g":85,"b":0,"number":1014},"Dusty Rose":{"r":163,"g":75,"b":75,"number":1007},"Magenta":{"r":170,"g":0,"b":170,"number":1015},"Deep blue":{"r":33,"g":84,"b":185,"number":1012},"Navy blue":{"r":0,"g":32,"b":96,"number":1011},"Dark green":{"r":40,"g":127,"b":71,"number":28},"Earth green":{"r":39,"g":70,"b":45,"number":141},"Grey":{"r":161,"g":165,"b":162,"number":2},"Light yellow":{"r":249,"g":233,"b":153,"number":3},"Light green (Mint)":{"r":194,"g":218,"b":184,"number":6},"Light orange brown":{"r":203,"g":132,"b":66,"number":12},"Med. reddish violet":{"r":196,"g":112,"b":160,"number":22},"Earth orange":{"r":98,"g":71,"b":50,"number":25},"Dark grey":{"r":109,"g":110,"b":108,"number":27},"Lig. Yellowich orange":{"r":243,"g":207,"b":155,"number":36},"Light bluish violet":{"r":193,"g":202,"b":222,"number":39},"Transparent":{"r":236,"g":236,"b":236,"number":40},"Tr. Red":{"r":205,"g":84,"b":75,"number":41},"Tr. Lg blue":{"r":193,"g":223,"b":240,"number":42},"Tr. Blue":{"r":123,"g":182,"b":232,"number":43},"Tr. Yellow":{"r":247,"g":241,"b":141,"number":44},"Tr. Flu. Reddish orange":{"r":217,"g":133,"b":108,"number":47},"Tr. Green":{"r":132,"g":182,"b":141,"number":48},"Tr. Flu. Green":{"r":248,"g":241,"b":132,"number":49},"Phosph. White":{"r":236,"g":232,"b":222,"number":50},"Light red":{"r":238,"g":196,"b":182,"number":100},"Light grey":{"r":199,"g":193,"b":183,"number":103},"Earth yellow":{"r":104,"g":92,"b":67,"number":108},"Bright bluish violet":{"r":67,"g":84,"b":147,"number":110},"Tr. Brown":{"r":191,"g":183,"b":177,"number":111},"Medium bluish violet":{"r":104,"g":116,"b":172,"number":112},"Tr. Medi. reddish violet":{"r":228,"g":173,"b":200,"number":113},"Med. yellowish green":{"r":199,"g":210,"b":60,"number":115},"Med. bluish green":{"r":85,"g":165,"b":175,"number":116},"Light bluish green":{"r":183,"g":215,"b":213,"number":118},"Lig. yellowish green":{"r":217,"g":228,"b":167,"number":120},"Med. yellowish orange":{"r":231,"g":172,"b":88,"number":121},"Br. reddish orange":{"r":211,"g":111,"b":76,"number":123},"Bright reddish violet":{"r":146,"g":57,"b":120,"number":124},"Tr. Bright bluish violet":{"r":165,"g":165,"b":203,"number":126},"Gold":{"r":220,"g":188,"b":129,"number":127},"Dark nougat":{"r":174,"g":122,"b":89,"number":128},"Silver":{"r":156,"g":163,"b":168,"number":131},"Neon green":{"r":216,"g":221,"b":86,"number":134},"Sand violet":{"r":135,"g":124,"b":144,"number":136},"Medium orange":{"r":224,"g":152,"b":100,"number":137},"Sand yellow":{"r":149,"g":138,"b":115,"number":138},"Earth blue":{"r":32,"g":58,"b":86,"number":140},"Tr. Flu. Blue":{"r":207,"g":226,"b":247,"number":143},"Sand blue metallic":{"r":121,"g":136,"b":161,"number":145},"Sand violet metallic":{"r":149,"g":142,"b":163,"number":146},"Sand yellow metallic":{"r":147,"g":135,"b":103,"number":147},"Dark grey metallic":{"r":87,"g":88,"b":87,"number":148},"Black metallic":{"r":22,"g":29,"b":50,"number":149},"Light grey metallic":{"r":171,"g":173,"b":172,"number":150},"Dark red":{"r":123,"g":46,"b":47,"number":154},"Tr. Flu. Yellow":{"r":255,"g":246,"b":123,"number":157},"Tr. Flu. Red":{"r":225,"g":164,"b":194,"number":158},"Gun metallic":{"r":117,"g":108,"b":98,"number":168},"Red flip/flop":{"r":151,"g":105,"b":91,"number":176},"Yellow flip/flop":{"r":180,"g":132,"b":85,"number":178},"Silver flip/flop":{"r":137,"g":135,"b":136,"number":179},"Curry":{"r":215,"g":169,"b":75,"number":180},"Fire Yellow":{"r":249,"g":214,"b":46,"number":190},"Flame yellowish orange":{"r":232,"g":171,"b":45,"number":191},"Flame reddish orange":{"r":207,"g":96,"b":36,"number":193},"Royal blue":{"r":70,"g":103,"b":164,"number":195},"Dark Royal blue":{"r":35,"g":71,"b":139,"number":196},"Bright reddish lilac":{"r":142,"g":66,"b":133,"number":198},"Lemon metalic":{"r":130,"g":138,"b":93,"number":200},"Dark Curry":{"r":176,"g":142,"b":68,"number":209},"Faded green":{"r":112,"g":149,"b":120,"number":210},"Turquoise":{"r":121,"g":181,"b":181,"number":211},"Light Royal blue":{"r":159,"g":195,"b":233,"number":212},"Medium Royal blue":{"r":108,"g":129,"b":183,"number":213},"Rust":{"r":143,"g":76,"b":42,"number":216},"Reddish lilac":{"r":150,"g":112,"b":159,"number":218},"Lilac":{"r":107,"g":98,"b":155,"number":219},"Light lilac":{"r":167,"g":169,"b":206,"number":220},"Bright purple":{"r":205,"g":98,"b":152,"number":221},"Light purple":{"r":228,"g":173,"b":200,"number":222},"Light pink":{"r":220,"g":144,"b":149,"number":223},"Light brick yellow":{"r":240,"g":213,"b":160,"number":224},"Warm yellowish orange":{"r":235,"g":184,"b":127,"number":225},"Dove blue":{"r":125,"g":187,"b":221,"number":232},"Medium lilac":{"r":52,"g":43,"b":117,"number":268}},
@@ -226,7 +223,7 @@ users = {
 		var ret = {id:"",username:"",bc:"NBC",success:true};
 		if(users.getById.cache.get(a)){callBack(users.getById.cache.get(a));return;}else if(!a){callBack(ret);return;}
 		$.get("https://search.roblox.com/catalog/contents?ResultsPerPage=1&CreatorId="+a).success(function(r){
-			var selected = (r=$_(r)).find(".creatorFilter.selected");
+			var selected = (r=$._(r)).find(".creatorFilter.selected");
 			var id = pround(selected.attr("data-creatorid"));
 			if(id==a&&(!(r.find(".breadCrumbFilter.selected").text()||"").startsWith("Group:"))){
 				users.bc(selected.text(),function(b){
@@ -270,7 +267,7 @@ users = {
 		$.get("https://www.roblox.com/UserCheck/CheckIfInvalidUsernameForSignup?username="+encodeURIComponent(a)).success(function(r){
 			if(r.data==1||r.data==6){
 				$.get("https://search.roblox.com/catalog/contents?ResultsPerPage=1&CreatorName="+encodeURIComponent(a)).success(function(r){
-					var selected = (r=$_(r)).find(".creatorFilter.selected");
+					var selected = (r=$._(r)).find(".creatorFilter.selected");
 					var id = pround(selected.attr("data-creatorid"));
 					if(id&&(!(r.find(".breadCrumbFilter.selected").text()||"").startsWith("Group:"))){
 						wrapup(id,selected.text());
@@ -588,7 +585,7 @@ catalog = {
 				mcb++;
 				$.get(ret.url).success(function(r){
 					ret.sound = (r.match(/data-mediathumb-url="(https:\/\/c\d\.rbxcdn\.com\/\w+)"/i)||["",""])[1];
-					r = $_(r);
+					r = $._(r);
 					r.find("#sell-modal-content .serial-dropdown>option").each(function(){
 						ret.offsale[Number($(this).val())] = Number($(this).text().replace(/\D+/g,"")) || 0;
 					});
@@ -726,7 +723,7 @@ catalog = {
 	update: function(arg,callBack){
 		if(type(arg)!="object"||type(arg.id)!="number"||compact.requester(callBack,"catalog","update",arg)){return;}
 		$.get("https://www.roblox.com/My/Item.aspx?ID="+arg.id).success(function(r){
-			r = $_(r);
+			r = $._(r);
 			if(r.find("#EditItem").length){
 				arg.robux = round(type(arg.robux)=="number"?arg.robux:r.find("#ctl00_cphRoblox_RobuxPrice").val())||0;
 				arg.genre = type(arg.genre)=="number"?arg.genre:r.find("#ctl00_cphRoblox_actualGenreSelection").val();
@@ -836,7 +833,7 @@ catalog.limiteds.search = function(lims,phrase,exact){
 };
 
 catalog.info.parse = function(hold){
-	hold = $_(hold);
+	hold = $._(hold);
 	hold.find("#item-details-description>span").remove();
 	var creator = hold.find(".item-name-container>div>span.text-label>a.text-name");
 	
@@ -1276,7 +1273,7 @@ friendService = {
 		if(friendService.blocked.cache.get("blocked")){callBack({success:true,data:friendService.blocked.cache.get("blocked")});return;}
 		$.get("https://www.roblox.com/userblock/getblockedusers?page=1",function(r,s){
 			var ret = {};
-			$_(r).find(".BlockedUser").each(function(){
+			$._(r).find(".BlockedUser").each(function(){
 				var id = round($(this).find("span").attr("data-rbx-blockeeid"));
 				$(this).find("span").remove();
 				ret[id] = tostring($(this).text()).trim();
@@ -1648,7 +1645,7 @@ forumService = {
 			success: true
 		};
 		$.get("https://forum.roblox.com/Forum/ShowPost.aspx?PostID="+ret.id+"&PageIndex="+ret.page+(arg.hide?"&rplus=hide":"")).success(function(r){
-			ret.subject = (r=$_(r)).find("#ctl00_cphRoblox_PostView1_ctl00_PostTitle").text();
+			ret.subject = (r=$._(r)).find("#ctl00_cphRoblox_PostView1_ctl00_PostTitle").text();
 			ret.maxPage = Number((r.find("#ctl00_cphRoblox_PostView1_ctl00_Pager .normalTextSmallBold").text().match(/^Page\s*[\d,]+\s*of\s*([\d,]+)/i)||["","1"])[1].replace(/,/g,""))||1;
 			r.find("#ctl00_cphRoblox_PostView1_ctl00_PostList .forum-post").each(function(){
 				var poster = $(this).find("a.normalTextSmallBold[href*='/users/']");
@@ -1684,7 +1681,7 @@ forumService = {
 			success: true
 		};
 		$.get("https://forum.roblox.com/Forum/User/MyForums.aspx").success(function(r){
-			ret.userId = users.urlId((r=$_(r)).find("#navigation .text-overflow").attr("href"));
+			ret.userId = users.urlId((r=$._(r)).find("#navigation .text-overflow").attr("href"));
 			ret.username = r.find("#navigation .text-overflow").text();
 			if(ret.userId){
 				r.find("#ctl00_cphRoblox_MyForums1_ctl00_ThreadTracking .forum-table-row").each(function(){ret.tracked.push(forumService.parseRow($(this)));});
@@ -1698,7 +1695,7 @@ forumService = {
 	}),
 	parseRow: function(el){
 		var nts = el.find(".normalTextSmaller");
-		var status = (el.find("flip,img").attr("title")||"").toLowerCase();
+		var status = (el.find("noimg,img").attr("title")||"").toLowerCase();
 		return {
 			id: Number(url.param("PostID",el.find(".post-list-subject").attr("href")))||0,
 			subject: el.find(".post-list-subject").text().trim(),
@@ -1724,7 +1721,7 @@ foreach({"track":"on","untrack":""},function(n,o){
 	forumService[n] = compact(function(arg,callBack){
 		if(compact.requester(callBack,"forumService",n,arg)){return;}else if(type(arg)!="number"){callBack(false);return;}
 		$.get(arg="https://forum.roblox.com/Forum/ShowPost.aspx?PostID="+arg).success(function(r){
-			r = $_(r);
+			r = $._(r);
 			$.post(arg,{
 				"ctl00$cphRoblox$PostView1$ctl00$TrackThread": o,
 				__EVENTTARGET: "ctl00$cphRoblox$PostView1$ctl00$TrackThread",

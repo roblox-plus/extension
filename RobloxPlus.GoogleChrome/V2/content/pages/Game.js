@@ -76,7 +76,7 @@ RPlus.Pages.Game = function () {
 					if (u.username.toLowerCase() != el.attr("placeholder").toLowerCase() && u.id) {
 						el.attr("placeholder", u.username);
 						$.get("/users/" + u.id + "/profile").success(function (r) {
-							r = $_(r);
+							r = $._(r);
 							var game = r.find(".profile-avatar-status.icon-game");
 							var mayfollow = r.find("div[data-mayfollow]").data("mayfollow");
 							var playingPlace = Number(url.param("PlaceId", game.parent().attr("href")));
