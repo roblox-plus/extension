@@ -14,7 +14,18 @@
 		"scripts": ["lib/jquery.js","lib/prefunc.js","lib/prext.js","lib/preroblox.js","middle.js","background.js"]
 	},
 	"content_scripts": [{
-		"js": ["lib/jquery.js","lib/highlight.pack.js","lib/highcharts.js","lib/highchartsmod.js","lib/prefunc.js","lib/prext.js","lib/preroblox.js","middle.js","content.js"],
+		"js": [
+			"lib/jquery.js",
+			"lib/highlight.pack.js",
+			"lib/highcharts.js",
+			"lib/highchartsmod.js",
+			"lib/prefunc.js",
+			"lib/prext.js",
+			"lib/preroblox.js",
+			"middle.js",
+			"content/json.js",
+			"content.js"
+		],
 		"matches": ["*://*.roblox.com/*"],
 		"run_at": "document_end"
 	},{

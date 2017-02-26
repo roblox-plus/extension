@@ -4,21 +4,6 @@
 	My messages will always be open for all, if you can't PM me check your settings.
 */
 fixCB(({
-"application/json":function(){
-	try{
-		var jpre = $("body>pre").first().css("tab-size","4");
-		var j = JSON.parse(jpre.text());
-		var pretty = false;
-		$(document).keyup(function(e){
-			if(e.keyCode==13){
-				pretty = !pretty;
-				jpre.text(JSON.stringify(j,_,pretty?"\t":""));
-			}
-		});
-	}catch(e){
-		console.warn("Failed to parse JSON for pretty printer");
-	}
-},
 "text/html":function(subdomain,upath,list,mainLoop){
 if(ext.browser.name=="Firefox"){localStorage.setItem("RPLUS_EXTURL",ext.url(""));}
 if(document.querySelector("#navigation .rplus-icon")||(["help","corp","developer","wiki","devforum","blog","api","m","bloxcon","setup","content","polls"]).indexOf(subdomain=subdomain[subdomain.length-3])>=0){return;}
