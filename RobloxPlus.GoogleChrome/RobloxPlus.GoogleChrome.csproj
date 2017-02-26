@@ -42,8 +42,62 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="V2\" />
+    <Content Include="V2\background\background.html" />
+    <Content Include="V2\background\background.js" />
+    <Content Include="V2\background\ContextMenus.js" />
+    <Content Include="V2\background\jquery.notifications.ext.js" />
+    <Content Include="V2\content\Account.js" />
+    <Content Include="V2\content\Asset.js" />
+    <Content Include="V2\content\Forums.js" />
+    <Content Include="V2\content\Profile.js" />
+    <Content Include="V2\content\rplus\infoBox.js" />
+    <Content Include="V2\content\rplus\json.js" />
+    <Content Include="V2\content\rplus\navigation.js" />
+    <Content Include="V2\content\rplus\slider.js" />
+    <Content Include="V2\content\rplus\storage.js" />
+    <Content Include="V2\css\infoBox.css" />
+    <Content Include="V2\css\lib\hljs.css" />
+    <Content Include="V2\css\pages\Account.css" />
+    <Content Include="V2\css\pages\Forums.css" />
+    <Content Include="V2\css\pages\Profile.css" />
+    <Content Include="V2\css\RPlus.css" />
+    <Content Include="V2\images\icons\appIcon.png" />
+    <Content Include="V2\images\icons\favicon.ico" />
+    <Content Include="V2\images\icons\icon_128x128.png" />
+    <Content Include="V2\images\icons\icon_16x16.png" />
+    <Content Include="V2\images\icons\icon_256x256.png" />
+    <Content Include="V2\images\icons\icon_32x32.png" />
+    <Content Include="V2\images\icons\icon_64x64.png" />
+    <Content Include="V2\images\icons\navicon.png" />
+    <Content Include="V2\lib\ext.js" />
+    <Content Include="V2\lib\global.js" />
+    <Content Include="V2\lib\highlight.pack.js" />
+    <Content Include="V2\lib\jquery-3.1.1.min.js" />
+    <Content Include="V2\lib\jquery.cache.js" />
+    <Content Include="V2\lib\jquery.notifications.js" />
+    <Content Include="V2\lib\jquery.storage.js" />
+    <Content Include="V2\lib\jquery.trigger.js" />
+    <Content Include="V2\lib\roblox\audio.js" />
+    <Content Include="V2\lib\roblox\catalog.js" />
+    <Content Include="V2\lib\roblox\games.js" />
+    <Content Include="V2\lib\roblox\inventory.js" />
+    <Content Include="V2\lib\roblox\privateMessages.js" />
+    <Content Include="V2\lib\roblox\Roblox.js" />
+    <Content Include="V2\lib\roblox\social.js" />
+    <Content Include="V2\lib\roblox\thumbnails.js" />
+    <Content Include="V2\lib\roblox\tradeService.js" />
+    <Content Include="V2\lib\roblox\users.js" />
+    <Content Include="V2\lib\roblox\xsrfHandler.js" />
+    <Content Include="V2\lib\soundService.js" />
+    <Content Include="V2\notifications\notifications.html" />
+    <Content Include="V2\rplus.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="V2\features.json" />
+    <None Include="V2\manifest.json" />
+    <None Include="V2\settings.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
