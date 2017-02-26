@@ -10,16 +10,9 @@
 		"48": "images/icon64.png"
 	},
 
-
+	
 	"background": {
-		"scripts": [
-			"lib/jquery.js",
-			"lib/prefunc.js",
-			"lib/prext.js",
-			"lib/preroblox.js",
-			"middle.js",
-			"background.js"
-		]
+		"page": "/background/background.html"
 	},
 
 	"content_scripts": [
