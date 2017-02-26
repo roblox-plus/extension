@@ -41,11 +41,15 @@
 				"/lib/roblox/social.js",
 				
 				"/rplus.js",
-				"/content/rplus/json.js"
+				"/content/core/json.js",
+				"/content/core/themes.js"
 			],
 			"css": [
 				"/css/RPlus.css",
-				"/css/infoBox.css"
+				"/css/infoBox.css",
+
+				"/css/themes/obc.css",
+				"/css/themes/easter.css"
 			],
 			"matches": [
 				"*://*.roblox.com/*"
@@ -54,10 +58,10 @@
 		},
 		{
 			"js": [
-				"/content/rplus/navigation.js",
-				"/content/rplus/storage.js",
-				"/content/rplus/slider.js",
-				"/content/rplus/infoBox.js"
+				"/content/core/navigation.js",
+				"/content/core/storage.js",
+				"/content/core/slider.js",
+				"/content/core/infoBox.js"
 			],
 			"matches": [
 				"*://*.roblox.com/*"
@@ -76,7 +80,7 @@
 		},
 		{
 			"js": [
-				"/content/Account.js"
+				"/content/pages/Account.js"
 			],
 			"matches": [
 				"*://*.roblox.com/my/account?tab=rplus"
@@ -97,7 +101,7 @@
 		{
 			"js": [
 				"/lib/highlight.pack.js",
-				"/content/Forums.js"
+				"/content/pages/Forums.js"
 			],
 			"matches": [
 				"*://*.roblox.com/Forum/*"
@@ -116,7 +120,7 @@
 		},
 		{
 			"js": [
-				"/content/Profile.js"
+				"/content/pages/Profile.js"
 			],
 			"matches": [
 				"*://*.roblox.com/users/*/profile*"
@@ -126,7 +130,7 @@
 		
 		{
 			"js": [
-				"/content/Asset.js"
+				"/content/pages/Asset.js"
 			],
 			"matches": [
 				"*://*.roblox.com/catalog/*/*"
@@ -145,7 +149,7 @@
 	},
 	
 	
-	"homepage_url": "https://*.roblox.com/my/account?*tab=rplus*",
+	"homepage_url": "https://www.roblox.com/my/account?tab=rplus",
 	"permissions": [
 		"gcm",
 		"contextMenus",

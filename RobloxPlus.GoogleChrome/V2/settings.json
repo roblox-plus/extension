@@ -241,7 +241,7 @@
 	
 	"Other": [
 		{
-			"title": "Display approximate value of users collectible items as RAP",
+			"title": "Display approximate value of a users collectible items on profile",
 			"key": "profile.rap.enabled",
 			"defaultValue": false
 		},

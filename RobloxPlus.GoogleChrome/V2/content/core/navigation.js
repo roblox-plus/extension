@@ -12,8 +12,8 @@
 	
 	
 	function getCommaPlacement(callBack){
-		$.storage("navigation.counters.commas", function(v){
-			var match = v.match(/(\d+)(\w+)/) || ["", 0, ""];
+		$.storage("navigation.counters.commas", function (v) {
+			var match = (v || "").match(/(\d+)(\w+)/) || ["", 0, ""];
 			var n = Number(match[1]);
 			var e = match[2].toUpperCase();
 			if(getCommaPlacement.zeros[e]){
@@ -126,7 +126,7 @@
 
 	$("#upgrade-now-button").parent().before(
 		$("<li id=\"nav-rplus\">").append(
-			$("<a>").attr("href", ext.manifest.homepage_url.replace(/\*\.roblox/g, "www.roblox").replace(/\*/g, "")).append(
+			$("<a>").attr("href", ext.manifest.homepage_url).append(
 				$("<span class=\"icon-nav-rplus\">"),
 				$("<span>").text("Control Panel")
 			)
