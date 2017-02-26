@@ -56,9 +56,10 @@
 				"/content/pages/TradeWindow.js",
 				"/content/pages/Profile.js",
 				"/content/pages/Character.js",
+				"/content/pages/ComposeMessage.js",
 				"/content/loadPages.js"
 			],
-			"matches": [ "*://www.roblox.com/*" ],
+			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*", "*://forum.roblox.com/*" ],
 			"run_at": "document_end"
 		}
 	],
