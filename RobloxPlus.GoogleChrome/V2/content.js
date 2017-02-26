@@ -233,7 +233,7 @@ popbox = {
 	current: "",
 	
 	box: $("<div id=\"rplusPopbox\">").append(
-		$("<span id=\"rplusPopboxHover\">").append($("<img>").attr("src",ext.url("images/icon32.png"))).click(function(){
+		$("<span id=\"rplusPopboxHover\">").append($("<img>").attr("src",ext.url("images/icons/icon_32x32.png"))).click(function(){
 			popbox.box.addClass("open");
 		}).on("dragenter",function(){
 			popbox.box.addClass("open");
