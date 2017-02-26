@@ -1,0 +1,139 @@
+/* notifications.css [4/15/2016] */
+html,body{
+	width: 398px;
+	max-height: 500px;
+	min-height: 200px;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+}
+
+body>div{
+	max-height: 500px;
+	min-height: 200px;
+	position: relative;
+	top: 0px;
+	left: 0px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+body>div::-webkit-scrollbar{
+	width: 6px;
+}
+body>div::-webkit-scrollbar-track{
+	background-color: rgb(240, 240, 240);
+}
+body>div::-webkit-scrollbar-thumb{
+	background-color: rgb(188, 188, 188);
+	border-radius: 3px;
+	-webkit-transition: background-color .5s;
+}
+body>div::-webkit-scrollbar-thumb:hover{
+	background-color: rgb(169, 169, 169);
+}
+
+
+.notification{
+	min-height: 75px;
+	width: 380px;
+	position: relative;
+	font-family: Arial;
+	box-shadow: 0px 0px 4px rgb(119,119,119);
+	margin: 2px 0px 5px 2px;
+	padding: 3px 3px 0px 3px;
+	transition: height .25s;
+	overflow: hidden;
+	-webkit-user-select: none;
+}
+
+.notification>.icon{
+	width: 75px;
+	height: 75px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: rgba(240, 240, 240, .6);
+}
+
+.notification>.header{
+	width: calc(100% - 80px);
+	min-height: 20px;
+	font-size: 14px;
+	position: relative;
+	left: 80px;
+	top: 0px;
+	margin: 0px;
+}
+
+.notification>.lite{
+	width: calc(100% - 80px);
+	position: relative;
+	left: 80px;
+	margin: 0px;
+	font-size: 12.5px;
+	color: rgb(127, 127, 127);
+}
+
+
+.notification .close{
+	background-color: transparent;
+	position: absolute;
+	height: 11px;
+	width: 11px;
+	font-size: 11px;
+	font-weight: bold;
+	top: 1px;
+	left: calc(100% - 17px);
+	border-radius: 100%;
+	color: black;
+	z-index: 3;
+	text-align: center;
+	padding: 2px;
+}
+.notification .close:hover{
+	background-color: rgb(127, 127, 127);
+	color: white;
+}
+
+
+.notification>table{
+	width: calc(100% - 80px);
+	left: 80px;
+	position: relative;
+	margin: 0px;
+}
+
+.notification tr>td:first-child{
+	color: rgb(100, 100, 100);
+	width: 75px;
+}
+.notification tr>td:last-child{
+	color: rgb(50, 50, 50);
+}
+
+
+.notification>.buttons{
+	position: relative;
+	width: calc(100% + 6px);
+	left: -3px;
+}
+
+.notification>.buttons>button{
+	height: 22px;
+	cursor: pointer;
+	width: 100%;
+	position: relative;
+	background-color: rgb(255, 255, 255);
+	border-style: solid none none none;
+	border-color: rgb(230, 230, 230);
+	border-width: 1px;
+	text-align: left;
+	font-size: 14px;
+	outline: 0;
+}
+.notification>.buttons>button:hover{
+	background-color: rgb(235, 235, 235);
+}
+
+
+/* WebGL3D */

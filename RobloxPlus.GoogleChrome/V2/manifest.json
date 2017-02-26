@@ -1,0 +1,47 @@
+{
+	"manifest_version": 2,
+	"name": "ROBLOX+",
+	"version": "2.2.48",
+
+	"description": "Adds features and notifiers made by WebGL3D to the ROBLOX website",
+	"icons": {
+		"128": "images/icon.png",
+		"16": "images/icon16.png",
+		"48": "images/icon64.png"
+	},
+
+	"background": {
+		"scripts": ["lib/jquery.js","lib/prefunc.js","lib/prext.js","lib/preroblox.js","middle.js","background.js"]
+	},
+	"content_scripts": [{
+		"js": ["lib/jquery.js","lib/highlight.pack.js","lib/highcharts.js","lib/highchartsmod.js","lib/prefunc.js","lib/prext.js","lib/preroblox.js","middle.js","content.js"],
+		"matches": ["*://*.roblox.com/*"],
+		"run_at": "document_end"
+	},{
+		"js": ["theme.js"],
+		"matches": ["*://*.roblox.com/*"],
+		"css": ["css/icons.css","css/hljs.css","css/style.css","css/obc.css","css/easter.css"],
+		"run_at": "document_start"
+	}],
+	"browser_action": {
+		"default_icon": {
+            "19": "images/icon32.png"
+		},
+		"default_title": "ROBLOX+",
+		"default_popup": "notifications.html"
+	},
+	"homepage_url": "https://www.roblox.com/my/account?tab=rplus",
+	"incognito": "split",
+	"permissions": ["contextMenus","webRequest","webRequestBlocking","tts","notifications","*://*.roblox.com/*","*://*.rbxcdn.com/*","*://*.robloxplus.com/*","*://*.roblox.plus/*"],
+	"optional_permissions": ["<all_urls>"],
+	"short_name": "ROBLOX+",
+	"web_accessible_resources": ["*.css","*.svg","*.png","*.html","*.js","jquery.min.map","images/navicon.png","images/icon32.png","images/notifier.png","*://*.roblox.com/*","*://*.rbxcdn.com/*","*://*.robloxplus.com/*","*://*.roblox.plus/*"],
+	
+	"applications": {
+		"gecko": {
+			"id": "robloxplus@roblox.plus",
+			"strict_min_version": "46.0",
+			"strict_max_version": "*"
+		}
+	}
+}
