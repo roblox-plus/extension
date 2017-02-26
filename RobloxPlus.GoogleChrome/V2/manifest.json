@@ -51,6 +51,7 @@
 				"/content/pages/Login.js",
 				"/content/pages/Group.js",
 				"/content/pages/Develop.js",
+				"/content/pages/Inventory.js",
 				"/content/loadPages.js"
 			],
 			"matches": [ "*://www.roblox.com/*" ],
