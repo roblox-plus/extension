@@ -57,6 +57,7 @@
 				"/content/pages/Profile.js",
 				"/content/pages/Character.js",
 				"/content/pages/ComposeMessage.js",
+				"/content/pages/Game.js",
 				"/content/loadPages.js"
 			],
 			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*", "*://forum.roblox.com/*" ],

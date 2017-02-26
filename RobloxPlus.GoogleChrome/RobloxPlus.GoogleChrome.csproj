@@ -53,6 +53,7 @@
     <Content Include="V2\content\pages\ComposeMessage.js" />
     <Content Include="V2\content\pages\Develop.js" />
     <Content Include="V2\content\pages\Friends.js" />
+    <Content Include="V2\content\pages\Game.js" />
     <Content Include="V2\content\pages\Group.js" />
     <Content Include="V2\content\pages\Inventory.js" />
     <Content Include="V2\content\pages\Login.js" />
