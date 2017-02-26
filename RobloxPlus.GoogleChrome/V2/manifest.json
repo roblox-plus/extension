@@ -60,6 +60,7 @@
 				"/content/pages/Game.js",
 				"/content/pages/Money.js",
 				"/content/pages/Item.js",
+				"/content/pages/Account.js",
 				"/content/pages/forum/Default.js",
 				"/content/loadPages.js"
 			],
