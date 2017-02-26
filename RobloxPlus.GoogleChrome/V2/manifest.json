@@ -47,20 +47,13 @@
 		},
 
 		{
-			"js": [ "/content/pages/Login.js" ],
+			"js": [
+				"/content/pages/Login.js",
+				"/content/pages/Group.js",
+				"/content/pages/Develop.js",
+				"/content/loadPages.js"
+			],
 			"matches": [ "*://www.roblox.com/*" ],
-			"run_at": "document_end"
-		},
-
-		{
-			"js": [ "/content/pages/Group.js" ],
-			"matches": [ "*://www.roblox.com/*/*.aspx*", "*://web.roblox.com/*/*.aspx*" ],
-			"run_at": "document_end"
-		},
-
-		{
-			"js": [ "/content/loadPages.js" ],
-			"matches": [ "*://*.roblox.com/*" ],
 			"run_at": "document_end"
 		}
 	],

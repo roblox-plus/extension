@@ -1521,47 +1521,6 @@ $(".MediaPlayerIcon[data-mediathumb-url]").each(function(){$(this).replaceWith(s
 		});
 	}
 },{
-	match: [/^\/develop\?/i,/^\/develop\/groups\/\d+/i],
-	fill: function(a){
-		var views = [
-			2, // T-shirt
-			3, // Audio
-			10, // Model
-			11, // Shirt
-			12, // Pants
-			13 // Decal
-		];
-		
-		storage.get("quickSell",function(on){
-			if(!on){return;}
-			setInterval(function(){
-				var v = Number(url.param("view"));
-				if(views.indexOf(v)<0){return;}
-				$(".item-table:not([rplus])").attr("rplus",getMil()).each(function(){
-					var row = $(this);
-					catalog.info(Number(row.attr("data-item-id")),function(info){
-						if(!info.editable){return;}
-						var onsale = info.free||info.robuxPrice;
-						row.find(".details-table tbody").append(users.userId==2533795||users.userId==77907390?$("<tr>").append($("<button style=\"font-size: 11px;\">Clear Description</button>").click(function(){
-							var button = $(this).text("...");
-							catalog.update({id:info.id,description:""},function(s){
-								button.text(s?"Cleared Description":"Clear Description");
-							});
-						})):"").find(">tr:first-child").prepend($("<td class=\"activate-cell\">").append($("<a class=\"place-"+(onsale?"":"in")+"active\" href=\"javascript:/* Change Status */\">").text((onsale?"On":"Off")+"sale").click(function(){
-							var button = $(this);
-							var x = (onsale = !onsale);
-							catalog.update((v==2||v==11||v==12)?{id:info.id,robux:x?1:0}:{id:info.id,free:x},function(s){
-								if(s){
-									button.attr("class","place-"+(x?"":"in")+"active").text((x?"On":"Off")+"sale");
-								}
-							});
-						})));
-					});
-				});
-			},250);
-		});
-	}
-}, {
 	match: [/^\/catalog\/(\d+)\//i, /^\/library\/(\d+)\//i],
 	fill: function(id){
 		if(!(id = Number(id[1]))){return;}

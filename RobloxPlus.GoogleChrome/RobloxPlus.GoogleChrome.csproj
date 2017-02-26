@@ -49,6 +49,7 @@
     <Content Include="V2\content.js" />
     <Content Include="V2\content\json.js" />
     <Content Include="V2\content\loadPages.js" />
+    <Content Include="V2\content\pages\Develop.js" />
     <Content Include="V2\content\pages\Group.js" />
     <Content Include="V2\content\pages\Login.js" />
     <Content Include="V2\css\customIcon.css" />
