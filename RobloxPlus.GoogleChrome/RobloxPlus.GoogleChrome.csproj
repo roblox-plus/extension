@@ -57,12 +57,11 @@
     <Content Include="V2\content\pages\Profile.js" />
     <Content Include="V2\content\pages\TradeWindow.js" />
     <Content Include="V2\css\customIcon.css" />
-    <Content Include="V2\css\easter.css" />
+    <Content Include="V2\css\themes\easter.css" />
     <Content Include="V2\css\hljs.css" />
     <Content Include="V2\css\icons.css" />
     <Content Include="V2\css\notifications.css" />
-    <Content Include="V2\css\obc.css" />
-    <Content Include="V2\css\obc2.css" />
+    <Content Include="V2\css\themes\obc.css" />
     <Content Include="V2\css\style.css" />
     <Content Include="V2\images\EasterBackground.png" />
     <Content Include="V2\images\EasterBar.png" />

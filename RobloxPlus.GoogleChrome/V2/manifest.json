@@ -22,8 +22,8 @@
 				"css/icons.css",
 				"css/hljs.css",
 				"css/style.css",
-				"css/obc.css",
-				"css/easter.css"
+				"css/themes/obc.css",
+				"css/themes/easter.css"
 			],
 			"matches": [ "*://*.roblox.com/*" ],
 			"run_at": "document_start"
