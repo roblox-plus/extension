@@ -139,7 +139,7 @@ catalog.getAssetContents = function (id, callBack) {
 		meshes: [],
 		contents: []
 	};
-	$.get("https://assetgame.roblox.com/asset?id=" + id).success(function (r) {
+	$.get("https://assetgame.roblox.com/asset?id=" + id).done(function (r) {
 		window.temp1 = r;
 		(r.match(/"TextureI?d?".*=\s*\d+/gi) || r.match(/"TextureI?d?".*rbxassetid:\/\/\d+/gi) || []).forEach(function (tex) {
 			tex = Number(tex.match(/(\d+)$/)[1]);
@@ -166,7 +166,8 @@ catalog.getAssetContents = function (id, callBack) {
 				}
 			});
 		}
-	}).always(function () {
+		callBack(ret);
+	}).fail(function () {
 		callBack(ret);
 	});
 };
