@@ -105,7 +105,7 @@ users = {
 	},
 	urlId: function (u) { return pround((url.path(u).match(/\/users?\/(\d+)\//i) || [0, url.param("id", u)])[1]); },
 
-	currentId: request.backgroundFunction("users.currentId", compact(function (callBack) {
+	currentId: ipc.backgroundFunction("users.currentId", compact(function (callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
 			return;
