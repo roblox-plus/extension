@@ -6,8 +6,11 @@
 rplusSettings = {
 	cache: compact.cache(10 * 1000),
 	fields: { "updateLog": "", "serialTracker": true },
-	get: compact(function (callBack) {
-		if (compact.requester(callBack, "rplusSettings", "get")) { return; }
+	get: request.backgroundFunction("rplusSettings.get", compact(function (callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		if (rplusSettings.cache.get("get")) {
 			callBack(rplusSettings.cache.get("get"));
 			return;
@@ -22,9 +25,13 @@ rplusSettings = {
 		}).fail(function () {
 			callBack({});
 		});
-	}),
-	set: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "rplusSettings", "set")) { return; } else if (type(arg) != "object") { callBack(0); return; }
+	})),
+	set: request.backgroundFunction("rplusSettings.set", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (type(arg) != "object") { callBack(0); return; }
 		rplusSettings.get(function (oldSettings) {
 			var ns = {};
 			for (var n in rplusSettings.fields) {
@@ -43,15 +50,16 @@ rplusSettings = {
 				callBack(0);
 			});
 		});
-	})
+	}))
 };
 
-compact.requester.list.push("rplusSettings");
 
 
-
-users.admin = compact(function (id, callBack) {
-	if (compact.requester(callBack, "users", "admin", id)) { return; }
+users.admin = request.backgroundFunction("users.admin", compact(function (id, callBack) {
+	if (typeof (callBack) != "function") {
+		console.warn("callBack not function!");
+		return;
+	}
 	if (type(id) == "number") {
 		if (users.admin.list.indexOf(id) < 0) {
 			users.admin.list.push(id);
@@ -62,12 +70,15 @@ users.admin = compact(function (id, callBack) {
 			callBack(users.admin.list.indexOf(id) >= 0);
 		});
 	}
-});
+}));
 users.admin.list = [];
 
 
-users.fullInventory = compact(function (arg, callBack) {
-	if (compact.requester(callBack, "users", "fullInventory", arg)) { return; }
+users.fullInventory = request.backgroundFunction("users.fullInventory", compact(function (arg, callBack) {
+	if (typeof (callBack) != "function") {
+		console.warn("callBack not function!");
+		return;
+	}
 	var ret = {
 		assetTypeId: 0,
 		assetType: "",
@@ -127,13 +138,16 @@ users.fullInventory = compact(function (arg, callBack) {
 }, {
 	queue: true,
 	multi: true
-});
+}));
 users.fullInventory.cache = compact.cache(3 * 60 * 1000);
 
 
 
-catalog.getAssetContents = function (id, callBack) {
-	if (compact.requester(callBack, "catalog", "getAssetContents", id)) { return; }
+catalog.getAssetContents = request.backgroundFunction("catalog.getAssetContents", function (id, callBack) {
+	if (typeof (callBack) != "function") {
+		console.warn("callBack not function!");
+		return;
+	}
 	var ret = {
 		textures: [],
 		meshes: [],
@@ -170,7 +184,7 @@ catalog.getAssetContents = function (id, callBack) {
 	}).fail(function () {
 		callBack(ret);
 	});
-};
+});
 
 
 
@@ -198,8 +212,11 @@ tradeSystem.display = function (partner, counter, callBack) {
 
 
 
-forumService.youtube = function (v, callBack) {
-	if (compact.requester(callBack, "forumService", "youtube", v)) { return; }
+forumService.youtube = request.backgroundFunction("forumService.youtube", function (v, callBack) {
+	if (typeof (callBack) != "function") {
+		console.warn("callBack not function!");
+		return;
+	}
 	if (forumService.youtube.cache.get(v)) {
 		callBack(forumService.youtube.cache.get(v));
 	} else {
@@ -210,7 +227,7 @@ forumService.youtube = function (v, callBack) {
 			callBack("");
 		});
 	}
-};
+});
 forumService.youtube.cache = compact.cache(0);
 
 

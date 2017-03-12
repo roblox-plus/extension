@@ -26,20 +26,6 @@ compact.cache = function (ret, cb) {
 	};
 };
 
-compact.requester = function (callBack, r, m, a) {
-	if (!isCB(callBack)) {
-		return true;
-	} else if (!ext.isBackground) {
-		r = { request: r, method: m };
-		if (arguments.length == 4) {
-			r.arg = a;
-		}
-		request.send(r, callBack);
-		return true;
-	}
-};
-compact.requester.list = ["users", "catalog", "tradeSystem", "outfit", "gameService", "friendService", "privateMessage", "forumService", "serialTracker", "groupService"];
-
 compact.cache.callBack = function (c, k, cb) {
 	if (c.data.hasOwnProperty(k)) {
 		cb(c.get(k));
@@ -119,8 +105,11 @@ users = {
 	},
 	urlId: function (u) { return pround((url.path(u).match(/\/users?\/(\d+)\//i) || [0, url.param("id", u)])[1]); },
 
-	currentId: compact(function (callBack) {
-		if (compact.requester(callBack, "users", "currentId")) { return; }
+	currentId: request.backgroundFunction("users.currentId", compact(function (callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var c = users.current.cache;
 		if (c.get("id")) {
 			callBack(c.get("id"));
@@ -132,9 +121,12 @@ users = {
 				callBack(0);
 			});
 		}
-	}),
-	current: compact(function (callBack) {
-		if (compact.requester(callBack, "users", "current")) { return; }
+	})),
+	current: request.backgroundFunction("users.current", compact(function (callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var ret = { success: true, "username": "", "id": 0, "robux": 0, "messages": { "read": 0, "unread": 0, "total": 0 }, "friendRequests": 0, "bc": "NBC" };
 		if (users.current.cache.get("json")) {
 			callBack(users.current.cache.get("json"));
@@ -194,9 +186,12 @@ users = {
 		}).fail(function () {
 			cb(false);
 		});
-	}),
-	bc: compact(function (a, callBack) {
-		if (compact.requester(callBack, "users", "bc", a)) { return; }
+	})),
+	bc: request.backgroundFunction("users.bc", compact(function (a, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		if (type(a) == "number" && a > 0) {
 			users.getById(a, function (u) {
 				callBack(u.username, callBack);
@@ -216,10 +211,13 @@ users = {
 		} else {
 			callBack("NBC");
 		}
-	}),
-	getById: compact(function (a, callBack) {
+	})),
+	getById: request.backgroundFunction("users.getById", compact(function (a, callBack) {
 		a = pround(a);
-		if (compact.requester(callBack, "users", "getById", a)) { return; }
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var ret = { id: "", username: "", bc: "NBC", success: true };
 		if (users.getById.cache.get(a)) { callBack(users.getById.cache.get(a)); return; } else if (!a) { callBack(ret); return; }
 		$.get("https://search.roblox.com/catalog/contents?ResultsPerPage=1&CreatorId=" + a).success(function (r) {
@@ -239,9 +237,12 @@ users = {
 		});
 	}, {
 		queue: true
-	}),
-	getByUsername: compact(function (a, callBack) {
-		if (compact.requester(callBack, "users", "getByUsername", a)) { return; }
+	})),
+	getByUsername: request.backgroundFunction("users.getByUsername", compact(function (a, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var ret = { id: "", username: "", bc: "NBC", success: true };
 		if (type(a) != "string") { callBack(ret); return; }
 		a = a.toLowerCase();
@@ -289,7 +290,7 @@ users = {
 		});
 	}, {
 		queue: true
-	}),
+	})),
 
 	inventory: (function () {
 		var collectibleUserAssetTypeIds = [8, 18, 19, 41, 42, 43, 44, 45, 46, 47];
@@ -338,8 +339,12 @@ users = {
 		}
 
 
-		return compact(function (arg, callBack) {
-			if (compact.requester(callBack, "users", "inventory", arg)) { return; }
+		return request.backgroundFunction("users.inventory", compact(function (arg, callBack) {
+			if (typeof (callBack) != "function") {
+				console.warn("callBack not function!");
+				return;
+			}
+
 			var start = pnow();
 			var ret = {
 				id: 0,
@@ -419,7 +424,7 @@ users = {
 		}, {
 			multi: true,
 			queue: true
-		});
+		}));
 	})()
 };
 
@@ -483,8 +488,11 @@ catalog = {
 		return Number((url.match(/\/catalog\/(\d+)\//i) || url.match(/\/library\/(\d+)\//i) || url.match(/item\.aspx.*id=(\d+)/i) || url.match(/item\?.*id=(\d+)/i) || ["", 0])[1]) || 0;
 	},
 
-	info: compact(function (id, callBack) {
-		if (compact.requester(callBack, "catalog", "info", id)) { return; }
+	info: request.backgroundFunction("catalog.info", compact(function (id, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 
 		var ret = {
 			assetType: "",
@@ -637,9 +645,16 @@ catalog = {
 		}).always(fcb);
 	}, {
 		queue: true
-	}),
-	purchase: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "catalog", "purchase", arg)) { return; } else if (type(arg.seller) != "number" || type(arg.productId) != "number" || type(arg.price) != "number") { callBack(false); return; }
+	})),
+	purchase: request.backgroundFunction("catalog.purchase", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		} else if (type(arg.seller) != "number" || type(arg.productId) != "number" || type(arg.price) != "number") {
+			callBack(false);
+			return;
+		}
+
 		var speed = pnow();
 		var fallback = function () {
 			$.ajax({
@@ -713,9 +728,13 @@ catalog = {
 		} else {
 			fallback();
 		}
-	}),
-	"delete": compact(function (id, callBack) {
-		if (compact.requester(callBack, "catalog", "delete", id)) { return; }
+	})),
+	"delete": request.backgroundFunction("catalog.delete", compact(function (id, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+
 		$.post("https://assetgame.roblox.com/asset/delete-from-inventory", { assetId: id }).done(function () {
 			callBack(true);
 		}).fail(function () {
@@ -723,9 +742,13 @@ catalog = {
 		});
 	}, {
 		queue: true
-	}),
-	update: function (arg, callBack) {
-		if (type(arg) != "object" || type(arg.id) != "number" || compact.requester(callBack, "catalog", "update", arg)) { return; }
+	})),
+	update: request.backgroundFunction("catalog.update", function (arg, callBack) {
+		if (type(arg) != "object" || typeof(arg.id) != "number" || typeof (callBack) != "function") {
+			console.warn("callBack not function! (maybe)");
+			return;
+		}
+
 		$.get("https://www.roblox.com/My/Item.aspx?ID=" + arg.id).success(function (r) {
 			r = $._(r);
 			if (r.find("#EditItem").length) {
@@ -755,10 +778,17 @@ catalog = {
 		}).fail(function () {
 			callBack(false);
 		});
-	},
+	}),
 
-	hasAsset: compact(function (assetId, callBack) {
-		if (compact.requester(callBack, "catalog", "hasAsset", assetId)) { return; } else if (type(assetId) != "number") { callBack(false); }
+	hasAsset: request.backgroundFunction("catalog.hasAsset", compact(function (assetId, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		} else if (typeof(assetId) != "number") {
+			callBack(false);
+			return;
+		}
+
 		users.currentId(function (userId) {
 			var key = userId + "_" + assetId;
 			if (!userId) {
@@ -780,10 +810,15 @@ catalog = {
 		});
 	}, {
 		queue: true
-	}),
+	})),
 
-	limiteds: function (callBack) {
-		if (compact.requester(callBack, "catalog", "limiteds")) { return; } else if (compact.cache.callBack(catalog.limiteds.cache, "get", callBack)) { return; }
+	limiteds: request.backgroundFunction("catalog.limiteds", function (callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (compact.cache.callBack(catalog.limiteds.cache, "get", callBack)) { return; }
+
 		$.get("https://assetgame.roblox.com/asset/?id=317944503").success(function (r) {
 			var ret = {};
 			try {
@@ -802,7 +837,7 @@ catalog = {
 		}).fail(function () {
 			callBack({});
 		});
-	}
+	})
 };
 
 catalog.limiteds.search = function (lims, phrase, exact) {
@@ -880,8 +915,11 @@ catalog.info.parse = function (hold) {
 
 
 tradeSystem = {
-	get: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "tradeSystem", "get", arg)) { return; }
+	get: request.backgroundFunction("tradeSystem.get", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var ret = {
 			type: type(arg.type) == "string" ? arg.type : "inbound",
 			data: [],
@@ -926,9 +964,13 @@ tradeSystem = {
 				callBack(ret);
 			}
 		});
-	}),
-	accept: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "tradeSystem", "accept", arg)) { return; } else if (type(arg) != "number" || arg <= 0) { callBack("Invalid trade"); }
+	})),
+	accept: request.backgroundFunction("tradeSystem.accept", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (type(arg) != "number" || arg <= 0) { callBack("Invalid trade"); }
 		$.post("https://www.roblox.com/Trade/TradeHandler.ashx", { cmd: "maketrade", TradeID: arg }).done(function (r) {
 			if (r.success) {
 				check = function () {
@@ -947,17 +989,24 @@ tradeSystem = {
 		}).fail(function () {
 			callBack("HTTP Error");
 		});
-	}),
-	decline: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "tradeSystem", "decline", arg)) { return; } else if (type(arg) != "number" || arg <= 0) { callBack(true); }
+	})),
+	decline: request.backgroundFunction("tradeSystem.decline", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (type(arg) != "number" || arg <= 0) { callBack(true); }
 		$.post("https://www.roblox.com/Trade/TradeHandler.ashx", { cmd: "decline", TradeID: arg }).done(function (r) {
 			callBack(r.success);
 		}).fail(function () {
 			callBack(false);
 		});
-	}),
-	open: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "tradeSystem", "open", arg)) { return; }
+	})),
+	open: request.backgroundFunction("tradeSystem.open", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var ret = {
 			id: type(arg) == "number" && arg > 0 ? arg : 0,
 			status: "",
@@ -1027,9 +1076,12 @@ tradeSystem = {
 		});
 	}, {
 		queue: true
-	}),
-	send: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "tradeSystem", "send", arg)) { return; }
+	})),
+	send: request.backgroundFunction("tradeSystem.send", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		if (type(arg.id) != "number") {
 			callBack("Invalid user id");
 			return;
@@ -1072,14 +1124,17 @@ tradeSystem = {
 				callBack("HTTP Error");
 			});
 		});
-	})
+	}))
 };
 
 
 
 outfit = {
-	get: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "outfit", "get", arg)) { return; }
+	get: request.backgroundFunction("outfit.get", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var ret = {
 			id: 0,
 			username: "",
@@ -1138,9 +1193,12 @@ outfit = {
 		});
 	}, {
 		queue: true
-	}),
-	getAssetIds: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "outfit", "getAssetIds", arg)) { return; }
+	})),
+	getAssetIds: request.backgroundFunction("outfit.getAssetIds", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		if (type(arg) != "number") {
 			callBack();
 			return;
@@ -1158,9 +1216,13 @@ outfit = {
 		}).fail(function () {
 			callBack();
 		});
-	}),
-	bodyColor: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "outfit", "bodyColor", arg)) { return; } else if (type(arg) != "object" || type(arg.part) != "string" || !arg.hasOwnProperty("color")) { callBack(false); return; }
+	})),
+	bodyColor: request.backgroundFunction("outfit.bodyColor", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (type(arg) != "object" || type(arg.part) != "string" || !arg.hasOwnProperty("color")) { callBack(false); return; }
 		$.get("https://avatar.roblox.com/v1/avatar").done(function (r) {
 			r.bodyColors[arg.part + "ColorId"] = brickColor.new(arg.color).number;
 			$.post("https://avatar.roblox.com/v1/avatar/set-body-colors", r.bodyColors).done(function (r) {
@@ -1171,23 +1233,31 @@ outfit = {
 		}).fail(function () {
 			callBack(false);
 		});
-	}),
-	wear: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "outfit", "wear", arg)) { return; } else if (typeof (arg) != "number") { callBack(false); return; }
+	})),
+	wear: request.backgroundFunction("outfit.wear", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (typeof (arg) != "number") { callBack(false); return; }
 		$.post("https://avatar.roblox.com/v1/avatar/assets/" + arg + "/wear").done(function (r) {
 			callBack(r.success);
 		}).fail(function () {
 			callBack(false);
 		});
-	}),
-	remove: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "outfit", "remove", arg)) { return; } else if (typeof (arg) != "number") { callBack(false); return; }
+	})),
+	remove: request.backgroundFunction("outfit.remove", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (typeof (arg) != "number") { callBack(false); return; }
 		$.post("https://avatar.roblox.com/v1/avatar/assets/" + arg + "/remove").done(function (r) {
 			callBack(r.success);
 		}).fail(function () {
 			callBack(false);
 		});
-	})
+	}))
 };
 
 
@@ -1195,8 +1265,11 @@ foreach({
 	"sell": true,
 	"takeoff": false
 }, function (n, o) {
-	catalog[n] = compact(function (arg, callBack) {
-		if (compact.requester(callBack, "catalog", n, arg)) { return; }
+	catalog[n] = request.backgroundFunction("catalog." + n, compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var assetId = Number(arg.id) || 0;
 		var userAssetId = Number(arg.userAssetId) || 0;
 		if (assetId <= 0) {
@@ -1213,7 +1286,7 @@ foreach({
 		}).fail(function () {
 			callBack(false);
 		});
-	});
+	}));
 });
 
 
@@ -1232,8 +1305,11 @@ if (ext.isBackground) {
 
 
 friendService = {
-	get: function (arg, callBack) {
-		if (compact.requester(callBack, "friendService", "get", arg)) { return; }
+	get: request.backgroundFunction("friendService.get", function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var ret = {
 			id: type(arg) == "number" ? arg : 0,
 			data: [],
@@ -1263,17 +1339,24 @@ friendService = {
 			ret.success = false;
 			callBack(ret);
 		})
-	},
-	unfriend: function (arg, callBack) {
-		if (compact.requester(callBack, "friendService", "unfriend", arg)) { return; } else if (type(arg) != "number" || arg <= 0) { callBack(false); return; }
+	}),
+	unfriend: request.backgroundFunction("friendService.unfriend", function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (type(arg) != "number" || arg <= 0) { callBack(false); return; }
 		$.post("https://www.roblox.com/api/friends/removefriend", { targetUserID: arg }).done(function (r) {
 			callBack(!!r.success);
 		}).fail(function () {
 			callBack(false);
 		});
-	},
-	blocked: compact(function (callBack) {
-		if (compact.requester(callBack, "friendService", "blocked")) { return; }
+	}),
+	blocked: request.backgroundFunction("friendService.blocked", compact(function (callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		if (friendService.blocked.cache.get("blocked")) { callBack({ success: true, data: friendService.blocked.cache.get("blocked") }); return; }
 		$.get("https://www.roblox.com/userblock/getblockedusers?page=1", function (r, s) {
 			var ret = {};
@@ -1287,9 +1370,12 @@ friendService = {
 			}
 			callBack({ data: ret, success: s == "success" });
 		});
-	}),
-	creatorFriends: compact(function (callBack) {
-		if (compact.requester(callBack, "friendService", "creatorFriends")) { return; }
+	})),
+	creatorFriends: request.backgroundFunction("friendService.creatorFriends", compact(function (callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		if (friendService.creatorFriends.cache) { callBack(friendService.creatorFriends.cache); return; }
 		friendService.creatorFriends.cache = {
 			48103520: "WebGL3D"
@@ -1300,12 +1386,16 @@ friendService = {
 			});
 			callBack(friendService.creatorFriends.cache);
 		});
-	})
+	}))
 };
 
 foreach(["follow", "unfollow"], function (n, o) {
-	friendService[o] = compact(function (id, callBack) {
-		if (compact.requester(callBack, "friendService", o, id)) { return; } else if (type(id) != "number") { callBack(false); return; }
+	friendService[o] = request.backgroundFunction("friendService." + o, compact(function (id, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (type(id) != "number") { callBack(false); return; }
 		$.post("https://api.roblox.com/user/" + o, { followedUserId: id }).done(function (r) {
 			callBack(r.success);
 		}).fail(function () {
@@ -1313,7 +1403,7 @@ foreach(["follow", "unfollow"], function (n, o) {
 		});
 	}, {
 		queue: true
-	});
+	}));
 });
 
 
@@ -1343,8 +1433,11 @@ gameService = {
 			userId: Number(userId) || 0
 		}, callBack);
 	},
-	servers: compact(function (placeId, callBack) {
-		if (compact.requester(callBack, "gameService", "servers", placeId)) { return; }
+	servers: request.backgroundFunction("gameService.servers", compact(function (placeId, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var ret = {
 			id: type(placeId) == "number" && placeId > 0 ? placeId : 0,
 			data: [],
@@ -1396,7 +1489,7 @@ gameService = {
 			});
 		};
 		load(1);
-	}, { multi: true }),
+	}, { multi: true })),
 
 	li: function (placeId, o) {
 		var ret = $("<li class=\"section-content rbx-game-server-item\">").attr("data-gameid", o.id).prepend($("<div class=\"section-left rbx-game-server-details\">").prepend(
@@ -1428,8 +1521,11 @@ if (ext.isContentScript) {
 
 
 privateMessage = {
-	action: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "privateMessage", "action", arg)) { return; }
+	action: request.backgroundFunction("privateMessage.action", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		arg.id = type(arg.id) == "array" ? arg.id : [arg.id];
 		var data = [];
 		for (var n in arg.id) { if (type(arg.id[n]) == "number" && arg.id[n] > 0) { data.push(arg.id[n]); } }
@@ -1444,13 +1540,16 @@ privateMessage = {
 		});
 	}, {
 		queue: true
-	}),
+	})),
 	read: function (id, callBack) { return privateMessage.action({ id: id, action: "mark-messages-read" }, callBack); },
 	unread: function (id, callBack) { return privateMessage.action({ id: id, action: "mark-messages-unread" }, callBack); },
 	archive: function (id, callBack) { return privateMessage.action({ id: id, action: "archive-messages" }, callBack); },
 	unarchive: function (id, callBack) { return privateMessage.action({ id: id, action: "unarchive-messages" }, callBack); },
-	send: function (arg, callBack) {
-		if (compact.requester(callBack, "privateMessage", "send", arg)) { return; }
+	send: request.backgroundFunction("privateMessage.send", function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		arg.id = type(arg.id) == "number" ? [arg.id] : (type(arg.id) != "array" ? [] : arg.id);
 		var data = {
 			subject: type(arg.subject) == "string" ? arg.subject : "",
@@ -1490,9 +1589,12 @@ privateMessage = {
 			});
 		};
 		send();
-	},
-	search: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "privateMessage", "search", arg)) { return; }
+	}),
+	search: request.backgroundFunction("privateMessage.search", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var ret = {
 			data: [],
 			loaded: 100
@@ -1516,9 +1618,12 @@ privateMessage = {
 	}, {
 		queue: true,
 		multi: true
-	}),
-	get: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "privateMessage", "get", arg)) { return; }
+	})),
+	get: request.backgroundFunction("privateMessage.get", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		arg.tab = ({ "inbox": 0, "sent": 1, "archive": 3 })[type(arg.tab) == "string" ? arg.tab.toLowerCase() : "inbox"] || 0;
 		arg.results = type(arg.results) == "number" ? arg.results : 20;
 		var ret = {
@@ -1579,9 +1684,12 @@ privateMessage = {
 		});
 	}, {
 		queue: true
-	}),
-	box: compact(function (tab, callBack) {
-		if (compact.requester(callBack, "privateMessage", "box", tab)) { return; }
+	})),
+	box: request.backgroundFunction("privateMessage.box", compact(function (tab, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var data = [];
 		var load; load = function (page) {
 			privateMessage.get({ tab: tab, page: page }, function (pdata) {
@@ -1631,14 +1739,17 @@ privateMessage = {
 	}, {
 		queue: true,
 		multi: true
-	})
+	}))
 };
 
 
 
 forumService = {
-	thread: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "forumService", "thread", arg)) { return; }
+	thread: request.backgroundFunction("forumService.thread", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		if (type(arg) == "number") { arg = { id: arg }; }
 		var ret = {
 			id: type(arg.id) == "number" ? arg.id : 0,
@@ -1674,9 +1785,13 @@ forumService = {
 		});
 	}, {
 		queue: true
-	}),
-	mine: compact(function (callBack) {
-		if (compact.requester(callBack, "forumService", "mine")) { return; } else if (forumService.cache.get("mine")) { callBack(forumService.cache.get("mine")); return; }
+	})),
+	mine: request.backgroundFunction("forumService.mine", compact(function (callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (forumService.cache.get("mine")) { callBack(forumService.cache.get("mine")); return; }
 		var ret = {
 			userId: 0,
 			username: "",
@@ -1696,7 +1811,7 @@ forumService = {
 			ret.success = false;
 			callBack(ret);
 		});
-	}),
+	})),
 	parseRow: function (el) {
 		var nts = el.find(".normalTextSmaller");
 		var status = (el.find("noimg,img").attr("title") || "").toLowerCase();
@@ -1722,8 +1837,12 @@ forumService = {
 };
 
 foreach({ "track": "on", "untrack": "" }, function (n, o) {
-	forumService[n] = compact(function (arg, callBack) {
-		if (compact.requester(callBack, "forumService", n, arg)) { return; } else if (type(arg) != "number") { callBack(false); return; }
+	forumService[n] = request.backgroundFunction("forumService." + n, compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
+		if (type(arg) != "number") { callBack(false); return; }
 		$.get(arg = "https://forum.roblox.com/Forum/ShowPost.aspx?PostID=" + arg).success(function (r) {
 			r = $._(r);
 			$.post(arg, {
@@ -1735,14 +1854,17 @@ foreach({ "track": "on", "untrack": "" }, function (n, o) {
 		}).fail(function () {
 			callBack(false);
 		});
-	});
+	}));
 });
 
 
 
 groupService = {
-	role: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "groupService", "role", arg)) { return; }
+	role: request.backgroundFunction("groupService.role", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		arg.group = Number(arg.group) || 0;
 		arg.check = function (u) {
 			$.get("https://assetgame.roblox.com/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRole&playerid=" + u + "&groupid=" + arg.group).success(function (r) {
@@ -1767,9 +1889,12 @@ groupService = {
 		}
 	}, {
 		queue: true
-	}),
-	rank: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "groupService", "rank", arg)) { return; }
+	})),
+	rank: request.backgroundFunction("groupService.rank", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		arg.group = Number(arg.group) || 0;
 		arg.id = Number(arg.id) || 0;
 		arg.check = function (u) {
@@ -1803,7 +1928,7 @@ groupService = {
 		}
 	}, {
 		queue: true
-	})
+	}))
 };
 
 
@@ -1811,8 +1936,11 @@ groupService = {
 serialTracker = {
 	enabled: true,
 	send: {},
-	get: compact(function (arg, callBack) {
-		if (compact.requester(callBack, "serialTracker", "get", arg)) { return; }
+	get: request.backgroundFunction("serialTracker.get", compact(function (arg, callBack) {
+		if (typeof (callBack) != "function") {
+			console.warn("callBack not function!");
+			return;
+		}
 		var req;
 		var tim = setTimeout(function () { req.abort(); }, 20 * 1000);
 		req = $.get("https://inventory.roblox.com/v1/assets/" + arg.id + "/owners?sortOrder=Asc", { limit: arg.resultsPerPage || 100, cursor: arg.cursor || "" }).success(function (r) {
@@ -1828,7 +1956,7 @@ serialTracker = {
 		});
 	}, {
 		queue: true
-	})
+	}))
 };
 
 
@@ -1957,21 +2085,6 @@ if (ext.isBackground) {
 			return { requestHeaders: nh };
 		}
 	}, { urls: ["*://*.roblox.com/Forum/*"], types: ["xmlhttprequest"] }, ["requestHeaders", "blocking"]);
-
-
-	/* Handle background requests */
-	request.sent(function (a, callBack) {
-		if (compact.requester.list.indexOf(a.request) >= 0) {
-			var x = window[a.request];
-			if (x[a.method]) {
-				if (a.hasOwnProperty("arg")) {
-					x[a.method](a.arg, callBack);
-				} else {
-					x[a.method](callBack);
-				}
-			}
-		}
-	});
 } else if (ext.isContentScript && document.contentType == "text/html") {
 	siteUI = {
 		version: !!document.querySelector(".container-main>.content") ? 2 : 1,
