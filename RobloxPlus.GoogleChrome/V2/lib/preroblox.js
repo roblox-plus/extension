@@ -26,13 +26,6 @@ compact.cache = function (ret, cb) {
 	};
 };
 
-compact.cache.callBack = function (c, k, cb) {
-	if (c.data.hasOwnProperty(k)) {
-		cb(c.get(k));
-		return true;
-	}
-};
-
 
 url.roblox = function (s, sub) { return "https://" + (sub || url.roblox.subdomain) + ".roblox.com" + url.send(s); };
 url.roblox.subdomain = "www";
@@ -677,29 +670,20 @@ catalog = {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
 			return;
-		} else if (typeof(assetId) != "number") {
-			callBack(false);
-			return;
 		}
 
-		users.currentId(function (userId) {
-			var key = userId + "_" + assetId;
-			if (!userId) {
+		Roblox.users.getCurrentUserId().then(function (userId) {
+			Roblox.inventory.userHasAsset(userId, assetId).then(function (hasAsset) {
+				// TODO: stop this triple caching madness...
+				var key = userId + "_" + assetId;
+				catalog.hasAsset.confirm[key] = hasAsset;
+				catalog.hasAsset.cache.set(key, hasAsset);
+				callBack(hasAsset);
+			}, function () {
 				callBack(false);
-			} else if (catalog.hasAsset.confirm[key]) {
-				callBack(true);
-			} else if (!compact.cache.callBack(catalog.hasAsset.cache, key, callBack)) {
-				$.get("https://api.roblox.com/ownership/hasasset?userId=" + userId + "&assetId=" + assetId).success(function (r) {
-					r = typeof (r) == "boolean" ? r : r == "true";
-					catalog.hasAsset.cache.set(key, r);
-					if (r) {
-						catalog.hasAsset.confirm[key] = r;
-					}
-					callBack(r);
-				}).fail(function () {
-					callBack(false);
-				});
-			}
+			});
+		}, function () {
+			callBack(false);
 		});
 	}, {
 		queue: true
@@ -710,7 +694,10 @@ catalog = {
 			console.warn("callBack not function!");
 			return;
 		}
-		if (compact.cache.callBack(catalog.limiteds.cache, "get", callBack)) { return; }
+		if (catalog.limiteds.cache.data.hasOwnProperty("get")) {
+			callBack(catalog.limiteds.cache.get("get"));
+			return;
+		}
 
 		$.get("https://assetgame.roblox.com/asset/?id=317944503").success(function (r) {
 			var ret = {};

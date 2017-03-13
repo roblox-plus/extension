@@ -44,6 +44,7 @@
 				"lib/roblox/Roblox.js",
 				"lib/roblox/thumbnails.js",
 				"lib/roblox/users.js",
+				"lib/roblox/inventory.js",
 				"lib/preroblox.js",
 				"middle.js",
 				"content/json.js",
