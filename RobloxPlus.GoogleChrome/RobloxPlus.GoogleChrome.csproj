@@ -89,6 +89,7 @@
     <Content Include="V2\lib\highlight.pack.js" />
     <Content Include="V2\lib\jquery\jquery.cache.js" />
     <Content Include="V2\lib\jquery\jquery.js" />
+    <Content Include="V2\lib\jquery\jquery.promise.js" />
     <Content Include="V2\lib\jquery\jquery.trigger.js" />
     <Content Include="V2\lib\prefunc.js" />
     <Content Include="V2\lib\preroblox.js" />

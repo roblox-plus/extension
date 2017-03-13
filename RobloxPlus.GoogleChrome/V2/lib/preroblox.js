@@ -105,13 +105,13 @@ users = {
 	},
 	urlId: Roblox.users.getIdFromUrl,
 
-	currentId: $.cache(ipc.backgroundFunction("users.currentId", function (callBack) {
-		$.get("https://assetgame.roblox.com/Game/GetCurrentUser.ashx").success(function (r) {
-			callBack(Number(r) || 0);
-		}).fail(function () {
+	currentId: function (callBack) {
+		Roblox.users.getCurrentUserId().then(function (id) {
+			callBack(id);
+		}, function () {
 			callBack(0);
 		});
-	}), 5000),
+	},
 	current: request.backgroundFunction("users.current", compact(function (callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");

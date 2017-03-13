@@ -2,21 +2,15 @@
 	jquery.cache.js [10/15/2016]
 */
 $.cache = (function () {
-	var cache = {
-		global: {}
-	};
-	var expiries = {
-		global: {}
-	};
+	var cache = {};
+	var expiries = {};
 	var cacheId = 0;
-	var cacheObject;
 
 
-	cacheObject = $.addTrigger(function (key, value, expiry) {
-		if (typeof (key) == "function") {
-			var name = key.name || key.functionPath;
+	var jcache = $.addTrigger(function (wrapper, expiry) {
+		if (typeof (wrapper) == "function") {
+			var name = wrapper.name || wrapper.functionPath;
 			var id = ++cacheId;
-			expiry = value;
 			var inProgress = {};
 			var completed = {};
 
@@ -55,82 +49,101 @@ $.cache = (function () {
 						} else {
 							inProgress[cacheKey] = [callBack];
 						}
-						key.apply(this, args);
+						wrapper.apply(this, args);
 					}
 				} else {
-					key.apply(this, args);
+					wrapper.apply(this, args);
 				}
 			};
 		}
 
-		if (typeof (value) == "function") {
-			return ipc.send("$.cache.get", { key: key }, value);
+		if (typeof (wrapper) == "string") {
+			var cacheObject = $.addTrigger(function (key, value, expiry) {
+				if (typeof (value) == "function") {
+					return ipc.send("$.cache.get", { key: key, namespace: wrapper }, value);
+				}
+
+				return ipc.send("$.cache.set", {
+					key: key,
+					value: value,
+					expiry: Number(expiry) || 0,
+					namespace: wrapper
+				});
+			});
+
+			cacheObject.delete = function (key) {
+				ipc.send("$.cache.delete", { key: key, namespace: wrapper });
+			};
+
+			return cacheObject;
 		}
-
-		return ipc.send("$.cache.set", {
-			key: key,
-			value: value,
-			expiry: Number(expiry) || 0
-		});
 	}, "$.cache");
-
-	cacheObject.delete = function (key) {
-		ipc.send("$.cache.delete", { key: key });
-	};
 
 
 
 	if (ext.isBackground) {
-		function cache_get(key) {
-			return cache.global[key];
+		function cache_get(key, namespace) {
+			cache_validate(namespace);
+			return cache[namespace][key];
 		}
 
-		function cache_set(key, value, expiry) {
-			cache.global[key] = value;
-			if (expiries.global.hasOwnProperty(key)) {
-				clearTimeout(expiries.global[key]);
+		function cache_set(key, value, expiry, namespace) {
+			cache_validate(namespace);
+			cache[namespace][key] = value;
+			if (expiries[namespace].hasOwnProperty(key)) {
+				clearTimeout(expiries[namespace][key]);
 			}
 			if (expiry > 0) {
-				expiries.global[key] = setTimeout(cache_delete, expiry, key);
+				expiries[namespace][key] = setTimeout(cache_delete, expiry, key);
 			}
 		}
 
-		function cache_delete(key) {
-			delete expiries.global[key];
-			delete cache.global[key];
+		function cache_delete(key, namespace) {
+			cache_validate(namespace);
+			delete expiries[namespace][key];
+			delete cache[namespace][key];
+		}
+
+		function cache_validate(namespace) {
+			if (!cache.hasOwnProperty(namespace)) {
+				cache[namespace] = {};
+			}
+			if (!expiries.hasOwnProperty(namespace)) {
+				expiries[namespace] = {};
+			}
 		}
 
 
-		cacheObject.getListener = ipc.on("$.cache.get", function (data, callBack) {
+		ipc.on("$.cache.get", function (data, callBack) {
 			if (Array.isArray(data.key)) {
 				var values = {};
 				data.key.forEach(function (key) {
-					values[key] = cache_get(key);
+					values[key] = cache_get(key, data.namespace);
 				});
 				callBack(values);
 			} else if (typeof (data.key) == "string") {
-				callBack(cache_get(data.key));
+				callBack(cache_get(data.key, data.namespace));
 			} else {
 				callBack();
 			}
 		});
 
-		cacheObject.updateListner = ipc.on("$.cache.set", function (data, callBack) {
+		ipc.on("$.cache.set", function (data, callBack) {
 			if (typeof (data.key) == "string") {
-				cache_set(data.key, data.value, data.expiry);
+				cache_set(data.key, data.value, data.expiry, data.namespace);
 			} else if (typeof (data.key) == "object") {
 				for (var n in data.key) {
-					cache_set(n, data.key[n], data.expiry);
+					cache_set(n, data.key[n], data.expiry, data.namespace);
 				}
 			}
 		});
 
-		cacheObject.deleteListener = ipc.on("$.cache.delete", function (data, callBack) {
+		ipc.on("$.cache.delete", function (data, callBack) {
 			if (typeof (data.key) == "string") {
-				cache_delete(data.key);
+				cache_delete(data.key, data.namespace);
 			} else if (Array.isArray(data.key)) {
 				data.key.forEach(function (key) {
-					cache_delete(key);
+					cache_delete(key, data.namespace);
 				});
 			}
 		});
@@ -138,7 +151,7 @@ $.cache = (function () {
 
 
 
-	return cacheObject;
+	return jcache;
 })();
 
 
