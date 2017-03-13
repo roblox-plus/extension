@@ -42,6 +42,7 @@
 				"lib/jquery/jquery.cache.js",
 				"lib/jquery/jquery.promise.js",
 				"lib/roblox/Roblox.js",
+				"lib/roblox/thumbnails.js",
 				"lib/roblox/users.js",
 				"lib/preroblox.js",
 				"middle.js",

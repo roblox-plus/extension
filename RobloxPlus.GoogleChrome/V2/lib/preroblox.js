@@ -55,24 +55,7 @@ brickColor = {
 
 
 users = {
-	thumbnail: function (id, n) {
-		/*
-			n is size
-			0: 48 x 48
-			1: 60 x 62
-			2: 75 x 75
-			3: 100 x 100
-			4: 110 x 110
-			5: 160 x 100
-			6: 250 x 250
-			7: 352 x 352
-			8: 420 x 230
-			9: 420 x 420
-		*/
-		var s = { x: [48, 60, 75, 100, 110, 160, 250, 352, 420, 420], y: [48, 62, 75, 100, 110, 100, 250, 352, 230, 420] };
-		n = n != 0 ? round(n || 9) : 0;
-		return "https://assetgame.roblox.com/Thumbs/Avatar.ashx?x=" + s.x[n] + "&y=" + s.y[n] + (type(id) == "number" ? "&userid=" + id : "&username=" + id);
-	},
+	thumbnail: Roblox.thumbnails.getUserAvatarThumbnailUrl,
 	toBC: function (i) {
 		var list = ["NBC", "BC", "TBC", "OBC"];
 		if (type(i) == "string") {
@@ -392,24 +375,7 @@ catalog = {
 		return (r > p ? Math.floor : Math.ceil)((r * .9) + (p * .1));
 	},
 	afterTax: function (p) { return round(p - round(p * .3)); },
-	thumbnail: function (id, n) {
-		/*
-			n is size
-			0: 48 x 48
-			1: 60 x 62
-			2: 75 x 75
-			3: 100 x 100
-			4: 110 x 110
-			5: 160 x 100
-			6: 250 x 250
-			7: 352 x 352
-			8: 420 x 230
-			9: 420 x 420
-		*/
-		var s = { x: [48, 60, 75, 100, 110, 160, 250, 352, 420, 420], y: [48, 62, 75, 100, 110, 100, 250, 352, 230, 420] };
-		n = n != 0 ? round(n || 9) : 0;
-		return "https://www.roblox.com/asset-thumbnail/image?width=" + s.x[n] + "&height=" + s.y[n] + "&assetId=" + id;
-	},
+	thumbnail: Roblox.thumbnails.getAssetThumbnailUrl,
 
 	getIdFromUrl: function (url) {
 		return Number((url.match(/\/catalog\/(\d+)\//i) || url.match(/\/library\/(\d+)\//i) || url.match(/item\.aspx.*id=(\d+)/i) || url.match(/item\?.*id=(\d+)/i) || ["", 0])[1]) || 0;
