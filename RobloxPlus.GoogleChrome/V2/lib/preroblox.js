@@ -105,23 +105,13 @@ users = {
 	},
 	urlId: function (u) { return pround((url.path(u).match(/\/users?\/(\d+)\//i) || [0, url.param("id", u)])[1]); },
 
-	currentId: ipc.backgroundFunction("users.currentId", compact(function (callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		var c = users.current.cache;
-		if (c.get("id")) {
-			callBack(c.get("id"));
-		} else {
-			$.get("https://assetgame.roblox.com/Game/GetCurrentUser.ashx").success(function (r) {
-				c.set("id", r = Number(r) || 0);
-				callBack(c.get("id"));
-			}).fail(function () {
-				callBack(0);
-			});
-		}
-	})),
+	currentId: $.cache(ipc.backgroundFunction("users.currentId", function (callBack) {
+		$.get("https://assetgame.roblox.com/Game/GetCurrentUser.ashx").success(function (r) {
+			callBack(Number(r) || 0);
+		}).fail(function () {
+			callBack(0);
+		});
+	}), 5000),
 	current: request.backgroundFunction("users.current", compact(function (callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");

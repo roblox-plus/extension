@@ -41,6 +41,7 @@
 				"lib/roblox/apiSiteContentHandler.js",
 				"lib/prefunc.js",
 				"lib/prext.js",
+				"lib/jquery.cache.js",
 				"lib/preroblox.js",
 				"middle.js",
 				"content/json.js",
