@@ -33,8 +33,6 @@
 			"js": [
 				"lib/jquery/jquery.js",
 				"lib/highlight.pack.js",
-				"lib/highcharts.js",
-				"lib/highchartsmod.js",
 				"lib/global.js",
 				"lib/jquery/jquery.trigger.js",
 				"lib/roblox/xsrfHandler.js",

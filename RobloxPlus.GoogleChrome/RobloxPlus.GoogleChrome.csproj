@@ -86,8 +86,6 @@
     <Content Include="V2\images\navicon2.png" />
     <Content Include="V2\images\notifier.png" />
     <Content Include="V2\lib\global.js" />
-    <Content Include="V2\lib\highcharts.js" />
-    <Content Include="V2\lib\highchartsmod.js" />
     <Content Include="V2\lib\highlight.pack.js" />
     <Content Include="V2\lib\jquery\jquery.cache.js" />
     <Content Include="V2\lib\jquery\jquery.js" />
