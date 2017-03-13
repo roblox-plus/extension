@@ -182,20 +182,16 @@ users = {
 			console.warn("callBack not function!");
 			return;
 		}
-		if (type(a) == "number" && a > 0) {
-			users.getById(a, function (u) {
-				callBack(u.username, callBack);
+		if (typeof (a) == "number") {
+			Roblox.users.getByUserId(a).then(function (user) {
+				callBack(user.bc);
+			}, function () {
+				callBack("NBC");
 			});
-		} else if (type(a) == "string" && a) {
-			a = a.toLowerCase();
-			if (users.bc.cache.get(a)) {
-				callBack(users.bc.cache.get(a));
-				return;
-			}
-			$.get("https://www.roblox.com/Thumbs/BCOverlay.ashx?username=" + a).success(function (r) {
-				users.bc.cache.set(a, r = users.bc.list[r] || "NBC");
-				callBack(r);
-			}).fail(function () {
+		} else if (typeof (a) == "string") {
+			Roblox.users.getByUsername(a).then(function (user) {
+				callBack(user.bc);
+			}, function () {
 				callBack("NBC");
 			});
 		} else {
@@ -203,80 +199,43 @@ users = {
 		}
 	})),
 	getById: request.backgroundFunction("users.getById", compact(function (a, callBack) {
-		a = pround(a);
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		var ret = { id: "", username: "", bc: "NBC", success: true };
-		if (users.getById.cache.get(a)) { callBack(users.getById.cache.get(a)); return; } else if (!a) { callBack(ret); return; }
-		$.get("https://search.roblox.com/catalog/contents?ResultsPerPage=1&CreatorId=" + a).success(function (r) {
-			var selected = (r = $._(r)).find(".creatorFilter.selected");
-			var id = pround(selected.attr("data-creatorid"));
-			if (id == a && (!(r.find(".breadCrumbFilter.selected").text() || "").startsWith("Group:"))) {
-				users.bc(selected.text(), function (b) {
-					users.getById.cache.set(id, ret = { id: id, username: selected.text(), bc: b, success: true });
-					callBack(ret);
-				});
-			} else {
-				callBack(ret);
-			}
-		}).fail(function (s) {
-			ret.success = false;
-			callBack(ret);
+		Roblox.users.getByUserId(pround(a)).then(function (user) {
+			callBack({
+				id: user.id,
+				username: user.username,
+				bc: user.bc,
+				success: true
+			});
+		}, function () {
+			callBack({
+				id: 0,
+				username: "",
+				bc: "NBC",
+				success: false
+			});
 		});
 	}, {
 		queue: true
 	})),
 	getByUsername: request.backgroundFunction("users.getByUsername", compact(function (a, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
+		var template = {
+			id: 0,
+			username: "",
+			bc: "NBC",
+			success: true
+		};
+		if (typeof (a) != "string") {
+			callBack(template);
 		}
-		var ret = { id: "", username: "", bc: "NBC", success: true };
-		if (type(a) != "string") { callBack(ret); return; }
-		a = a.toLowerCase();
-		if (users.getByUsername.cache.get(a)) { users.getById(users.getByUsername.cache.get(a), callBack); return; }
-		var cb = function (s) {
-			if ((ret.success = s) && ret.id) {
-				users.getByUsername.cache.set(a, ret.id);
-				users.getByUsername.cache.set(ret.username.toLowerCase(), ret.id);
-				users.getById.cache.set(ret.id, ret);
-			}
-			callBack(ret);
-		};
-		var wrapup = function (id, username) {
-			if (id) {
-				users.bc(ret.username = username, function (b) {
-					ret.id = id, ret.bc = b;
-					cb(true);
-				});
-			} else {
-				cb(true);
-			}
-		};
-		$.get("https://www.roblox.com/UserCheck/CheckIfInvalidUsernameForSignup?username=" + encodeURIComponent(a)).success(function (r) {
-			if (r.data == 1 || r.data == 6) {
-				$.get("https://search.roblox.com/catalog/contents?ResultsPerPage=1&CreatorName=" + encodeURIComponent(a)).success(function (r) {
-					var selected = (r = $._(r)).find(".creatorFilter.selected");
-					var id = pround(selected.attr("data-creatorid"));
-					if (id && (!(r.find(".breadCrumbFilter.selected").text() || "").startsWith("Group:"))) {
-						wrapup(id, selected.text());
-					} else {
-						$.get("https://api.roblox.com/users/get-by-username?username=" + encodeURIComponent(a)).success(function (r) {
-							wrapup(Number(r.Id), r.Username || "");
-						}).fail(function () {
-							cb(false);
-						});
-					}
-				}).fail(function () {
-					cb(false);
-				});
-			} else {
-				cb(true);
-			}
-		}).fail(function () {
-			cb(false);
+
+		Roblox.users.getByUsername(a).then(function (user) {
+			template.id = user.id;
+			template.username = user.username;
+			template.bc = user.bc;
+			callBack(template);
+		}, function () {
+			template.success = false;
+			callBack(template);
 		});
 	}, {
 		queue: true
