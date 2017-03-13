@@ -31,17 +31,17 @@
 
 		{
 			"js": [
-				"lib/jquery.js",
+				"lib/jquery/jquery.js",
 				"lib/highlight.pack.js",
 				"lib/highcharts.js",
 				"lib/highchartsmod.js",
 				"lib/global.js",
-				"lib/jquery.trigger.js",
+				"lib/jquery/jquery.trigger.js",
 				"lib/roblox/xsrfHandler.js",
 				"lib/roblox/apiSiteContentHandler.js",
 				"lib/prefunc.js",
 				"lib/prext.js",
-				"lib/jquery.cache.js",
+				"lib/jquery/jquery.cache.js",
 				"lib/roblox/Roblox.js",
 				"lib/roblox/users.js",
 				"lib/preroblox.js",

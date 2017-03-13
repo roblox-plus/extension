@@ -89,9 +89,9 @@
     <Content Include="V2\lib\highcharts.js" />
     <Content Include="V2\lib\highchartsmod.js" />
     <Content Include="V2\lib\highlight.pack.js" />
-    <Content Include="V2\lib\jquery.cache.js" />
-    <Content Include="V2\lib\jquery.js" />
-    <Content Include="V2\lib\jquery.trigger.js" />
+    <Content Include="V2\lib\jquery\jquery.cache.js" />
+    <Content Include="V2\lib\jquery\jquery.js" />
+    <Content Include="V2\lib\jquery\jquery.trigger.js" />
     <Content Include="V2\lib\prefunc.js" />
     <Content Include="V2\lib\preroblox.js" />
     <Content Include="V2\lib\prext.js" />
