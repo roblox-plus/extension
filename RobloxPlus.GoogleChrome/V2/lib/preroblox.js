@@ -145,7 +145,6 @@ users = {
 					users.current.cache.set("id", ret.id = o.Recipient.UserId);
 					ret.username = o.Recipient.UserName;
 					ret.thumbnail = o.RecipientThumbnail.Url || users.thumbnail(ret.id, 3);
-					users.bc.cache.set(ret.username.toLowerCase(), ret.bc = (["NBC", "BC", "TBC", "OBC"])[o.Recipient.BuildersClubStatus]);
 					$.get("https://api.roblox.com/currency/balance").success(function (r) {
 						ret.robux = r.robux;
 						cb(true);
@@ -176,27 +175,6 @@ users = {
 		}).fail(function () {
 			cb(false);
 		});
-	})),
-	bc: request.backgroundFunction("users.bc", compact(function (a, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (typeof (a) == "number") {
-			Roblox.users.getByUserId(a).then(function (user) {
-				callBack(user.bc);
-			}, function () {
-				callBack("NBC");
-			});
-		} else if (typeof (a) == "string") {
-			Roblox.users.getByUsername(a).then(function (user) {
-				callBack(user.bc);
-			}, function () {
-				callBack("NBC");
-			});
-		} else {
-			callBack("NBC");
-		}
 	})),
 	getById: request.backgroundFunction("users.getById", compact(function (a, callBack) {
 		Roblox.users.getByUserId(pround(a)).then(function (user) {
@@ -1924,13 +1902,11 @@ soundService.robloxSound = function (id, callBack) {
 
 
 if (ext.isBackground) {
-	users.bc.list = {};
 	catalog.hasAsset.confirm = {};
 
 	users.current.cache = compact.cache(3 * 1000);
 	users.getById.cache = compact.cache(60 * 1000);
 	users.getByUsername.cache = compact.cache(0);
-	users.bc.cache = compact.cache(15 * 1000);
 	users.inventory.cache = compact.cache(3 * 60 * 1000);
 	catalog.info.cache = compact.cache(3 * 1000);
 	catalog.limiteds.cache = compact.cache(10 * 1000);
@@ -1945,7 +1921,8 @@ if (ext.isBackground) {
 
 
 	/* Load BC statuses */
-	foreach({ "NBC": "/Thumbs/BCOverlay.ashx?username=1Topcop&rbxp=48103520", "BC": "/images/icons/overlay_bcOnly.png", "TBC": "/images/icons/overlay_tbcOnly.png", "OBC": "/images/icons/overlay_obcOnly.png" }, function (n, o) { $.get("https://www.roblox.com" + o).success(function (r) { users.bc.list[r] = n; }); });
+	// TODO: Delete. Make sure I know where to find these again first.
+	foreach({ "NBC": "/Thumbs/BCOverlay.ashx?username=1Topcop&rbxp=48103520", "BC": "/images/icons/overlay_bcOnly.png", "TBC": "/images/icons/overlay_tbcOnly.png", "OBC": "/images/icons/overlay_obcOnly.png" }, function (n, o) { $.get("https://www.roblox.com" + o); });
 
 	/* Though not in use, the below code was used for commissions */
 	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
