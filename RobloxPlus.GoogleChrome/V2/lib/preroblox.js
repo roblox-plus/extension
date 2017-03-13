@@ -103,7 +103,7 @@ users = {
 		}
 		return list[Math.min(pround(i), 3)];
 	},
-	urlId: function (u) { return pround((url.path(u).match(/\/users?\/(\d+)\//i) || [0, url.param("id", u)])[1]); },
+	urlId: Roblox.users.getIdFromUrl,
 
 	currentId: $.cache(ipc.backgroundFunction("users.currentId", function (callBack) {
 		$.get("https://assetgame.roblox.com/Game/GetCurrentUser.ashx").success(function (r) {

@@ -42,6 +42,8 @@
 				"lib/prefunc.js",
 				"lib/prext.js",
 				"lib/jquery.cache.js",
+				"lib/roblox/Roblox.js",
+				"lib/roblox/users.js",
 				"lib/preroblox.js",
 				"middle.js",
 				"content/json.js",
