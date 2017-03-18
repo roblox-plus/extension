@@ -1180,18 +1180,6 @@ friendService = {
 			callBack(ret);
 		})
 	}),
-	unfriend: request.backgroundFunction("friendService.unfriend", function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (type(arg) != "number" || arg <= 0) { callBack(false); return; }
-		$.post("https://www.roblox.com/api/friends/removefriend", { targetUserID: arg }).done(function (r) {
-			callBack(!!r.success);
-		}).fail(function () {
-			callBack(false);
-		});
-	}),
 	blocked: request.backgroundFunction("friendService.blocked", compact(function (callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
@@ -1228,23 +1216,6 @@ friendService = {
 		});
 	}))
 };
-
-foreach(["follow", "unfollow"], function (n, o) {
-	friendService[o] = request.backgroundFunction("friendService." + o, compact(function (id, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (type(id) != "number") { callBack(false); return; }
-		$.post("https://api.roblox.com/user/" + o, { followedUserId: id }).done(function (r) {
-			callBack(r.success);
-		}).fail(function () {
-			callBack(false);
-		});
-	}, {
-		queue: true
-	}));
-});
 
 
 

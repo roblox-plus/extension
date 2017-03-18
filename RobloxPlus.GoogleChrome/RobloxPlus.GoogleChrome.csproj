@@ -98,6 +98,7 @@
     <Content Include="V2\lib\roblox\catalog.js" />
     <Content Include="V2\lib\roblox\inventory.js" />
     <Content Include="V2\lib\roblox\Roblox.js" />
+    <Content Include="V2\lib\roblox\social.js" />
     <Content Include="V2\lib\roblox\thumbnails.js" />
     <Content Include="V2\lib\roblox\users.js" />
     <Content Include="V2\lib\roblox\xsrfHandler.js" />

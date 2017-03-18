@@ -37,7 +37,7 @@ RPlus.Pages.Friends = function () {
 								if (mcb) {
 									foreach(r.Friends, function (n, o) {
 										if (friends.indexOf(o.UserId) < 0) {
-											friendService.unfollow(o.UserId, fcb);
+											Roblox.social.unfollowUser(o.UserId).then(fcb, fcb);
 										} else {
 											fcb();
 										}
@@ -58,7 +58,11 @@ RPlus.Pages.Friends = function () {
 					friendService.get(id, function (fdata) {
 						var dcb = 0;
 						for (var n in fdata.data) {
-							friendService.follow(fdata.data[n].id, function () {
+							Roblox.social.followUser(fdata.data[n].id).then(function () {
+								if (++dcb == fdata.data.length) {
+									siteUI.feedback({ type: "success", text: "Followed all friends!" }).show();
+								}
+							}, function () {
 								if (++dcb == fdata.data.length) {
 									siteUI.feedback({ type: "success", text: "Followed all friends!" }).show();
 								}

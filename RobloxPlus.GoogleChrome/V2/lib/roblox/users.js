@@ -20,14 +20,17 @@ Roblox.users = {
 		$.get("https://assetgame.roblox.com/Game/GetCurrentUser.ashx").done(function (r) {
 			resolve(Number(r) || 0);
 		}).fail(function () {
-			reject([]);
+			reject([{
+				code: 0,
+				message: "HTTP request failed"
+			}]);
 		});
 	}),
 
 	getByUserId: $.promise.cache(function (resolve, reject, userId) {
 		if (typeof (userId) != "number" || userId <= 0) {
 			reject([{
-				code: 1,
+				code: 0,
 				message: "Invalid userId"
 			}]);
 			return;
@@ -41,7 +44,7 @@ Roblox.users = {
 			});
 		}).fail(function () {
 			reject([{
-				code: 2,
+				code: 0,
 				message: "HTTP request failed"
 			}]);
 		});
@@ -55,7 +58,7 @@ Roblox.users = {
 		// Yes the limit of usernames is 20 right now, but there are usernames that exist that are longer than that.
 		if (typeof (username) != "string" || username.length < 2 || username.length > 50) {
 			reject([{
-				code: 1,
+				code: 0,
 				message: "Invalid username"
 			}]);
 			return;
@@ -66,13 +69,13 @@ Roblox.users = {
 				Roblox.users.getByUserId(r.Id).then(resolve, reject);
 			} else {
 				reject([{
-					code: 3,
+					code: 0,
 					message: r.errorMessage
 				}]);
 			}
 		}).fail(function () {
 			reject([{
-				code: 2,
+				code: 0,
 				message: "HTTP request failed"
 			}]);
 		});
