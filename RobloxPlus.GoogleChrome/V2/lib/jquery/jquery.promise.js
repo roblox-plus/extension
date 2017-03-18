@@ -5,15 +5,29 @@ $.promise = (function (properties) {
 	}
 
 	var cachedPromises = {};
-	promiseBase.cache = function (callBack, expiration) {
-		if (typeof (expiration) != "object") {
-			expiration = {};
+	promiseBase.cache = function (callBack, properties) {
+		if (typeof (properties) != "object") {
+			properties = {};
 		}
-		if (typeof (expiration.reject) != "number") {
-			expiration.reject = properties.defaultCacheRejectExpiry;
+		if (typeof (properties.rejectExpiry) != "number") {
+			properties.rejectExpiry = properties.defaultCacheRejectExpiry;
 		}
-		if (typeof (expiration.resolve) != "number") {
-			expiration.resolve = properties.defaultCacheResolveExpiry;
+		if (typeof (properties.resolveExpiry) != "number") {
+			properties.resolveExpiry = properties.defaultCacheResolveExpiry;
+		}
+
+		var queue = [];
+		var busy = false;
+
+		function processQueue() {
+			if (properties.queued && busy) {
+				return;
+			}
+			var ticket = queue.shift();
+			if (ticket) {
+				busy = true;
+				ticket.callBack.apply(ticket.scope, ticket.arguments);
+			}
 		}
 
 		var wrapper = function () {
@@ -32,27 +46,36 @@ $.promise = (function (properties) {
 			return cachedPromises[cacheKey] = new Promise(function (resolve, reject) {
 				// reject
 				args.unshift(function () {
-					if (expiration.reject > 0) {
+					if (properties.rejectExpiry > 0) {
 						setTimeout(function () {
 							delete cachedPromises[cacheKey];
-						}, expiration.reject);
+						}, properties.rejectExpiry);
 					}
+					busy = false;
+					setTimeout(processQueue, 0);
 					reject.apply(this, arguments);
 				});
 				// resolve
 				args.unshift(function () {
-					if (expiration.resolve > 0) {
+					if (properties.resolveExpiry > 0) {
 						setTimeout(function () {
 							delete cachedPromises[cacheKey];
-						}, expiration.resolve);
+						}, properties.resolveExpiry);
 					}
+					busy = false;
+					setTimeout(processQueue, 0);
 					resolve.apply(this, arguments);
 				});
-				callBack.apply(scope, args);
+				queue.push({
+					callBack: callBack,
+					arguments: args,
+					scope: scope
+				});
+				processQueue();
 			});
 		};
 
-		wrapper.jpromiseExpiration = expiration;
+		wrapper.jpromiseProperties = properties;
 
 		return wrapper;
 	};
@@ -61,7 +84,7 @@ $.promise = (function (properties) {
 	promiseBase.background = function (path, cachedPromise) {
 		if (typeof (cachedPromise) == "object") {
 			for (var n in cachedPromise) {
-				if (typeof (cachedPromise[n]) == "function" && cachedPromise[n].hasOwnProperty("jpromiseExpiration")) {
+				if (typeof (cachedPromise[n]) == "function" && cachedPromise[n].hasOwnProperty("jpromiseProperties")) {
 					cachedPromise[n] = promiseBase.background(path + "." + n, cachedPromise[n]);
 				}
 			}
@@ -84,10 +107,10 @@ $.promise = (function (properties) {
 
 			function customResolve(resolve) {
 				return function () {
-					if (cachedPromise.jpromiseExpiration.resolve > 0) {
+					if (cachedPromise.jpromiseProperties.resolveExpiry > 0) {
 						setTimeout(function () {
 							delete cachedBackgroundPromises[cacheKey];
-						}, cachedPromise.jpromiseExpiration.resolve);
+						}, cachedPromise.jpromiseProperties.resolveExpiry);
 					}
 					resolve.apply(this, arguments);
 				};
@@ -95,10 +118,10 @@ $.promise = (function (properties) {
 
 			function customReject(reject) {
 				return function () {
-					if (cachedPromise.jpromiseExpiration.reject > 0) {
+					if (cachedPromise.jpromiseProperties.rejectExpiry > 0) {
 						setTimeout(function () {
 							delete cachedBackgroundPromises[cacheKey];
-						}, cachedPromise.jpromiseExpiration.reject);
+						}, cachedPromise.jpromiseProperties.rejectExpiry);
 					}
 					reject.apply(this, arguments);
 				};
