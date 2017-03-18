@@ -86,9 +86,9 @@ users.fullInventory = request.backgroundFunction("users.fullInventory", compact(
 		data: []
 	};
 	if (type(arg.assetTypeId) == "number") {
-		ret.assetType = catalog.assetTypeId[ret.assetTypeId = arg.assetTypeId];
+		ret.assetType = Roblox.catalog.assetTypes[ret.assetTypeId = arg.assetTypeId];
 	} else {
-		ret.assetTypeId = Number(array.flip(catalog.assetTypeId)[ret.assetType = string.autoCorrect(arg.assetType, catalog.assetTypeId)]) || 0;
+		ret.assetTypeId = Number(array.flip(Roblox.catalog.assetTypes)[ret.assetType = string.autoCorrect(arg.assetType, Roblox.catalog.assetTypes)]) || 0;
 	}
 	if (!ret.assetTypeId || !ret.id) {
 		callBack(ret);
@@ -114,7 +114,7 @@ users.fullInventory = request.backgroundFunction("users.fullInventory", compact(
 							limited: o.Product.IsLimited || o.Product.IsLimitedUnique,
 							limitedUnique: o.Product.IsLimitedUnique,
 							expiration: o.UserItem.RentalExpireTime || "",
-							thumbnail: o.Thumbnail.Final ? catalog.thumbnail(o.Item.AssetId, 4) : o.Thumbnail.Url
+							thumbnail: o.Thumbnail.Final ? Roblox.thumbnails.getAssetThumbnailUrl(o.Item.AssetId, 4) : o.Thumbnail.Url
 						};
 					} else if (!o.Product) {
 						//console.warn("Missing product",o);

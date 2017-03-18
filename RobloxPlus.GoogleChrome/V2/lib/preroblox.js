@@ -222,7 +222,7 @@ users = {
 					userAssets.push({
 						id: ua.assetId,
 						name: ua.name,
-						image: catalog.thumbnail(ua.assetId, 4),
+						image: Roblox.thumbnails.getAssetThumbnailUrl(ua.assetId, 4),
 						serial: pround(ua.serialNumber),
 						stock: pround(ua.assetStock),
 						rap: pround(ua.recentAveragePrice),
@@ -335,26 +335,6 @@ users = {
 
 catalog = {
 	wearableAssetTypeIds: [2, 8, 11, 12, 17, 18, 19, 25, 26, 27, 28, 29, 30, 31, 41, 42, 43, 44, 45, 46, 47],
-	assetTypeId: {
-		1: "Image", 2: "T-Shirt", 3: "Audio", 4: "Mesh", 5: "Lua", 6: "HTML", 7: "Text", 8: "Hat", 9: "Place", 10: "Model", 11: "Shirt", 12: "Pants", 13: "Decal", 16: "Avatar", 17: "Head", 18: "Face", 19: "Gear", 21: "Badge", 22: "Group Emblem", 24: "Animation", 25: "Arms", 26: "Legs", 27: "Torso", 28: "Right Arm", 29: "Left Arm", 30: "Left Leg", 31: "Right Leg", 32: "Package", 33: "YouTube Video", 34: "Game Pass", 35: "App", 37: "Code", 38: "Plugin", 39: "SolidModel",
-		40: "MeshPart",
-		41: "Hair Accessory",
-		42: "Face Accessory",
-		43: "Neck Accessory",
-		44: "Shoulder Accessory",
-		45: "Front Accessory",
-		46: "Back Accessory",
-		47: "Waist Accessory",
-		48: "Climb Animation",
-		49: "Death Animation",
-		50: "Fall Animation",
-		51: "Idle Animation",
-		52: "Jump Animation",
-		53: "Run Animation",
-		54: "Swim Animation",
-		55: "Walk Animation",
-		56: "Pose Animation"
-	},
 	assetOrder: ["Head", "Face", "Gear", "Hat", "T-Shirt", "Shirt", "Pants", "Decal", "Model", "Plugin", "Animation", "Place", "Game Pass", "Audio", "Badge", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Torso", "Package"],
 	genre: { "All": 1, "Scary": 11, "Building": 19, "Horror": 11, "Town and City": 7, "Military": 17, "Comedy": 15, "Medieval": 8, "Adventure": 13, "Sci-Fi": 9, "Naval": 12, "FPS": 20, "RPG": 21, "Sports": 14, "Fighting": 10, "Western": 16 },
 
@@ -368,11 +348,6 @@ catalog = {
 		return (r > p ? Math.floor : Math.ceil)((r * .9) + (p * .1));
 	},
 	afterTax: function (p) { return round(p - round(p * .3)); },
-	thumbnail: Roblox.thumbnails.getAssetThumbnailUrl,
-
-	getIdFromUrl: function (url) {
-		return Number((url.match(/\/catalog\/(\d+)\//i) || url.match(/\/library\/(\d+)\//i) || url.match(/item\.aspx.*id=(\d+)/i) || url.match(/item\?.*id=(\d+)/i) || ["", 0])[1]) || 0;
-	},
 
 	info: request.backgroundFunction("catalog.info", compact(function (id, callBack) {
 		if (typeof (callBack) != "function") {
@@ -431,7 +406,7 @@ catalog = {
 		$.get("https://api.roblox.com/marketplace/productinfo?assetId=" + ret.id).done(function (r) {
 			mcb++;
 
-			ret.assetType = catalog.assetTypeId[ret.assetTypeId = r.AssetTypeId];
+			ret.assetType = Roblox.catalog.assetTypes[ret.assetTypeId = r.AssetTypeId];
 			ret.bc = users.toBC(r.MinimumMembershipLevel);
 			ret.created = new Date(r.Created).getTime();
 			ret.creator = {
@@ -447,7 +422,7 @@ catalog = {
 			ret.remaining = Number(r.Remaining) || 0;
 			ret.robuxPrice = Number(r.PriceInRobux) || 0;
 			ret.sales = Number(r.Sales) || 0;
-			ret.thumbnail = catalog.thumbnail(ret.id, 4);
+			ret.thumbnail = Roblox.thumbnails.getAssetThumbnailUrl(ret.id, 4);
 
 			ret.url = "https://www.roblox.com/catalog/" + ret.id + "/" + (ret.name.replace(/\W+/g, "-").replace(/^-/, "").replace(/-$/, ""));
 
@@ -614,20 +589,6 @@ catalog = {
 			fallback();
 		}
 	})),
-	"delete": request.backgroundFunction("catalog.delete", compact(function (id, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-
-		$.post("https://assetgame.roblox.com/asset/delete-from-inventory", { assetId: id }).done(function () {
-			callBack(true);
-		}).fail(function () {
-			callBack(false);
-		});
-	}, {
-		queue: true
-	})),
 	update: request.backgroundFunction("catalog.update", function (arg, callBack) {
 		if (type(arg) != "object" || typeof(arg.id) != "number" || typeof (callBack) != "function") {
 			console.warn("callBack not function! (maybe)");
@@ -780,7 +741,7 @@ catalog.info.parse = function (hold) {
 	};
 	ret.assetType = ret.assetType.replace("Accessory", " Accessory");
 
-	ret.assetTypeId = Number(array.flip(catalog.assetTypeId)[ret.assetType]) || 0;
+	ret.assetTypeId = Number(array.flip(Roblox.catalog.assetTypes)[ret.assetType]) || 0;
 	hold.find("#sell-modal-content .serial-dropdown>option").each(function () {
 		ret.offsale[Number($(this).val())] = Number($(this).text().replace(/\D+/g, "")) || 0;
 	});

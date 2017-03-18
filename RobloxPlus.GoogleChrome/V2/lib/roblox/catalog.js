@@ -5,7 +5,7 @@ var Roblox = Roblox || {};
 
 Roblox.catalog = (function () {
 	return {
-		assetTypeIds: {
+		assetTypes: {
 			[1]: "Image",
 			[2]: "T-Shirt",
 			[3]: "Audio",
@@ -76,6 +76,6 @@ Roblox.catalog = (function () {
 	};
 })();
 
-
+Roblox.catalog = $.addTrigger($.promise.background("Roblox.catalog", Roblox.catalog));
 
 // WebGL3D

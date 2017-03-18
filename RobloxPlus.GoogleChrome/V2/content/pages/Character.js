@@ -7,7 +7,7 @@ RPlus.Pages.Character = function () {
 		var assetType = $(".AttireCategorySelector_Selected").text();
 		foreach({ "Accessories": "Hat" }, function (n, o) {
 			if (assetType.startsWith(n)) {
-				assetType = catalog.assetTypeId[Number($("#ctl00_ctl00_cphRoblox_cphMyRobloxContent_AssetTypeDropDownList").val())] || o;
+				assetType = Roblox.catalog.assetTypes[Number($("#ctl00_ctl00_cphRoblox_cphMyRobloxContent_AssetTypeDropDownList").val())] || o;
 				return true;
 			}
 		});

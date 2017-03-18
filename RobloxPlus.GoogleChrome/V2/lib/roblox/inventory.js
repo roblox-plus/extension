@@ -27,12 +27,14 @@ Roblox.inventory = (function () {
 					code: 0,
 					message: "Invalid userId"
 				}]);
+				return;
 			}
 			if (typeof (assetId) != "number" || assetId <= 0) {
 				reject([{
 					code: 0,
 					message: "Invalid assetId"
 				}]);
+				return;
 			}
 
 			$.get("https://api.roblox.com/ownership/hasasset", { userId: userId, assetId: assetId }).done(function (r) {
@@ -56,6 +58,7 @@ Roblox.inventory = (function () {
 					code: 0,
 					message: "Invalid userId"
 				}]);
+				return;
 			}
 
 			var rejected = false;
@@ -94,6 +97,25 @@ Roblox.inventory = (function () {
 			rejectExpiry: 10 * 1000,
 			resolveExpiry: 5 * 60 * 1000,
 			queued: true
+		}),
+
+		delete: $.promise.cache(function (resolve, reject, assetId) {
+			if (typeof (assetId) != "number" || assetId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid assetId"
+				}]);
+				return;
+			}
+
+			$.post("https://assetgame.roblox.com/asset/delete-from-inventory", { assetId: assetId }).done(function () {
+				resolve();
+			}).fail(function () {
+				reject([]);
+			});
+		}, {
+			rejectExpiry: 1000,
+			resolveExpiry: 1000
 		})
 	};
 })();

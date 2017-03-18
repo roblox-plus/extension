@@ -10,7 +10,7 @@ RPlus.Pages.Inventory = function () {
 		if (deletable.indexOf(sel) >= 0) {
 			$(".item-card-container:not([rplus])").attr("rplus", "").each(function () {
 				var item = $(this);
-				var id = Number(url.param("id", item.find(">a").attr("href")));
+				var id = Roblox.catalog.getIdFromUrl(item.find(">a").attr("href"));
 				var name = item.find(".item-card-name,.recommended-name").text().trim();
 				var thumb = item.find(".item-card-thumb-container,.recommended-thumb");
 				if (userId == users.userId && deletable.indexOf(sel) >= 0 && !item.hasClass("recommended-item-link")) {
@@ -21,14 +21,13 @@ RPlus.Pages.Inventory = function () {
 							if (c) {
 								button.hide();
 								item.css("opacity", ".25").find("a").attr("target", "_blank");
-								catalog['delete'](id, function (s) {
-									if (s) {
-										button.remove();
-									} else {
-										item.css("opacity", "1").find("a").removeAttr("target");
-										button.show();
-										siteUI.feedback({ type: "warning", text: "Failed to remove " + name + " from your inventory" }).hide("destroy").show();
-									}
+								Roblox.inventory.delete(id).then(function () {
+									button.remove();
+								}, function (e) {
+									console.error(e);
+									item.css("opacity", "1").find("a").removeAttr("target");
+									button.show();
+									siteUI.feedback({ type: "warning", text: "Failed to remove " + name + " from your inventory" }).hide("destroy").show();
 								});
 							}
 						});

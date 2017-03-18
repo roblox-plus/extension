@@ -414,7 +414,7 @@ fixCB(({
 									if (type(o) == "object" && o.id) {
 										elem.outfit.append($("<li class=\"list-item\">").attr("data-type", o.type).append(
 											$("<a class=\"store-card\">").attr("href", "/item.aspx?id=" + o.id).attr("title", o.name).append(
-												$("<img class=\"store-card-thumb\">").attr("src", catalog.thumbnail(o.id, 3)),
+												$("<img class=\"store-card-thumb\">").attr("src", Roblox.thumbnails.getAssetThumbnailUrl(o.id, 3)),
 												$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").text(o.name))
 											)
 										));
@@ -448,7 +448,7 @@ fixCB(({
 							popbox.header.attr("href", url.roblox("/item.aspx?id=" + info.id)).text(info.name).attr("title", info.name);
 							popbox.input.val(popbox.current = "item:" + info.id);
 							elem.icon.anchor.attr("href", popbox.header.attr("href"));
-							elem.icon.img.attr("src", catalog.thumbnail(info.id, 4)).attr("title", info.assetType);
+							elem.icon.img.attr("src", Roblox.thumbnails.getAssetThumbnailUrl(info.id, 4)).attr("title", info.assetType);
 							if (info.limited || info.bc != "NBC") {
 								elem.icon.label.attr("class", "icon" + (info.limited ? "-limited" : "") + (info.limitedUnique ? "-unique" : "") + (info.bc != "NBC" ? "-" + info.bc.toLowerCase() : "") + "-label");
 							}
@@ -489,7 +489,7 @@ fixCB(({
 						displayed.forEach(function (o) {
 							elem.div.find(">ul").append($("<li class=\"list-item\">").append(
 								$("<a class=\"store-card\" target=\"_blank\" href=\"/item.aspx?id=" + Number(o.id) + "\">").attr("data-rap", o.rap).attr("title", o.name).append(
-									$("<img class=\"store-card-thumb\">").attr("src", catalog.thumbnail(o.id, 4)),
+									$("<img class=\"store-card-thumb\">").attr("src", Roblox.thumbnails.getAssetThumbnailUrl(o.id, 4)),
 									$("<div class=\"store-card-caption\">").append(
 										$("<div class=\"text-overflow store-card-name\">").text(o.name),
 										"<div class=\"store-card-price\" title=\"RAP: " + addComma(o.rap) + "\"><span class=\"icon-robux\"></span><span class=\"text-robux\">" + addComma(o.rap) + "</span></div>"

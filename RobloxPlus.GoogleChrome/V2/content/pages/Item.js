@@ -2,7 +2,7 @@
 RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.Item = function () {
-	var id = catalog.getIdFromUrl(location.href);
+	var id = Roblox.catalog.getIdFromUrl(location.href);
 	var item = catalog.info.parse($("html").html());
 	console.log(item);
 	// TODO: Update price button on private sales
@@ -200,7 +200,7 @@ RPlus.Pages.Item = function () {
 					}
 					assetContentTab.content.append($("<li class=\"list-item\">").append($("<div class=\"store-card\">").append(
 						$("<a>").attr({ "href": "/catalog/" + assetId + "/" + title, "target": "_blank" }).append(
-							$("<img>").attr("src", catalog.thumbnail(assetId, 4)),
+							$("<img>").attr("src", Roblox.thumbnails.getAssetThumbnailUrl(assetId, 4)),
 							$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", title).text(title))
 						)
 					)));
