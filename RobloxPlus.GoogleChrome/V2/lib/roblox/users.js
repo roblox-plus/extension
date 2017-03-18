@@ -47,7 +47,8 @@ Roblox.users = {
 		});
 	}, {
 		rejectExpiry: 5 * 1000,
-		resolveExpiry: 60 * 1000
+		resolveExpiry: 60 * 1000,
+		queued: true
 	}),
 
 	getByUsername: $.promise.cache(function (resolve, reject, username) {
@@ -77,7 +78,8 @@ Roblox.users = {
 		});
 	}, {
 		rejectExpiry: 5 * 1000,
-		resolveExpiry: 60 * 1000
+		resolveExpiry: 60 * 1000,
+		queued: true
 	})
 };
 

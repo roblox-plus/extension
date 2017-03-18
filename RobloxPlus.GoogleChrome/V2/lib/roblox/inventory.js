@@ -3,35 +3,102 @@
 */
 var Roblox = Roblox || {};
 
-Roblox.inventory = {
-	userHasAsset: $.promise.cache(function (resolve, reject, userId, assetId) {
-		if (typeof (userId) != "number" || userId <= 0) {
-			reject([{
-				code: 0,
-				message: "Invalid userId"
-			}]);
-		}
-		if (typeof (assetId) != "number" || assetId <= 0) {
-			reject([{
-				code: 0,
-				message: "Invalid assetId"
-			}]);
-		}
+Roblox.inventory = (function () {
+	var collectibleAssetTypeIds = [8, 18, 19, 41, 42, 43, 44, 45, 46, 47];
 
-		$.get("https://api.roblox.com/ownership/hasasset", { userId: userId, assetId: assetId }).done(function (r) {
-			// TODO: Investigate what comes out of this endpoint - bool, or string
-			resolve(typeof (r) == "boolean" ? r : r == "true");
-		}).fail(function () {
-			reject([{
-				code: 0,
-				message: "HTTP request failed"
-			}]);
+	function loadUserCollectibleAssets(userId, assetTypeId, cursor) {
+		return new Promise(function (resolve, reject) {
+			$.get("https://inventory.roblox.com/v1/users/" + userId + "/assets/collectibles", { assetType: assetTypeId, cursor: cursor || "", sortOrder: "Asc", limit: 100 }).done(function (r) {
+				if (r.nextPageCursor) {
+					loadUserCollectibleAssets(userId, assetTypeId, r.nextPageCursor).then(function (extraData) {
+						resolve(r.data.concat(extraData));
+					}, reject);
+				} else {
+					resolve(r.data);
+				}
+			}).fail(function (e) {
+				reject(JSON.parse(e.responseText));
+			});
 		});
-	}, {
-		rejectExpiry: 5 * 1000,
-		resolveExpiry: 60 * 1000
-	})
-};
+	}
+
+	return {
+		userHasAsset: $.promise.cache(function (resolve, reject, userId, assetId) {
+			if (typeof (userId) != "number" || userId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid userId"
+				}]);
+			}
+			if (typeof (assetId) != "number" || assetId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid assetId"
+				}]);
+			}
+
+			$.get("https://api.roblox.com/ownership/hasasset", { userId: userId, assetId: assetId }).done(function (r) {
+				// TODO: Investigate what comes out of this endpoint - bool, or string
+				resolve(typeof (r) == "boolean" ? r : r == "true");
+			}).fail(function () {
+				reject([{
+					code: 0,
+					message: "HTTP request failed"
+				}]);
+			});
+		}, {
+			rejectExpiry: 5 * 1000,
+			resolveExpiry: 60 * 1000,
+			queued: true
+		}),
+
+		getCollectibles: $.promise.cache(function (resolve, reject, userId) {
+			if (typeof (userId) != "number" || userId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid userId"
+				}]);
+			}
+
+			var rejected = false;
+			var completed = 0;
+			var collectibles = [];
+			var combinedValue = 0;
+
+			collectibleAssetTypeIds.forEach(function (assetTypeId) {
+				loadUserCollectibleAssets(userId, assetTypeId).then(function (data) {
+					data.forEach(function (userAsset) {
+						userAsset.assetTypeId = assetTypeId;
+						combinedValue += userAsset.recentAveragePrice || 0;
+					});
+					collectibles = collectibles.concat(data);
+					if (++completed == collectibleAssetTypeIds.length) {
+						collectibles.sort(function (a, b) {
+							if (a.assetId == b.assetId) {
+								return a.userAssetId - b.userAssetId;
+							}
+							return a.assetId - b.assetId;
+						});
+
+						resolve({
+							combinedValue: combinedValue,
+							collectibles: collectibles
+						});
+					}
+				}, function (err) {
+					if (!rejected) {
+						rejected = true;
+						reject(err);
+					}
+				});
+			});
+		}, {
+			rejectExpiry: 10 * 1000,
+			resolveExpiry: 5 * 60 * 1000,
+			queued: true
+		})
+	};
+})();
 
 Roblox.inventory = $.addTrigger($.promise.background("Roblox.inventory", Roblox.inventory));
 

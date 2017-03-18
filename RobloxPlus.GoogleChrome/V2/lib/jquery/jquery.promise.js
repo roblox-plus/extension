@@ -4,7 +4,6 @@ $.promise = (function (properties) {
 		return new Promise(callBack);
 	}
 
-	var cachedPromises = {};
 	promiseBase.cache = function (callBack, properties) {
 		if (typeof (properties) != "object") {
 			properties = {};
@@ -16,6 +15,7 @@ $.promise = (function (properties) {
 			properties.resolveExpiry = properties.defaultCacheResolveExpiry;
 		}
 
+		var cachedPromises = {};
 		var queue = [];
 		var busy = false;
 
@@ -80,7 +80,6 @@ $.promise = (function (properties) {
 		return wrapper;
 	};
 
-	var cachedBackgroundPromises = {};
 	promiseBase.background = function (path, cachedPromise) {
 		if (typeof (cachedPromise) == "object") {
 			for (var n in cachedPromise) {
@@ -90,6 +89,8 @@ $.promise = (function (properties) {
 			}
 			return cachedPromise;
 		}
+
+		var cachedBackgroundPromises = {};
 		
 		return function () {
 			var scope = this;
