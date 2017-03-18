@@ -546,8 +546,7 @@ catalog = {
 			$.ajax({
 				url: "https://www.roblox.com/API/Item.ashx?rqtype=purchase&expectedSellerID=" + arg.seller + "&productID=" + arg.productId + "&expectedCurrency=1&expectedPrice=" + arg.price + (type(arg.promotion) == "number" ? "&expectedPromoID=" + arg.promotion : "") + (type(arg.userAssetId) == "number" ? "&userAssetID=" + arg.userAssetId : ""),
 				type: "POST",
-				data: "",
-				headers: { "X-CSRF-TOKEN": type(arg.token) == "string" ? arg.token : "" }
+				data: ""
 			}).always(function (r) {
 				if (r.status == 403) {
 					if (arg.token = r.getResponseHeader("x-csrf-token")) {
