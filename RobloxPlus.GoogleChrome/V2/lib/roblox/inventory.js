@@ -4,8 +4,6 @@
 var Roblox = Roblox || {};
 
 Roblox.inventory = (function () {
-	var collectibleAssetTypeIds = [8, 18, 19, 41, 42, 43, 44, 45, 46, 47];
-
 	function loadUserCollectibleAssets(userId, assetTypeId, cursor) {
 		return new Promise(function (resolve, reject) {
 			$.get("https://inventory.roblox.com/v1/users/" + userId + "/assets/collectibles", { assetType: assetTypeId, cursor: cursor || "", sortOrder: "Asc", limit: 100 }).done(function (r) {
@@ -65,7 +63,7 @@ Roblox.inventory = (function () {
 			var collectibles = [];
 			var combinedValue = 0;
 
-			collectibleAssetTypeIds.forEach(function (assetTypeId) {
+			Roblox.catalog.collectibleAssetTypeIds.forEach(function (assetTypeId) {
 				loadUserCollectibleAssets(userId, assetTypeId).then(function (data) {
 					data.forEach(function (userAsset) {
 						userAsset.assetTypeId = assetTypeId;
