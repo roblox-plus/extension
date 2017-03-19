@@ -5,9 +5,9 @@
 	"description": "Adds features and notifiers made by WebGL3D to the ROBLOX website",
 
 	"icons": {
-		"128": "images/icons/icon_128x128.png",
-		"16": "images/icons/icon_16x16.png",
-		"48": "images/icons/icon_64x64.png"
+		"128": "/images/icons/icon_128x128.png",
+		"16": "/images/icons/icon_16x16.png",
+		"48": "/images/icons/icon_64x64.png"
 	},
 
 
@@ -19,11 +19,11 @@
 		{
 			"js": [ "theme.js" ],
 			"css": [
-				"css/icons.css",
-				"css/hljs.css",
-				"css/style.css",
-				"css/themes/obc.css",
-				"css/themes/easter.css"
+				"/css/icons.css",
+				"/css/hljs.css",
+				"/css/style.css",
+				"/css/themes/obc.css",
+				"/css/themes/easter.css"
 			],
 			"matches": [ "*://*.roblox.com/*" ],
 			"run_at": "document_start"
@@ -41,6 +41,7 @@
 				"lib/prext.js",
 				"lib/jquery/jquery.cache.js",
 				"lib/jquery/jquery.promise.js",
+				"lib/jquery/jquery.notifications.js",
 				"lib/roblox/Roblox.js",
 				"lib/roblox/thumbnails.js",
 				"lib/roblox/users.js",
@@ -48,6 +49,7 @@
 				"lib/roblox/inventory.js",
 				"lib/roblox/social.js",
 				"lib/roblox/games.js",
+				"lib/roblox/audio.js",
 				"lib/preroblox.js",
 				"middle.js",
 				"content/json.js",
@@ -85,7 +87,7 @@
 
 	"browser_action": {
 		"default_icon": {
-			"19": "images/icons/icon_32x32.png"
+			"19": "/images/icons/icon_32x32.png"
 		},
 		"default_title": "ROBLOX+",
 		"default_popup": "notifications.html"
@@ -112,9 +114,9 @@
 		"*.html",
 		"*.js",
 		"jquery.min.map",
-		"images/navicon.png",
-		"images/icons/icon_32x32.png",
-		"images/notifier.png",
+		"/images/navicon.png",
+		"/images/icons/icon_32x32.png",
+		"/images/notifier.png",
 		"*://*.roblox.com/*",
 		"*://*.rbxcdn.com/*",
 		"*://*.robloxplus.com/*",

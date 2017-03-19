@@ -792,9 +792,10 @@ if (browser.name == "Chrome") {
 })(storage.get("startupNotification"), function (startnote) {
 	users.current(function (u, note) {
 		for (var n in startnote.names) { ext.tts.replacements.push([RegExp.escape(n).regex("gi"), startnote.names[n]]); }
-		setTimeout((note = notify({
-			header: ext.manifest.name + " started",
-			lite: u.username ? "Hello, " + u.username + "!" : "You're currently signed out",
+		var note = $.notification({
+			speachGender: "male",
+			title: ext.manifest.name + " started",
+			context: u.username ? "Hello, " + u.username + "!" : "You're currently signed out",
 			speak: u.id ? "Hello, " + u.username : "",
 			buttons: [
 				"Problems? Suggestions? Message me!"
@@ -805,14 +806,15 @@ if (browser.name == "Chrome") {
 			},
 			clickable: true
 		}).click(function () {
-			note.close();
+			this.close();
 			rplusSettings.get(function (ul) {
 				window.open(ul.updateLog || "https://www.roblox.com/users/48103520/profile?rbxp=48103520");
 			});
-		}).button1Click(function () {
+		}).buttonClick(function () {
 			note.close();
 			window.open("https://www.roblox.com/messages/compose?recipientId=48103520");
-		})).close, 15 * 1000);
+		});
+		setTimeout(note.close, 15 * 1000);
 	});
 });
 

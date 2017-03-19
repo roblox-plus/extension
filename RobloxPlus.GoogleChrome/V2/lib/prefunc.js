@@ -922,6 +922,9 @@ soundService = function (src, ret) {
 				if (ret.playing()) {
 					ret.src.load();
 				}
+				cbs.stop.forEach(function (cb) {
+					cb();
+				});
 			}
 			return ret;
 		},
