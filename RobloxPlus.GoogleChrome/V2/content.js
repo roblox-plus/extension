@@ -754,7 +754,11 @@ fixCB(({
 		}).on("click", ".friend-status.icon-game", function (e) {
 			e.preventDefault();
 			var id = users.urlId($(this).parent().parent().find(">.friend-link").attr("href"));
-			if (id) { gameService.follow(id); }
+			if (id) {
+				Roblox.games.launch({
+					followUserId: id
+				});
+			}
 		}).on("dblclick", ".rplusLua>span:first-child", function () {
 			$(this).parent().find(">code").selectText();
 		}).on("click", ".rplusinventory[userid]", function () {

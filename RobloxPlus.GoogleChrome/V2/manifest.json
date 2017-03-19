@@ -47,6 +47,7 @@
 				"lib/roblox/catalog.js",
 				"lib/roblox/inventory.js",
 				"lib/roblox/social.js",
+				"lib/roblox/games.js",
 				"lib/preroblox.js",
 				"middle.js",
 				"content/json.js",

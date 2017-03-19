@@ -501,7 +501,9 @@ friendNotifier = setupNotifier(function (loop, uid) {
 						url: { url: "https://www.roblox.com/users/" + o.id + "/profile", close: true },
 						clickable: true
 					}).button1Click(function () {
-						gameService.follow(o.id);
+						Roblox.games.launch({
+							followUserId: o.id
+						});
 					});
 				}
 			}

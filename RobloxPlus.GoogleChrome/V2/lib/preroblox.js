@@ -1220,30 +1220,6 @@ friendService = {
 
 
 gameService = {
-	launch: function (arg, callBack) {
-		callBack = fixCB(callBack);
-		$.get("https://assetgame.roblox.com/game/getauthticket").success(function (r) {
-			var launchUrl = "";
-			for (var n in arg) { launchUrl += (launchUrl ? "&" : "?") + n + "=" + arg[n]; }
-			gameService.launch.frame.attr("src", "roblox-player:1+launchmode:play+gameinfo:" + r + "+launchtime:" + getMil() + "+placelauncherurl:" + encodeURIComponent("https://assetgame.roblox.com/game/PlaceLauncher.ashx" + launchUrl));
-			callBack(true);
-		}).fail(function () {
-			callBack(false);
-		});
-	},
-	join: function (placeId, server, callBack) {
-		return gameService.launch({
-			request: type(server) == "string" && server ? "RequestGameJob" : "RequestGame",
-			placeId: Number(placeId) || 0,
-			gameId: type(server) == "string" && server ? server : ""
-		}, callBack);
-	},
-	follow: function (userId, callBack) {
-		return gameService.launch({
-			request: "RequestFollowUser",
-			userId: Number(userId) || 0
-		}, callBack);
-	},
 	servers: request.backgroundFunction("gameService.servers", compact(function (placeId, callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
@@ -1309,7 +1285,10 @@ gameService = {
 		).append(
 			$("<a class=\"btn-full-width btn-control-xs rbx-game-server-join\" data-placeid=\"" + placeId + "\">Join</a>").click(function () {
 				console.log("heyhey");
-				gameService.join(placeId, o.id);
+				Roblox.games.launch({
+					placeId: placeId,
+					serverId: id
+				});
 			})
 		));
 		var playerList = $("<div class=\"section-right rbx-game-server-players\">");
@@ -1317,17 +1296,6 @@ gameService = {
 		return ret.append(playerList);
 	}
 };
-
-$("body").append(gameService.launch.frame = $("<iframe>").hide());
-if (ext.isContentScript) {
-	friendService.creatorFriends(function (friends) {
-		users.currentId(function (id) {
-			if (!friends[id]) {
-				$("<a href=\"javascript:Roblox=window.Roblox||{};(Roblox.VideoPreRollDFP||Roblox.VideoPreRoll||{}).showVideoPreRoll=false;\">")[0].click();
-			}
-		});
-	});
-}
 
 
 
