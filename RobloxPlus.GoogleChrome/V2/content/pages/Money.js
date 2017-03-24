@@ -69,16 +69,7 @@ RPlus.Pages.Money = function () {
 			$("#TradeItems_tab .TradeItemsContainer>table>tbody>tr.datarow:not([rplus])").each(function () {
 				var el = $(this).attr("rplus", getMil());
 				Roblox.trades.get(Number(el.find(".ViewTradeLink").attr("tradesessionid"))).then(function (trade) {
-					var me = {};
-					var partner = {};
-					trade.offers.forEach(function (offer) {
-						if (offer.user.id == Roblox.page.user.id) {
-							me = offer;
-						} else {
-							partner = offer;
-						}
-					});
-					el.find(".Status").css("color", "rgb(" + (me.totalValue < partner.totalValue ? "0, 175" : "255, 0") + ", 0)");
+					el.find(".Status").css("color", "rgb(" + (trade.authenticatedUserOffer.totalValue < trade.tradePartnerOffer.totalValue ? "0, 175" : "255, 0") + ", 0)");
 				}, function () {
 					el.removeAttr("rplus");
 				});

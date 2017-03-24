@@ -30,7 +30,8 @@ Roblox.trades = (function () {
 				}]);
 			});
 		}, {
-			resolveExpiry: 5 * 60 * 1000
+			resolveExpiry: 5 * 60 * 1000,
+			queued: true
 		}),
 		decline: $.promise.cache(function (resolve, reject, tradeId) {
 			if (typeof (tradeId) != "number" || tradeId <= 0) {
@@ -57,7 +58,8 @@ Roblox.trades = (function () {
 				}]);
 			});
 		}, {
-			resolveExpiry: 5 * 60 * 1000
+			resolveExpiry: 5 * 60 * 1000,
+			queued: true
 		}),
 		get: $.promise.cache(function (resolve, reject, tradeId) {
 			if (typeof (tradeId) != "number" || tradeId <= 0) {
@@ -82,7 +84,9 @@ Roblox.trades = (function () {
 					var trade = {
 						status: r.StatusType == "Open" ? (r.AgentOfferList[0].AgentID == authenticatedUserId ? "Outbound" : "Inbound") : (r.StatusType == "Finished" ? "Completed" : r.StatusType),
 						expiration: new Date(Number((r.Expiration.match(/\d+/) || [0])[0])).getTime(),
-						offers: []
+						offers: [],
+						authenticatedUserOffer: {},
+						tradePartnerOffer: {}
 					};
 					r.AgentOfferList.forEach(function (rawOffer) {
 						Roblox.users.getByUserId(rawOffer.AgentID).then(function (user) {
@@ -103,6 +107,11 @@ Roblox.trades = (function () {
 									recentAveragePrice: Number(userAsset.AveragePrice)
 								});
 							});
+							if (authenticatedUserId == user.id) {
+								trade.authenticatedUserOffer = offer;
+							} else {
+								trade.tradePartnerOffer = offer;
+							}
 							trade.offers.push(offer);
 							if (trade.offers.length == r.AgentOfferList.length) {
 								resolve(trade);
@@ -116,6 +125,8 @@ Roblox.trades = (function () {
 					}]);
 				});
 			}, reject);
+		}, {
+			queued: true
 		})
 	};
 })();
