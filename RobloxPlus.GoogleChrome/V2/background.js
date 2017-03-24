@@ -415,7 +415,7 @@ tradeNotifier = setupNotifier(function (loop, uid, load) {
 								url: { url: "https://www.roblox.com/My/Money.aspx?tradeId=" + o.id + "#/#TradeItems_tab", close: true },
 								tag: "trade" + o.id
 							}).button1Click(function () {
-								tradeSystem.decline(o.id, function () { });
+								Roblox.trades.decline(o.id);
 							});
 						});
 					}

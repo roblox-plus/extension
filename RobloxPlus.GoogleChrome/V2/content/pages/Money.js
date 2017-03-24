@@ -60,16 +60,27 @@ RPlus.Pages.Money = function () {
 	}));
 
 	setInterval(function () {
+		if (!Roblox.hasOwnProperty("page") || !Roblox.page.hasOwnProperty("user")) {
+			return;
+		}
+
 		storage.get("tradePageRapAssist", function (on) {
 			if (!on) { return; }
 			$("#TradeItems_tab .TradeItemsContainer>table>tbody>tr.datarow:not([rplus])").each(function () {
 				var el = $(this).attr("rplus", getMil());
-				tradeSystem.open(Number(el.find(".ViewTradeLink").attr("tradesessionid")), function (trade) {
-					if (trade.status) {
-						el.find(".Status").css("color", "rgb(" + (trade.me.rap + trade.me.robux < trade.partner.rap + trade.partner.robux ? "0, 175" : "255, 0") + ", 0)");;
-					} else {
-						el.removeAttr("rplus");
-					}
+				Roblox.trades.get(Number(el.find(".ViewTradeLink").attr("tradesessionid"))).then(function (trade) {
+					var me = {};
+					var partner = {};
+					trade.offers.forEach(function (offer) {
+						if (offer.user.id == Roblox.page.user.id) {
+							me = offer;
+						} else {
+							partner = offer;
+						}
+					});
+					el.find(".Status").css("color", "rgb(" + (me.totalValue < partner.totalValue ? "0, 175" : "255, 0") + ", 0)");
+				}, function () {
+					el.removeAttr("rplus");
 				});
 			});
 		});
@@ -98,11 +109,15 @@ RPlus.Pages.Money = function () {
 			}
 			var dcb = 0;
 			foreach(trades.data, function (n, o) {
-				tradeSystem.decline(o.id, function () {
+				Roblox.trades.decline(o.id).then(function () {
 					var row = $("a.ViewTradeLink[tradesessionid='" + o.id + "']");
 					if (row.length) {
 						row.parent().parent().remove();
 					}
+					if (++dcb == trades.data.length) {
+						tradeSystem.cancelAll(callBack);
+					}
+				}, function () {
 					if (++dcb == trades.data.length) {
 						tradeSystem.cancelAll(callBack);
 					}

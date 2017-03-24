@@ -804,43 +804,6 @@ tradeSystem = {
 			}
 		});
 	})),
-	accept: request.backgroundFunction("tradeSystem.accept", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (type(arg) != "number" || arg <= 0) { callBack("Invalid trade"); }
-		$.post("https://www.roblox.com/Trade/TradeHandler.ashx", { cmd: "maketrade", TradeID: arg }).done(function (r) {
-			if (r.success) {
-				check = function () {
-					tradeSystem.open(arg, function (trade) {
-						if (trade.status == "Processing" || trade.status == "Pending") {
-							setTimeout(check, 3 * 1000);
-						} else {
-							callBack(trade.status);
-						}
-					});
-				};
-				check();
-			} else {
-				callBack("Server Error");
-			}
-		}).fail(function () {
-			callBack("HTTP Error");
-		});
-	})),
-	decline: request.backgroundFunction("tradeSystem.decline", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (type(arg) != "number" || arg <= 0) { callBack(true); }
-		$.post("https://www.roblox.com/Trade/TradeHandler.ashx", { cmd: "decline", TradeID: arg }).done(function (r) {
-			callBack(r.success);
-		}).fail(function () {
-			callBack(false);
-		});
-	})),
 	open: request.backgroundFunction("tradeSystem.open", compact(function (arg, callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
