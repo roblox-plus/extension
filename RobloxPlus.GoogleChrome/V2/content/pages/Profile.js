@@ -2,7 +2,7 @@
 RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.Profile = function () {
-	var id = users.urlId(location.href);
+	var id = Roblox.users.getIdFromUrl(location.href);
 
 	var username = $(".header-title>h2").text();
 	$(".profile-avatar-thumb").attr("draggable", "true").on("dragstart", function (e) {

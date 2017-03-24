@@ -11,7 +11,7 @@ RPlus.Pages.Game = function () {
 	if (gameCreatorId.indexOf("group") >= 0) {
 		gameCreatorId = 0;
 	} else {
-		gameCreatorId = users.urlId(gameCreatorId);
+		gameCreatorId = Roblox.users.getIdFromUrl(gameCreatorId);
 	}
 	console.log("Game creator id", gameCreatorId);
 

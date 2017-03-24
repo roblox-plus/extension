@@ -79,7 +79,6 @@ users = {
 		}
 		return list[Math.min(pround(i), 3)];
 	},
-	urlId: Roblox.users.getIdFromUrl,
 
 	currentId: function (callBack) {
 		Roblox.users.getCurrentUserId().then(function (id) {
@@ -720,7 +719,7 @@ catalog.info.parse = function (hold) {
 		assetType: hold.find("#item-container").data("asset-type"),
 		assetTypeId: 0,
 		bc: users.toBC(hold.find("#item-container").data("bc-requirement")),
-		creator: { id: users.urlId(creator.attr("href")), name: creator.text(), creatorType: creator.attr("href").indexOf("/users/") >= 0 ? "User" : "Group" },
+		creator: { id: Roblox.users.getIdFromUrl(creator.attr("href")), name: creator.text(), creatorType: creator.attr("href").indexOf("/users/") >= 0 ? "User" : "Group" },
 		description: hold.find("#item-details-description").text().trim(),
 		editable: false,
 		free: hold.find(".text-robux-lg").text() == "Free",
@@ -1073,30 +1072,6 @@ outfit = {
 		}).fail(function () {
 			callBack(false);
 		});
-	})),
-	wear: request.backgroundFunction("outfit.wear", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (typeof (arg) != "number") { callBack(false); return; }
-		$.post("https://avatar.roblox.com/v1/avatar/assets/" + arg + "/wear").done(function (r) {
-			callBack(r.success);
-		}).fail(function () {
-			callBack(false);
-		});
-	})),
-	remove: request.backgroundFunction("outfit.remove", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (typeof (arg) != "number") { callBack(false); return; }
-		$.post("https://avatar.roblox.com/v1/avatar/assets/" + arg + "/remove").done(function (r) {
-			callBack(r.success);
-		}).fail(function () {
-			callBack(false);
-		});
 	}))
 };
 
@@ -1128,19 +1103,6 @@ foreach({
 		});
 	}));
 });
-
-
-if (ext.isBackground) {
-	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
-		for (var n in details.requestHeaders) {
-			if (details.requestHeaders[n].name == "Referer") {
-				return;
-			}
-		}
-		details.requestHeaders.push({ name: "Referer", value: "https://www.roblox.com/roblox%2B" });
-		return { requestHeaders: details.requestHeaders };
-	}, { urls: ["https://*.roblox.com/game/getauthticket"], types: ["xmlhttprequest"] }, ["blocking", "requestHeaders"]);
-}
 
 
 
@@ -1180,25 +1142,6 @@ friendService = {
 			callBack(ret);
 		})
 	}),
-	blocked: request.backgroundFunction("friendService.blocked", compact(function (callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (friendService.blocked.cache.get("blocked")) { callBack({ success: true, data: friendService.blocked.cache.get("blocked") }); return; }
-		$.get("https://www.roblox.com/userblock/getblockedusers?page=1", function (r, s) {
-			var ret = {};
-			$._(r).find(".BlockedUser").each(function () {
-				var id = round($(this).find("span").attr("data-rbx-blockeeid"));
-				$(this).find("span").remove();
-				ret[id] = tostring($(this).text()).trim();
-			});
-			if (s == "success") {
-				friendService.blocked.cache.set("blocked", ret);
-			}
-			callBack({ data: ret, success: s == "success" });
-		});
-	})),
 	creatorFriends: request.backgroundFunction("friendService.creatorFriends", compact(function (callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
@@ -1287,7 +1230,7 @@ gameService = {
 				console.log("heyhey");
 				Roblox.games.launch({
 					placeId: placeId,
-					serverId: id
+					serverId: o.id
 				});
 			})
 		));
@@ -1313,9 +1256,13 @@ privateMessage = {
 			type: "POST",
 			url: "https://www.roblox.com/messages/api/" + arg.action,
 			data: JSON.stringify({ messageIds: data }),
-			contentType: "application/json"
-		}).always(function (r, s) {
-			callBack(s == "success");
+			contentType: "application/json",
+			done: function () {
+				callBack(true);
+			},
+			fail: function () {
+				callBack(false);
+			}
 		});
 	}, {
 		queue: true
@@ -1359,12 +1306,12 @@ privateMessage = {
 				type: "POST",
 				url: "https://www.roblox.com/messages/api/send-message",
 				data: JSON.stringify(data),
-				contentType: "application/json"
-			}).success(function (r) {
-				sent[data.recipientId] = !!r.success;
-				send();
-			}).fail(function () {
-				failure();
+				contentType: "application/json",
+				success: function (r) {
+					sent[data.recipientId] = !!r.success;
+					send();
+				},
+				fail: failure
 			});
 		};
 		send();
@@ -1548,7 +1495,7 @@ forumService = {
 				ret.posts.push({
 					id: Number(pid.attr("name")),
 					poster: {
-						id: users.urlId(poster.attr("href")),
+						id: Roblox.users.getIdFromUrl(poster.attr("href")),
 						username: poster.text(),
 						joined: new Date(($(this).text().match(/Joined:\s*(\d+\s*\w+\s*\d+)/) || ["", 0])[1]).getTime(),
 						posts: Number(($(this).text().match(/Total\s*Posts:\s*(\d+)/) || ["", 0])[1]) || 0
@@ -1579,7 +1526,7 @@ forumService = {
 			success: true
 		};
 		$.get("https://forum.roblox.com/Forum/User/MyForums.aspx").success(function (r) {
-			ret.userId = users.urlId((r = $._(r)).find("#navigation .text-overflow").attr("href"));
+			ret.userId = Roblox.users.getIdFromUrl((r = $._(r)).find("#navigation .text-overflow").attr("href"));
 			ret.username = r.find("#navigation .text-overflow").text();
 			if (ret.userId) {
 				r.find("#ctl00_cphRoblox_MyForums1_ctl00_ThreadTracking .forum-table-row").each(function () { ret.tracked.push(forumService.parseRow($(this))); });
@@ -1598,7 +1545,7 @@ forumService = {
 			id: Number(url.param("PostID", el.find(".post-list-subject").attr("href"))) || 0,
 			subject: el.find(".post-list-subject").text().trim(),
 			poster: {
-				id: users.urlId(el.find(".post-list-author").attr("href")),
+				id: Roblox.users.getIdFromUrl(el.find(".post-list-author").attr("href")),
 				username: el.find(".post-list-author").text().trim()
 			},
 			lastReply: {
@@ -1765,7 +1712,6 @@ if (ext.isBackground) {
 	catalog.hasAsset.cache = compact.cache(60 * 1000);
 	tradeSystem.get.cache = compact.cache(5 * 1000);
 	friendService.get.cache = compact.cache(5 * 1000);
-	friendService.blocked.cache = compact.cache(10 * 1000);
 	privateMessage.get.cache = compact.cache(5 * 1000);
 	privateMessage.search.cache = compact.cache(0);
 	outfit.getAssetIds.cache = compact.cache(15 * 1000);

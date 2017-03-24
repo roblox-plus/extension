@@ -9,7 +9,7 @@ RPlus.Pages.ComposeMessage = function () {
 
 	var compose = $("#newmessage-content");
 	var original = compose.find(".message-title>a").addClass("text-link").append("<span class=\"icon-alert\"></span>");
-	original = { id: users.urlId(original.attr("href")), username: original.text() };
+	original = { id: Roblox.users.getIdFromUrl(original.attr("href")), username: original.text() };
 
 	function addRecipient(username) {
 		if (addRecipient.input.is(":hidden")) { return; }
@@ -30,7 +30,7 @@ RPlus.Pages.ComposeMessage = function () {
 	function getRecipients() {
 		var recipients = [];
 		compose.find(".message-title>a").each(function () {
-			recipients.push(users.urlId($(this).attr("href")));
+			recipients.push(Roblox.users.getIdFromUrl($(this).attr("href")));
 		});
 		return recipients;
 	}
@@ -43,7 +43,7 @@ RPlus.Pages.ComposeMessage = function () {
 
 	compose.on("click", ".icon-alert", function (e) {
 		e.preventDefault();
-		var id = users.urlId($(this).parent().attr("href"));
+		var id = Roblox.users.getIdFromUrl($(this).parent().attr("href"));
 		if (id) {
 			$(this).parent().remove();
 			if (!compose.find(".message-title>a").length) {
@@ -70,7 +70,7 @@ RPlus.Pages.ComposeMessage = function () {
 		}, function (s) {
 			var recipients = [];
 			$(".message-title>a").each(function () {
-				var id = users.urlId($(this).attr("href"));
+				var id = Roblox.users.getIdFromUrl($(this).attr("href"));
 				if (s[id]) {
 					recipients.push($(this).text().trim());
 					$(this).remove();

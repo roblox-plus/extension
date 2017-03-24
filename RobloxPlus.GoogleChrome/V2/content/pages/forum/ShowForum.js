@@ -5,10 +5,12 @@ RPlus.Pages.ShowForum = function () {
 	$("div[class='thread-link-outer-wrapper']>div").css("max-width", ($("#Body").width() / 4) + "px");
 	storage.get("forums", function (f) {
 		if (f.blocking) {
-			friendService.blocked(function (b) {
-				$(".post-list-author").each(function () {
-					if (b.data[users.urlId($(this).attr("href"))]) {
-						$(this).parent().parent().hide();
+			$(".post-list-author").each(function () {
+				var element = $(this);
+				var posterId = Roblox.users.getIdFromUrl(element.attr("href"));
+				Roblox.social.isBlocked(posterId).then(function (isBlocked) {
+					if (isBlocked) {
+						element.parent().parent().hide();
 					}
 				});
 			});

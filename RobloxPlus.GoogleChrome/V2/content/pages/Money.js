@@ -19,7 +19,7 @@ RPlus.Pages.Money = function () {
 	storage.get("tradeTab", function (on) {
 		if (on) {
 			$("#ButtonCounterTrade").hide().after($("<a class=\"btn-large btn-neutral\" href=\"javascript:/* ROBLOX+ */\">Counter</a>").click(function () {
-				tradeSystem.display(users.urlId($(".TradePartnerName").last().attr("href")), trid.text().replace(/\D+/g, ""));
+				tradeSystem.display(Roblox.users.getIdFromUrl($(".TradePartnerName").last().attr("href")), trid.text().replace(/\D+/g, ""));
 			}));
 		}
 	});

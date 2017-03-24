@@ -309,7 +309,7 @@ fixCB(({
 					if (arg.match(url.roblox.linkify)) {
 						var path = url.path(arg).toLowerCase();
 						if (string.startsWith(path, /\/users?\//i) || string.startsWith(path, /\/User\.aspx/i)) {
-							go("user", url.param("username", arg) || users.urlId(arg));
+							go("user", url.param("username", arg) || Roblox.users.getIdFromUrl(arg));
 						} else if (path.endsWith("-item") || path.startsWith("/item.aspx")) {
 							go("item", url.param("id", arg));
 						} else if (path.match(/^\/catalog\/\d+\//i) || path.match(/^\/library\/\d+\//i)) {
@@ -640,7 +640,7 @@ fixCB(({
 
 
 		mainLoop = function () {
-			if ($("#navigation .text-lead>.text-overflow[href*='/profile']").length && friendService.creatorFriends.cache[users.urlId($("#navigation .text-lead>.text-overflow[href*='/profile']").attr("href"))]) {
+			if ($("#navigation .text-lead>.text-overflow[href*='/profile']").length && friendService.creatorFriends.cache[Roblox.users.getIdFromUrl($("#navigation .text-lead>.text-overflow[href*='/profile']").attr("href"))]) {
 				$(".ad-slot[rplus!='replacedAd']").html("<iframe allowtransparency=\"true\" frameborder=\"0\" height=\"" + $(this).parent().attr("data-ad-height") + "\" scrolling=\"no\" src=\"/userads/3\" width=\"" + $(this).parent().attr("data-ad-width") + "\" data-js-adtype=\"iframead\">").attr("rplus", "replacedAd");
 				$(".adp-gpt-container[rplus!='replacedAd'],.ads-container[rplus!='replacedAd'],.roblox-skyscraper[rplus!='replacedAd'],#Skyscraper[rplus!='replacedAd']").attr("rplus", "replacedAd").each(function () { var width = $(this).width(); if (width) { $(this).html("<iframe allowtransparency=\"true\" frameborder=\"0\" height=\"" + (({ 300: 270, 160: 600, 728: 90 })[width] || 0) + "\" scrolling=\"no\" src=\"/userads/" + (({ 300: 3, 160: 2, 728: 1 })[width] || 1) + "\" width=\"" + width + "\" data-js-adtype=\"iframead\">"); } });
 			}
@@ -753,7 +753,7 @@ fixCB(({
 			plusSlider($(this));
 		}).on("click", ".friend-status.icon-game", function (e) {
 			e.preventDefault();
-			var id = users.urlId($(this).parent().parent().find(">.friend-link").attr("href"));
+			var id = Roblox.users.getIdFromUrl($(this).parent().parent().find(">.friend-link").attr("href"));
 			if (id) {
 				Roblox.games.launch({
 					followUserId: id

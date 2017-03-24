@@ -139,7 +139,7 @@ if (browser.name == "Chrome") {
 		documentUrlPatterns: ["*://*.roblox.com/*"],
 		parentId: "mainContext",
 		onclick: function (e) {
-			var id = users.urlId(e.linkUrl);
+			var id = Roblox.users.getIdFromUrl(e.linkUrl);
 			var u = "https://www.roblox.com/Trade/TradeWindow.aspx?TradePartnerID=" + id;
 			$.get(u).success(function (r) {
 				if (($._(r).find("#aspnetForm[action]").attr("action") || "").endsWith("TradePartnerID=" + id)) {

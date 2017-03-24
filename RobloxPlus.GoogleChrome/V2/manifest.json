@@ -1,5 +1,5 @@
 {
-	"version": "2.2.52",
+	"version": "2.2.53",
 	"name": "ROBLOX+",
 	"short_name": "ROBLOX+",
 	"description": "Adds features and notifiers made by WebGL3D to the ROBLOX website",
@@ -50,6 +50,7 @@
 				"lib/roblox/social.js",
 				"lib/roblox/games.js",
 				"lib/roblox/audio.js",
+				"lib/roblox/avatar.js",
 				"lib/preroblox.js",
 				"middle.js",
 				"content/json.js",

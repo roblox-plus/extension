@@ -38,7 +38,7 @@ RPlus.Pages.Group = function () {
 		setInterval(function () {
 			$(".GroupWall_PostBtns:not([rplus])").attr("rplus", "").each(function () {
 				var el = $(this);
-				var poster = users.urlId(el.parent().find(".UserLink>a[href*='/users/']").attr("href"));
+				var poster = Roblox.users.getIdFromUrl(el.parent().find(".UserLink>a[href*='/users/']").attr("href"));
 				if (poster && el.parent().parent().parent().find(".bcOverlay").length) {
 					tradeSystem.display(poster, 0, function (href, target) {
 						el.append($("<a>Trade</a>").css("margin-left", "3px").attr("href", href).attr("target", target));

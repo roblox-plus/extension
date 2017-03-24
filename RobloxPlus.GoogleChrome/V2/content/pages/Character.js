@@ -49,9 +49,7 @@ RPlus.Pages.Character = function () {
 							content.append($("<div class=\"Asset\">").append($("<a class=\"AssetThumbnail\" href=\"javascript:/* Wear */\" title=\"click to wear\">").click(function () {
 								if (busy) { return; }
 								busy = true;
-								outfit.wear(o.id, function (s) {
-									reset();
-								});
+								Roblox.avatar.wearAsset(o.id).then(reset, reset);
 							}).append($("<img>").attr("src", o.thumbnail), $("<div class=\"btn-small btn-neutral\">").text("Wear")), $("<div class=\"AssetDetails\">").append($("<div class=\"AssetName\">").append($("<a>").attr({ "href": "/item.aspx?id=" + o.id, "title": "click to view" }).text(o.name)))));
 						}
 					});

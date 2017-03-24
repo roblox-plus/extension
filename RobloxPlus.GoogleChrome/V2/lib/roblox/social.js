@@ -24,6 +24,19 @@ Roblox.social = (function () {
 		}, {
 			resolveExpiry: 60 * 1000
 		}),
+		isBlocked: $.promise.cache(function (resolve, reject, userId) {
+			this.getBlockedUsers().then(function (blockedUsers) {
+				for (var n in blockedUsers) {
+					if (blockedUsers[n].id == userId) {
+						resolve(true);
+						return;
+					}
+				}
+				resolve(false);
+			}, reject);
+		}, {
+			resolveExpiry: 60 * 1000
+		}),
 		followUser: $.promise.cache(function (resolve, reject, userId) {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
