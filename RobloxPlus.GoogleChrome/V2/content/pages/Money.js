@@ -6,13 +6,11 @@ RPlus.Pages.Money = function () {
 	$("body").on("click", ".ViewTradeLink", function () { trid.text("Trade Id: #" + $(this).attr("tradesessionid")).attr("href", "/My/Money.aspx?tradeId=" + $(this).attr("tradesessionid") + "#/#TradeItems_tab"); });
 	$("#TradeRequest>div:first").prepend(trid);
 	if (url.param("tradeId") && url.hash().indexOf("#TradeItems_tab") >= 0) {
-		tradeSystem.open(Number(url.param("tradeId")), function (trade) {
-			if (trade.status) {
-				var falseTrade = $("<tr class=\"datarow\"><td class=\"TradePartner\"></td><td class=\"Action\"><a class=\"ViewTradeLink\" tradepartnerid=\"" + trade.partner.id + "\" tradesessionid=\"" + trade.id + "\"></a></td></tr>").hide();
-				falseTrade.find(".TradePartner").attr("tradepartnername", trade.partner.username);
-				$(".TradeItemsContainer>table>tbody").append(falseTrade);
-				falseTrade.find("a.ViewTradeLink")[0].click();
-			}
+		Roblox.trades.get(Number(url.param("tradeId"))).then(function (trade) {
+			var falseTrade = $("<tr class=\"datarow\"><td class=\"TradePartner\"></td><td class=\"Action\"><a class=\"ViewTradeLink\" tradepartnerid=\"" + trade.tradePartnerOffer.id + "\" tradesessionid=\"" + trade.id + "\"></a></td></tr>").hide();
+			falseTrade.find(".TradePartner").attr("tradepartnername", trade.tradePartnerOffer.username);
+			$(".TradeItemsContainer>table>tbody").append(falseTrade);
+			falseTrade.find("a.ViewTradeLink")[0].click();
 		});
 	}
 

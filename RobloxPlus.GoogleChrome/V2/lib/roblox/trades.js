@@ -82,6 +82,7 @@ Roblox.trades = (function () {
 						return;
 					}
 					var trade = {
+						id: tradeId,
 						status: r.StatusType == "Open" ? (r.AgentOfferList[0].AgentID == authenticatedUserId ? "Outbound" : "Inbound") : (r.StatusType == "Finished" ? "Completed" : r.StatusType),
 						expiration: new Date(Number((r.Expiration.match(/\d+/) || [0])[0])).getTime(),
 						offers: [],

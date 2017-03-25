@@ -393,21 +393,25 @@ tradeNotifier = setupNotifier(function (loop, uid, load) {
 					old[o.id] = t;
 					var lab = tradeNotifier.headers[o.status];
 					if ((outcheck && !tradeNotifier.outbound.hasOwnProperty(o.id)) || (c && lab)) {
-						tradeSystem.open(o.id, function (trade) {
+						Roblox.trades.get(o.id).then(function (trade) {
 							if (outcheck) {
 								tradeNotifier.outbound[o.id] = [];
-								foreach(trade.me.assets, function (i, v) { tradeNotifier.outbound[o.id].push(v.userAssetId); });
-								foreach(trade.partner.assets, function (i, v) { tradeNotifier.outbound[o.id].push(v.userAssetId); });
+								trade.authenticatedUserOffer.userAssets.forEach(function (userAsset) {
+									tradeNotifier.outbound[o.id].push(userAsset.userAssetId);
+								});
+								trade.tradePartnerOffer.userAssets.forEach(function (userAsset) {
+									tradeNotifier.outbound[o.id].push(userAsset.userAssetId);
+								});
 							}
 							if (!trade.status || startup || !lab || !c || tradeNotifier.displayCache[o.id + lab]) { return; }
 							tradeNotifier.displayCache[o.id + lab] = getMil();
 							notify({
 								header: "Trade " + lab,
-								icon: users.thumbnail(trade.partner.id, 3),
+								icon: Roblox.thumbnails.getUserHeadshotThumbnailUrl(trade.tradePartnerOffer.user.id, 3),
 								items: {
-									"Partner": trade.partner.username,
-									"Your RAP": addComma(trade.me.rap) + (trade.me.robux ? " +R$" + addComma(trade.me.robux) : ""),
-									"Their RAP": addComma(trade.partner.rap) + (trade.partner.robux ? " +R$" + addComma(trade.partner.robux) : "")
+									"Partner": trade.tradePartnerOffer.user.username,
+									"Your RAP": addComma(trade.authenticatedUserOffer.assetValue) + (trade.authenticatedUserOffer.robux ? " +R$" + addComma(trade.authenticatedUserOffer.robux) : ""),
+									"Their RAP": addComma(trade.tradePartnerOffer.assetValue) + (trade.tradePartnerOffer.robux ? " +R$" + addComma(trade.tradePartnerOffer.robux) : "")
 								},
 								buttons: trade.status == "Outbound" ? ["Cancel"] : [],
 								clickable: true,
