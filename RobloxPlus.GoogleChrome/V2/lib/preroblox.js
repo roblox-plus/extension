@@ -803,54 +803,6 @@ tradeSystem = {
 				callBack(ret);
 			}
 		});
-	})),
-	send: request.backgroundFunction("tradeSystem.send", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (type(arg.id) != "number") {
-			callBack("Invalid user id");
-			return;
-		} else if (type(arg.request) != "array" || type(arg.offer) != "array") {
-			callBack("request, and offer must be array of userAssetIds");
-			return;
-		}
-		arg.counter = type(arg.counter) == "number" ? arg.counter : 0;
-		users.currentId(function (id) {
-			var data = {
-				cmd: arg.counter ? "counter" : "send",
-				TradeJSON: JSON.stringify({
-					"AgentOfferList": [
-						{
-							AgentID: id,
-							OfferList: (function (a, x) { for (var n in a) { x.push({ UserAssetID: a[n] }); } return x; })(arg.offer, []),
-							OfferRobux: type(arg.offerRobux) == "number" ? arg.offerRobux : 0,
-							OfferValue: 999999999
-						},
-						{
-							AgentID: arg.id,
-							OfferList: (function (a, x) { for (var n in a) { x.push({ UserAssetID: a[n] }); } return x; })(arg.request, []),
-							OfferRobux: type(arg.requestRobux) == "number" ? arg.requestRobux : 0,
-							OfferValue: 999999999
-						}
-					],
-					IsActive: false,
-					TradeStatus: "Open"
-				})
-			};
-			if (arg.counter) { data.TradeID = arg.counter; }
-			$.post("https://www.roblox.com/Trade/TradeHandler.ashx", data).done(function (r) {
-				if (r.data) {
-					for (var n in r.data) {
-						r.data[n] = Number(r.data[n]);
-					}
-				}
-				callBack(r.success ? [] : r.data || r.msg);
-			}).fail(function () {
-				callBack("HTTP Error");
-			});
-		});
 	}))
 };
 

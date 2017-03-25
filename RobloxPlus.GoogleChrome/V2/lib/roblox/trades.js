@@ -128,6 +128,71 @@ Roblox.trades = (function () {
 			}, reject);
 		}, {
 			queued: true
+		}),
+		send: $.promise.cache(function (resolve, reject, offer, request, counterTradeId) {
+			// THIS METHOD IS UNTESTED. Use at your own risk.
+			if (typeof (offer) != "object" || !Array.isArray(offer.userAssetIds) || typeof (offer.robux) != "number" || offer.robux < 0 || offer.userAssetIds.length <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid offer"
+				}]);
+				return;
+			}
+			if (typeof (request) != "object" || !Array.isArray(request.userAssetIds) || typeof (request.robux) != "number" || request.robux < 0 || request.userAssetIds.length <= 0 || typeof(request.userId) != "number" || request.userId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid request"
+				}]);
+				return;
+			}
+
+			Roblox.users.getCurrentUserId().then(function (authenticatedUserId) {
+				var data = {
+					cmd: typeof (counterTradeId) == "number" ? "counter" : "send",
+					TradeJSON: JSON.stringify({
+						"AgentOfferList": [
+							{
+								AgentID: authenticatedUserId,
+								OfferList: offer.userAssetIds,
+								OfferRobux: offer.robux,
+								OfferValue: 999999999
+							},
+							{
+								AgentID: request.userId,
+								OfferList: request.userAssetIds,
+								OfferRobux: request.robux,
+								OfferValue: 999999999
+							}
+						],
+						IsActive: false,
+						TradeStatus: "Open"
+					})
+				};
+				if (typeof (counterTradeId) == "number") {
+					data.TradeID = counterTradeId;
+				}
+				$.post("https://www.roblox.com/Trade/TradeHandler.ashx", data).done(function (r) {
+					if (Array.isArray(r.data)) {
+						reject(r.data);
+						return;
+					}
+					if (r.success) {
+						resolve();
+					} else {
+						reject([{
+							code: 0,
+							message: r.msg
+						}]);
+					}
+				}).fail(function () {
+					reject([{
+						code: 0,
+						message: "HTTP request failed"
+					}]);
+				});
+			}, reject);
+		}, {
+			queued: true
 		})
 	};
 })();
