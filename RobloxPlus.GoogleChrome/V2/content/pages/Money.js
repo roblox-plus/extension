@@ -92,35 +92,37 @@ RPlus.Pages.Money = function () {
 			$(this).attr("alt", users.toBC($(this).attr("src")) + " only");
 		});
 	}, 250);
-
-	tradeSystem.cancelAll = function (callBack) {
-		tradeSystem.get({ type: "outbound", cache: false }, function (trades) {
-			if (!trades.data.length) {
-				fixCB(callBack)();
+	
+	function cancelAll(callBack) {
+		Roblox.trades.getTradesPaged("outbound", 1, "cacheBust:" + (+new Date)).then(function (trades) {
+			if (trades.count <= 0) {
+				callBack();
 				return;
 			}
 			var dcb = 0;
-			foreach(trades.data, function (n, o) {
-				Roblox.trades.decline(o.id).then(function () {
-					var row = $("a.ViewTradeLink[tradesessionid='" + o.id + "']");
+			trades.trades.forEach(function (trade) {
+				Roblox.trades.decline(trade.id).then(function () {
+					var row = $("a.ViewTradeLink[tradesessionid='" + trade.id + "']");
 					if (row.length) {
 						row.parent().parent().remove();
 					}
-					if (++dcb == trades.data.length) {
-						tradeSystem.cancelAll(callBack);
+					if (++dcb == trades.trades.length) {
+						cancelAll(callBack);
 					}
 				}, function () {
-					if (++dcb == trades.data.length) {
-						tradeSystem.cancelAll(callBack);
+					if (++dcb == trades.trades.length) {
+						cancelAll(callBack);
 					}
 				});
 			});
+		}, function () {
+			setTimeout(cancelAll, 5000, callBack);
 		});
-	};
+	}
 	$("#TradeItems_tab>.SortsAndFilters>.TradeType").after($("<a id=\"rplusCancelOutbound\" href=\"javascript:/* ROBLOX+ */;\" class=\"btn-small btn-neutral\">Cancel All</a>").hide().click(function () {
 		var el = $(this);
 		if (confirm("Cancel all outbound trades?")) {
-			tradeSystem.cancelAll(function () {
+			cancelAll(function () {
 				$("#TradeItems_TradeType>option[value=\"outbound\"]").text("Outbound");
 				el.prop("disabled", true).attr("class", "btn-small btn-disabled-neutral");
 			});

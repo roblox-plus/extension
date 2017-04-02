@@ -691,9 +691,11 @@ fixCB(({
 					users.current(function (u) {
 						if (!u.id) { setTimeout(mainLoop, 500); return; }
 						if (u.bc != "NBC") {
-							tradeSystem.get({}, function (trades) {
+							Roblox.trades.getTradesPaged("inbound", 1).then(function (trades) {
+								$("#nav-trade .notification-blue").attr("title", trades.count);
 								setTimeout(mainLoop, 500);
-								$("#nav-trade .notification-blue").attr("title", trades.total);
+							}, function () {
+								setTimeout(mainLoop, 500);
 							});
 						} else {
 							setTimeout(mainLoop, 500);

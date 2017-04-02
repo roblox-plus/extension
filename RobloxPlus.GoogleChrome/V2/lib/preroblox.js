@@ -118,6 +118,7 @@ users = {
 				var o = r.Collection[0];
 				if (o) {
 					users.current.cache.set("id", ret.id = o.Recipient.UserId);
+					ret.bc = users.toBC(o.Recipient.BuildersClubStatus);
 					ret.username = o.Recipient.UserName;
 					ret.thumbnail = o.RecipientThumbnail.Url || users.thumbnail(ret.id, 3);
 					$.get("https://api.roblox.com/currency/balance").success(function (r) {
@@ -133,9 +134,11 @@ users = {
 						ret.robux = r.RobuxBalance;
 						ret.thumbnail = r.ThumbnailUrl;
 						if (r.IsAnyBuildersClubMember) {
-							user.bc(ret.username, function (b) {
-								ret.bc = b;
+							Roblox.users.getByUserId(r.UserID).then(function (u) {
+								ret.bc = u.bc;
 								cb(true);
+							}, function () {
+								cb(false);
 							});
 						} else {
 							cb(true);
@@ -753,58 +756,7 @@ catalog.info.parse = function (hold) {
 
 
 
-tradeSystem = {
-	get: request.backgroundFunction("tradeSystem.get", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		var ret = {
-			type: type(arg.type) == "string" ? arg.type : "inbound",
-			data: [],
-			total: 0,
-			page: type(arg.page) == "number" ? arg.page : 1,
-			totalPages: 0,
-			success: true
-		};
-		users.currentId(function (id) {
-			if (id) {
-				var key = id + "_" + ret.type + "_" + ret.page;
-				if (tradeSystem.get.cache.get(key) && arg.cache !== false) { callBack(tradeSystem.get.cache.get(key)); return; }
-				$.ajax({
-					url: "https://www.roblox.com/My/Money.aspx/GetMyItemTrades",
-					type: "POST",
-					data: JSON.stringify({ startindex: 20 * (ret.page - 1), statustype: ret.type }),
-					contentType: "application/json"
-				}).success(function (r) {
-					r = JSON.parse(r.d);
-					ret.total = Number(r.totalCount) || 0;
-					ret.totalPages = Math.ceil(ret.total / 20);
-					foreach(r.Data, function (n, o) {
-						o = JSON.parse(o);
-						ret.data.push({
-							id: Number(o.TradeSessionID),
-							sent: new Date(o.Date).getTime(),
-							expires: new Date(o.Expires).getTime(),
-							status: o.Status,
-							partner: {
-								id: Number(o.TradePartnerID) || 0,
-								usernmae: o.TradePartner
-							}
-						});
-					});
-					tradeSystem.get.cache.set(key, ret);
-					callBack(ret);
-				}).fail(function () {
-					ret.success = false;
-					callBack(ret);
-				});
-			} else {
-				callBack(ret);
-			}
-		});
-	}))
-};
+tradeSystem = {};
 
 
 
@@ -1550,7 +1502,6 @@ if (ext.isBackground) {
 	catalog.info.cache = compact.cache(3 * 1000);
 	catalog.limiteds.cache = compact.cache(10 * 1000);
 	catalog.hasAsset.cache = compact.cache(60 * 1000);
-	tradeSystem.get.cache = compact.cache(5 * 1000);
 	friendService.get.cache = compact.cache(5 * 1000);
 	privateMessage.get.cache = compact.cache(5 * 1000);
 	privateMessage.search.cache = compact.cache(0);
