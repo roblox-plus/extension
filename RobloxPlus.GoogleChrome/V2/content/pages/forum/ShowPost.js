@@ -60,7 +60,7 @@ RPlus.Pages.ForumShowPost = function () {
 				});
 
 				if (f.blocking) {
-					Roblox.social.isBlocking(poster).then(function (isBlocking) {
+					Roblox.social.isBlocked(poster).then(function (isBlocking) {
 						if (isBlocking) {
 							post.hide();
 						}
