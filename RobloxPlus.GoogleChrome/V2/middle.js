@@ -188,25 +188,15 @@ catalog.getAssetContents = request.backgroundFunction("catalog.getAssetContents"
 
 
 
-tradeSystem.display = function (partner, counter, callBack) {
-	partner = Number(partner) || 0;
-	counter = Number(counter) || 0;
-	var url = "https://www.roblox.com/Trade/TradeWindow.aspx?TradePartnerID=" + partner + (counter ? "&TradeSessionId=" + counter : "");
-	storage.get("tradeTab", function (on) {
-		if (on) {
-			if (isCB(callBack)) {
-				callBack(url, "_blank");
+Roblox.trades.openSettingBasedTradeWindow = function (userId, counterTradeId) {
+	return new Promise(function (resolve, reject) {
+		storage.get("tradeTab", function (on) {
+			if (on) {
+				Roblox.trades.openTradeTab(userId).then(resolve, reject);
 			} else {
-				window.open(url);
+				Roblox.trades.openTradeWindow(userId).then(resolve, reject);
 			}
-		} else {
-			var attr = "width=930,height=700";
-			if (isCB(callBack)) {
-				callBack("javascript:window.open(\"" + url + "\",\"\",\"" + attr + "\",false);", "");
-			} else {
-				window.open(url, "", attr, false);
-			}
-		}
+		});
 	});
 };
 

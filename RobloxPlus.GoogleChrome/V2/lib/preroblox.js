@@ -756,10 +756,6 @@ catalog.info.parse = function (hold) {
 
 
 
-tradeSystem = {};
-
-
-
 outfit = {
 	get: request.backgroundFunction("outfit.get", compact(function (arg, callBack) {
 		if (typeof (callBack) != "function") {

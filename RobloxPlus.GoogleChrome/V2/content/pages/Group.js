@@ -40,9 +40,14 @@ RPlus.Pages.Group = function () {
 				var el = $(this);
 				var poster = Roblox.users.getIdFromUrl(el.parent().find(".UserLink>a[href*='/users/']").attr("href"));
 				if (poster && el.parent().parent().parent().find(".bcOverlay").length) {
-					tradeSystem.display(poster, 0, function (href, target) {
-						el.append($("<a>Trade</a>").css("margin-left", "3px").attr("href", href).attr("target", target));
-					});
+					el.append($("<a>Trade</a>").css("margin-left", "3px").click(function (e) {
+						Roblox.trades.openSettingBasedTradeWindow(poster).then(function () {
+							console.log("opened trade window", poster);
+						}, function (e) {
+							console.error("failed to open trade window", e);
+						});
+						e.preventDefault();
+					}));
 				}
 			}).find(">a[href^='javascript']").removeAttr("style");
 		}, 250);

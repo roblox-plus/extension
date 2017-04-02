@@ -88,7 +88,7 @@ RPlus.Pages.ForumShowPost = function () {
 					users.inventory(poster, function (inv) {
 						if (inv.bc != "NBC" && !post.find(".post-response-options>a[href*='Trade']").length) {
 							post.find(".post-response-options").prepend($("<a class=\"btn-control btn-control-medium\" href=\"javascript:/* Trade */\">Trade</a>").click(function () {
-								tradeSystem.display(poster);
+								Roblox.trades.openSettingBasedTradeWindow(poster);
 							}));
 						}
 						if (inv.load.total < 100) {

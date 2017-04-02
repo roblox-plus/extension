@@ -143,7 +143,7 @@ if (browser.name == "Chrome") {
 			var u = "https://www.roblox.com/Trade/TradeWindow.aspx?TradePartnerID=" + id;
 			$.get(u).success(function (r) {
 				if (($._(r).find("#aspnetForm[action]").attr("action") || "").endsWith("TradePartnerID=" + id)) {
-					tradeSystem.display(id);
+					Roblox.trades.openSettingBasedTradeWindow(id);
 				}
 			});
 		}

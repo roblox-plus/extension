@@ -44,10 +44,8 @@ RPlus.Pages.Profile = function () {
 		}
 
 		if (vals.tradeTab) {
-			tradeSystem.display(id, 0, function (href, target) {
-				$(".trade-link").hide().after($("<a>Trade</a>").attr("class", $(".trade-link").attr("class")).attr("href", href).attr("target", target));
-				$("#profile-trade-items").hide().after($("<a>Trade Items</a>").attr("href", href).attr("target", target));
-			});
+			$(".trade-link").hide().after($("<a>").text("Trade").attr("class", $(".trade-link").attr("class")).attr("href", Roblox.trades.getOpenTradeHref(id, 0, true)));
+			$("#profile-trade-items").hide().after($("<a>").text("Trade Items").attr("href", Roblox.trades.getOpenTradeHref(id, 0, true)));
 		}
 	});
 
