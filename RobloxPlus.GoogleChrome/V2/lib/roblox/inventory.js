@@ -38,8 +38,7 @@ Roblox.inventory = (function () {
 			}
 
 			$.get("https://api.roblox.com/ownership/hasasset", { userId: userId, assetId: assetId }).done(function (r) {
-				// TODO: Investigate what comes out of this endpoint - bool, or string
-				resolve(typeof (r) == "boolean" ? r : r == "true");
+				resolve(r);
 			}).fail(function () {
 				reject([{
 					code: 0,
@@ -73,7 +72,7 @@ Roblox.inventory = (function () {
 						combinedValue += userAsset.recentAveragePrice || 0;
 					});
 					collectibles = collectibles.concat(data);
-					if (++completed == collectibleAssetTypeIds.length) {
+					if (++completed == Roblox.catalog.collectibleAssetTypeIds.length) {
 						collectibles.sort(function (a, b) {
 							if (a.assetId == b.assetId) {
 								return a.userAssetId - b.userAssetId;

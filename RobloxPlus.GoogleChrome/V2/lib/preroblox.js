@@ -198,8 +198,6 @@ users = {
 	})),
 
 	inventory: (function () {
-		var collectibleUserAssetTypeIds = [8, 18, 19, 41, 42, 43, 44, 45, 46, 47];
-
 		var inventoryPages = compact.cache(60 * 1000);
 		function loadInventoryPage(userId, assetTypeId, cursor, callBack) {
 			var cacheKey = userId + "_" + assetTypeId + "_" + cursor;
@@ -275,17 +273,17 @@ users = {
 				ret.load.gear = doneLoading.indexOf(19) >= 0 ? 100 : 0;
 				ret.load.face = doneLoading.indexOf(18) >= 0 ? 100 : 0;
 				var hats = doneLoading.length - (ret.load.gear ? 1 : 0) - (ret.load.face ? 1 : 0);
-				ret.load.hat = Math.floor((hats / (collectibleUserAssetTypeIds.length - 2)) * 100);
+				ret.load.hat = Math.floor((hats / (Roblox.catalog.collectibleAssetTypeIds.length - 2)) * 100);
 				callBack(ret, true);
-				ret.load.total = Math.floor((doneLoading.length / collectibleUserAssetTypeIds.length) * 100);
-				if (doneLoading.length == collectibleUserAssetTypeIds.length) {
+				ret.load.total = Math.floor((doneLoading.length / Roblox.catalog.collectibleAssetTypeIds.length) * 100);
+				if (doneLoading.length == Roblox.catalog.collectibleAssetTypeIds.length) {
 					ret.speed = pnow() - start;
 					callBack(ret);
 				}
 			}
 
 			function startLoading(userId) {
-				collectibleUserAssetTypeIds.forEach(function (assetTypeId) {
+				Roblox.catalog.collectibleAssetTypeIds.forEach(function (assetTypeId) {
 					var assetType = assetTypeId == 18 ? "face" : (assetTypeId == 19 ? "gear" : "hat");
 					loadInventoryAssetType(userId, assetTypeId, function (userAssets) {
 						userAssets.forEach(function (ua) {

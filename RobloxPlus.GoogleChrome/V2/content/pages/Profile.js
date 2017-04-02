@@ -33,13 +33,11 @@ RPlus.Pages.Profile = function () {
 
 	storage.get(["profileRAP", "tradeTab"], function (vals, rapLabel) {
 		if (vals.profileRAP) {
-			$(".header-details>.details-info").append(rapLabel = $("<li><div class=\"text-label\">RAP</div><a userid=\"" + id + "\" class=\"rplusinventory text-name\" href=\"javascript:/* ROBLOX+ */;\"><h3>0%</h3></a></li>"));
-			users.inventory(id, function (inv) {
-				if (inv.load.total < 100) {
-					rapLabel.find("h3").text(Math.floor(inv.load.total) + "%");
-				} else {
-					rapLabel.find("h3").text(addComma(inv.rap));
-				}
+			$(".header-details>.details-info").append(rapLabel = $("<li><div class=\"text-label\">RAP</div><a userid=\"" + id + "\" class=\"rplusinventory text-name\" href=\"javascript:/* ROBLOX+ */;\"><h3>...</h3></a></li>"));
+			Roblox.inventory.getCollectibles(id).then(function (inv) {
+				rapLabel.find("h3").text(global.addCommas(inv.combinedValue));
+			}, function () {
+				rapLabel.hide();
 			});
 		}
 

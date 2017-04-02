@@ -83,20 +83,19 @@ RPlus.Pages.ForumShowPost = function () {
 				}
 
 				if (f.rap) {
-					var rapLabel = $("<span class=\"rplusinventory robux-text\" userid=\"" + poster + "\">0%</span>");
+					var rapLabel = $("<span class=\"rplusinventory robux-text\" userid=\"" + poster + "\">...</span>");
 					post.find(">.forum-content-background:first-child>table>tbody>tr:nth-child(2)").after($("<tr>").append($("<td>").append("<b>RAP</b>: ").append(rapLabel)));
-					users.inventory(poster, function (inv) {
-						if (inv.bc != "NBC" && !post.find(".post-response-options>a[href*='Trade']").length) {
-							post.find(".post-response-options").prepend($("<a class=\"btn-control btn-control-medium\" href=\"javascript:/* Trade */\">Trade</a>").click(function () {
-								Roblox.trades.openSettingBasedTradeWindow(poster);
-							}));
-						}
-						if (inv.load.total < 100) {
-							rapLabel.text(Math.floor(inv.load.total) + "%");
-						} else {
-							rapLabel.text(inv.success ? "R$" + addComma(inv.rap) : "FAILED");
-						}
+					Roblox.inventory.getCollectibles(poster).then(function (inv) {
+						rapLabel.text("R$" + global.addCommas(inv.combinedValue));
+					}, function () {
+						rapLabel.text("FAILED");
 					});
+				}
+
+				if (post.find("img[src *= '/BCOverlay.']").length) {
+					post.find(".post-response-options").prepend($("<a class=\"btn-control btn-control-medium\" href=\"javascript:/* Trade */\">Trade</a>").click(function () {
+						Roblox.trades.openSettingBasedTradeWindow(poster);
+					}));
 				}
 
 				if (f.postIds) {
