@@ -7,10 +7,13 @@ RPlus.Pages.Money = function () {
 	$("#TradeRequest>div:first").prepend(trid);
 	if (url.param("tradeId") && url.hash().indexOf("#TradeItems_tab") >= 0) {
 		Roblox.trades.get(Number(url.param("tradeId"))).then(function (trade) {
-			var falseTrade = $("<tr class=\"datarow\"><td class=\"TradePartner\"></td><td class=\"Action\"><a class=\"ViewTradeLink\" tradepartnerid=\"" + trade.tradePartnerOffer.id + "\" tradesessionid=\"" + trade.id + "\"></a></td></tr>").hide();
-			falseTrade.find(".TradePartner").attr("tradepartnername", trade.tradePartnerOffer.username);
+			console.log(trade);
+			var falseTrade = $("<tr class=\"datarow\"><td class=\"TradePartner\"></td><td class=\"Action\"><a class=\"ViewTradeLink\" tradepartnerid=\"" + trade.tradePartnerOffer.user.id + "\" tradesessionid=\"" + trade.id + "\"></a></td></tr>").hide();
+			falseTrade.find(".TradePartner").attr("tradepartnername", trade.tradePartnerOffer.user.username);
 			$(".TradeItemsContainer>table>tbody").append(falseTrade);
 			falseTrade.find("a.ViewTradeLink")[0].click();
+		}, function (e) {
+			console.error(e);
 		});
 	}
 

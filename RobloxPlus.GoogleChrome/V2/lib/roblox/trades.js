@@ -4,6 +4,8 @@
 var Roblox = Roblox || {};
 
 Roblox.trades = (function () {
+	var tradeTypes = ["inbound", "outbound", "completed", "inactive"];
+
 	return {
 		accept: $.promise.cache(function (resolve, reject, tradeId) {
 			if (typeof (tradeId) != "number" || tradeId <= 0) {
@@ -193,6 +195,59 @@ Roblox.trades = (function () {
 			}, reject);
 		}, {
 			queued: true
+		}),
+		getTradesPaged: $.promise.cache(function (resolve, reject, tradeType, pageNumber) {
+			if (typeof (pageNumber) != "number" || pageNumber <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid pageNumber"
+				}]);
+				return;
+			}
+			if (typeof (tradeType) != "string" || !tradeTypes.includes(tradeType)) {
+				reject([{
+					code: 0,
+					message: "Invalid tradeType"
+				}]);
+				return;
+			}
+			
+			var pageSize = 20;
+			$.ajax({
+				url: "https://www.roblox.com/My/Money.aspx/GetMyItemTrades",
+				type: "POST",
+				data: JSON.stringify({ startindex: pageSize * (pageNumber - 1), statustype: tradeType }),
+				contentType: "application/json"
+			}).done(function (r) {
+				r = JSON.parse(r.d);
+				var tradeCount = Number(r.totalCount) || 0;
+				var data = {
+					count: tradeCount,
+					data: []
+				};
+				r.Data.forEach(function (trade) {
+					trade = JSON.parse(trade);
+					data.data.push({
+						id: Number(trade.TradeSessionID),
+						status: trade.Status,
+						partner: {
+							id: Number(trade.TradePartnerID) || 0,
+							username: trade.TradePartner
+						},
+						expiration: new Date(trade.Expires).getTime(),
+						created: new Date(trade.Date).getTime()
+					});
+				});
+				resolve(data);
+			}).fail(function () {
+				reject([{
+					code: 0,
+					message: "HTTP request failed"
+				}]);
+			});
+		}, {
+			queued: true,
+			resolveExpiry: 10 * 1000
 		})
 	};
 })();

@@ -315,15 +315,24 @@
 		
 		
 		if(browser.name == "Chrome"){
-			chrome.notifications.onClicked.addListener(function(id){
+			chrome.notifications.onClicked.addListener(function (id) {
+				if (!rawNotifications.hasOwnProperty(id)) {
+					return;
+				}
 				$.notification.broadcast("click", rawNotifications[id]);
 			});
 			
-			chrome.notifications.onButtonClicked.addListener(function(id, buttonId){
+			chrome.notifications.onButtonClicked.addListener(function (id, buttonId) {
+				if (!rawNotifications.hasOwnProperty(id)) {
+					return;
+				}
 				$.notification.broadcast("buttonClick", rawNotifications[id], buttonId + 1);
 			});
 			
-			chrome.notifications.onClosed.addListener(function(id, userClosed){
+			chrome.notifications.onClosed.addListener(function (id, userClosed) {
+				if (!rawNotifications.hasOwnProperty(id)) {
+					return;
+				}
 				if(userClosed){
 					$.notification.broadcast("close", rawNotifications[id]);
 				}

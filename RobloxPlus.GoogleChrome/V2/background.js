@@ -384,27 +384,29 @@ tradeNotifier = setupNotifier(function (loop, uid, load) {
 	var startup = tradeNotifier.ran != uid;
 	if (startup) { tradeNotifier.cache.clear(); }
 	load = function (t, p) {
-		tradeSystem.get({ type: t, page: p }, function (trades, check) {
+		Roblox.trades.getTradesPaged(t, p).then(function (trades) {
 			var outcheck = t == "outbound" && storage.get("tradeChecker");
-			foreach(trades.data, function (n, o) {
-				var c = old[o.id] != t;
-				if (t == "outbound") { outbound.push(o.id); }
+			trades.data.forEach(function (trade) {
+				var c = old[trade.id] != t;
+				if (t == "outbound") {
+					outbound.push(trade.id);
+				}
 				if (c || outcheck) {
-					old[o.id] = t;
-					var lab = tradeNotifier.headers[o.status];
-					if ((outcheck && !tradeNotifier.outbound.hasOwnProperty(o.id)) || (c && lab)) {
-						Roblox.trades.get(o.id).then(function (trade) {
+					old[trade.id] = t;
+					var lab = tradeNotifier.headers[trade.status];
+					if ((outcheck && !tradeNotifier.outbound.hasOwnProperty(trade.id)) || (c && lab)) {
+						Roblox.trades.get(trade.id).then(function (trade) {
 							if (outcheck) {
-								tradeNotifier.outbound[o.id] = [];
+								tradeNotifier.outbound[trade.id] = [];
 								trade.authenticatedUserOffer.userAssets.forEach(function (userAsset) {
-									tradeNotifier.outbound[o.id].push(userAsset.userAssetId);
+									tradeNotifier.outbound[trade.id].push(userAsset.userAssetId);
 								});
 								trade.tradePartnerOffer.userAssets.forEach(function (userAsset) {
-									tradeNotifier.outbound[o.id].push(userAsset.userAssetId);
+									tradeNotifier.outbound[trade.id].push(userAsset.userAssetId);
 								});
 							}
-							if (!trade.status || startup || !lab || !c || tradeNotifier.displayCache[o.id + lab]) { return; }
-							tradeNotifier.displayCache[o.id + lab] = getMil();
+							if (startup || !lab || !c || tradeNotifier.displayCache[trade.id + lab]) { return; }
+							tradeNotifier.displayCache[trade.id + lab] = getMil();
 							notify({
 								header: "Trade " + lab,
 								icon: Roblox.thumbnails.getUserHeadshotThumbnailUrl(trade.tradePartnerOffer.user.id, 3),
@@ -416,16 +418,16 @@ tradeNotifier = setupNotifier(function (loop, uid, load) {
 								buttons: trade.status == "Outbound" ? ["Cancel"] : [],
 								clickable: true,
 								robloxSound: Number((storage.get("notifierSounds") || {})["trade" + (trade.status == "Rejected" ? "Declined" : trade.status)]) || 0,
-								url: { url: "https://www.roblox.com/My/Money.aspx?tradeId=" + o.id + "#/#TradeItems_tab", close: true },
-								tag: "trade" + o.id
+								url: { url: "https://www.roblox.com/My/Money.aspx?tradeId=" + trade.id + "#/#TradeItems_tab", close: true },
+								tag: "trade" + trade.id
 							}).button1Click(function () {
-								Roblox.trades.decline(o.id);
+								Roblox.trades.decline(trade.id);
 							});
 						});
 					}
 				}
 			});
-			if (trades.page < trades.totalPages && outcheck) {
+			if (p < trades.count / 20 && outcheck) {
 				load(t, p + 1);
 			} else if (++dcb == (tn ? 4 : 1)) {
 				for (var n in tradeNotifier.outbound) {
@@ -437,6 +439,8 @@ tradeNotifier = setupNotifier(function (loop, uid, load) {
 				tradeNotifier.ran = uid;
 				loop();
 			}
+		}, function(){
+			setTimeout(load, 5000, t, p);
 		});
 	};
 	if (tn) {
