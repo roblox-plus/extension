@@ -106,10 +106,10 @@ fixCB(({
 		forumService.parseSignature = function (sig, callBack) {
 			if (sig.toLowerCase().indexOf("#rap") >= 0) {
 				users.currentId(function (id) {
-					users.inventory(id, function (inv) {
-						if (inv.load.total >= 100) {
-							callBack(forumService.parseSignature.finish(sig.replace(/#rap/gi, addComma(inv.rap))));
-						}
+					Roblox.inventory.getCollectibles(id).then(function (inv) {
+						callBack(forumService.parseSignature.finish(sig.replace(/#rap/gi, addComma(inv.rap))));
+					}, function() {
+						callBack(forumService.parseSignature.finish(sig));
 					});
 				});
 			} else {
@@ -371,40 +371,45 @@ fixCB(({
 								elem.icon.label.attr("class", "icon-" + u.bc.toLowerCase() + "-label");
 							}
 
-							users.inventory(u.id, function (inv) {
+							Roblox.inventory.getCollectibles(u.id).then(function (inv) {
 								if (popbox.id != i) { return; }
 								var perc = elem.div.find("#rppbuFlipper>span:nth-child(2)");
-								foreach(inv.data, function (n, o) {
-									var box = elem.inv.find(".list-item>a[href='/item.aspx?id=" + o.id + "']");
+								var serials = {};
+								inv.collectibles.forEach(function (collectible) {
+									var box = elem.inv.find(".list-item>a[href='/item.aspx?id=" + collectible.assetId + "']");
 									var count = box.find(".item-serial-number");
+									serials[collectible.assetId] = serials[collectible.assetId] || {};
+									serials[collectible.assetId][collectible.userAssetId] = collectible.serialNumber;
 									if (!box.length) {
 										elem.inv.append($("<li class=\"list-item\">").append(
-											box = $("<a class=\"store-card\" target=\"_blank\" href=\"/item.aspx?id=" + Number(o.id) + "\">").attr("data-rap", o.rap).attr("title", o.name).append(
-												$("<img class=\"store-card-thumb\">").attr("src", o.image),
+											box = $("<a class=\"store-card\" target=\"_blank\" href=\"/item.aspx?id=" + collectible.assetId + "\">").attr("data-rap", collectible.recentAveragePrice).attr("title", collectible.name).append(
+												$("<img class=\"store-card-thumb\">").attr("src", Roblox.thumbnails.getAssetThumbnailUrl(collectible.assetId)),
 												count = $("<div class=\"item-serial-number\">").text("x1"),
 												$("<div class=\"store-card-caption\">").append(
-													$("<div class=\"text-overflow store-card-name\">").text(o.name),
-													"<div class=\"store-card-price\" title=\"RAP: " + addComma(o.rap) + "\"><span class=\"icon-robux\"></span><span class=\"text-robux\">" + addComma(o.rap) + "</span></div>"
+													$("<div class=\"text-overflow store-card-name\">").text(collectible.name),
+													"<div class=\"store-card-price\" title=\"RAP: " + global.addCommas(collectible.recentAveragePrice) + "\"><span class=\"icon-robux\"></span><span class=\"text-robux\">" + global.addCommas(collectible.recentAveragePrice) + "</span></div>"
 												)
 											)
 										));
 									}
-									count.text("x" + Object.keys(o.userAssetId).length);
-									if (o.stock) {
-										var serials = "";
-										foreach(o.userAssetId, function (u, s) { serials += (serials ? ", " : "") + "#" + s; });
-										count.attr("title", serials);
+									count.text("x" + Object.keys(serials[collectible.assetId]).length);
+									if (collectible.assetStock) {
+										var serialstr = "";
+										foreach(serials, function (u, s) {
+											serialstr += (serialstr ? ", " : "") + "#" + s;
+										});
+										count.attr("title", serialstr);
 									}
 								});
-								elem.div.find("#rppbuRAP>span:last-child").text(addComma(inv.rap));
-								elem.div.find("#rppbuItems>span:last-child").text(addComma(inv.count.total));
-								if (inv.load.total < 100) {
-									if (perc.text() != "Outfit") {
-										perc.text("Inventory (" + Math.floor(inv.load.total) + "%)");
-									}
-								} else {
-									if (perc.text() != "Outfit") { perc.text("Inventory"); }
-									popbox.action.user.resort();
+								elem.div.find("#rppbuRAP>span:last-child").text(global.addCommas(inv.combinedValue));
+								elem.div.find("#rppbuItems>span:last-child").text(global.addCommas(inv.collectibles.length));
+								if (perc.text() != "Outfit") {
+									perc.text("Inventory");
+								}
+								popbox.action.user.resort();
+							}, function () {
+								if (perc.text() != "Outfit") {
+									perc.text("Inventory [Failed]");
 								}
 							});
 

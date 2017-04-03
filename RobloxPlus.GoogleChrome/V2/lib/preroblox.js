@@ -195,140 +195,7 @@ users = {
 		});
 	}, {
 		queue: true
-	})),
-
-	inventory: (function () {
-		var inventoryPages = compact.cache(60 * 1000);
-		function loadInventoryPage(userId, assetTypeId, cursor, callBack) {
-			var cacheKey = userId + "_" + assetTypeId + "_" + cursor;
-			var cachedPage = inventoryPages.get(cacheKey);
-			if (cachedPage) {
-				callBack(cachedPage);
-				return;
-			}
-			$.get("https://inventory.roblox.com/v1/users/" + userId + "/assets/collectibles?limit=100&sortOrder=Asc", { assetType: assetTypeId, cursor: cursor }).done(function (r) {
-				inventoryPages.set(cacheKey, r);
-				callBack(r);
-			}).fail(function (e) {
-				console.error(e);
-				callBack({ data: [] });
-			});
-		}
-
-		function loadInventoryAssetType(userId, assetTypeId, callBack, cursor) {
-			var userAssets = [];
-			loadInventoryPage(userId, assetTypeId, cursor, function (data) {
-				data.data.forEach(function (ua) {
-					userAssets.push({
-						id: ua.assetId,
-						name: ua.name,
-						image: Roblox.thumbnails.getAssetThumbnailUrl(ua.assetId, 4),
-						serial: pround(ua.serialNumber),
-						stock: pround(ua.assetStock),
-						rap: pround(ua.recentAveragePrice),
-						originalPrice: pround(ua.originalPrice),
-						userAssetId: ua.userAssetId,
-						bc: users.toBC(ua.buildersClubMembershipType)
-					});
-				});
-				if (data.nextPageCursor) {
-					loadInventoryAssetType(userId, assetTypeId, function (moreUserAssets) {
-						callBack(userAssets.concat(moreUserAssets));
-					}, data.nextPageCursor);
-				} else {
-					callBack(userAssets);
-				}
-			});
-		}
-
-
-		return request.backgroundFunction("users.inventory", compact(function (arg, callBack) {
-			if (typeof (callBack) != "function") {
-				console.warn("callBack not function!");
-				return;
-			}
-
-			var start = pnow();
-			var ret = {
-				id: 0,
-				username: "",
-				bc: "NBC",
-				data: {},
-				load: { hat: 0, gear: 0, face: 0, total: 0 },
-				count: { hat: 0, gear: 0, face: 0, total: 0 },
-				rap: 0,
-				speed: 0,
-				success: true
-			};
-			var uaid = {};
-
-			if (typeof (arg) != "number" && typeof (aarg) != "string") {
-				callBack(ret);
-				return;
-			}
-
-			var doneLoading = [];
-			function cb(assetTypeId) {
-				doneLoading.push(assetTypeId);
-				ret.load.gear = doneLoading.indexOf(19) >= 0 ? 100 : 0;
-				ret.load.face = doneLoading.indexOf(18) >= 0 ? 100 : 0;
-				var hats = doneLoading.length - (ret.load.gear ? 1 : 0) - (ret.load.face ? 1 : 0);
-				ret.load.hat = Math.floor((hats / (Roblox.catalog.collectibleAssetTypeIds.length - 2)) * 100);
-				callBack(ret, true);
-				ret.load.total = Math.floor((doneLoading.length / Roblox.catalog.collectibleAssetTypeIds.length) * 100);
-				if (doneLoading.length == Roblox.catalog.collectibleAssetTypeIds.length) {
-					ret.speed = pnow() - start;
-					callBack(ret);
-				}
-			}
-
-			function startLoading(userId) {
-				Roblox.catalog.collectibleAssetTypeIds.forEach(function (assetTypeId) {
-					var assetType = assetTypeId == 18 ? "face" : (assetTypeId == 19 ? "gear" : "hat");
-					loadInventoryAssetType(userId, assetTypeId, function (userAssets) {
-						userAssets.forEach(function (ua) {
-							ret.data[ua.id] = ret.data[ua.id] || {
-								id: ua.id,
-								name: ua.name,
-								bc: ua.bc,
-								type: assetType,
-								originalPrice: ua.originalPrice,
-								rap: ua.rap,
-								stock: ua.stock,
-								image: ua.image,
-								userAssetId: {}
-							};
-							ret.data[ua.id].userAssetId[ua.userAssetId] = ua.serial;
-							if (!uaid.hasOwnProperty(ua.userAssetId)) {
-								ret.rap += ua.rap;
-								ret.count[assetType]++;
-								ret.count.total++;
-								uaid[ua.userAssetId] = assetTypeId;
-							}
-						});
-						cb(assetTypeId);
-					}, "");
-				});
-			}
-
-			users["getBy" + (typeof (arg) == "string" ? "Username" : "Id")](arg, function (u) {
-				ret.success = u.success, ret.username = u.username, ret.bc = u.bc;
-				if (ret.id = u.id) {
-					if (users.inventory.cache.get(u.id)) {
-						callBack(users.inventory.cache.get(u.id));
-						return;
-					}
-					startLoading(u.id);
-				} else {
-					ret.load = { hat: 100, gear: 100, face: 100, total: 100 };
-					callBack(ret);
-				}
-			});
-		}, {
-			multi: true,
-			queue: true
-		}));
-	})()
+	}))
 };
 
 
@@ -1492,7 +1359,6 @@ if (ext.isBackground) {
 	users.current.cache = compact.cache(3 * 1000);
 	users.getById.cache = compact.cache(60 * 1000);
 	users.getByUsername.cache = compact.cache(0);
-	users.inventory.cache = compact.cache(3 * 60 * 1000);
 	catalog.info.cache = compact.cache(3 * 1000);
 	catalog.limiteds.cache = compact.cache(10 * 1000);
 	catalog.hasAsset.cache = compact.cache(60 * 1000);
