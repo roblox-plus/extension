@@ -395,7 +395,7 @@ fixCB(({
 									count.text("x" + Object.keys(serials[collectible.assetId]).length);
 									if (collectible.assetStock) {
 										var serialstr = "";
-										foreach(serials, function (u, s) {
+										foreach(serials[collectible.assetId], function (u, s) {
 											serialstr += (serialstr ? ", " : "") + "#" + s;
 										});
 										count.attr("title", serialstr);

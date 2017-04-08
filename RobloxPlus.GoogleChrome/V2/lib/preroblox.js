@@ -896,34 +896,6 @@ gameService = {
 
 
 privateMessage = {
-	action: request.backgroundFunction("privateMessage.action", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		arg.id = type(arg.id) == "array" ? arg.id : [arg.id];
-		var data = [];
-		for (var n in arg.id) { if (type(arg.id[n]) == "number" && arg.id[n] > 0) { data.push(arg.id[n]); } }
-		if (type(arg.action) != "string") { callBack(false); return; } else if (!data.length) { callBack(true); return; }
-		$.ajax({
-			type: "POST",
-			url: "https://www.roblox.com/messages/api/" + arg.action,
-			data: JSON.stringify({ messageIds: data }),
-			contentType: "application/json",
-			done: function () {
-				callBack(true);
-			},
-			fail: function () {
-				callBack(false);
-			}
-		});
-	}, {
-		queue: true
-	})),
-	read: function (id, callBack) { return privateMessage.action({ id: id, action: "mark-messages-read" }, callBack); },
-	unread: function (id, callBack) { return privateMessage.action({ id: id, action: "mark-messages-unread" }, callBack); },
-	archive: function (id, callBack) { return privateMessage.action({ id: id, action: "archive-messages" }, callBack); },
-	unarchive: function (id, callBack) { return privateMessage.action({ id: id, action: "unarchive-messages" }, callBack); },
 	send: request.backgroundFunction("privateMessage.send", function (arg, callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
