@@ -533,12 +533,12 @@ RPlus.Pages.Account = function () {
 					if ($("option[value='easter-theme']").length) {
 						cont();
 					} else {
-						catalog.hasAsset(375602203, function (e) {
+						Roblox.inventory.userHasAsset(users.userId, 375602203).then(function (e) {
 							if (e) {
 								$("option[value='obc-theme']").after("<option value=\"easter-theme\">Easter</option>");
 							}
 							cont();
-						});
+						}, cont);
 					}
 				}
 			},

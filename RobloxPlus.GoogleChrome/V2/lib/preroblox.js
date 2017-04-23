@@ -309,10 +309,10 @@ catalog = {
 							fcb();
 						});
 						if (!ret.limited) {
-							catalog.hasAsset(ret.id, function (isOwner) {
+							Roblox.inventory.userHasAsset(cid, ret.id).then(function(isOwner) {
 								ret.owner = isOwner;
 								fcb();
-							});
+							}, fcb);
 						} else {
 							fcb();
 						}
@@ -447,29 +447,6 @@ catalog = {
 			callBack(false);
 		});
 	}),
-
-	hasAsset: request.backgroundFunction("catalog.hasAsset", compact(function (assetId, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-
-		Roblox.users.getCurrentUserId().then(function (userId) {
-			Roblox.inventory.userHasAsset(userId, assetId).then(function (hasAsset) {
-				// TODO: stop this triple caching madness...
-				var key = userId + "_" + assetId;
-				catalog.hasAsset.confirm[key] = hasAsset;
-				catalog.hasAsset.cache.set(key, hasAsset);
-				callBack(hasAsset);
-			}, function () {
-				callBack(false);
-			});
-		}, function () {
-			callBack(false);
-		});
-	}, {
-		queue: true
-	})),
 
 	limiteds: request.backgroundFunction("catalog.limiteds", function (callBack) {
 		if (typeof (callBack) != "function") {
@@ -1216,12 +1193,9 @@ soundService.robloxSound = function (id, callBack) {
 
 
 if (ext.isBackground) {
-	catalog.hasAsset.confirm = {};
-
 	users.current.cache = compact.cache(3 * 1000);
 	catalog.info.cache = compact.cache(3 * 1000);
 	catalog.limiteds.cache = compact.cache(10 * 1000);
-	catalog.hasAsset.cache = compact.cache(60 * 1000);
 	friendService.get.cache = compact.cache(5 * 1000);
 	privateMessage.get.cache = compact.cache(5 * 1000);
 	privateMessage.search.cache = compact.cache(0);
