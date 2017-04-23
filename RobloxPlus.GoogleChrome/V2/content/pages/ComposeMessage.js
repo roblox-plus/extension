@@ -14,17 +14,15 @@ RPlus.Pages.ComposeMessage = function () {
 	function addRecipient(username) {
 		if (addRecipient.input.is(":hidden")) { return; }
 		addRecipient.input.hide().val("");
-		users.getByUsername(username, function (user) {
-			if (user.username) {
-				if (!compose.find(".message-title>a[href*='/users/" + user.id + "/']").length) {
-					compose.find(".message-title>a").last().after($("<a href=\"/users/" + user.id + "/profile\" class=\"text-link\">").text(user.username).append("<span class=\"icon-alert\"></span>"));
-				}
-			} else {
-				siteUI.feedback({ type: "warning", text: "User not found." }).show();
+		Roblox.users.getByUsername(username).then(function (user) {
+			if (!compose.find(".message-title>a[href*='/users/" + user.id + "/']").length) {
+				compose.find(".message-title>a").last().after($("<a href=\"/users/" + user.id + "/profile\" class=\"text-link\">").text(user.username).append("<span class=\"icon-alert\"></span>"));
 			}
 			if (compose.find(".message-title>a").length < 5) {
 				addRecipient.input.show();
 			}
+		}, function () {
+			siteUI.feedback({ type: "warning", text: "User not found." }).show();
 		});
 	}
 	function getRecipients() {

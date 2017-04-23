@@ -360,7 +360,7 @@ fixCB(({
 					elem.div.find("#rppbuRAP>span:last-child,#rppbuItems>span:last-child").text("0");
 					popbox.action.user.resort();
 
-					users[type(arg) == "string" ? "getByUsername" : "getById"](arg, function (u) {
+					Roblox.users[typeof(arg) == "string" ? "getByUsername" : "getById"](arg).then(function (u) {
 						if (popbox.id != i) { return; }
 						if (u.id) {
 							popbox.header.attr("href", url.roblox("/users/" + u.id + "/profile")).text(u.username);
@@ -439,6 +439,9 @@ fixCB(({
 							popbox.header.text("No user found");
 							popbox.input.val("");
 						}
+					}, function () {
+						popbox.header.text("Failed to load user");
+						popbox.input.val("");
 					});
 				},
 				"item": function (arg, elem, i) {

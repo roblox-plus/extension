@@ -71,7 +71,7 @@ RPlus.Pages.Game = function () {
 			if (el.val()) {
 				var id = ++servers.search.id;
 				servers.search.ul.html("");
-				users.getByUsername(el.val(), function (u) {
+				Roblox.users.getByUsername(el.val()).then(function (u) {
 					if (id != servers.search.id) { return; }
 					if (u.username.toLowerCase() != el.attr("placeholder").toLowerCase() && u.id) {
 						el.attr("placeholder", u.username);
@@ -105,6 +105,8 @@ RPlus.Pages.Game = function () {
 					} else if (!u.id) {
 						servers.search.ul.text("User not found");
 					}
+				}, function () {
+					servers.search.ul.text("Failed to load user.");
 				});
 				el.val("");
 			}

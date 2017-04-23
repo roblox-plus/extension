@@ -9,9 +9,9 @@ RPlus.Pages.Login = function () {
 		if (el.val()) {
 			storage.get("changedLogin", function (v) {
 				if (v && el.val()) {
-					users.getByUsername(el.val(), function (u) {
+					Roblox.users.getByUsername(el.val()).then(function (u) {
 						console.log(u);
-						if (cid == id && u.username) {
+						if (cid == id) {
 							el.val(u.username);
 						}
 					});

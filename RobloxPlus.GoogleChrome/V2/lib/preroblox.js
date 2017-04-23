@@ -99,9 +99,6 @@ users = {
 		}
 		var cb = function (s) {
 			if (ret.success = s) {
-				if (ret.id) {
-					users.getByUsername.cache.set(ret.username.toLowerCase(), ret.id);
-				}
 				users.current.cache.set("id", ret.id);
 				users.current.cache.set("json", ret);
 			} else {
@@ -153,48 +150,6 @@ users = {
 		}).fail(function () {
 			cb(false);
 		});
-	})),
-	getById: request.backgroundFunction("users.getById", compact(function (a, callBack) {
-		Roblox.users.getByUserId(pround(a)).then(function (user) {
-			callBack({
-				id: user.id,
-				username: user.username,
-				bc: user.bc,
-				success: true
-			});
-		}, function () {
-			callBack({
-				id: 0,
-				username: "",
-				bc: "NBC",
-				success: false
-			});
-		});
-	}, {
-		queue: true
-	})),
-	getByUsername: request.backgroundFunction("users.getByUsername", compact(function (a, callBack) {
-		var template = {
-			id: 0,
-			username: "",
-			bc: "NBC",
-			success: true
-		};
-		if (typeof (a) != "string") {
-			callBack(template);
-		}
-
-		Roblox.users.getByUsername(a).then(function (user) {
-			template.id = user.id;
-			template.username = user.username;
-			template.bc = user.bc;
-			callBack(template);
-		}, function () {
-			template.success = false;
-			callBack(template);
-		});
-	}, {
-		queue: true
 	}))
 };
 
@@ -643,7 +598,7 @@ outfit = {
 				ret[n].color = "";
 			}
 		});
-		users[type(arg) == "string" ? "getByUsername" : "getById"](arg, function (u) {
+		function onUserLoad(u) {
 			ret.username = u.username;
 			if (ret.id = u.id) {
 				$.get("https://assetgame.roblox.com/Asset/AvatarAccoutrements.ashx?userId=" + u.id).success(function (r) {
@@ -682,7 +637,16 @@ outfit = {
 			} else {
 				callBack(ret);
 			}
-		});
+		}
+		if (typeof (arg) == "string") {
+			Roblox.users.getByUsername(arg).then(onUserLoad, function () {
+				callBack(ret);
+			});
+		} else {
+			Roblox.users.getByUserId(arg).then(onUserLoad, function () {
+				callBack(ret);
+			});
+		}
 	}, {
 		queue: true
 	})),
@@ -1255,8 +1219,6 @@ if (ext.isBackground) {
 	catalog.hasAsset.confirm = {};
 
 	users.current.cache = compact.cache(3 * 1000);
-	users.getById.cache = compact.cache(60 * 1000);
-	users.getByUsername.cache = compact.cache(0);
 	catalog.info.cache = compact.cache(3 * 1000);
 	catalog.limiteds.cache = compact.cache(10 * 1000);
 	catalog.hasAsset.cache = compact.cache(60 * 1000);
