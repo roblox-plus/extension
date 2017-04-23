@@ -9,8 +9,7 @@ RPlus.Pages.ForumShowPost = function () {
 
 	storage.get("forums", function (f) {
 		f.admins = ["Moderators", "Admins", "Alts", "Asset Control", "Developer"];
-		groupService.role({ group: 2518656, user: users.userId }, function (mod) {
-			mod = f.admins.indexOf(mod) >= 0;
+		Roblox.groups.getUserRole(2518656, users.userId).then(function (authenticatedUserRole) {
 			var firstPost = Number($("a[name]").attr("name"));
 			var page = ($("#ctl00_cphRoblox_PostView1_ctl00_Pager .normalTextSmallBold").text() || "Page 1 of 1").replace(/,/g, "").match(/^Page\s*(\d+)\s*of\s*(\d+)/i) || ["", 1, 1];
 			var maxPage = Number(page[2]) || 1;
@@ -103,19 +102,26 @@ RPlus.Pages.ForumShowPost = function () {
 				}
 
 				if (f.embedding) {
-					groupService.role({ user: poster, group: 2518656 }, function (role) {
-						if (f.admins.indexOf(role) < 0 && role != "Guest" && mod) {
-							post.find(".post-response-options").prepend($("<a href=\"javascript:/* Forum Embedding */\" class=\"btn-control btn-control-medium\">" + (role == "Thugs" ? "Unban" : "Ban") + "</a>").click(function () {
+					var isAuthenticatedUserMod = f.admins.includes(authenticatedUserRole.name);
+					Roblox.groups.getUserRole(2518656, poster).then(function (role) {
+						if (!f.admins.includes(role.name) && isAuthenticatedUserMod) {
+							post.find(".post-response-options").prepend($("<a href=\"javascript:/* Forum Embedding */\" class=\"btn-control btn-control-medium\">" + (role.name == "Thugs" ? "Unban" : "Ban") + "</a>").click(function () {
 								var button = $(this);
-								if (button.text() == "...") { return; }
+								if (button.attr("disabled")) {
+									return;
+								}
+								button.attr("disabled", "disabled");
 								var rid = button.text() == "Ban" ? 17759787 : 16556234;
-								button.text("...");
-								groupService.rank({ user: poster, group: 2518656, id: rid }, function (s) {
-									button.text(s ? (rid == 16556234 ? "Ban" : "Unban") : (rid == 16556234 ? "Unban" : "Ban"));
+								Roblox.groups.setUserRole(2518656, poster, rid).then(function () {
+									button.text(rid == 16556234 ? "Ban" : "Unban");
+									button.removeAttr("disabled");
+								}, function () {
+									button.text(rid == 16556234 ? "Unban" : "Ban");
+									button.removeAttr("disabled");
 								});
 							}));
 						}
-						forumService.embed(content, role != "Thugs" && role != "Guest" ? Math.max(role == "Member" ? 1 : 3, Math.ceil((postCount + 1) / 1000)) : 0, f.embedSize);
+						forumService.embed(content, role.name != "Thugs" && role.name != "Guest" ? Math.max(role.name == "Member" ? 1 : 3, Math.ceil((postCount + 1) / 1000)) : 0, f.embedSize);
 					});
 				}
 			}).find(">.forum-content-background:first-child").dblclick(function () {

@@ -52,6 +52,7 @@
 				"lib/roblox/audio.js",
 				"lib/roblox/avatar.js",
 				"lib/roblox/trades.js",
+				"lib/roblox/groups.js",
 				"lib/preroblox.js",
 				"middle.js",
 				"content/json.js",
