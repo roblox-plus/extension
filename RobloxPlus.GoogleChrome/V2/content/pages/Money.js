@@ -95,22 +95,22 @@ RPlus.Pages.Money = function () {
 	
 	function cancelAll(callBack) {
 		Roblox.trades.getTradesPaged("outbound", 1, "cacheBust:" + (+new Date)).then(function (trades) {
-			if (trades.count <= 0) {
+			if (trades.data.length <= 0) {
 				callBack();
 				return;
 			}
 			var dcb = 0;
-			trades.trades.forEach(function (trade) {
+			trades.data.forEach(function (trade) {
 				Roblox.trades.decline(trade.id).then(function () {
 					var row = $("a.ViewTradeLink[tradesessionid='" + trade.id + "']");
 					if (row.length) {
 						row.parent().parent().remove();
 					}
-					if (++dcb == trades.trades.length) {
+					if (++dcb == trades.data.length) {
 						cancelAll(callBack);
 					}
 				}, function () {
-					if (++dcb == trades.trades.length) {
+					if (++dcb == trades.data.length) {
 						cancelAll(callBack);
 					}
 				});
