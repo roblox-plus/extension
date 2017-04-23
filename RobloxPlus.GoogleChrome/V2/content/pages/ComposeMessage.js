@@ -61,25 +61,38 @@ RPlus.Pages.ComposeMessage = function () {
 			return;
 		}
 		$("#subject,#body,.message-title>input").attr("disabled", "disabled");
-		privateMessage.send({
-			subject: $("#subject").val(),
-			body: $("#body").val(),
-			id: getRecipients()
-		}, function (s) {
-			var recipients = [];
-			$(".message-title>a").each(function () {
-				var id = Roblox.users.getIdFromUrl($(this).attr("href"));
-				if (s[id]) {
-					recipients.push($(this).text().trim());
-					$(this).remove();
-					delete s[id];
+		var s = {};
+		var ids = getRecipients();
+		function onComplete() {
+			if (Object.keys(s).length == ids.length) {
+				var recipients = [];
+				$(".message-title>a").each(function () {
+					var id = Roblox.users.getIdFromUrl($(this).attr("href"));
+					if (s[id]) {
+						recipients.push($(this).text().trim());
+						$(this).remove();
+						delete s[id];
+					}
+				});
+				if (Object.keys(s).length) {
+					siteUI.feedback({ type: "warning", text: "Failed to send private message to remaining recipients" }).show();
+				} else {
+					siteUI.feedback({ type: "success", text: "Successfully sent message to all recipients (" + recipients.join(", ") + ")" }).show();
 				}
-			});
-			if (Object.keys(s).length) {
-				siteUI.feedback({ type: "warning", text: "Failed to send private message to remaining recipients" }).show();
-			} else {
-				siteUI.feedback({ type: "success", text: "Successfully sent message to all recipients (" + recipients.join(", ") + ")" }).show();
 			}
+		}
+		getRecipients().forEach(function (id) {
+			Roblox.privateMessages.sendMessage({
+				subject: $("#subject").val(),
+				body: $("#body").val(),
+				recipientId: id
+			}).then(function () {
+				s[id] = true;
+				onComplete();
+			}, function () {
+				s[id] = false;
+				onComplete();
+			});
 		});
 	}));
 

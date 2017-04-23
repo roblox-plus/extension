@@ -53,6 +53,7 @@
 				"lib/roblox/avatar.js",
 				"lib/roblox/trades.js",
 				"lib/roblox/groups.js",
+				"lib/roblox/privateMessages.js",
 				"lib/preroblox.js",
 				"middle.js",
 				"content/json.js",

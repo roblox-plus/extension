@@ -208,6 +208,8 @@ Roblox.privateMessages = (function () {
 					message: "HTTP request failed."
 				}]);
 			});
+		}, {
+			queued: true
 		})
 	};
 })();
