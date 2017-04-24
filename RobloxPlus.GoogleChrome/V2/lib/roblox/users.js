@@ -83,6 +83,45 @@ Roblox.users = {
 		rejectExpiry: 5 * 1000,
 		resolveExpiry: 60 * 1000,
 		queued: true
+	}),
+
+	getPresence: $.promise.cache(function (resolve, reject, userIds) {
+		if (!Array.isArray(userIds)) {
+			reject([{
+				code: 0,
+				message: "userIds must be array"
+			}]);
+			return;
+		}
+
+		var presence = {};
+		if (userIds.length <= 0) {
+			resolve(presence);
+		}
+
+		$.post("https://api.roblox.com/users/online-status", { userIds: userIds }).done(function (presences) {
+			presences.UserPresences.forEach(function (report) {
+				presence[report.VisitorId] = {
+					game: report.GameId ? {
+						placeId: report.PlaceId,
+						serverId: report.GameId,
+						name: report.LastLocation
+					} : null,
+					locationName: report.LastLocation,
+					locationType: report.LocationType
+				};
+			});
+			resolve(presence);
+		}).fail(function () {
+			reject([{
+				code: 0,
+				message: "HTTP request failed"
+			}]);
+		});
+	}, {
+		rejectExpiry: 5 * 1000,
+		resolveExpiry: 10 * 1000,
+		queued: true
 	})
 };
 

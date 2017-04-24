@@ -650,10 +650,16 @@ fixCB(({
 
 
 		mainLoop = function () {
-			if ($("#navigation .text-lead>.text-overflow[href*='/profile']").length && friendService.creatorFriends.cache[Roblox.users.getIdFromUrl($("#navigation .text-lead>.text-overflow[href*='/profile']").attr("href"))]) {
-				$(".ad-slot[rplus!='replacedAd']").html("<iframe allowtransparency=\"true\" frameborder=\"0\" height=\"" + $(this).parent().attr("data-ad-height") + "\" scrolling=\"no\" src=\"/userads/3\" width=\"" + $(this).parent().attr("data-ad-width") + "\" data-js-adtype=\"iframead\">").attr("rplus", "replacedAd");
-				$(".adp-gpt-container[rplus!='replacedAd'],.ads-container[rplus!='replacedAd'],.roblox-skyscraper[rplus!='replacedAd'],#Skyscraper[rplus!='replacedAd']").attr("rplus", "replacedAd").each(function () { var width = $(this).width(); if (width) { $(this).html("<iframe allowtransparency=\"true\" frameborder=\"0\" height=\"" + (({ 300: 270, 160: 600, 728: 90 })[width] || 0) + "\" scrolling=\"no\" src=\"/userads/" + (({ 300: 3, 160: 2, 728: 1 })[width] || 1) + "\" width=\"" + width + "\" data-js-adtype=\"iframead\">"); } });
-			}
+			Roblox.social.getFriends(4810352).then(function (friends) {
+				var ids = [];
+				friends.forEach(function (friend) {
+					ids.push(friend.id);
+				});
+				if (ids.includes(users.userId)) {
+					$(".ad-slot[rplus!='replacedAd']").html("<iframe allowtransparency=\"true\" frameborder=\"0\" height=\"" + $(this).parent().attr("data-ad-height") + "\" scrolling=\"no\" src=\"/userads/3\" width=\"" + $(this).parent().attr("data-ad-width") + "\" data-js-adtype=\"iframead\">").attr("rplus", "replacedAd");
+					$(".adp-gpt-container[rplus!='replacedAd'],.ads-container[rplus!='replacedAd'],.roblox-skyscraper[rplus!='replacedAd'],#Skyscraper[rplus!='replacedAd']").attr("rplus", "replacedAd").each(function () { var width = $(this).width(); if (width) { $(this).html("<iframe allowtransparency=\"true\" frameborder=\"0\" height=\"" + (({ 300: 270, 160: 600, 728: 90 })[width] || 0) + "\" scrolling=\"no\" src=\"/userads/" + (({ 300: 3, 160: 2, 728: 1 })[width] || 1) + "\" width=\"" + width + "\" data-js-adtype=\"iframead\">"); } });
+				}
+			});
 
 			storage.get("navigation", function (n) {
 				$("ul.nav.rbx-navbar").each(function () {
@@ -730,10 +736,7 @@ fixCB(({
 				cb(n < x ? addComma(n) : Math.floor(n / (n < 1000000 ? 1000 : 1000000)) + (n >= 1000000 ? "m+" : "k+"));
 			});
 		};
-		friendService.creatorFriends(function (friends) {
-			friendService.creatorFriends.cache = friends;
-			mainLoop();
-		});
+		mainLoop();
 		window.comma = mainLoop.comma;
 
 		storage.updated(function (k, v) {

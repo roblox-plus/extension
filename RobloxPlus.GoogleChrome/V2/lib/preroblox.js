@@ -148,21 +148,6 @@ users = {
 
 
 catalog = {
-	wearableAssetTypeIds: [2, 8, 11, 12, 17, 18, 19, 25, 26, 27, 28, 29, 30, 31, 41, 42, 43, 44, 45, 46, 47],
-	assetOrder: ["Head", "Face", "Gear", "Hat", "T-Shirt", "Shirt", "Pants", "Decal", "Model", "Plugin", "Animation", "Place", "Game Pass", "Audio", "Badge", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Torso", "Package"],
-	genre: { "All": 1, "Scary": 11, "Building": 19, "Horror": 11, "Town and City": 7, "Military": 17, "Comedy": 15, "Medieval": 8, "Adventure": 13, "Sci-Fi": 9, "Naval": 12, "FPS": 20, "RPG": 21, "Sports": 14, "Fighting": 10, "Western": 16 },
-
-	calculateRAP: function (r, p) {
-		r = Number(r) || 0, p = Number(p) || 0;
-		if (!p) {
-			return 0;
-		} else if (!r || r == p) {
-			return p;
-		}
-		return (r > p ? Math.floor : Math.ceil)((r * .9) + (p * .1));
-	},
-	afterTax: function (p) { return round(p - round(p * .3)); },
-
 	info: request.backgroundFunction("catalog.info", compact(function (id, callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
@@ -292,7 +277,7 @@ catalog = {
 							ret.editable = r.CanManage;
 						}).always(fcb);
 					}
-					if (catalog.wearableAssetTypeIds.indexOf(ret.assetTypeId) >= 0) {
+					if (Roblox.catalog.wearableAssetTypeIds.indexOf(ret.assetTypeId) >= 0) {
 						mcb++;
 						outfit.getAssetIds(cid, function (ids) {
 							if (ids) {
@@ -662,92 +647,6 @@ outfit = {
 };
 
 
-foreach({
-	"sell": true,
-	"takeoff": false
-}, function (n, o) {
-	catalog[n] = request.backgroundFunction("catalog." + n, compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		var assetId = Number(arg.id) || 0;
-		var userAssetId = Number(arg.userAssetId) || 0;
-		if (assetId <= 0) {
-			callBack(false);
-			return;
-		}
-		$.post("https://www.roblox.com/asset/toggle-sale", {
-			assetId: assetId,
-			userAssetId: userAssetId,
-			sell: o,
-			price: Number(arg.price) || 0
-		}).done(function (r) {
-			callBack(r.isValid);
-		}).fail(function () {
-			callBack(false);
-		});
-	}));
-});
-
-
-
-friendService = {
-	get: request.backgroundFunction("friendService.get", function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		var ret = {
-			id: type(arg) == "number" ? arg : 0,
-			data: [],
-			success: true
-		};
-		if (friendService.get.cache.get(ret.id)) { callBack(friendService.get.cache.get(ret.id)); }
-		$.get("https://www.roblox.com/users/friends/list-json?pageSize=48103520&imgWidth=100&imgHeight=100&imgFormat=png&userId=" + (ret.id || "")).success(function (r) {
-			for (var n in r.Friends || []) {
-				var o = r.Friends[n];
-				ret.data.push({
-					id: o.UserId,
-					username: o.Username,
-					thumbnail: o.AvatarUri || Roblox.thumbnails.getUserAvatarThumbnailUrl(o.UserId, 3),
-					online: o.IsOnline,
-					game: {
-						id: Number(o.PlaceId) || 0,
-						name: o.PlaceId ? o.LastLocation || "" : "",
-						url: o.AbsolutePlaceURL || ""
-					}
-				});
-			}
-			friendService.get.cache.set(ret.id, ret);
-			ret.id = r.UserId;
-			friendService.get.cache.set(ret.id, ret);
-			callBack(ret);
-		}).fail(function () {
-			ret.success = false;
-			callBack(ret);
-		})
-	}),
-	creatorFriends: request.backgroundFunction("friendService.creatorFriends", compact(function (callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (friendService.creatorFriends.cache) { callBack(friendService.creatorFriends.cache); return; }
-		friendService.creatorFriends.cache = {
-			48103520: "WebGL3D"
-		};
-		friendService.get(48103520, function (friends) {
-			friends.data.forEach(function (friend) {
-				friendService.creatorFriends.cache[friend.id] = friend.username;
-			});
-			callBack(friendService.creatorFriends.cache);
-		});
-	}))
-};
-
-
-
 gameService = {
 	servers: request.backgroundFunction("gameService.servers", compact(function (placeId, callBack) {
 		if (typeof (callBack) != "function") {
@@ -987,7 +886,6 @@ if (ext.isBackground) {
 	users.current.cache = compact.cache(3 * 1000);
 	catalog.info.cache = compact.cache(3 * 1000);
 	catalog.limiteds.cache = compact.cache(10 * 1000);
-	friendService.get.cache = compact.cache(5 * 1000);
 	outfit.getAssetIds.cache = compact.cache(15 * 1000);
 	forumService.cache = compact.cache(5 * 1000);
 

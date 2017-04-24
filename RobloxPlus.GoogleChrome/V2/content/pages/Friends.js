@@ -15,12 +15,14 @@ RPlus.Pages.Friends = function () {
 					foot: "Will not unfollow users in your friends list"
 				}, function (c) {
 					if (!c) { return; }
-					var loading = siteUI.feedback("Unfollowing everyone... (this could take a while)").destroy(function () {
-						siteUI.feedback({ type: "success", text: "Finished unfollowing everybody!" }).hide("destroy").show(false);
-					}).show();
-					friendService.get(id, function (fdata) {
-						var friends = [];
-						for (var n in fdata.data) { friends.push(fdata.data[n].id); }
+					Roblox.social.getFriends(id).then(function (friends) {
+						var loading = siteUI.feedback("Unfollowing everyone... (this could take a while)").destroy(function () {
+							siteUI.feedback({ type: "success", text: "Finished unfollowing everybody!" }).hide("destroy").show(false);
+						}).show();
+						var friendIds = [];
+						friends.forEach(function (friend) {
+							friendIds.push(friend.id);
+						});
 						var removeAll; removeAll = function () {
 							$.get("/users/friends/list-json?pageSize=200&imgWidth=110&imgHeight=110&imgFormat=png&friendsType=Following&userId=" + id).success(function (r) {
 								var mcb = r.Friends && r.Friends.length;
@@ -36,10 +38,10 @@ RPlus.Pages.Friends = function () {
 								};
 								if (mcb) {
 									foreach(r.Friends, function (n, o) {
-										if (friends.indexOf(o.UserId) < 0) {
-											Roblox.social.unfollowUser(o.UserId).then(fcb, fcb);
-										} else {
+										if (friendIds.includes(o.UserId)) {
 											fcb();
+										} else {
+											Roblox.social.unfollowUser(o.UserId).then(fcb, fcb);
 										}
 									});
 								} else {
@@ -48,6 +50,8 @@ RPlus.Pages.Friends = function () {
 							}).fail(removeAll);
 						};
 						removeAll();
+					}, function () {
+						alert("Failed to load friends! Wait a few seconds and try again.");
 					});
 				});
 			}).hide()
@@ -55,19 +59,19 @@ RPlus.Pages.Friends = function () {
 			followFriends = $("<button class=\"btn-control-xs ignore-button\">Follow All Friends</button>").click(function () {
 				confirm.modal("Are you sure you want to follow everyone you're friends with?", function (c) {
 					if (!c) { return; }
-					friendService.get(id, function (fdata) {
+					Roblox.social.getFriends(id).then(function(friends){
 						var dcb = 0;
-						for (var n in fdata.data) {
-							Roblox.social.followUser(fdata.data[n].id).then(function () {
-								if (++dcb == fdata.data.length) {
+						friends.forEach(function (friend) {
+							Roblox.social.followUser(friend.id).then(function () {
+								if (++dcb == friends.length) {
 									siteUI.feedback({ type: "success", text: "Followed all friends!" }).show();
 								}
 							}, function () {
-								if (++dcb == fdata.data.length) {
+								if (++dcb == friends.length) {
 									siteUI.feedback({ type: "success", text: "Followed all friends!" }).show();
 								}
 							});
-						}
+						});
 					});
 				});
 			}).hide()

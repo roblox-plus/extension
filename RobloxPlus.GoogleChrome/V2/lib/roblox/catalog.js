@@ -72,6 +72,19 @@ Roblox.catalog = (function () {
 				assetName = assetName.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "") || "redirect";
 			}
 			return "https://www.roblox.com/catalog/" + assetId + "/" + assetName;
+		},
+
+		calculateAveragePriceAfterSale: function (currentAveragePrice, priceToSellFor) {
+			if (typeof (currentAveragePrice) != "number" || typeof (priceToSellFor) != "number" || priceToSellFor <= 0) {
+				return 0;
+			}
+			if (currentAveragePrice == priceToSellFor) {
+				return currentAveragePrice;
+			}
+			if (currentAveragePrice <= 0) {
+				return priceToSellFor;
+			}
+			return (currentAveragePrice > priceToSellFor ? Math.floor : Math.ceil)((currentAveragePrice * .9) + (priceToSellFor * .1));
 		}
 	};
 })();

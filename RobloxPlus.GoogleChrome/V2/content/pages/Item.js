@@ -234,7 +234,7 @@ RPlus.Pages.Item = function () {
 			if (!rap) {
 				rap = pround($("#item-average-price").text());
 			}
-			answerSpan.text(addComma(catalog.calculateRAP(rap, lowestPrice)));
+			answerSpan.text(addComma(Roblox.catalog.calculateAveragePriceAfterSale(rap, lowestPrice)));
 		}
 		answerSpan.click(function () {
 			var newPrice = pround(prompt("What price would you like to input to calculate future RAP?"));

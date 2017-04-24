@@ -124,43 +124,6 @@ Roblox.social = (function () {
 		}, {
 			resolveExpiry: 60 * 1000,
 			queued: true
-		}),
-		getPresence: $.promise.cache(function (resolve, reject, userIds) {
-			if (!Array.isArray(userIds)) {
-				reject([{
-					code: 0,
-					message: "Invalid userIds"
-				}]);
-				return;
-			}
-			if (userIds.length < 1) {
-				resolve({});
-				return;
-			}
-
-			$.get("https://www.roblox.com/presence/users?userIds=" + userIds.join("&userIds=")).done(function (r) {
-				var presence = {};
-				r.forEach(function (user) {
-					presence[user.UserId] = {
-						userId: user.UserId,
-						isOnline: user.UserPresenceType != 0,
-						game: user.UserPresenceType == 2 ? {
-							id: 0,
-							name: user.LastLocation
-						} : null
-					};
-				});
-				resolve(presence);
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
-			});
-			// https://www.roblox.com/presence/users?userIds=113515332&userIds=13094490
-		}, {
-			resolveExpiry: 30 * 1000,
-			queued: true
 		})
 	};
 })();
