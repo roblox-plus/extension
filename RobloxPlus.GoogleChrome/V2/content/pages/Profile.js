@@ -67,10 +67,6 @@ RPlus.Pages.Profile = function () {
 		$(".profile-stats-container").append($("<li class=\"profile-stat\">").append($("<p class=\"text-label\">").text(o + " Sales")).append(stat = $("<p class=\"text-lead\">").append($("<a href=\"javascript:/* ROBLOX+ */\">[ Load ]</a>").click(function () { load(1); }))));
 	});
 
-	if ($("a.badge-link[href*='Badges.aspx'][title='Administrator']").length) {
-		users.admin(id, function () { });
-	}
-
 	if (($(".btn-friends:not([rplus])>button").text() || "").trim() == "Unfriend") {
 		storage.get("friendNotifier", function (notifier) {
 			if (!notifier.on) { return; }

@@ -150,18 +150,12 @@ RPlus.Pages.ForumAddPost = function () {
 			}
 		});
 	}
-
-	users.admin(true, function (isAdmin) {
-		setInterval(function () {
-			storage.get("forums", function (f) {
-				if (isAdmin) {
-					postStatus(0);
-				} else {
-					postStatus(15 - ((getMil() - (Number(f.floodcheck) || 0)) / 1000));
-				}
-			});
-		}, 250);
-	});
+	
+	setInterval(function () {
+		storage.get("forums", function (f) {
+			postStatus(15 - ((getMil() - (Number(f.floodcheck) || 0)) / 1000));
+		});
+	}, 250);
 
 	$("#ctl00_cphRoblox_Createeditpost1_PostForm_Cancel").attr("type", "button").click(function (e) {
 		e.preventDefault();

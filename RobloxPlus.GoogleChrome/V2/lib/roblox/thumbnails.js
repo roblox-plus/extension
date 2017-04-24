@@ -21,7 +21,7 @@ Roblox.thumbnails = (function(){
 		x = x || "width";
 		y = y || "height";
 		return function(id, size){
-			size = sizes[size || 9];
+			size = sizes[typeof(size) == "number" ? size : 9];
 			return "https://www.roblox.com/" + path + "?" + param + "=" + id + "&" + x + "=" + size.x + "&" + y + "=" + size.y;
 		};
 	}

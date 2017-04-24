@@ -82,13 +82,13 @@ function setupNotifier(run, arg, ret) {
 				setTimeout(ret.run, loop, id);
 			};
 			if (type(arg.storage) != "string" || storage.get(arg.storage)) {
-				users.currentId(function (uid) {
+				Roblox.users.getCurrentUserId().then(function (uid) {
 					if (!arg.userId || uid) {
 						run(go, uid);
 					} else {
 						go();
 					}
-				});
+				}, go);
 			} else {
 				go();
 			}
@@ -311,7 +311,7 @@ forumNotifier = setupNotifier(function (loop, uid) {
 							note = {
 								header: string.clean(lastPost.poster.username + " replied to thread\n" + thread.subject.substring(0, 50)),
 								lite: string.clean(lastPost.body.split("\n")[0]),
-								icon: users.thumbnail(lastPost.poster.username, 3),
+								icon: Roblox.thumbnails.getUserHeadshotThumbnailUrl(lastPost.poster.username, 3),
 								buttons: ["Reply"],
 								clickable: true,
 								robloxSound: Number((storage.get("notifierSounds") || {}).forum) || 0,
@@ -504,7 +504,6 @@ friendNotifier = setupNotifier(function (loop, uid) {
 		if (list.data.length) {
 			for (var n in friendNotifier.cache.data) {
 				if (tag.indexOf(Number(n)) < 0) {
-					//friendNotifier.clicknote({id:n,thumbnail:users.thumbnail(Number(n),3)},"You and "+friendNotifier.cache.data[n].v.username+" are no longer friends");
 					delete friendNotifier.cache.data[n];
 				}
 			}
@@ -729,7 +728,7 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
 	commentTimer.last = getMil();
 	catalog.info(Number(details.requestBody.formData.assetId[0]), function (info) {
 		if (!info.id) { return; }
-		users.currentId(function (uid) {
+		Roblox.users.getCurrentUserId().then(function (uid) {
 			if (uid > 0 && uid != info.creator.id) {
 				commentTimer[uid] = commentTimer[uid] || {};
 				commentTimer.last = getMil();

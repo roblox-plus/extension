@@ -48,7 +48,6 @@ brickColor = {
 
 
 users = {
-	thumbnail: Roblox.thumbnails.getUserAvatarThumbnailUrl,
 	toBC: function (i) {
 		var list = ["NBC", "BC", "TBC", "OBC"];
 		if (type(i) == "string") {
@@ -79,14 +78,7 @@ users = {
 		}
 		return list[Math.min(pround(i), 3)];
 	},
-
-	currentId: function (callBack) {
-		Roblox.users.getCurrentUserId().then(function (id) {
-			callBack(id);
-		}, function () {
-			callBack(0);
-		});
-	},
+	
 	current: request.backgroundFunction("users.current", compact(function (callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
@@ -117,7 +109,7 @@ users = {
 					users.current.cache.set("id", ret.id = o.Recipient.UserId);
 					ret.bc = users.toBC(o.Recipient.BuildersClubStatus);
 					ret.username = o.Recipient.UserName;
-					ret.thumbnail = o.RecipientThumbnail.Url || users.thumbnail(ret.id, 3);
+					ret.thumbnail = o.RecipientThumbnail.Url || Roblox.thumbnails.getUserAvatarThumbnailUrl(ret.id, 3);
 					$.get("https://api.roblox.com/currency/balance").success(function (r) {
 						ret.robux = r.robux;
 						cb(true);
@@ -292,7 +284,7 @@ catalog = {
 					fcb();
 				});
 			}
-			users.currentId(function (cid) {
+			Roblox.users.getCurrentUserId().then(function (cid) {
 				if (cid) {
 					if (ret.creator.id != 1) {
 						mcb++;
@@ -322,7 +314,7 @@ catalog = {
 				} else {
 					fcb();
 				}
-			});
+			}, fcb);
 		}).fail(function () {
 			ret.success = false;
 		}).always(fcb);
@@ -358,7 +350,7 @@ catalog = {
 		};
 
 		if (type(arg.commission) == "number" && arg.price >= 8) {
-			users.currentId(function (id) {
+			Roblox.users.getCurrentUserId().then(function (id) {
 				if (!id) { callBack(0); return; }
 				$.get("https://www.roblox.com/presence/users?userIds=" + id).success(function (r) {
 					if (r[0] && r[0].UserPresenceType != 2) {
@@ -406,7 +398,7 @@ catalog = {
 						fallback();
 					}
 				}).fail(fallback);
-			});
+			}, fallback);
 		} else {
 			fallback();
 		}
@@ -718,7 +710,7 @@ friendService = {
 				ret.data.push({
 					id: o.UserId,
 					username: o.Username,
-					thumbnail: o.AvatarUri || users.thumbnail(o.UserId, 3),
+					thumbnail: o.AvatarUri || Roblox.thumbnails.getUserAvatarThumbnailUrl(o.UserId, 3),
 					online: o.IsOnline,
 					game: {
 						id: Number(o.PlaceId) || 0,

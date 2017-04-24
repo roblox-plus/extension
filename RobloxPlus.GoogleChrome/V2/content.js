@@ -105,12 +105,14 @@ fixCB(({
 
 		forumService.parseSignature = function (sig, callBack) {
 			if (sig.toLowerCase().indexOf("#rap") >= 0) {
-				users.currentId(function (id) {
+				Roblox.users.getCurrentUserId().then(function (id) {
 					Roblox.inventory.getCollectibles(id).then(function (inv) {
 						callBack(forumService.parseSignature.finish(sig.replace(/#rap/gi, addComma(inv.rap))));
 					}, function() {
 						callBack(forumService.parseSignature.finish(sig));
 					});
+				}, function () {
+					callBack(forumService.parseSignature.finish(sig));
 				});
 			} else {
 				callBack(forumService.parseSignature.finish(sig));
@@ -366,7 +368,7 @@ fixCB(({
 							popbox.header.attr("href", url.roblox("/users/" + u.id + "/profile")).text(u.username);
 							popbox.input.val(popbox.current = "user:" + u.username);
 							elem.icon.anchor.attr("href", popbox.header.attr("href"));
-							elem.icon.img.attr("src", users.thumbnail(u.id, 4));
+							elem.icon.img.attr("src", Roblox.thumbnails.getUserAvatarThumbnailUrl(u.id, 4));
 							if (u.bc != "NBC") {
 								elem.icon.label.attr("class", "icon-" + u.bc.toLowerCase() + "-label");
 							}
@@ -475,7 +477,7 @@ fixCB(({
 							elem.div.find("#rppbiPrice>span:last-child")[info.rap ? "show" : "hide"]().text("RAP: " + addComma(info.rap));
 
 							foreach(info.privateSellers, function (n, o) {
-								elem.div.find(">table>tbody").append($("<tr>").append($("<td>").append($("<a>").attr({ "title": o.seller.username, "href": url.roblox("/users/" + o.seller.id + "/profile") }).append($("<img>").attr("src", users.thumbnail(o.seller.id, 0)), o.seller.username)), $("<td>").append("<span class=\"icon-robux\"></span> " + addComma(o.price))));
+								elem.div.find(">table>tbody").append($("<tr>").append($("<td>").append($("<a>").attr({ "title": o.seller.username, "href": url.roblox("/users/" + o.seller.id + "/profile") }).append($("<img>").attr("src", Roblox.thumbnails.getUserHeadshotThumbnailUrl(o.seller.id, 0)), o.seller.username)), $("<td>").append("<span class=\"icon-robux\"></span> " + addComma(o.price))));
 							});
 							elem.div.find(">table")[info.privateSellers.length ? "show" : "hide"]();
 						} else {

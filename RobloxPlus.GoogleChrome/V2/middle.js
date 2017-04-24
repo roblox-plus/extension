@@ -54,26 +54,6 @@ rplusSettings = {
 };
 
 
-
-users.admin = request.backgroundFunction("users.admin", compact(function (id, callBack) {
-	if (typeof (callBack) != "function") {
-		console.warn("callBack not function!");
-		return;
-	}
-	if (type(id) == "number") {
-		if (users.admin.list.indexOf(id) < 0) {
-			users.admin.list.push(id);
-		}
-		callBack();
-	} else {
-		users.currentId(function (id) {
-			callBack(users.admin.list.indexOf(id) >= 0);
-		});
-	}
-}));
-users.admin.list = [];
-
-
 users.fullInventory = request.backgroundFunction("users.fullInventory", compact(function (arg, callBack) {
 	if (typeof (callBack) != "function") {
 		console.warn("callBack not function!");
