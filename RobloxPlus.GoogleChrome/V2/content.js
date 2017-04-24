@@ -362,7 +362,7 @@ fixCB(({
 					elem.div.find("#rppbuRAP>span:last-child,#rppbuItems>span:last-child").text("0");
 					popbox.action.user.resort();
 
-					Roblox.users[typeof(arg) == "string" ? "getByUsername" : "getById"](arg).then(function (u) {
+					Roblox.users[typeof(arg) == "string" ? "getByUsername" : "getByUserId"](arg).then(function (u) {
 						if (popbox.id != i) { return; }
 						if (u.id) {
 							popbox.header.attr("href", url.roblox("/users/" + u.id + "/profile")).text(u.username);
