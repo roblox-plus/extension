@@ -20,6 +20,51 @@ Roblox.inventory = (function () {
 		});
 	}
 
+	function loadUserAssets(userId, assetTypeId, cursor, assetMap) {
+		assetMap = assetMap || {};
+		return new Promise(function (resolve, reject) {
+			$.get("https://www.roblox.com/users/inventory/list-json", {
+				assetTypeId: assetTypeId,
+				itemsPerPage: 100,
+				cursor: cursor || "",
+				userId: userId
+			}).done(function (data) {
+				var assets = [];
+				data.Data.Items.forEach(function (asset) {
+					if (!assetMap.hasOwnProperty(asset.Item.AssetId) && !asset.UserItem.IsRentalExpired) {
+						assetMap[asset.Item.AssetId] = asset;
+						assets.push({
+							id: asset.Item.AssetId,
+							name: asset.Item.Name
+						});
+					}
+				});
+				if (data.Data.nextPageCursor) {
+					loadUserAssets(userId, assetTypeId, data.Data.nextPageCursor, assetMap).then(function (moreAssets) {
+						resolve(assets.concat(moreAssets));
+					}, reject);
+				} else {
+					resolve(assets);
+				}
+			}).fail(function (xhr) {
+				try {
+					var data = JSON.parse(xhr.responseText);
+					reject([
+						{
+							code: 0,
+							message: data.Data || data.error || ""
+						}
+					]);
+				} catch (e) {
+					reject([{
+						code: 0,
+						message: "HTTP request failed"
+					}]);
+				}
+			});
+		});
+	}
+
 	return {
 		userHasAsset: $.promise.cache(function (resolve, reject, userId, assetId) {
 			if (typeof (userId) != "number" || userId <= 0) {
@@ -115,6 +160,15 @@ Roblox.inventory = (function () {
 		}, {
 			rejectExpiry: 1000,
 			resolveExpiry: 1000
+		}),
+
+		getAssets: $.promise.cache(function (resolve, reject, userId, assetTypeId) {
+			loadUserAssets(userId, assetTypeId).then(function (assets) {
+				resolve(assets);
+			}, reject);
+		}, {
+			resolveExpiry: 30 * 1000,
+			queued: true
 		})
 	};
 })();

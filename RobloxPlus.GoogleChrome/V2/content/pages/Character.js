@@ -3,15 +3,13 @@ RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.Character = function () {
 	var lid = 0;
-	var getAssetType = function () {
-		var assetType = $(".AttireCategorySelector_Selected").text();
-		foreach({ "Accessories": "Hat" }, function (n, o) {
-			if (assetType.startsWith(n)) {
-				assetType = Roblox.catalog.assetTypes[Number($("#ctl00_ctl00_cphRoblox_cphMyRobloxContent_AssetTypeDropDownList").val())] || o;
-				return true;
-			}
-		});
-		return assetType;
+	var getAssetTypeId = function () {
+		var assetTypeId = Number($("#ctl00_ctl00_cphRoblox_cphMyRobloxContent_AssetTypeDropDownList").val());
+		if (!assetTypeId) {
+			var wat = $("#ctl00_ctl00_cphRoblox_cphMyRobloxContent_UpdatePanelWardrobe .AttireCategorySelector_Selected").first().text();
+			assetTypeId = Number(array.flip(Roblox.catalog.assetTypes)[string.autoCorrect(wat, Roblox.catalog.assetTypes)]) || 0;
+		}
+		return assetTypeId;
 	};
 	var reset = function () {
 		++lid;
@@ -29,41 +27,42 @@ RPlus.Pages.Character = function () {
 				return;
 			}
 			input.attr("readonly", "readonly");
-			var assetType = getAssetType();
+			var assetTypeId = getAssetTypeId();
 			var i = ++lid;
-			$("#ctl00_ctl00_cphRoblox_cphMyRobloxContent_AttireDataPager_Footer").hide();
-			var content = $("#ctl00_ctl00_cphRoblox_cphMyRobloxContent_UpdatePanelWardrobe .AttireContent").html("");
+			$("#ctl00_ctl00_cphRoblox_cphMyRobloxContent_AttireDataPager_Footer, #ctl00_ctl00_cphRoblox_cphMyRobloxContent_UpdatePanelWardrobe .FooterPager2").hide();
+			var tileGroup = $("<div class=\"TileGroup\">");
+			var content = $("#ctl00_ctl00_cphRoblox_cphMyRobloxContent_UpdatePanelWardrobe .AttireContent").html(tileGroup);
 			var found = {};
-			users.fullInventory({ assetType: assetType, id: users.userId }, function (inv) {
-				if (!inv) {
-					++lid;
-					content.text("An unexpected error with the search, please try again.");
-					input.removeAttr("readonly").val(keyword);
-					return;
-				}
-				if (i == lid && assetType == getAssetType()) {
-					foreach(inv.data, function (n, o) {
-						if (!found[o.id] && o.name.toLowerCase().indexOf(keyword.toLowerCase()) >= 0) {
-							found[o.id] = o;
-							var busy = false;
-							content.append($("<div class=\"Asset\">").append($("<a class=\"AssetThumbnail\" href=\"javascript:/* Wear */\" title=\"click to wear\">").click(function () {
-								if (busy) { return; }
-								busy = true;
-								Roblox.avatar.wearAsset(o.id).then(reset, reset);
-							}).append($("<img>").attr("src", o.thumbnail), $("<div class=\"btn-small btn-neutral\">").text("Wear")), $("<div class=\"AssetDetails\">").append($("<div class=\"AssetName\">").append($("<a>").attr({ "href": "/item.aspx?id=" + o.id, "title": "click to view" }).text(o.name)))));
+			Roblox.inventory.getAssets(users.userId, assetTypeId).then(function (assets) {
+				if (i == lid && assetTypeId == getAssetTypeId()) {
+					assets.forEach(function (asset) {
+						if (asset.name.toLowerCase().indexOf(keyword.toLowerCase()) >= 0) {
+							found[asset.id] = asset;
+							if (tileGroup.find(">.Asset").length == 4) {
+								tileGroup = $("<div class=\"TileGroup\">");
+								content.append(tileGroup);
+							}
+							tileGroup.append($("<div class=\"Asset\">").append($("<a class=\"AssetThumbnail\" href=\"javascript:/* Wear */\" title=\"click to wear\">").click(function () {
+								Roblox.avatar.wearAsset(asset.id).then(reset, reset);
+							}).append(
+								$("<img>").attr("src", Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 4)),
+								$("<div class=\"btn-small btn-neutral\">").text("Wear")),
+								$("<div class=\"AssetDetails\">").append(
+									$("<div class=\"AssetName\">").append(
+										$("<a>").attr({ "href": Roblox.catalog.getAssetUrl(asset.id, asset.name), "title": "click to view" }).text(asset.name)))));
 						}
 					});
-					if (inv.load < 100) {
-						input.val(keyword + " (" + Math.floor(inv.load) + "%)");
-					} else {
-						if (!Object.keys(found).length) {
-							content.text("No items match that search.");
-						}
-						input.removeAttr("readonly").val(keyword);
+					if (!Object.keys(found).length) {
+						content.text("No items match that search.");
 					}
+					input.removeAttr("readonly").val(keyword);
 				} else {
 					input.removeAttr("readonly").val("");
 				}
+			}, function () {
+				++lid;
+				content.text("An unexpected error with the search, please try again.");
+				input.removeAttr("readonly").val(keyword);
 			});
 		}
 	}));
