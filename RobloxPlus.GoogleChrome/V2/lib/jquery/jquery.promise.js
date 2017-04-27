@@ -1,5 +1,5 @@
 ﻿/* jquery.promise.js [03/12/2017] */
-$.promise = (function (properties) {
+$.promise = (function (defaultProperties) {
 	function promiseBase(callBack) {
 		return new Promise(callBack);
 	}
@@ -9,10 +9,10 @@ $.promise = (function (properties) {
 			properties = {};
 		}
 		if (typeof (properties.rejectExpiry) != "number") {
-			properties.rejectExpiry = properties.defaultCacheRejectExpiry;
+			properties.rejectExpiry = defaultProperties.defaultCacheRejectExpiry;
 		}
 		if (typeof (properties.resolveExpiry) != "number") {
-			properties.resolveExpiry = properties.defaultCacheResolveExpiry;
+			properties.resolveExpiry = defaultProperties.defaultCacheResolveExpiry;
 		}
 
 		var cachedPromises = {};
