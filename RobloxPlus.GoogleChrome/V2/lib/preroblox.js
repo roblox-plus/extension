@@ -757,12 +757,10 @@ serialTracker = {
 
 soundService.robloxSound = function (id, callBack) {
 	if (!isCB(callBack)) { return; }
-	catalog.info(Number(id), function (i) {
-		if (i.sound) {
-			callBack(soundService(i.sound, true));
-		} else {
-			callBack();
-		}
+	Roblox.audio.getSoundUrl(Number(id)).then(function (url) {
+		callBack(soundService(url, true));
+	}, function () {
+		callBack();
 	});
 };
 

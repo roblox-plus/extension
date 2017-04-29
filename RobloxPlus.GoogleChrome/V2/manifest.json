@@ -49,6 +49,7 @@
 				"lib/roblox/inventory.js",
 				"lib/roblox/social.js",
 				"lib/roblox/games.js",
+				"lib/roblox/content.js",
 				"lib/roblox/audio.js",
 				"lib/roblox/avatar.js",
 				"lib/roblox/trades.js",

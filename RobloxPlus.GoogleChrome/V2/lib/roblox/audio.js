@@ -2,46 +2,16 @@
 	roblox/audio.js [03/18/2017]
 */
 (window.Roblox || (Roblox = {})).audio = (function () {
-	var soundMap = {};
-
 	var getSoundUrl = $.promise.cache(function (resolve, reject, assetId) {
-		if (typeof (assetId) != "number" || assetId <= 0) {
-			reject([{
-				code: 0,
-				message: "Invalid assetId"
-			}]);
-			return;
-		}
-
-		if (soundMap.hasOwnProperty(assetId)) {
-			resolve(soundMap[assetId]);
-			return;
-		}
-
-		$.get("https://assetgame.roblox.com/asset/", { id: assetId, soundCheck: "RPlus" }).always(function () {
-			if (soundMap.hasOwnProperty(assetId)) {
-				resolve(soundMap[assetId]);
-			} else {
-				reject([{
-					code: 0,
-					message: "Lookup failed"
-				}]);
-			}
-		});
+		Roblox.content.getAssetContentUrl(assetId).then(resolve, reject);
 	}, {
 		resolveExpiry: 30 * 60 * 1000,
 		rejectExpiry: 2 * 60 * 1000
 	});
 
-
-
-	if (ext.isBackground) {
-		chrome.webRequest.onBeforeRedirect.addListener(function (details) {
-			var id = Number((details.url.match(/id=(\d+)/i) || ["", 0])[1]);
-			soundMap[id] = details.redirectUrl;
-			return { cancel: true };
-		}, { urls: ["https://assetgame.roblox.com/asset/?id=*&soundCheck=RPlus"], types: ["xmlhttprequest"] });
-	} else if (ext.isContentScript) {
+	
+	if (ext.isContentScript) {
+		var soundMap = {};
 		$(function () {
 			var dataName = ext.id + "-robloxsound";
 			var attrName = "data-" + dataName;
