@@ -646,35 +646,6 @@ foreach({ "track": "on", "untrack": "" }, function (n, o) {
 });
 
 
-
-serialTracker = {
-	enabled: true,
-	send: {},
-	get: request.backgroundFunction("serialTracker.get", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		var req;
-		var tim = setTimeout(function () { req.abort(); }, 20 * 1000);
-		req = $.get("https://inventory.roblox.com/v1/assets/" + arg.id + "/owners?sortOrder=Asc", { limit: arg.resultsPerPage || 100, cursor: arg.cursor || "" }).success(function (r) {
-			r.success = true;
-			callBack(r);
-		}).fail(function () {
-			callBack({
-				nextPageCursor: "",
-				previousPageCursor: "",
-				success: false,
-				data: []
-			});
-		});
-	}, {
-		queue: true
-	}))
-};
-
-
-
 soundService.robloxSound = function (id, callBack) {
 	if (!isCB(callBack)) { return; }
 	Roblox.audio.getSoundUrl(Number(id)).then(function (url) {

@@ -169,6 +169,26 @@ Roblox.inventory = (function () {
 		}, {
 			resolveExpiry: 30 * 1000,
 			queued: true
+		}),
+
+		getAssetOwners: $.promise.cache(function (resolve, reject, assetId, cursor, sortOrder) {
+			if (typeof (assetId) != "number" || assetId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid assetId"
+				}]);
+				return;
+			}
+
+			$.get("https://inventory.roblox.com/v1/assets/" + assetId + "/owners", { cursor: cursor || "", sortOrder: sortOrder || "Asc", limit: 100 }).done(function (data) {
+				resolve(data);
+			}).fail(function (jxhr, errors) {
+				reject(errors);
+			});
+		}, {
+			queued: true,
+			resolveExpiry: 30 * 1000,
+			rejectExpiry: 10 * 1000
 		})
 	};
 })();

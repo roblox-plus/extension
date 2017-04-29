@@ -41,7 +41,6 @@ foreach({
 		embedding: false,
 		embedSize: 75
 	},
-	"serialTracker": true,
 	"changedLogin": ext.incognito,
 	"groupShoutNotifierList": { 2518656: "ROBLOX+ Fan Group" },
 	"navigation": {
@@ -728,12 +727,6 @@ groupNotifier.run();
 
 /* Extension Icon */
 chrome.browserAction.setTitle({ title: ext.manifest.name + " " + ext.manifest.version });
-
-
-
-/* Serial Tracker Support */
-serialTracker.enabled = !!storage.get("serialTracker");
-storage.updated(function (k, v) { if (k == "serialTracker") { serialTracker.enabled = !!v; } });
 
 
 

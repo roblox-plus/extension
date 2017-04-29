@@ -91,28 +91,23 @@ RPlus.Pages.Item = function () {
 
 
 	if (item.creator.id == 1 && item.assetTypeId != 1 && item.assetTypeId != 4) {
-		serialTracker.tab = createTab("Owners", "v");
-
 		var loaderId = 0;
 		var currentPage = 1;
 		var previousPageCursor = "";
 		var nextPageCursor = "";
 		var busy = false;
-		serialTracker.resultsPerPage = 20;
-		serialTracker.loadPage = function (cursor) {
-			if (busy) {
-				return true;
-			}
-			busy = true;
-			serialTracker.tab.content.html("").append($("<div>").hide());
-			serialTracker.tab.message("Loading...");
-			serialTracker.get({
-				id: id,
-				results: serialTracker.resultsPerPage,
-				cursor: cursor
-			}, function (data) {
-				serialTracker.tab.input.attr("placeholder", "Page " + currentPage);
-				if (data.success) {
+
+		serialTracker = {
+			tab: createTab("Owners", "v"),
+			loadPage: function (cursor) {
+				if (busy) {
+					return true;
+				}
+				busy = true;
+				serialTracker.tab.content.html("").append($("<div>").hide());
+				serialTracker.tab.message("Loading...");
+				Roblox.inventory.getAssetOwners(id, cursor, "Asc").then(function (data) {
+					serialTracker.tab.input.attr("placeholder", "Page " + currentPage);
 					serialTracker.tab.message("");
 					nextPageCursor = data.nextPageCursor || "";
 					previousPageCursor = data.previousPageCursor || "";
@@ -129,14 +124,14 @@ RPlus.Pages.Item = function () {
 						));
 					});
 					busy = false;
-				} else {
+				}, function (errors) {
 					serialTracker.tab.message("Failed to load owners, trying again...");
 					setTimeout(function () {
 						busy = false;
 						serialTracker.loadPage(cursor);
-					}, 1000);
-				}
-			});
+					}, 2000);
+				});
+			}
 		};
 
 		function nextPage() {
