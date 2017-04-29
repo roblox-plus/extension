@@ -65,6 +65,31 @@ RPlus.Pages.Game = function () {
 
 	$(".rbx-gear-item-delete>.icon-delete").addClass("icon-alert");
 
+	function buildServerListItem(placeId, o) {
+		var ret = $("<li class=\"section-content rbx-game-server-item\">").attr("data-gameid", o.id).prepend($("<div class=\"section-left rbx-game-server-details\">").prepend(
+			"<div class=\"rbx-game-status rbx-game-server-status\">" + o.playerList.length + " of " + o.capacity + " Players Max</div>"
+			+ "<div class=\"rbx-game-server-alert" + (o.isSlow ? "" : " hidden") + "\"><span class=\"icon-remove\"></span>Slow Game</div>"
+		).append(
+			$("<a class=\"btn-full-width btn-control-xs rbx-game-server-join\" data-placeid=\"" + placeId + "\">Join</a>").click(function () {
+				console.log("heyhey");
+				Roblox.games.launch({
+					placeId: placeId,
+					serverId: o.id
+				});
+			})
+			));
+		var playerList = $("<div class=\"section-right rbx-game-server-players\">");
+		o.playerList.forEach(function (player) {
+			playerList.append($("<span class=\"avatar avatar-headshot-sm player-avatar\">").append(
+				$("<a class=\"avatar-card-link\" href=\"/users/" + o.id + "/profile\">").attr({
+					title: player.username,
+					href: Roblox.users.getProfileUrl(player.id)
+				}).append($("<img class=\"avatar-card-image\">").attr("src", Roblox.thumbnails.getUserHeadshotThumbnailUrl(player.id, 0)))
+			));
+		});
+		return ret.append(playerList);
+	}
+
 	$("#game-instances").prepend($("<div class=\"container-list\">").prepend("<div class=\"container-header\"><h3>Server Search</h3></div>").append(
 		$("<input class=\"input-field\" maxlength=\"25\" placeholder=\"Username\" style=\"height: 24px;margin-bottom: 5px;\"/>").blur(function () {
 			var el = $(this);
@@ -84,20 +109,28 @@ RPlus.Pages.Game = function () {
 								servers.search.ul.text("User either is not playing this game, or their privacy settings won't allow you to search for them.");
 								//return;
 							}
-							gameService.servers(placeId, function (data) {
-								if (id != servers.search.id) { return; }
-								if (data.loading) {
-									foreach(data.loading, function (n, o) {
-										for (var n in o.players) {
-											if (o.players[n].id == u.id) {
-												servers.search.ul.append(gameService.li(placeId, o));
-												break;
-											}
-										}
-									});
-								} else if (!data.data.length) {
-									servers.search.ul.text("No server with " + u.username + " found!");
+							Roblox.games.getAllRunningServers(placeId).then(function (serverList) {
+								if (id != servers.search.id) {
+									return;
 								}
+								var serversFound = [];
+								serverList.forEach(function (server) {
+									for (var pn = 0; pn < server.playerList.length; pn++) {
+										if (server.playerList[pn].id == u.id) {
+											servers.search.ul.append(buildServerListItem(placeId, server));
+											serversFound.push(server);
+											break;
+										}
+									}
+									if (serversFound.length <= 0) {
+										servers.search.ul.text("No server with " + u.username + " found!");
+									}
+								});
+							}, function () {
+								if (id != servers.search.id) {
+									return;
+								}
+								servers.search.ul.text("Failed to load servers.");
 							});
 						}).fail(function () {
 							servers.search.ul.text("Game status check failed (is user deleted?)");
