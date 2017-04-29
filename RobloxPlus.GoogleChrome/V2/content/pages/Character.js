@@ -75,9 +75,10 @@ RPlus.Pages.Character = function () {
 	for (var y = 0; y < 8; y++) {
 		for (var x = 0; x < 8; x++) {
 			(function (c) {
+				var color = brickColor.new(c);
 				colorFrame.append($("<div>").attr("title", c).css({ "top": (43.75 * y) + "px", "left": (43.75 * x) + "px", "background-color": brickColor.css(c) }).click(function () {
 					if (colorCallback) {
-						colorCallback(c);
+						colorCallback(color);
 					}
 				}));
 			})(brickColor.smallList[colorFrame.find(">div").length]);
@@ -109,17 +110,17 @@ RPlus.Pages.Character = function () {
 	$("#ctl00_ctl00_cphRoblox_cphMyRobloxContent_ColorChooser").append(skin.click(function () {
 		pickColor(function (c) {
 			if (c) {
-				var dcb = 0;
-				foreach(["head", "torso", "rightArm", "leftArm", "rightLeg", "leftLeg"], function (n, o) {
-					outfit.bodyColor({ part: o, color: c }, function (s) {
-						if (s) {
-							$("div[rplus='" + o + "']").attr("title", c).find(">div").css("background-color", brickColor.css(c));
-						}
-						if (++dcb == 6) {
-							reset();
-						}
-					});
+				var map = {};
+				var pieces = ["head", "torso", "rightArm", "leftArm", "rightLeg", "leftLeg"];
+				pieces.forEach(function (piece) {
+					map[piece + "ColorId"] = c.number;
 				});
+				Roblox.avatar.setBodyColors(map).then(function () {
+					pieces.forEach(function (piece) {
+						$("div[rplus='" + piece + "']").attr("title", c.name).find(">div").css("background-color", brickColor.css(c));
+					});
+					reset();
+				}, reset);
 			}
 		});
 	}));
@@ -135,10 +136,10 @@ RPlus.Pages.Character = function () {
 				button.click(function () {
 					pickColor(function (c) {
 						if (c) {
-							outfit.bodyColor({ part: bodyPart, color: c }, function (s) {
-								if (s) {
-									reset();
-								}
+							Roblox.avatar.getAvatarAppearance(users.userId).then(function (appearance) {
+								var bodyColors = $.extend({}, appearance.bodyColors);
+								bodyColors[bodyPart + "ColorId"] = c.number;
+								Roblox.avatar.setBodyColors(bodyColors).then(reset);
 							});
 						}
 					});

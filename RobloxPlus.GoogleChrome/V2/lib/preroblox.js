@@ -279,12 +279,15 @@ catalog = {
 					}
 					if (Roblox.catalog.wearableAssetTypeIds.indexOf(ret.assetTypeId) >= 0) {
 						mcb++;
-						outfit.getAssetIds(cid, function (ids) {
-							if (ids) {
-								ret.wearing = ids.indexOf(ret.id) >= 0;
+						Roblox.avatar.getAvatarAppearance(cid).then(function (appearance) {
+							for (var n = 0; n < appearance.assets.length; n++) {
+								if (appearance.assets[n].id == ret.id) {
+									ret.wearing = true;
+									break;
+								}
 							}
 							fcb();
-						});
+						}, fcb);
 						if (!ret.limited) {
 							Roblox.inventory.userHasAsset(cid, ret.id).then(function(isOwner) {
 								ret.owner = isOwner;
@@ -530,123 +533,6 @@ catalog.info.parse = function (hold) {
 
 
 
-outfit = {
-	get: request.backgroundFunction("outfit.get", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		var ret = {
-			id: 0,
-			username: "",
-			hats: []
-		};
-		foreach({ shirt: 0, pants: 0, face: 0, head: 1, leftLeg: 1, rightLeg: 1, leftArm: 1, rightArm: 1, tshirt: 0, torso: 1, gear: 0 }, function (n, o) {
-			ret[n] = {
-				id: 0,
-				name: "",
-				thumbnail: "",
-				url: ""
-			};
-			if (o) {
-				ret[n].color = "";
-			}
-		});
-		function onUserLoad(u) {
-			ret.username = u.username;
-			if (ret.id = u.id) {
-				$.get("https://assetgame.roblox.com/Asset/AvatarAccoutrements.ashx?userId=" + u.id).success(function (r) {
-					r = r.split(";");
-					var mcb = r.length;
-					var dcb = 0;
-					var cb = function (s) { if (++dcb == mcb) { callBack(ret); } };
-					$.get(r.shift()).success(function (r) {
-						foreach({
-							"LeftArmColor": "leftArm",
-							"RightArmColor": "rightArm",
-							"LeftLegColor": "leftLeg",
-							"RightLegColor": "rightLeg",
-							"TorsoColor": "torso",
-							"HeadColor": "head"
-						}, function (n, o) {
-							ret[o].color = brickColor.new((r.match((n + "\">(\\\d+)").regex("i")) || ["", ""])[1]).name;
-						});
-					}).always(cb);
-					for (var n in r) {
-						catalog.info(Number(url.param("id", r[n])) || 0, function (info) {
-							var push = {};
-							info.assetType = ({ "right leg": "rightLeg", "left leg": "leftLeg", "right arm": "rightArm", "left arm": "leftArm" })[info.assetType.lower()] || info.assetType.lower();
-							foreach(["id", "name", "thumbnail", "url"], function (n, o) { push[o] = info[o]; });
-							if (info.assetType == "hat") {
-								ret.hats.push(push);
-							} else {
-								ret[info.assetType] = push;
-							}
-							cb();
-						});
-					}
-				}).fail(function () {
-					callBack(ret);
-				});
-			} else {
-				callBack(ret);
-			}
-		}
-		if (typeof (arg) == "string") {
-			Roblox.users.getByUsername(arg).then(onUserLoad, function () {
-				callBack(ret);
-			});
-		} else {
-			Roblox.users.getByUserId(arg).then(onUserLoad, function () {
-				callBack(ret);
-			});
-		}
-	}, {
-		queue: true
-	})),
-	getAssetIds: request.backgroundFunction("outfit.getAssetIds", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (type(arg) != "number") {
-			callBack();
-			return;
-		} else if (outfit.getAssetIds.cache.get(arg)) {
-			callBack(outfit.getAssetIds.cache.get(arg));
-			return;
-		}
-		$.get("https://assetgame.roblox.com/Asset/AvatarAccoutrements.ashx?userId=" + arg).success(function (r) {
-			var ret = [];
-			(r.match(/\?id=\d+/g) || []).forEach(function (id) {
-				ret.push(Number(id.substring(4)));
-			});
-			outfit.getAssetIds.cache.set(arg, ret);
-			callBack(ret);
-		}).fail(function () {
-			callBack();
-		});
-	})),
-	bodyColor: request.backgroundFunction("outfit.bodyColor", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (type(arg) != "object" || type(arg.part) != "string" || !arg.hasOwnProperty("color")) { callBack(false); return; }
-		$.get("https://avatar.roblox.com/v1/avatar").done(function (r) {
-			r.bodyColors[arg.part + "ColorId"] = brickColor.new(arg.color).number;
-			$.post("https://avatar.roblox.com/v1/avatar/set-body-colors", r.bodyColors).done(function (r) {
-				callBack(r.success);
-			}).fail(function () {
-				callBack(false);
-			});
-		}).fail(function () {
-			callBack(false);
-		});
-	}))
-};
-
-
 gameService = {
 	servers: request.backgroundFunction("gameService.servers", compact(function (placeId, callBack) {
 		if (typeof (callBack) != "function") {
@@ -886,7 +772,6 @@ if (ext.isBackground) {
 	users.current.cache = compact.cache(3 * 1000);
 	catalog.info.cache = compact.cache(3 * 1000);
 	catalog.limiteds.cache = compact.cache(10 * 1000);
-	outfit.getAssetIds.cache = compact.cache(15 * 1000);
 	forumService.cache = compact.cache(5 * 1000);
 
 

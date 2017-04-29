@@ -415,27 +415,20 @@ fixCB(({
 								}
 							});
 
-							outfit.get(u.id, function (outfit) {
-								if (popbox.id != i) { return; }
-								var display = function (o) {
-									if (type(o) == "object" && o.id) {
-										elem.outfit.append($("<li class=\"list-item\">").attr("data-type", o.type).append(
-											$("<a class=\"store-card\">").attr("href", "/item.aspx?id=" + o.id).attr("title", o.name).append(
-												$("<img class=\"store-card-thumb\">").attr("src", Roblox.thumbnails.getAssetThumbnailUrl(o.id, 3)),
-												$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").text(o.name))
-											)
-										));
-									}
-								};
-								foreach(outfit, function (n, o) {
-									if (n == "hats") {
-										for (var x in o) {
-											display(o[x]);
-										}
-									} else if (n != "id" && n != "username") {
-										display(o);
-									}
+							Roblox.avatar.getAvatarAppearance(u.id).then(function (apperance) {
+								if (popbox.id != i) {
+									return;
+								}
+								apperance.assets.forEach(function (asset) {
+									elem.outfit.append($("<li class=\"list-item\">").attr("data-assettypeid", asset.assetTypeId).append(
+										$("<a class=\"store-card\">").attr("href", Roblox.catalog.getAssetUrl(asset.id, asset.name)).attr("title", asset.name).append(
+											$("<img class=\"store-card-thumb\">").attr("src", Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 3)),
+											$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").text(asset.name))
+										)
+									));
 								});
+							}, function () {
+								// do we care?
 							});
 						} else {
 							popbox.header.text("No user found");
