@@ -171,19 +171,15 @@ catalog = {
 			"new": false,
 			offsale: {},
 			onsale: {},
-			owner: false,
 			privateSellers: [],
 			productId: 0,
 			rap: 0,
 			remaining: 0,
 			robuxPrice: 0,
 			sales: 0,
-			sound: "",
 			speed: 0,
 			success: true,
-			thumbnail: "",
-			timer: 0,
-			wearing: false
+			thumbnail: ""
 		};
 		ret.url = ret.id >= 1818 ? "https://www.roblox.com/item.aspx?id=" + ret.id : "";
 
@@ -254,7 +250,6 @@ catalog = {
 			if (ret.assetTypeId == 3 || ret.limited) {
 				mcb++;
 				$.get(ret.url).done(function (r) {
-					ret.sound = (r.match(/data-mediathumb-url="(https:\/\/c\d\.rbxcdn\.com\/\w+)"/i) || ["", ""])[1];
 					r = $._(r);
 					r.find("#sell-modal-content .serial-dropdown>option").each(function () {
 						ret.offsale[Number($(this).val())] = Number($(this).text().replace(/\D+/g, "")) || 0;
@@ -262,7 +257,6 @@ catalog = {
 					r.find("#take-off-sale-modal-content .serial-dropdown>option").each(function () {
 						ret.onsale[Number($(this).val())] = Number($(this).text().replace(/\D+/g, "")) || 0;
 					});
-					ret.owner = (Object.keys(ret.onsale).length + Object.keys(ret.offsale).length) > 0;
 					fcb();
 				}).fail(function () {
 					ret.success = false;
@@ -270,35 +264,10 @@ catalog = {
 				});
 			}
 			Roblox.users.getCurrentUserId().then(function (cid) {
-				if (cid) {
-					if (ret.creator.id != 1) {
-						mcb++;
-						$.get("https://api.roblox.com/users/" + cid + "/canmanage/" + ret.id).success(function (r) {
-							ret.editable = r.CanManage;
-						}).always(fcb);
-					}
-					if (Roblox.catalog.wearableAssetTypeIds.indexOf(ret.assetTypeId) >= 0) {
-						mcb++;
-						Roblox.avatar.getAvatarAppearance(cid).then(function (appearance) {
-							for (var n = 0; n < appearance.assets.length; n++) {
-								if (appearance.assets[n].id == ret.id) {
-									ret.wearing = true;
-									break;
-								}
-							}
-							fcb();
-						}, fcb);
-						if (!ret.limited) {
-							Roblox.inventory.userHasAsset(cid, ret.id).then(function(isOwner) {
-								ret.owner = isOwner;
-								fcb();
-							}, fcb);
-						} else {
-							fcb();
-						}
-					} else {
-						fcb();
-					}
+				if (cid && ret.creator.id != 1) {
+					$.get("https://api.roblox.com/users/" + cid + "/canmanage/" + ret.id).success(function (r) {
+						ret.editable = r.CanManage;
+					}).always(fcb);
 				} else {
 					fcb();
 				}
@@ -510,13 +479,10 @@ catalog.info.parse = function (hold) {
 		"new": hold.find(".asset-status-icon.status-New").length > 0,
 		offsale: {},
 		onsale: {},
-		owner: hold.find(".item-name-container>div>.label-checkmark").length > 0,
 		productId: Number(hold.find(".PurchaseButton[data-product-id]").data("product-id")) || 0,
 		robuxPrice: Number(hold.find(".icon-robux-price-container .text-robux-lg").text().replace(/\D+/g, "")) || 0,
-		sound: (hold.html().match(/data-mediathumb-url="(https:\/\/c\d\.rbxcdn\.com\/\w+)"/i) || ["", ""])[1],
 		thumbnail: hold.find("#AssetThumbnail>.thumbnail-span>img").attr("src"),
-		url: hold.find("link[rel='canonical']").attr("href"),
-		wearing: hold.find(".toggle-wear").text().trim() == "Wear"
+		url: hold.find("link[rel='canonical']").attr("href")
 	};
 	ret.assetType = ret.assetType.replace("Accessory", " Accessory");
 
