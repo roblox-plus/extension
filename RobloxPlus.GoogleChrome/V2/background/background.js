@@ -757,13 +757,12 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
 commentTimer = type(storage.get("commentTimer")) == "object" ? storage.get("commentTimer") : {};
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
 	commentTimer.last = getMil();
-	catalog.info(Number(details.requestBody.formData.assetId[0]), function (info) {
-		if (!info.id) { return; }
+	Roblox.catalog.getAssetInfo(Number(details.requestBody.formData.assetId[0])).then(function(asset) {
 		Roblox.users.getCurrentUserId().then(function (uid) {
-			if (uid > 0 && uid != info.creator.id) {
+			if (uid > 0 && uid != asset.creator.id) {
 				commentTimer[uid] = commentTimer[uid] || {};
 				commentTimer.last = getMil();
-				commentTimer[uid][info.id] = getMil();
+				commentTimer[uid][asset.id] = getMil();
 			}
 		});
 	});

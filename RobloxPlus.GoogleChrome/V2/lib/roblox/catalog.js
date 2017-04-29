@@ -85,7 +85,49 @@ Roblox.catalog = (function () {
 				return priceToSellFor;
 			}
 			return (currentAveragePrice > priceToSellFor ? Math.floor : Math.ceil)((currentAveragePrice * .9) + (priceToSellFor * .1));
-		}
+		},
+
+		getAssetInfo: $.promise.cache(function (resolve, reject, assetId) {
+			if (typeof (assetId) != "number" || assetId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid assetId"
+				}]);
+				return;
+			}
+			
+			$.get("https://api.roblox.com/marketplace/productinfo", { assetId: assetId }).done(function (r) {
+				var remaining = Number(r.Remaining) || 0;
+				var sales = Number(r.Sales) || 0;
+				resolve({
+					id: r.AssetId,
+					name: r.Name,
+					assetTypeId: r.AssetTypeId,
+					assetType: Roblox.catalog.assetTypes[r.AssetTypeId],
+					productId: r.ProductId,
+					description: r.Description,
+					creator: {
+						id: r.Creator.CreatorTargetId,
+						name: r.Creator.Name,
+						type: r.Creator.CreatorType
+					},
+					robuxPrice: Number(r.PriceInRobux) || 0,
+					sales: sales,
+					isForSale: r.IsForSale,
+					isLimited: r.IsLimited || r.IsLimitedUnique,
+					isLimitedUnique: r.IsLimitedUnique,
+					remaining: remaining,
+					stock: r.IsLimitedUnique ? remaining + sales : null,
+					buildersClubMembershipType: r.MinimumMembershipLevel
+				});
+			}).fail(function (jxhr, errors) {
+				reject(errors);
+			});
+		}, {
+			queued: true,
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 5 * 1000
+		})
 	};
 })();
 

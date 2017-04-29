@@ -250,12 +250,14 @@ RPlus.Pages.Item = function () {
 			var spans = $(".item-note.has-price-label>span");
 			if (spans.length == 2 && loop) {
 				loop = function () {
-					catalog.info(id, function (info) {
-						if (info.name) {
-							spans.first().text("Limited quantity: " + addComma(info.sales) + " ");
-							spans.last().text("/ " + addComma(info.sales + info.remaining));
+					Roblox.catalog.getAssetInfo(id).then(function (asset) {
+						spans.first().text("Limited quantity: " + global.addCommas(asset.sales) + " ");
+						spans.last().text("/ " + global.addCommas(asset.stock));
+						if (asset.remaining > 0) {
 							setTimeout(loop, 2500);
 						}
+					}, function () {
+						setTimeout(loop, 2500);
 					});
 				};
 				loop();

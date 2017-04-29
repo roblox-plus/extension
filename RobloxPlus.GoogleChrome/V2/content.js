@@ -181,15 +181,13 @@ fixCB(({
 				var anc = $(this);
 				var u = anc.attr("href") || "";
 				if (u.match(/-item\?/) || u.match(/\/item\.aspx\?/)) {
-					catalog.info(Number(url.param("id", u)), function (info) {
-						if (info.success) {
-							if (info.assetType == "Audio") {
-								anc.text(" " + info.name.trim()).before(soundService.robloxSound.button(info.id));
-							} else if ((info.assetType == "Image" || info.assetType == "Decal") && maxImages-- > 0) {
-								anc.html("").append($("<img>").css({ "width": size + "px", "height": size + "px" }).attr("alt", u).attr("title", info.name).attr("src", info.thumbnail));
-							} else if (info.assetType == "Image" || info.assetType == "Decal") {
-								anc.text(info.name);
-							}
+					Roblox.catalog.getAssetInfo(Roblox.catalog.getIdFromUrl(u)).then(function (asset) {
+						if (asset.assetType == "Audio") {
+							anc.text(" " + asset.name.trim()).before(soundService.robloxSound.button(asset.id));
+						} else if ((asset.assetType == "Image" || asset.assetType == "Decal") && maxImages-- > 0) {
+							anc.html("").append($("<img>").css({ "width": size + "px", "height": size + "px" }).attr("alt", u).attr("title", asset.name).attr("src", Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 9)));
+						} else if (asset.assetType == "Image" || asset.assetType == "Decal") {
+							anc.text(asset.name);
 						}
 					});
 				}
