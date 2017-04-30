@@ -20,7 +20,12 @@ RPlus.Pages.ForumShowPost = function () {
 			var tracked = $("#ctl00_cphRoblox_PostView1_ctl00_TrackThread").prop("checked");
 			$("#ctl00_cphRoblox_PostView1_ctl00_TrackThread").parent().html("").addClass("rplusforumcheckbox").append(
 				$("<label>").append($("<input type=\"checkbox\">").prop("checked", tracked).change(function () {
-					forumService[tracked = $(this).prop("checked") ? "track" : "untrack"](id, function () { });
+					console.log("tick", $(this).prop("checked"));
+					if ($(this).prop("checked")) {
+						Roblox.forum.trackThread(id);
+					} else {
+						Roblox.forum.untrackThread(id);
+					}
 				})).append(" Track Thread")
 			).append("<br>").append(
 				$("<label>").append($("<input type=\"checkbox\">").prop("checked", f.blacklist.indexOf(id) >= 0).change(function () {

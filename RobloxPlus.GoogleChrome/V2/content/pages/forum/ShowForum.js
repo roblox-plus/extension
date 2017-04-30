@@ -22,8 +22,12 @@ RPlus.Pages.ShowForum = function () {
 		trackLab.text("Your Tracked Threads (" + $("#ctl00_cphRoblox_MyForums1_ctl00_ThreadTracking>tbody>.forum-table-row").each(function () {
 			var id = Number(url.param("postid", $(this).find(".post-list-subject").attr("href")));
 			$(this).find(">td:first-child>img").replaceWith($("<input type=\"checkbox\" checked=\"checked\">").change(function () {
-				forumService[$(this).prop("checked") ? "track" : "untrack"](id, function () { });
 				trackLab.text("Your Tracked Threads (" + $("#ctl00_cphRoblox_MyForums1_ctl00_ThreadTracking>tbody>.forum-table-row>td>input:checked").length + ")");
+				if ($(this).prop("checked")) {
+					Roblox.forum.trackThread(id);
+				} else {
+					Roblox.forum.untrackThread(id);
+				}
 			}));
 		}).length + ")");
 	}

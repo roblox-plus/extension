@@ -557,27 +557,6 @@ forumService = {
 	}
 };
 
-foreach({ "track": "on", "untrack": "" }, function (n, o) {
-	forumService[n] = request.backgroundFunction("forumService." + n, compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (type(arg) != "number") { callBack(false); return; }
-		$.get(arg = "https://forum.roblox.com/Forum/ShowPost.aspx?PostID=" + arg).success(function (r) {
-			r = $._(r);
-			$.post(arg, {
-				"ctl00$cphRoblox$PostView1$ctl00$TrackThread": o,
-				__EVENTTARGET: "ctl00$cphRoblox$PostView1$ctl00$TrackThread",
-				__VIEWSTATE: r.find("#__VIEWSTATE").val(),
-				__EVENTVALIDATION: r.find("#__EVENTVALIDATION").val()
-			}, function (r, s) { callBack(s == "success"); });
-		}).fail(function () {
-			callBack(false);
-		});
-	}));
-});
-
 
 soundService.robloxSound = function (id, callBack) {
 	if (!isCB(callBack)) { return; }

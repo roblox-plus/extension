@@ -57,6 +57,7 @@
 				"lib/roblox/privateMessages.js",
 				"lib/roblox/resellers.js",
 				"lib/roblox/develop.js",
+				"lib/roblox/forum.js",
 				"lib/preroblox.js",
 				"middle.js",
 				"content/json.js",
