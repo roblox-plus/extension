@@ -243,14 +243,9 @@ catalog = {
 					fcb();
 				}, fcb);
 			}
-			Roblox.users.getCurrentUserId().then(function (cid) {
-				if (cid && ret.creator.id != 1) {
-					$.get("https://api.roblox.com/users/" + cid + "/canmanage/" + ret.id).success(function (r) {
-						ret.editable = r.CanManage;
-					}).always(fcb);
-				} else {
-					fcb();
-				}
+			Roblox.develop.canManage(ret.id).then(function (canManage) {
+				ret.editable = canManage;
+				fcb();
 			}, fcb);
 		}).fail(function () {
 			ret.success = false;

@@ -114,6 +114,7 @@ Roblox.catalog = (function () {
 					robuxPrice: Number(r.PriceInRobux) || 0,
 					sales: sales,
 					isForSale: r.IsForSale,
+					isFree: r.IsPublicDomain,
 					isLimited: r.IsLimited || r.IsLimitedUnique,
 					isLimitedUnique: r.IsLimitedUnique,
 					remaining: remaining,

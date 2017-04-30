@@ -101,6 +101,7 @@
     <Content Include="V2\lib\roblox\avatar.js" />
     <Content Include="V2\lib\roblox\catalog.js" />
     <Content Include="V2\lib\roblox\content.js" />
+    <Content Include="V2\lib\roblox\develop.js" />
     <Content Include="V2\lib\roblox\games.js" />
     <Content Include="V2\lib\roblox\groups.js" />
     <Content Include="V2\lib\roblox\inventory.js" />

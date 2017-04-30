@@ -18,23 +18,28 @@ RPlus.Pages.Develop = function () {
 			if (views.indexOf(v) < 0) { return; }
 			$(".item-table:not([rplus])").attr("rplus", getMil()).each(function () {
 				var row = $(this);
-				catalog.info(Number(row.attr("data-item-id")), function (info) {
-					if (!info.editable) { return; }
-					var onsale = info.free || info.robuxPrice;
-					row.find(".details-table tbody").append(users.userId == 2533795 || users.userId == 77907390 ? $("<tr>").append($("<button style=\"font-size: 11px;\">Clear Description</button>").click(function () {
-						var button = $(this).text("...");
-						catalog.update({ id: info.id, description: "" }, function (s) {
-							button.text(s ? "Cleared Description" : "Clear Description");
-						});
-					})) : "").find(">tr:first-child").prepend($("<td class=\"activate-cell\">").append($("<a class=\"place-" + (onsale ? "" : "in") + "active\" href=\"javascript:/* Change Status */\">").text((onsale ? "On" : "Off") + "sale").click(function () {
-						var button = $(this);
-						var x = (onsale = !onsale);
-						catalog.update((v == 2 || v == 11 || v == 12) ? { id: info.id, robux: x ? 1 : 0 } : { id: info.id, free: x }, function (s) {
-							if (s) {
-								button.attr("class", "place-" + (x ? "" : "in") + "active").text((x ? "On" : "Off") + "sale");
-							}
-						});
-					})));
+				var assetId = row.data("item-id");
+				Roblox.develop.canManage(assetId).then(function (canManage) {
+					if (!canManage) {
+						return;
+					}
+					Roblox.catalog.getAssetInfo(assetId).then(function (asset) {
+						var onsale = asset.isFree || asset.robuxPrice;
+						row.find(".details-table tbody").append(users.userId == 2533795 || users.userId == 77907390 ? $("<tr>").append($("<button style=\"font-size: 11px;\">Clear Description</button>").click(function () {
+							var button = $(this).text("...");
+							catalog.update({ id: asset.id, description: "" }, function (s) {
+								button.text(s ? "Cleared Description" : "Clear Description");
+							});
+						})) : "").find(">tr:first-child").prepend($("<td class=\"activate-cell\">").append($("<a class=\"place-" + (onsale ? "" : "in") + "active\" href=\"javascript:/* Change Status */\">").text((onsale ? "On" : "Off") + "sale").click(function () {
+							var button = $(this);
+							var x = (onsale = !onsale);
+							catalog.update((v == 2 || v == 11 || v == 12) ? { id: asset.id, robux: x ? 1 : 0 } : { id: asset.id, free: x }, function (s) {
+								if (s) {
+									button.attr("class", "place-" + (x ? "" : "in") + "active").text((x ? "On" : "Off") + "sale");
+								}
+							});
+						})));
+					});
 				});
 			});
 		}, 250);
