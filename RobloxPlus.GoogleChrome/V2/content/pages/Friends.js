@@ -16,9 +16,7 @@ RPlus.Pages.Friends = function () {
 				}, function (c) {
 					if (!c) { return; }
 					Roblox.social.getFriends(id).then(function (friends) {
-						var loading = siteUI.feedback("Unfollowing everyone... (this could take a while)").destroy(function () {
-							siteUI.feedback({ type: "success", text: "Finished unfollowing everybody!" }).hide("destroy").show(false);
-						}).show();
+						Roblox.ui.feedback("Unfollowing everyone... (this could take a while)", "info", 5000);
 						var friendIds = [];
 						friends.forEach(function (friend) {
 							friendIds.push(friend.id);
@@ -32,7 +30,7 @@ RPlus.Pages.Friends = function () {
 										if (r.TotalFriends > 200) {
 											removeAll();
 										} else {
-											loading.destroy();
+											Roblox.ui.feedback("Finished unfollowing everybody!", "success");
 										}
 									}
 								};
@@ -45,7 +43,7 @@ RPlus.Pages.Friends = function () {
 										}
 									});
 								} else {
-									loading.destroy();
+									Roblox.ui.feedback("Finished unfollowing everybody!", "success");
 								}
 							}).fail(removeAll);
 						};
@@ -64,11 +62,11 @@ RPlus.Pages.Friends = function () {
 						friends.forEach(function (friend) {
 							Roblox.social.followUser(friend.id).then(function () {
 								if (++dcb == friends.length) {
-									siteUI.feedback({ type: "success", text: "Followed all friends!" }).show();
+									Roblox.ui.feedback("Followed all friends!", "success", 5000);
 								}
 							}, function () {
 								if (++dcb == friends.length) {
-									siteUI.feedback({ type: "success", text: "Followed all friends!" }).show();
+									Roblox.ui.feedback("Followed all friends!", "success", 5000);
 								}
 							});
 						});

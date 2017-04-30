@@ -113,6 +113,7 @@
     <Content Include="V2\lib\roblox\social.js" />
     <Content Include="V2\lib\roblox\thumbnails.js" />
     <Content Include="V2\lib\roblox\trades.js" />
+    <Content Include="V2\lib\roblox\ui.js" />
     <Content Include="V2\lib\roblox\users.js" />
     <Content Include="V2\lib\roblox\xsrfHandler.js" />
     <Content Include="V2\middle.js" />

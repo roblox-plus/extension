@@ -58,6 +58,7 @@
 				"lib/roblox/resellers.js",
 				"lib/roblox/develop.js",
 				"lib/roblox/forum.js",
+				"lib/roblox/ui.js",
 				"lib/preroblox.js",
 				"middle.js",
 				"content/json.js",

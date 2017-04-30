@@ -27,7 +27,7 @@ RPlus.Pages.Inventory = function () {
 									console.error(e);
 									item.css("opacity", "1").find("a").removeAttr("target");
 									button.show();
-									siteUI.feedback({ type: "warning", text: "Failed to remove " + name + " from your inventory" }).hide("destroy").show();
+									Roblox.ui.feedback("Failed to remove " + name + " from your inventory", "warning", 5000);
 								});
 							}
 						});

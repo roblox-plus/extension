@@ -721,60 +721,6 @@ if (ext.isBackground) {
 			ret.modal = modal;
 			$("body").append(modal.container);
 			return ret;
-		},
-
-		feedback: function (arg) {
-			if (siteUI.version != 2) {
-				console.error("No support for siteUI.feedback on this page.");
-				return;
-			}
-			arg = type(arg) == "string" ? { text: arg } : arg;
-			arg.type = type(arg.type) == "string" ? arg.type : "loading"; // success, warning, loading
-			var cbs = { show: [], hide: [], destroy: [] };
-			var id = 0;
-			var ret; ret = {
-				show: function (timeout) {
-					if (isCB(timeout)) { cbs.show.push(timeout); return ret; }
-					var i = ++id;
-					if (!ret.container.find(".alert").hasClass("on")) {
-						for (var n in cbs.show) { cbs.show[n](ret); }
-					}
-					ret.container.find(".alert").addClass("on");
-					if (timeout !== false) {
-						setTimeout(function () {
-							if (id == i) {
-								ret.hide();
-							}
-						}, timeout || arg.timeout || 5000);
-					}
-				},
-				hide: function (cb) {
-					if (isCB(cb)) { cbs.hide.push(cb); return ret; } else if (cb == "destroy") { cbs.hide.push(ret.destroy); return ret; }
-					if (ret.container.find(".alert").hasClass("on")) {
-						setTimeout(function () {
-							for (var n in cbs.hide) { cbs.hide[n](ret); }
-						}, 250);
-						ret.container.find(".alert").removeClass("on");
-					}
-				},
-				destroy: function (cb) {
-					if (isCB(cb)) { cbs.hide.push(cb); return ret; }
-					if (ret.container.find(".alert").hasClass("on")) {
-						ret.hide("destroy").hide();
-					} else {
-						ret.container.remove();
-						for (var n in cbs.destroy) { cbs.destroy[n](ret); }
-					}
-				}
-			};
-
-			$("body").append(ret.container = $("<div class=\"sg-system-feedback\">").append(
-				$("<div class=\"alert-system-feedback\">").append(
-					$("<div class=\"alert alert-" + arg.type + "\">").append($("<span class=\"alert-content\">")[arg.html ? "html" : "text"](arg.html || arg.text)).append($("<span class=\"icon-close-white\"></span>").click(ret.hide))
-				)
-			));
-
-			return ret;
 		}
 	};
 

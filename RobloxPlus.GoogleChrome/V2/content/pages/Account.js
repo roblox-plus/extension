@@ -625,20 +625,14 @@ RPlus.Pages.Account = function () {
 		if (grantedPermission) {
 			return;
 		}
-		var feedback;
-		feedback = siteUI.feedback({
-			type: "warning",
-			html: $("<a>").click(function (e) {
-				e.preventDefault();
-				request.send({ request: "startBlockingMaliciousContent" }, function (granted) {
-					if (granted) {
-						feedback.hide();
-					}
-				});
-			}).text("For an extra layer of protection please enable the malicious content blocker"),
-			timeout: 60 * 1000
-		});
-		feedback.show();
+		var html = $("<a href=\"javascript:/* Enable Malicious Content Blocker */\">").click(function (e) {
+			request.send({ request: "startBlockingMaliciousContent" }, function (granted) {
+				if (granted) {
+					feedback.hide();
+				}
+			});
+		}).text("For an extra layer of protection please enable the malicious content blocker");
+		Roblox.ui.feedback(html, "warning", 60 * 1000, true);
 	});
 
 	return {};

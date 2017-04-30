@@ -22,7 +22,7 @@ RPlus.Pages.ComposeMessage = function () {
 				addRecipient.input.show();
 			}
 		}, function () {
-			siteUI.feedback({ type: "warning", text: "User not found." }).show();
+			Roblox.ui.feedback("User not found.", "warning", 5000);
 		});
 	}
 	function getRecipients() {
@@ -75,9 +75,9 @@ RPlus.Pages.ComposeMessage = function () {
 					}
 				});
 				if (Object.keys(s).length) {
-					siteUI.feedback({ type: "warning", text: "Failed to send private message to remaining recipients" }).show();
+					Roblox.ui.feedback("Failed to send private message to remaining recipients", "warning", 5000);
 				} else {
-					siteUI.feedback({ type: "success", text: "Successfully sent message to all recipients (" + recipients.join(", ") + ")" }).show();
+					Roblox.ui.feedback("Successfully sent message to all recipients (" + recipients.join(", ") + ")", "success", 10 * 1000);
 				}
 			}
 		}
