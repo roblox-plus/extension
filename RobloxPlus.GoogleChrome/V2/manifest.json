@@ -86,6 +86,7 @@
 				"/content/pages/forum/ShowForum.js",
 				"/content/pages/forum/ShowPost.js",
 				"/content/pages/forum/AddPost.js",
+				"/content/pages/Avatar.js",
 				"/content/loadPages.js"
 			],
 			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*", "*://forum.roblox.com/*" ],
