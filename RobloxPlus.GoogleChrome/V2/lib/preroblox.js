@@ -169,8 +169,6 @@ catalog = {
 			lowestPrice: 0,
 			name: "",
 			"new": false,
-			offsale: {},
-			onsale: {},
 			privateSellers: [],
 			productId: 0,
 			rap: 0,
@@ -219,49 +217,31 @@ catalog = {
 			ret.sales = Number(r.Sales) || 0;
 			ret.thumbnail = Roblox.thumbnails.getAssetThumbnailUrl(ret.id, 4);
 
-			ret.url = "https://www.roblox.com/catalog/" + ret.id + "/" + (ret.name.replace(/\W+/g, "-").replace(/^-/, "").replace(/-$/, ""));
+			ret.url = Roblox.catalog.getAssetUrl(ret.id, ret.name);
 
 			if (ret.limited = r.IsLimited || (ret.limitedUnique = r.IsLimitedUnique)) {
 				mcb += 2;
-				catalog.limiteds(function (limiteds) {
-					var lim = limiteds[ret.id];
-					if (lim) {
-						ret.rap = lim.rap;
-					}
+				Roblox.resellers.getResaleData(ret.id).then(function (data) {
+					ret.rap = data.averagePrice;
 					fcb();
-				});
-				$.get("https://www.roblox.com/asset/resellers?maxRows=6&startIndex=0&productId=" + ret.productId).success(function (r) {
-					(r.data && r.data.Resellers || []).forEach(function (seller) {
-						if (!ret.lowestPrice) {
-							ret.lowestPrice = seller.Price;
-						}
+				}, fcb);
+				Roblox.resellers.getResellers(ret.id).then(function (resellers) {
+					if (resellers.data.length > 0) {
+						ret.lowestPrice = resellers.data[0].price;
+					}
+					resellers.data.forEach(function (sale) {
 						ret.privateSellers.push({
-							price: seller.Price,
+							price: sale.price,
 							seller: {
-								id: seller.SellerId,
-								username: seller.SellerName
+								id: sale.seller.id,
+								username: sale.seller.name
 							},
-							userAssetId: seller.UserAssetId,
-							serial: Number(seller.SerialNumber) || 0
+							userAssetId: sale.userAssetId,
+							serial: Number(sale.serialNumber) || 0
 						});
 					});
-				}).always(fcb);
-			}
-			if (ret.assetTypeId == 3 || ret.limited) {
-				mcb++;
-				$.get(ret.url).done(function (r) {
-					r = $._(r);
-					r.find("#sell-modal-content .serial-dropdown>option").each(function () {
-						ret.offsale[Number($(this).val())] = Number($(this).text().replace(/\D+/g, "")) || 0;
-					});
-					r.find("#take-off-sale-modal-content .serial-dropdown>option").each(function () {
-						ret.onsale[Number($(this).val())] = Number($(this).text().replace(/\D+/g, "")) || 0;
-					});
 					fcb();
-				}).fail(function () {
-					ret.success = false;
-					fcb();
-				});
+				}, fcb);
 			}
 			Roblox.users.getCurrentUserId().then(function (cid) {
 				if (cid && ret.creator.id != 1) {
@@ -477,8 +457,6 @@ catalog.info.parse = function (hold) {
 		limitedUnique: hold.find("#AssetThumbnail .icon-limited-unique-label").length > 0,
 		name: hold.find("#item-container").data("item-name"),
 		"new": hold.find(".asset-status-icon.status-New").length > 0,
-		offsale: {},
-		onsale: {},
 		productId: Number(hold.find(".PurchaseButton[data-product-id]").data("product-id")) || 0,
 		robuxPrice: Number(hold.find(".icon-robux-price-container .text-robux-lg").text().replace(/\D+/g, "")) || 0,
 		thumbnail: hold.find("#AssetThumbnail>.thumbnail-span>img").attr("src"),
@@ -487,12 +465,6 @@ catalog.info.parse = function (hold) {
 	ret.assetType = ret.assetType.replace("Accessory", " Accessory");
 
 	ret.assetTypeId = Number(array.flip(Roblox.catalog.assetTypes)[ret.assetType]) || 0;
-	hold.find("#sell-modal-content .serial-dropdown>option").each(function () {
-		ret.offsale[Number($(this).val())] = Number($(this).text().replace(/\D+/g, "")) || 0;
-	});
-	hold.find("#take-off-sale-modal-content .serial-dropdown>option").each(function () {
-		ret.onsale[Number($(this).val())] = Number($(this).text().replace(/\D+/g, "")) || 0;
-	});
 
 	return ret;
 };
