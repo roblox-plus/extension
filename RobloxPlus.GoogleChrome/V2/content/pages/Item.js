@@ -182,24 +182,26 @@ RPlus.Pages.Item = function () {
 		assetContentTab.content.parent().css("padding", "10px");
 		assetContentTab.firstLoad(function () {
 			assetContentTab.message("Loading asset contents...");
-			catalog.getAssetContents(id, function (data) {
-				console.log(data);
-				assetContentTab.count(data.contents.length);
-				assetContentTab.message(data.contents.length ? "" : "This asset has no external content.");
-				data.contents.forEach(function (assetId) {
-					var title = "Content";
-					if (data.textures.indexOf(assetId) >= 0) {
-						title = "Texture";
-					} else if (data.meshes.indexOf(assetId) >= 0) {
-						title = "Mesh";
-					}
+			Roblox.content.getDependentAssets(id).then(function (assets) {
+				console.log(assets);
+				assetContentTab.count(assets.length);
+				assetContentTab.message(assets.length ? "" : "This asset has no dependent content.");
+				assets.forEach(function (asset) {
 					assetContentTab.content.append($("<li class=\"list-item\">").append($("<div class=\"store-card\">").append(
-						$("<a>").attr({ "href": "/catalog/" + assetId + "/" + title, "target": "_blank" }).append(
-							$("<img>").attr("src", Roblox.thumbnails.getAssetThumbnailUrl(assetId, 4)),
-							$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", title).text(title))
+						$("<a>").attr({
+							"href": Roblox.catalog.getAssetUrl(asset.id, asset.name),
+							"target": "_blank"
+						}).append(
+							$("<img>").attr({
+								src: Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 4),
+								title: asset.name
+							}),
+							$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", asset.assetType).text(asset.assetType))
 						)
 					)));
 				});
+			}, function () {
+				assetContentTab.message("Failed to load asset contents.");
 			});
 		});
 	}

@@ -54,51 +54,6 @@ rplusSettings = {
 };
 
 
-catalog.getAssetContents = request.backgroundFunction("catalog.getAssetContents", function (id, callBack) {
-	if (typeof (callBack) != "function") {
-		console.warn("callBack not function!");
-		return;
-	}
-	var ret = {
-		textures: [],
-		meshes: [],
-		contents: []
-	};
-	$.get("https://assetgame.roblox.com/asset?id=" + id).done(function (r) {
-		window.temp1 = r;
-		(r.match(/"TextureI?d?".*=\s*\d+/gi) || r.match(/"TextureI?d?".*rbxassetid:\/\/\d+/gi) || []).forEach(function (tex) {
-			tex = Number(tex.match(/(\d+)$/)[1]);
-			ret.textures.push(tex);
-			ret.contents.push(tex);
-		});
-		(r.match(/"MeshId".*=\s*\d+/gi) || r.match(/MeshId.*rbxassetid:\/\/\d+/gi) || []).forEach(function (mesh) {
-			mesh = Number(mesh.match(/(\d+)$/)[1]);
-			ret.meshes.push(mesh);
-			ret.contents.push(mesh);
-		});
-		if (r.match(/^\d+;?/)) {
-			r.split(";").forEach(function (assetId) {
-				assetId = Number(assetId);
-				if (assetId) {
-					ret.contents.push(assetId);
-				}
-			});
-		} else {
-			(r.match(/asset\/?\?\s*id\s*=\s*\d+/gi) || r.match(/rbxassetid:\/\/\d+/gi) || []).forEach(function (assetId) {
-				assetId = Number(assetId.match(/(\d+)$/)[1]);
-				if (assetId && ret.contents.indexOf(assetId) < 0) {
-					ret.contents.push(assetId);
-				}
-			});
-		}
-		callBack(ret);
-	}).fail(function () {
-		callBack(ret);
-	});
-});
-
-
-
 Roblox.trades.openSettingBasedTradeWindow = function (userId, counterTradeId) {
 	return new Promise(function (resolve, reject) {
 		storage.get("tradeTab", function (on) {
