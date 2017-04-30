@@ -240,5 +240,8 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# Custom Ignore
 /Chrome/
 /RobloxPlus.GoogleChrome/V2/ROBLOX+.zip
+/RobloxPlus.GoogleChrome/V3/
