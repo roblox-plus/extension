@@ -804,13 +804,13 @@ if (browser.name == "Chrome") {
 		chrome.webRequest.onCompleted.addListener(listener, { types: ["main_frame"], urls: ["*://*.roblox.com/*"] });
 	}
 })(storage.get("startupNotification"), function (startnote) {
-	users.current(function (u, note) {
+	Roblox.users.getAuthenticatedUser().then(function (user) {
 		for (var n in startnote.names) { ext.tts.replacements.push([RegExp.escape(n).regex("gi"), startnote.names[n]]); }
 		var note = $.notification({
 			speachGender: "male",
 			title: ext.manifest.name + " started",
-			context: u.username ? "Hello, " + u.username + "!" : "You're currently signed out",
-			speak: u.id ? "Hello, " + u.username : "",
+			context: user ? "Hello, " + user.username + "!" : "You're currently signed out",
+			speak: user ? "Hello, " + user.username : "",
 			buttons: [
 				"Problems? Suggestions? Message me!"
 			],

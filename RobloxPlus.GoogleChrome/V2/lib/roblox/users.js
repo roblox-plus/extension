@@ -27,6 +27,16 @@ Roblox.users = {
 		});
 	}),
 
+	getAuthenticatedUser: $.promise.cache(function (resolve, reject) {
+		this.getCurrentUserId().then(function (authenticatedUserId) {
+			if (authenticatedUserId <= 0) {
+				resolve();
+				return;
+			}
+			Roblox.users.getByUserId(authenticatedUserId).then(resolve, reject);
+		}, reject);
+	}),
+
 	getByUserId: $.promise.cache(function (resolve, reject, userId) {
 		if (typeof (userId) != "number" || userId <= 0) {
 			reject([{

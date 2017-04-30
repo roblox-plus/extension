@@ -694,29 +694,44 @@ fixCB(({
 			}
 
 			storage.get("navcounter", function (x) {
+				// they're not really dummies, but ya know I need something to know when to set the timeout for mainLoop
+				var dummyCounter = 0;
+				var dummyGoal = 1;
+				function upgradeTheDummy() {
+					if (++dummyCounter == dummyGoal) {
+						setTimeout(mainLoop, 500);
+					}
+				}
 				if (x) {
-					users.current(function (u) {
-						if (!u.id) { setTimeout(mainLoop, 500); return; }
-						if (u.bc != "NBC") {
+					Roblox.users.getAuthenticatedUser().then(function (user) {
+						if (!user) {
+							setTimeout(mainLoop, 500);
+							return;
+						}
+						if (user.bc != "NBC") {
+							dummyGoal++;
 							Roblox.trades.getTradesPaged("inbound", 1).then(function (trades) {
 								$("#nav-trade .notification-blue").attr("title", trades.count);
-								setTimeout(mainLoop, 500);
-							}, function () {
-								setTimeout(mainLoop, 500);
-							});
-						} else {
-							setTimeout(mainLoop, 500);
+								upgradeTheDummy();
+							}, upgradeTheDummy);
 						}
-						$("#nav-message .notification-blue").attr("title", u.messages.unread);
-						$("#nav-friends .notification-blue").attr("title", u.friendRequests);
-						var orig = ($("#nav-robux-balance").first().html() || "").split("<br>");
-						mainLoop.comma(u.robux, function (t) {
-							$("#nav-robux-amount").text(t);
-							$("#nav-robux-balance").html(addComma(u.robux) + " ROBUX" + (orig.length > 1 ? "<br>$" + (u.robux * .0025).toFixed(2) : ""));
-						});
-					});
+						dummyGoal++;
+						Roblox.navigation.getNavigationCounters().then(function (counters) {
+							$("#nav-message .notification-blue").attr("title", counters.unreadMessageCount);
+							$("#nav-friends .notification-blue").attr("title", counters.friendRequestCount);
+							upgradeTheDummy();
+						}, upgradeTheDummy);
+						Roblox.economy.getCurrencyBalance().then(function (currency) {
+							var orig = ($("#nav-robux-balance").first().html() || "").split("<br>");
+							mainLoop.comma(currency.robux, function (t) {
+								$("#nav-robux-amount").text(t);
+								$("#nav-robux-balance").html(addComma(currency.robux) + " ROBUX" + (orig.length > 1 ? "<br>$" + (currency.robux * .0025).toFixed(2) : ""));
+							});
+							upgradeTheDummy();
+						}, upgradeTheDummy);
+					}, upgradeTheDummy);
 				} else {
-					setTimeout(mainLoop, 500);
+					upgradeTheDummy();
 				}
 			});
 		};

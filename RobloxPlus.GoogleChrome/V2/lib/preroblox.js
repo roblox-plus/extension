@@ -77,72 +77,7 @@ users = {
 			return "NBC";
 		}
 		return list[Math.min(pround(i), 3)];
-	},
-	
-	current: request.backgroundFunction("users.current", compact(function (callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		var ret = { success: true, "username": "", "id": 0, "robux": 0, "messages": { "read": 0, "unread": 0, "total": 0 }, "friendRequests": 0, "bc": "NBC" };
-		if (users.current.cache.get("json")) {
-			callBack(users.current.cache.get("json"));
-			return;
-		}
-		var cb = function (s) {
-			if (ret.success = s) {
-				users.current.cache.set("id", ret.id);
-				users.current.cache.set("json", ret);
-			} else {
-				ret.id = 0;
-			}
-			callBack(ret);
-		};
-		$.get("https://www.roblox.com/messages/api/get-messages?messageTab=0&pageSize=1").success(function (r) {
-			if (type(r) != "object") { cb(true); return; }
-			$.get("https://api.roblox.com/incoming-items/counts").success(function (counts) {
-				ret.messages.unread = counts.unreadMessageCount;
-				ret.friendRequests = counts.friendRequestsCount;
-				ret.messages.total = Math.max(round(r.TotalCollectionSize), ret.messages.unread);
-				var o = r.Collection[0];
-				if (o) {
-					users.current.cache.set("id", ret.id = o.Recipient.UserId);
-					ret.bc = users.toBC(o.Recipient.BuildersClubStatus);
-					ret.username = o.Recipient.UserName;
-					ret.thumbnail = o.RecipientThumbnail.Url || Roblox.thumbnails.getUserAvatarThumbnailUrl(ret.id, 3);
-					$.get("https://api.roblox.com/currency/balance").success(function (r) {
-						ret.robux = r.robux;
-						cb(true);
-					}).fail(function () {
-						cb(false);
-					});
-				} else {
-					$.get("https://www.roblox.com/mobileapi/userinfo").success(function (r) {
-						users.current.cache.set("id", ret.id = r.UserID);
-						ret.username = r.UserName;
-						ret.robux = r.RobuxBalance;
-						ret.thumbnail = r.ThumbnailUrl;
-						if (r.IsAnyBuildersClubMember) {
-							Roblox.users.getByUserId(r.UserID).then(function (u) {
-								ret.bc = u.bc;
-								cb(true);
-							}, function () {
-								cb(false);
-							});
-						} else {
-							cb(true);
-						}
-					}).fail(function () {
-						cb(false);
-					});
-				}
-			}).fail(function () {
-				cb(false);
-			});
-		}).fail(function () {
-			cb(false);
-		});
-	}))
+	}
 };
 
 
@@ -570,7 +505,6 @@ soundService.robloxSound = function (id, callBack) {
 
 
 if (ext.isBackground) {
-	users.current.cache = compact.cache(3 * 1000);
 	catalog.info.cache = compact.cache(3 * 1000);
 	catalog.limiteds.cache = compact.cache(10 * 1000);
 	forumService.cache = compact.cache(5 * 1000);

@@ -306,19 +306,23 @@ RPlus.Pages.Account = function () {
 						placeholder: "Leaving blank will disable speaking",
 						width: 250,
 						storage: function (v) {
-							users.current(function (u) {
-								if (u.username) {
+							Roblox.users.getAuthenticatedUser().then(function (user) {
+								if (user) {
 									storage.get("startupNotification", function (x) {
 										x = type(x) == "object" ? x : {};
 										x.names = type(x.names) == "object" ? x.names : {};
 										if (isCB(v)) {
-											v(x.names.hasOwnProperty(u.username.toLowerCase()) ? x.names[u.username.toLowerCase()] : u.username);
+											v(x.names.hasOwnProperty(user.username.toLowerCase()) ? x.names[user.username.toLowerCase()] : user.username);
 										} else {
-											x.names[u.username.toLowerCase()] = v;
+											x.names[user.username.toLowerCase()] = v;
 											storage.set("startupNotification", x);
 										}
 									});
 								} else if (isCB(v)) {
+									v("");
+								}
+							}, function (errors) {
+								if (isCB(v)) {
 									v("");
 								}
 							});
