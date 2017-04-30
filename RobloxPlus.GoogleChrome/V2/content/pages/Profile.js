@@ -21,7 +21,9 @@ RPlus.Pages.Profile = function () {
 				$(this).find(">button").removeClass("btn-unfollow");
 			}).click(function () {
 				var fake = $(this);
-				confirm.modal("Are you sure you want to unfriend " + username + "?", function (c) {
+				Roblox.ui.confirm({
+					bodyText: "Are you sure you want to unfriend " + username + "?"
+				}).then(function(c) {
 					if (c) {
 						fake.remove();
 						original.show().find(">button")[0].click();
@@ -87,12 +89,15 @@ RPlus.Pages.Profile = function () {
 						});
 					} else {
 						console.log("block");
-						confirm.modal("Stop receiving friend notifications for " + username + "?", function (s) {
-							if (!s) { return; }
-							notifier.blocked.push(id);
-							storage.set("friendNotifier", notifier, function () {
-								button.text("Notifier: Off");
-							});
+						Roblox.ui.confirm({
+							bodyText: "Stop receiving friend notifications for " + username + "?"
+						}).then(function(s) {
+							if (s) {
+								notifier.blocked.push(id);
+								storage.set("friendNotifier", notifier, function () {
+									button.text("Notifier: Off");
+								});
+							}
 						});
 					}
 				});

@@ -17,8 +17,10 @@ RPlus.Pages.Inventory = function () {
 					thumb.append($("<span class=\"icon-alert\">").click(function (e) {
 						e.preventDefault();
 						var button = $(this);
-						confirm.modal("Are you sure you want to remove " + name + " from your inventory?", function (c) {
-							if (c) {
+						Roblox.ui.confirm({
+							bodyText: "Are you sure you want to remove " + name + " from your inventory?"
+						}).then(function (a) {
+							if (a) {
 								button.hide();
 								item.css("opacity", ".25").find("a").attr("target", "_blank");
 								Roblox.inventory.delete(id).then(function () {

@@ -10,11 +10,13 @@ RPlus.Pages.Friends = function () {
 
 		$(".friends-content>button").first().after(
 			unfollowAll = $("<button class=\"btn-fixed-width btn-control-xs ignore-button\">Unfollow All</button>").click(function () {
-				confirm.modal({
-					text: "Are you sure you want to unfollow everyone?",
-					foot: "Will not unfollow users in your friends list"
-				}, function (c) {
-					if (!c) { return; }
+				Roblox.ui.confirm({
+					bodyText: "Are you sure you want to unfollow everyone?",
+					footNoteText: "Will not unfollow users in your friends list"
+				}).then(function (c) {
+					if (!c) {
+						return;
+					}
 					Roblox.social.getFriends(id).then(function (friends) {
 						Roblox.ui.feedback("Unfollowing everyone... (this could take a while)", "info", 5000);
 						var friendIds = [];
@@ -55,8 +57,12 @@ RPlus.Pages.Friends = function () {
 			}).hide()
 		).after(
 			followFriends = $("<button class=\"btn-control-xs ignore-button\">Follow All Friends</button>").click(function () {
-				confirm.modal("Are you sure you want to follow everyone you're friends with?", function (c) {
-					if (!c) { return; }
+				Roblox.ui.confirm({
+					bodyText: "Are you sure you want to follow everyone you're friends with?"
+				}).then(function (c) {
+					if (!c) {
+						return;
+					}
 					Roblox.social.getFriends(id).then(function(friends){
 						var dcb = 0;
 						friends.forEach(function (friend) {
