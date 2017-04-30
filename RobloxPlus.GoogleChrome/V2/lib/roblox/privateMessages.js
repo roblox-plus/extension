@@ -7,17 +7,11 @@ Roblox.privateMessages = (function () {
 	var privateMessageBoxes = { "inbox": 0, "sent": 1, "archive": 3 };
 
 	return {
-		getMessagesPage: $.promise.cache(function (resolve, reject, messageBox, pageNumber, count) {
+		getMessagesPage: $.promise.cache(function (resolve, reject, messageBox, pageNumber) {
 			if (typeof (pageNumber) != "number" || pageNumber <= 0) {
 				reject([{
 					code: 0,
 					message: "Invalid pageNumber"
-				}]);
-				return;
-			} else if (typeof (count) != "number" || count <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid count"
 				}]);
 				return;
 			} else if (!privateMessageBoxes.hasOwnProperty(messageBox)) {
@@ -34,7 +28,7 @@ Roblox.privateMessages = (function () {
 				data: []
 			};
 			$.get("https://www.roblox.com/messages/api/get-messages", {
-				pageSize: count,
+				pageSize: 20,
 				messageTab: privateMessageBoxes[messageBox],
 				pageNumber: pageNumber
 			}).done(function (r) {
@@ -60,11 +54,11 @@ Roblox.privateMessages = (function () {
 						reportAbuseUrl: msg.IsReportAbuseDisplayed ? msg.AbuseReportAbsoluteUrl : ""
 					});
 				});
-				if (page < r.TotalPages) {
-					data.nextPage = page + 1;
+				if (pageNumber < r.TotalPages) {
+					data.nextPage = pageNumber + 1;
 				}
-				if (page > 1) {
-					data.previousPage = page - 1;
+				if (pageNumber > 1) {
+					data.previousPage = pageNumber - 1;
 				}
 				resolve(data);
 			}).fail(function () {
@@ -207,9 +201,9 @@ Roblox.privateMessages = (function () {
 					code: 0,
 					message: "HTTP request failed."
 				}]);
-			});
+				});
 		}, {
-			queued: true
+				queued: true
 		})
 	};
 })();
