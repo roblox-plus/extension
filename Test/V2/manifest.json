@@ -1,0 +1,138 @@
+{
+	"version": "2.2.56",
+	"name": "ROBLOX+",
+	"short_name": "ROBLOX+",
+	"description": "Adds features and notifiers made by WebGL3D to the ROBLOX website",
+
+	"icons": {
+		"128": "/images/icons/icon_128x128.png",
+		"16": "/images/icons/icon_16x16.png",
+		"48": "/images/icons/icon_64x64.png"
+	},
+
+
+	"background": {
+		"page": "/background/background.html"
+	},
+
+	"content_scripts": [
+		{
+			"js": [ "theme.js" ],
+			"css": [
+				"/css/icons.css",
+				"/css/hljs.css",
+				"/css/style.css",
+				"/css/themes/obc.css",
+				"/css/themes/easter.css"
+			],
+			"matches": [ "*://*.roblox.com/*" ],
+			"run_at": "document_start"
+		},
+
+		{
+			"js": [
+				"lib/jquery/jquery.js",
+				"lib/highlight.pack.js",
+				"lib/global.js",
+				"lib/jquery/jquery.trigger.js",
+				"lib/roblox/xsrfHandler.js",
+				"lib/roblox/apiSiteContentHandler.js",
+				"lib/prefunc.js",
+				"lib/prext.js",
+				"lib/jquery/jquery.cache.js",
+				"lib/jquery/jquery.promise.js",
+				"lib/jquery/jquery.notifications.js",
+				"lib/roblox/Roblox.js",
+				"lib/roblox/thumbnails.js",
+				"lib/roblox/users.js",
+				"lib/roblox/catalog.js",
+				"lib/roblox/inventory.js",
+				"lib/roblox/social.js",
+				"lib/roblox/games.js",
+				"lib/roblox/content.js",
+				"lib/roblox/audio.js",
+				"lib/roblox/avatar.js",
+				"lib/roblox/trades.js",
+				"lib/roblox/groups.js",
+				"lib/roblox/privateMessages.js",
+				"lib/roblox/resellers.js",
+				"lib/roblox/develop.js",
+				"lib/roblox/forum.js",
+				"lib/roblox/ui.js",
+				"lib/preroblox.js",
+				"middle.js",
+				"content/json.js",
+				"content.js"
+			],
+			"matches": [ "*://*.roblox.com/*" ],
+			"run_at": "document_end"
+		},
+
+		{
+			"js": [
+				"/content/pages/Login.js",
+				"/content/pages/Group.js",
+				"/content/pages/Develop.js",
+				"/content/pages/Inventory.js",
+				"/content/pages/Friends.js",
+				"/content/pages/TradeWindow.js",
+				"/content/pages/Profile.js",
+				"/content/pages/Character.js",
+				"/content/pages/ComposeMessage.js",
+				"/content/pages/Game.js",
+				"/content/pages/Money.js",
+				"/content/pages/Item.js",
+				"/content/pages/Account.js",
+				"/content/pages/forum/Default.js",
+				"/content/pages/forum/ShowForum.js",
+				"/content/pages/forum/ShowPost.js",
+				"/content/pages/forum/AddPost.js",
+				"/content/pages/Avatar.js",
+				"/content/loadPages.js"
+			],
+			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*", "*://forum.roblox.com/*" ],
+			"run_at": "document_end"
+		}
+	],
+
+	"browser_action": {
+		"default_icon": {
+			"19": "/images/icons/icon_32x32.png"
+		},
+		"default_title": "ROBLOX+",
+		"default_popup": "notifications.html"
+	},
+
+
+	"homepage_url": "https://www.roblox.com/my/account?tab=rplus",
+	"permissions": [
+		"contextMenus",
+		"webRequest",
+		"webRequestBlocking",
+		"tts",
+		"notifications",
+		"*://*.roblox.com/*",
+		"*://*.rbxcdn.com/*",
+		"*://*.robloxplus.com/*",
+		"*://*.roblox.plus/*"
+	],
+	"optional_permissions": [ "<all_urls>" ],
+	"web_accessible_resources": [
+		"*.css",
+		"*.svg",
+		"*.png",
+		"*.html",
+		"*.js",
+		"jquery.min.map",
+		"/images/navicon.png",
+		"/images/icons/icon_32x32.png",
+		"/images/notifier.png",
+		"*://*.roblox.com/*",
+		"*://*.rbxcdn.com/*",
+		"*://*.robloxplus.com/*",
+		"*://*.roblox.plus/*"
+	],
+
+	"manifest_version": 2,
+	"incognito": "split"
+}

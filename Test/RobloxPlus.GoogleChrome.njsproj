@@ -1,0 +1,132 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>RobloxPlus.GoogleChrome</Name>
+    <RootNamespace>Test</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>6656a56a-3fa0-41ee-854e-3a660391cc68</ProjectGuid>
+    <ProjectHome>
+    </ProjectHome>
+    <StartupFile>
+    </StartupFile>
+    <StartWebBrowser>False</StartWebBrowser>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <StartWebBrowser>false</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="V2\" />
+    <Folder Include="V2\background\" />
+    <Folder Include="V2\content\" />
+    <Folder Include="V2\content\pages\" />
+    <Folder Include="V2\content\pages\forum\" />
+    <Folder Include="V2\css\" />
+    <Folder Include="V2\css\themes\" />
+    <Folder Include="V2\images\" />
+    <Folder Include="V2\images\icons\" />
+    <Folder Include="V2\lib\" />
+    <Folder Include="V2\lib\jquery\" />
+    <Folder Include="V2\lib\roblox\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="V2\background\background.html" />
+    <Content Include="V2\css\customIcon.css" />
+    <Content Include="V2\css\hljs.css" />
+    <Content Include="V2\css\icons.css" />
+    <Content Include="V2\css\notifications.css" />
+    <Content Include="V2\css\style.css" />
+    <Content Include="V2\css\themes\easter.css" />
+    <Content Include="V2\css\themes\obc.css" />
+    <Content Include="V2\images\EasterBackground.png" />
+    <Content Include="V2\images\EasterBar.png" />
+    <Content Include="V2\images\EasterIcons.svg" />
+    <Content Include="V2\images\icons\favicon.ico" />
+    <Content Include="V2\images\icons\icon_128x128.png" />
+    <Content Include="V2\images\icons\icon_16x16.png" />
+    <Content Include="V2\images\icons\icon_256x256.png" />
+    <Content Include="V2\images\icons\icon_32x32.png" />
+    <Content Include="V2\images\icons\icon_64x64.png" />
+    <Content Include="V2\images\navicon.png" />
+    <Content Include="V2\images\navicon2.png" />
+    <Content Include="V2\images\notifier.png" />
+    <Content Include="V2\manifest.json" />
+    <Content Include="V2\notifications.html" />
+    <Content Include="V2\warning.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="V2\background\background.js" />
+    <Compile Include="V2\background\jquery.notifications.ext.js" />
+    <Compile Include="V2\content.js" />
+    <Compile Include="V2\content\json.js" />
+    <Compile Include="V2\content\loadPages.js" />
+    <Compile Include="V2\content\pages\Account.js" />
+    <Compile Include="V2\content\pages\Avatar.js" />
+    <Compile Include="V2\content\pages\Character.js" />
+    <Compile Include="V2\content\pages\ComposeMessage.js" />
+    <Compile Include="V2\content\pages\Develop.js" />
+    <Compile Include="V2\content\pages\forum\AddPost.js" />
+    <Compile Include="V2\content\pages\forum\Default.js" />
+    <Compile Include="V2\content\pages\forum\ShowForum.js" />
+    <Compile Include="V2\content\pages\forum\ShowPost.js" />
+    <Compile Include="V2\content\pages\Friends.js" />
+    <Compile Include="V2\content\pages\Game.js" />
+    <Compile Include="V2\content\pages\Group.js" />
+    <Compile Include="V2\content\pages\Inventory.js" />
+    <Compile Include="V2\content\pages\Item.js" />
+    <Compile Include="V2\content\pages\Login.js" />
+    <Compile Include="V2\content\pages\Money.js" />
+    <Compile Include="V2\content\pages\Profile.js" />
+    <Compile Include="V2\content\pages\TradeWindow.js" />
+    <Compile Include="V2\lib\global.js" />
+    <Compile Include="V2\lib\highlight.pack.js" />
+    <Compile Include="V2\lib\jquery\jquery.cache.js" />
+    <Compile Include="V2\lib\jquery\jquery.js" />
+    <Compile Include="V2\lib\jquery\jquery.notifications.js" />
+    <Compile Include="V2\lib\jquery\jquery.promise.js" />
+    <Compile Include="V2\lib\jquery\jquery.trigger.js" />
+    <Compile Include="V2\lib\prefunc.js" />
+    <Compile Include="V2\lib\preroblox.js" />
+    <Compile Include="V2\lib\prext.js" />
+    <Compile Include="V2\lib\roblox\apiSiteContentHandler.js" />
+    <Compile Include="V2\lib\roblox\audio.js" />
+    <Compile Include="V2\lib\roblox\avatar.js" />
+    <Compile Include="V2\lib\roblox\catalog.js" />
+    <Compile Include="V2\lib\roblox\content.js" />
+    <Compile Include="V2\lib\roblox\develop.js" />
+    <Compile Include="V2\lib\roblox\forum.js" />
+    <Compile Include="V2\lib\roblox\games.js" />
+    <Compile Include="V2\lib\roblox\groups.js" />
+    <Compile Include="V2\lib\roblox\inventory.js" />
+    <Compile Include="V2\lib\roblox\privateMessages.js" />
+    <Compile Include="V2\lib\roblox\resellers.js" />
+    <Compile Include="V2\lib\roblox\Roblox.js" />
+    <Compile Include="V2\lib\roblox\social.js" />
+    <Compile Include="V2\lib\roblox\thumbnails.js" />
+    <Compile Include="V2\lib\roblox\trades.js" />
+    <Compile Include="V2\lib\roblox\ui.js" />
+    <Compile Include="V2\lib\roblox\users.js" />
+    <Compile Include="V2\lib\roblox\xsrfHandler.js" />
+    <Compile Include="V2\middle.js" />
+    <Compile Include="V2\notifications.js" />
+    <Compile Include="V2\overwrite.js" />
+    <Compile Include="V2\theme.js" />
+  </ItemGroup>
+  <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+</Project>
