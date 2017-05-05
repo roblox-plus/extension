@@ -265,100 +265,6 @@ catalog.limiteds.search = function (lims, phrase, exact) {
 };
 
 
-
-forumService = {
-	thread: request.backgroundFunction("forumService.thread", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (type(arg) == "number") { arg = { id: arg }; }
-		var ret = {
-			id: type(arg.id) == "number" ? arg.id : 0,
-			subject: "",
-			posts: [],
-			page: type(arg.page) == "number" ? arg.page : 1,
-			maxPage: 0,
-			success: true
-		};
-		$.get("https://forum.roblox.com/Forum/ShowPost.aspx?PostID=" + ret.id + "&PageIndex=" + ret.page + (arg.hide ? "&rplus=hide" : "")).success(function (r) {
-			ret.subject = (r = $._(r)).find("#ctl00_cphRoblox_PostView1_ctl00_PostTitle").text();
-			ret.maxPage = Number((r.find("#ctl00_cphRoblox_PostView1_ctl00_Pager .normalTextSmallBold").text().match(/^Page\s*[\d,]+\s*of\s*([\d,]+)/i) || ["", "1"])[1].replace(/,/g, "")) || 1;
-			r.find("#ctl00_cphRoblox_PostView1_ctl00_PostList .forum-post").each(function () {
-				var poster = $(this).find("a.normalTextSmallBold[href*='/users/']");
-				var pid = $(this).find(".normalTextSmaller>a[name]");
-				var body = $(this).find(".normalTextSmall.linkify");
-				ret.posts.push({
-					id: Number(pid.attr("name")),
-					poster: {
-						id: Roblox.users.getIdFromUrl(poster.attr("href")),
-						username: poster.text(),
-						joined: new Date(($(this).text().match(/Joined:\s*(\d+\s*\w+\s*\d+)/) || ["", 0])[1]).getTime(),
-						posts: Number(($(this).text().match(/Total\s*Posts:\s*(\d+)/) || ["", 0])[1]) || 0
-					},
-					body: body.html(body.html().replace(/<\s*br\s*>/g, "\n")).text(),
-					posted: new Date(pid.parent().text()).getTime()
-				});
-			});
-			callBack(ret);
-		}).fail(function () {
-			ret.success = false;
-			callBack(ret);
-		});
-	}, {
-		queue: true
-	})),
-	mine: request.backgroundFunction("forumService.mine", compact(function (callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (forumService.cache.get("mine")) { callBack(forumService.cache.get("mine")); return; }
-		var ret = {
-			userId: 0,
-			username: "",
-			tracked: [],
-			recent: [],
-			success: true
-		};
-		$.get("https://forum.roblox.com/Forum/User/MyForums.aspx").success(function (r) {
-			ret.userId = Roblox.users.getIdFromUrl((r = $._(r)).find("#navigation .text-overflow").attr("href"));
-			ret.username = r.find("#navigation .text-overflow").text();
-			if (ret.userId) {
-				r.find("#ctl00_cphRoblox_MyForums1_ctl00_ThreadTracking .forum-table-row").each(function () { ret.tracked.push(forumService.parseRow($(this))); });
-				r.find("#ctl00_cphRoblox_MyForums1_ctl00_ParticipatedThreads .forum-table-row").each(function () { ret.recent.push(forumService.parseRow($(this))); });
-			}
-			callBack(ret);
-		}).fail(function () {
-			ret.success = false;
-			callBack(ret);
-		});
-	})),
-	parseRow: function (el) {
-		var nts = el.find(".normalTextSmaller");
-		var status = (el.find("noimg,img").attr("title") || "").toLowerCase();
-		return {
-			id: Number(url.param("PostID", el.find(".post-list-subject").attr("href"))) || 0,
-			subject: el.find(".post-list-subject").text().trim(),
-			poster: {
-				id: Roblox.users.getIdFromUrl(el.find(".post-list-author").attr("href")),
-				username: el.find(".post-list-author").text().trim()
-			},
-			lastReply: {
-				id: Number(url.hash(el.find(".last-post").attr("href"))) || 0,
-				page: Number(url.param("PageIndex", el.find(".last-post").attr("href"))) || 1,
-				date: new Date(el.find(".last-post span.normalTextSmaller").text()).getTime(),
-				poster: (el.find(".last-post div.normalTextSmaller").text() || "").trim()
-			},
-			replies: Number((nts[1] || {}).innerText) || 0,
-			views: Number((nts[2] || {}).innerText) || 0,
-			popular: status.indexOf("popular") >= 0,
-			read: status.indexOf("not read") < 0
-		};
-	}
-};
-
-
 soundService.robloxSound = function (id, callBack) {
 	if (!isCB(callBack)) { return; }
 	Roblox.audio.getSoundUrl(Number(id)).then(function (url) {
@@ -368,11 +274,12 @@ soundService.robloxSound = function (id, callBack) {
 	});
 };
 
+forumService = {}; // This is a dummy for the garbage in other scripts.
+
 
 
 if (ext.isBackground) {
 	catalog.limiteds.cache = compact.cache(10 * 1000);
-	forumService.cache = compact.cache(5 * 1000);
 
 
 	/* Load BC statuses */
@@ -426,19 +333,6 @@ if (ext.isBackground) {
 			return { requestHeaders: newhead };
 		}
 	}, { urls: ["*://data.roblox.com/Data/*"] }, ["requestHeaders", "blocking"]);
-
-	/* Get forum thread without marking as read */
-	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
-		if (url.param("rplus", details.url) == "hide") {
-			var nh = [];
-			for (var n in details.requestHeaders) {
-				if (details.requestHeaders[n].name != "Cookie") {
-					nh.push(details.requestHeaders[n]);
-				}
-			}
-			return { requestHeaders: nh };
-		}
-	}, { urls: ["*://*.roblox.com/Forum/*"], types: ["xmlhttprequest"] }, ["requestHeaders", "blocking"]);
 }
 
 
