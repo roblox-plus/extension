@@ -26,10 +26,9 @@ compact.cache = function (ret, cb) {
 	};
 };
 
-
-url.roblox = function (s, sub) { return "https://" + (sub || url.roblox.subdomain) + ".roblox.com" + url.send(s); };
-url.roblox.subdomain = "www";
-url.roblox.linkify = /(https?\:\/\/)?(?:www\.)?([a-z0-9\-]{2,}\.)*(((m|de|www|web|api|blog|wiki|help|corp|polls|bloxcon|developer|devforum|forum)\.roblox\.com|robloxlabs\.com)|(www\.shoproblox\.com))((\/[A-Za-z0-9-+&@#\/%?=~_|!:,.;]*)|(\b|\s))/gm;
+url.roblox = {
+	linkify: /(https?\:\/\/)?(?:www\.)?([a-z0-9\-]{2,}\.)*(((m|de|www|web|api|blog|wiki|help|corp|polls|bloxcon|developer|devforum|forum)\.roblox\.com|robloxlabs\.com)|(www\.shoproblox\.com))((\/[A-Za-z0-9-+&@#\/%?=~_|!:,.;]*)|(\b|\s))/gm
+};
 
 
 
@@ -280,8 +279,7 @@ forumService = {}; // This is a dummy for the garbage in other scripts.
 
 if (ext.isBackground) {
 	catalog.limiteds.cache = compact.cache(10 * 1000);
-
-
+	
 	/* Load BC statuses */
 	// TODO: Delete. Make sure I know where to find these again first.
 	foreach({ "NBC": "/Thumbs/BCOverlay.ashx?username=1Topcop&rbxp=48103520", "BC": "/images/icons/overlay_bcOnly.png", "TBC": "/images/icons/overlay_tbcOnly.png", "OBC": "/images/icons/overlay_obcOnly.png" }, function (n, o) { $.get("https://www.roblox.com" + o); });

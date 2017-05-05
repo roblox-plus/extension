@@ -92,8 +92,6 @@ fixCB(({
 			return button;
 		};
 
-		url.roblox.subdomain = subdomain == "forum" ? "www" : subdomain;
-
 
 		forumService.signatureTips = [
 			"Up to 256 characters, one line",
@@ -174,7 +172,7 @@ fixCB(({
 				var vid = y.toLowerCase() == "youtu.be" ? url.path(z).substring(1) : url.param("v", z);
 				return vid ? $("<a target=\"_blank\">").attr("data-video", vid).attr("href", "https://youtu.be/" + vid + t).text(" youtu.be/" + vid + t).prepend($("<span>")).outerHtml() : x;
 			}).replace(/r\+:\/\/(\d+)/gi, function (x, y) {
-				return "<a href=\"" + url.roblox("/item.aspx?id=" + y) + "\" target=\"_blank\">https://www.roblox.com/item.aspx?id=" + y + "</a>";
+				return "<a href=\"" + Roblox.catalog.getAssetUrl(y) + "\" target=\"_blank\">" + Roblox.catalog.getAssetUrl(y) + "</a>";
 			}).replace(/(^|\W)R\+/gi, function (x, y) {
 				return y + "<a href=\"/Groups/Group.aspx?gid=2518656\"><span></span></a>";
 			})).find("a[href*='item']").each(function () {
@@ -363,7 +361,7 @@ fixCB(({
 					Roblox.users[typeof(arg) == "string" ? "getByUsername" : "getByUserId"](arg).then(function (u) {
 						if (popbox.id != i) { return; }
 						if (u.id) {
-							popbox.header.attr("href", url.roblox("/users/" + u.id + "/profile")).text(u.username);
+							popbox.header.attr("href", Roblox.users.getProfileUrl(u.id)).text(u.username);
 							popbox.input.val(popbox.current = "user:" + u.username);
 							elem.icon.anchor.attr("href", popbox.header.attr("href"));
 							elem.icon.img.attr("src", Roblox.thumbnails.getUserAvatarThumbnailUrl(u.id, 4));
