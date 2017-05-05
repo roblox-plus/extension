@@ -306,12 +306,11 @@ fixCB(({
 					sc = sc[0].toLowerCase();
 					if (arg.match(url.roblox.linkify)) {
 						var path = url.path(arg).toLowerCase();
+						var assetId = Roblox.catalog.getIdFromUrl(path);
 						if (string.startsWith(path, /\/users?\//i) || string.startsWith(path, /\/User\.aspx/i)) {
 							go("user", url.param("username", arg) || Roblox.users.getIdFromUrl(arg));
-						} else if (path.endsWith("-item") || path.startsWith("/item.aspx")) {
-							go("item", url.param("id", arg));
-						} else if (path.match(/^\/catalog\/\d+\//i) || path.match(/^\/library\/\d+\//i)) {
-							go("item", (path.match(/^\/\w+\/(\d+)/) || ["", 0])[1]);
+						} else if (assetId) {
+							go("item", assetId);
 						} else {
 							popbox.clear();
 							return;
@@ -374,13 +373,18 @@ fixCB(({
 								var perc = elem.div.find("#rppbuFlipper>span:nth-child(2)");
 								var serials = {};
 								inv.collectibles.forEach(function (collectible) {
-									var box = elem.inv.find(".list-item>a[href='/item.aspx?id=" + collectible.assetId + "']");
+									var box = elem.inv.find(".list-item>a[data-assetid='" + collectible.assetId + "']");
 									var count = box.find(".item-serial-number");
 									serials[collectible.assetId] = serials[collectible.assetId] || {};
 									serials[collectible.assetId][collectible.userAssetId] = collectible.serialNumber;
 									if (!box.length) {
 										elem.inv.append($("<li class=\"list-item\">").append(
-											box = $("<a class=\"store-card\" target=\"_blank\" href=\"/item.aspx?id=" + collectible.assetId + "\">").attr("data-rap", collectible.recentAveragePrice).attr("title", collectible.name).append(
+											box = $("<a class=\"store-card\" target=\"_blank\">").attr({
+												href: Roblox.catalog.getAssetUrl(collectible.assetId, collectible.name),
+												"data-rap": collectible.recentAveragePrice,
+												"data-assetid": collectible.assetId,
+												title: collectible.name
+											}).append(
 												$("<img class=\"store-card-thumb\">").attr("src", Roblox.thumbnails.getAssetThumbnailUrl(collectible.assetId)),
 												count = $("<div class=\"item-serial-number\">").text("x1"),
 												$("<div class=\"store-card-caption\">").append(
@@ -525,7 +529,11 @@ fixCB(({
 						var displayed = catalog.limiteds.search(lims, arg);
 						displayed.forEach(function (o) {
 							elem.div.find(">ul").append($("<li class=\"list-item\">").append(
-								$("<a class=\"store-card\" target=\"_blank\" href=\"/item.aspx?id=" + Number(o.id) + "\">").attr("data-rap", o.rap).attr("title", o.name).append(
+								$("<a class=\"store-card\" target=\"_blank\">").attr({
+									href: Roblox.catalog.getAssetUrl(o.id, o.name),
+									"data-rap": o.rap,
+									title: o.name
+								}).append(
 									$("<img class=\"store-card-thumb\">").attr("src", Roblox.thumbnails.getAssetThumbnailUrl(o.id, 4)),
 									$("<div class=\"store-card-caption\">").append(
 										$("<div class=\"text-overflow store-card-name\">").text(o.name),
