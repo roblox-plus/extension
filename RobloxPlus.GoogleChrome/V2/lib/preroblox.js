@@ -83,111 +83,6 @@ users = {
 
 
 catalog = {
-	info: request.backgroundFunction("catalog.info", compact(function (id, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-
-		var ret = {
-			assetType: "",
-			assetTypeId: 0,
-			bc: "NBC",
-			created: 0,
-			creator: { id: 0, name: "", creatorType: "" },
-			description: "",
-			editable: false,
-			free: false,
-			id: type(id) == "number" ? id : 0,
-			limited: false,
-			limitedUnique: false,
-			lowestPrice: 0,
-			name: "",
-			"new": false,
-			privateSellers: [],
-			productId: 0,
-			rap: 0,
-			remaining: 0,
-			robuxPrice: 0,
-			sales: 0,
-			speed: 0,
-			success: true,
-			thumbnail: ""
-		};
-		ret.url = ret.id >= 1818 ? "https://www.roblox.com/item.aspx?id=" + ret.id : "";
-
-		if (!ret.url) {
-			callBack(ret);
-			return;
-		}
-
-		var mcb = 1;
-		var dcb = 0;
-		var startTime = pnow();
-		var fcb = function () {
-			if (++dcb == mcb) {
-				ret.speed = pnow() - startTime;
-				callBack(ret);
-			}
-		};
-
-		$.get("https://api.roblox.com/marketplace/productinfo?assetId=" + ret.id).done(function (r) {
-			mcb++;
-
-			ret.assetType = Roblox.catalog.assetTypes[ret.assetTypeId = r.AssetTypeId];
-			ret.bc = users.toBC(r.MinimumMembershipLevel);
-			ret.created = new Date(r.Created).getTime();
-			ret.creator = {
-				id: r.Creator.Id,
-				name: r.Creator.Name,
-				creatorType: r.Creator.CreatorType
-			};
-			ret.description = r.Description;
-			ret.free = r.IsPublicDomain;
-			ret.name = string.clean(r.Name);
-			ret['new'] = r.IsNew;
-			ret.productId = r.ProductId || 0;
-			ret.remaining = Number(r.Remaining) || 0;
-			ret.robuxPrice = Number(r.PriceInRobux) || 0;
-			ret.sales = Number(r.Sales) || 0;
-			ret.thumbnail = Roblox.thumbnails.getAssetThumbnailUrl(ret.id, 4);
-
-			ret.url = Roblox.catalog.getAssetUrl(ret.id, ret.name);
-
-			if (ret.limited = r.IsLimited || (ret.limitedUnique = r.IsLimitedUnique)) {
-				mcb += 2;
-				Roblox.resellers.getResaleData(ret.id).then(function (data) {
-					ret.rap = data.averagePrice;
-					fcb();
-				}, fcb);
-				Roblox.resellers.getResellers(ret.id).then(function (resellers) {
-					if (resellers.data.length > 0) {
-						ret.lowestPrice = resellers.data[0].price;
-					}
-					resellers.data.forEach(function (sale) {
-						ret.privateSellers.push({
-							price: sale.price,
-							seller: {
-								id: sale.seller.id,
-								username: sale.seller.name
-							},
-							userAssetId: sale.userAssetId,
-							serial: Number(sale.serialNumber) || 0
-						});
-					});
-					fcb();
-				}, fcb);
-			}
-			Roblox.develop.canManage(ret.id).then(function (canManage) {
-				ret.editable = canManage;
-				fcb();
-			}, fcb);
-		}).fail(function () {
-			ret.success = false;
-		}).always(fcb);
-	}, {
-		queue: true
-	})),
 	purchase: request.backgroundFunction("catalog.purchase", compact(function (arg, callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
@@ -298,7 +193,7 @@ catalog = {
 					__VIEWSTATE: r.find("#__VIEWSTATE").val()
 				};
 				for (var n in data) { if (!r.find("*[name='" + n + "']").length) { delete data[n]; } };
-				$.post("https://www.roblox.com/My/Item.aspx?ID=" + arg.id, data, function (r, s) { delete catalog.info.cache.remove(arg.id); callBack(s == "success"); });
+				$.post("https://www.roblox.com/My/Item.aspx?ID=" + arg.id, data, function (r, s) { callBack(s == "success"); });
 			} else {
 				callBack(false);
 			}
@@ -369,35 +264,6 @@ catalog.limiteds.search = function (lims, phrase, exact) {
 	return possible;
 };
 
-catalog.info.parse = function (hold) {
-	hold = $._(hold);
-	hold.find("#item-details-description>span").remove();
-	var creator = hold.find(".item-name-container>div>span.text-label>a.text-name");
-
-	var ret = {
-		assetType: hold.find("#item-container").data("asset-type"),
-		assetTypeId: 0,
-		bc: users.toBC(hold.find("#item-container").data("bc-requirement")),
-		creator: { id: Roblox.users.getIdFromUrl(creator.attr("href")), name: creator.text(), creatorType: creator.attr("href").indexOf("/users/") >= 0 ? "User" : "Group" },
-		description: hold.find("#item-details-description").text().trim(),
-		editable: false,
-		free: hold.find(".text-robux-lg").text() == "Free",
-		id: Number((hold.find("link[rel='canonical']").attr("href").match(/\/catalog\/(\d+)\//) || ["", 0])[1]),
-		limited: hold.find("#AssetThumbnail .icon-limited-unique-label, #AssetThumbnail .icon-limited-label").length > 0,
-		limitedUnique: hold.find("#AssetThumbnail .icon-limited-unique-label").length > 0,
-		name: hold.find("#item-container").data("item-name"),
-		"new": hold.find(".asset-status-icon.status-New").length > 0,
-		productId: Number(hold.find(".PurchaseButton[data-product-id]").data("product-id")) || 0,
-		robuxPrice: Number(hold.find(".icon-robux-price-container .text-robux-lg").text().replace(/\D+/g, "")) || 0,
-		thumbnail: hold.find("#AssetThumbnail>.thumbnail-span>img").attr("src"),
-		url: hold.find("link[rel='canonical']").attr("href")
-	};
-	ret.assetType = ret.assetType.replace("Accessory", " Accessory");
-
-	ret.assetTypeId = Number(array.flip(Roblox.catalog.assetTypes)[ret.assetType]) || 0;
-
-	return ret;
-};
 
 
 forumService = {
@@ -505,7 +371,6 @@ soundService.robloxSound = function (id, callBack) {
 
 
 if (ext.isBackground) {
-	catalog.info.cache = compact.cache(3 * 1000);
 	catalog.limiteds.cache = compact.cache(10 * 1000);
 	forumService.cache = compact.cache(5 * 1000);
 

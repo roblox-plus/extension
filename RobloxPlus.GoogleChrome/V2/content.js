@@ -442,39 +442,77 @@ fixCB(({
 					elem.div.find(">table>tbody").html("");
 					elem.div.find("#rppbiDescription").val("");
 
-					catalog.info(Number(arg), function (info) {
-						if (popbox.id != i) { return; }
-						if (info.success) {
-							popbox.action.item.current = info;
-							popbox.header.attr("href", url.roblox("/item.aspx?id=" + info.id)).text(info.name).attr("title", info.name);
-							popbox.input.val(popbox.current = "item:" + info.id);
-							elem.icon.anchor.attr("href", popbox.header.attr("href"));
-							elem.icon.img.attr("src", Roblox.thumbnails.getAssetThumbnailUrl(info.id, 4)).attr("title", info.assetType);
-							if (info.limited || info.bc != "NBC") {
-								elem.icon.label.attr("class", "icon" + (info.limited ? "-limited" : "") + (info.limitedUnique ? "-unique" : "") + (info.bc != "NBC" ? "-" + info.bc.toLowerCase() : "") + "-label");
+					Roblox.catalog.getAssetInfo(Number(arg)).then(function (asset) {
+						Roblox.develop.canManage(asset.id).then(function (canManage) {
+							if (popbox.id != i) {
+								return;
 							}
-
-							elem.div.find("#rppbiPrice")[info.assetType == "Decal" || info.assetType == "Audio" || info.assetType == "Model" || info.free || info.robuxPrice || info.editable || info.lowestPrice ? "show" : "hide"]().find(">.btn-toggle").toggleClass("on", info.free);
-							if (info.assetType == "Decal" || info.assetType == "Audio" || info.assetType == "Model" || info.free) {
+							asset = $.extend({ canManage: canManage }, asset);
+							popbox.action.item.current = asset;
+							popbox.header.attr("href", Roblox.catalog.getAssetUrl(asset.id, asset.name)).text(asset.name).attr("title", asset.name);
+							popbox.input.val(popbox.current = "item:" + asset.id);
+							elem.icon.anchor.attr("href", popbox.header.attr("href"));
+							elem.icon.img.attr("src", Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 4)).attr("title", asset.assetType);
+							if (asset.limited || asset.buildersClubMembershipType > 0) {
+								var bcMap = ["nbc", "bc", "tbc", "obc"];
+								elem.icon.label.attr("class", "icon"
+									+ (asset.limited ? "-limited" : "")
+									+ (asset.limitedUnique ? "-unique" : "")
+									+ (asset.buildersClubMembershipType > 0 ? "-" + bcMap[asset.buildersClubMembershipType] : "")
+									+ "-label");
+							}
+							
+							elem.div.find("#rppbiPrice")[asset.assetType == "Decal" || asset.assetType == "Audio" || asset.assetType == "Model" || asset.isFree || asset.robuxPrice || canManage ? "show" : "hide"]().find(">.btn-toggle").toggleClass("on", asset.isFree);
+							if (asset.assetType == "Decal" || asset.assetType == "Audio" || asset.assetType == "Model" || asset.isFree) {
 								elem.div.find("#rppbiPrice>*").hide();
 								elem.div.find("#rppbiPrice>.btn-toggle").show();
 							} else {
 								elem.div.find("#rppbiPrice>*").show();
 								elem.div.find("#rppbiPrice>.btn-toggle").hide();
-								elem.div.find("#rppbiPrice>input").val(addComma(info.lowestPrice || info.robuxPrice) + (info.privateSellers.length && info.privateSellers[0].seller.id == users.userId ? " (You)" : ""))[info.editable ? "removeAttr" : "attr"]("readonly", "readonly");
+								elem.div.find("#rppbiPrice>input").val(global.addCommas(asset.robuxPrice || 0))[canManage ? "removeAttr" : "attr"]("readonly", "readonly");
 							}
-							elem.div.find("#rppbiDescription").val(info.description)[info.editable ? "removeAttr" : "attr"]("readonly", "readonly");
-							elem.div.find("#rppbiPrice>input").css("height", info.rap ? "14px" : "28px");
-							elem.div.find("#rppbiPrice>span:last-child")[info.rap ? "show" : "hide"]().text("RAP: " + addComma(info.rap));
-
-							foreach(info.privateSellers, function (n, o) {
-								elem.div.find(">table>tbody").append($("<tr>").append($("<td>").append($("<a>").attr({ "title": o.seller.username, "href": url.roblox("/users/" + o.seller.id + "/profile") }).append($("<img>").attr("src", Roblox.thumbnails.getUserHeadshotThumbnailUrl(o.seller.id, 0)), o.seller.username)), $("<td>").append("<span class=\"icon-robux\"></span> " + addComma(o.price))));
-							});
-							elem.div.find(">table")[info.privateSellers.length ? "show" : "hide"]();
-						} else {
+							elem.div.find("#rppbiDescription").val(asset.description)[canManage ? "removeAttr" : "attr"]("readonly", "readonly");
+							
+							if (asset.isLimited) {
+								Roblox.resellers.getResaleData(asset.id).then(function (resaleData) {
+									if (popbox.id != i) {
+										return;
+									}
+									elem.div.find("#rppbiPrice").show();
+									elem.div.find("#rppbiPrice>input").css("height", "14px");
+									elem.div.find("#rppbiPrice>span:last-child").show().text("RAP: " + global.addCommas(resaleData.averagePrice));
+									Roblox.resellers.getResellers(asset.id).then(function (resellers) {
+										if (popbox.id != i) {
+											return;
+										}
+										elem.div.find(">table").show();
+										if (resellers.data.length > 0) {
+											elem.div.find("#rppbiPrice>input").val(global.addCommas(resellers.data[0].price)).attr("readonly", "readonly");
+										}
+										resellers.data.forEach(function (sale) {
+											elem.div.find(">table>tbody").append($("<tr>").append(
+												$("<td>").append(
+													$("<a>").attr({
+														"title": sale.seller.name,
+														"href": Roblox.users.getProfileUrl(sale.seller.id)
+													}).append($("<img>").attr("src", Roblox.thumbnails.getUserHeadshotThumbnailUrl(sale.seller.id, 0)), sale.seller.name)
+												),
+												$("<td>").append("<span class=\"icon-robux\"></span> " + global.addCommas(sale.price))));
+										});
+									});
+								});
+							} else {
+								elem.div.find("#rppbiPrice>input").css("height", "28px");
+								elem.div.find("#rppbiPrice>span:last-child").hide();
+								elem.div.find(">table").hide();
+							}
+						}, function (errors) {
 							popbox.header.text("Failed to load item");
 							popbox.input.val("");
-						}
+						});
+					}, function (errors) {
+						popbox.header.text("Failed to load item");
+						popbox.input.val("");
 					});
 				},
 				"lim": function (arg, elem, i) {
@@ -586,7 +624,7 @@ fixCB(({
 
 			popbox.action.item.div = $("<div id=\"rplusPopboxItem\">").append($("<a class=\"icon\">").append($("<img>"), $("<span>"))).append($("<div id=\"rppbiPrice\" class=\"icon-text-wrapper\">").append($("<span class=\"btn-toggle\"><span class=\"toggle-flip\"></span><span class=\"toggle-on\">Free</span><span class=\"toggle-off\">Free</span></span>").click(function () {
 				var info = popbox.action.item.current;
-				if (info && info.editable) {
+				if (info && info.canManage) {
 					catalog.update({
 						id: info.id,
 						free: $(this).toggleClass("on", !$(this).hasClass("on")).hasClass("on")
@@ -594,7 +632,7 @@ fixCB(({
 				}
 			}), $("<span class=\"icon-robux\">"), $("<input type=\"input-field\" readonly=\"readonly\">").enterBlur().change(function () {
 				var info = popbox.action.item.current;
-				if (info && info.editable) {
+				if (info && info.canManage) {
 					if ($(this).val()) {
 						catalog.update({
 							id: info.id,
@@ -606,7 +644,7 @@ fixCB(({
 				}
 			}), $("<span>"))).append($("<textarea id=\"rppbiDescription\" maxlength=\"1000\">").change(function () {
 				var info = popbox.action.item.current;
-				if (info && info.editable) {
+				if (info && info.canManage) {
 					catalog.update({
 						id: info.id,
 						description: $(this).val()
