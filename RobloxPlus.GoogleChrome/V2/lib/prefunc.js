@@ -31,7 +31,6 @@ foreach = function (a, c) { if (isCB(c)) { for (var n in typeof (a) == "object" 
 getMil = function () { return +new Date; };
 
 pnow = function () { return performance.now(); };
-markSpeed = function (x) { return (pnow() - x).toFixed(3); };
 
 argarr = function () {
 	var ar = [];
@@ -273,89 +272,6 @@ foreach(math, function (n, o) {
 
 
 array = {
-	firstJSON: function (str, arr) {
-		arr = arr ? ["[", "]"] : ["{", "}"];
-		var s = tostring(str);
-		var a = s.indexOf(arr[0]);
-		var b = a >= 0 ? s.substring(a).indexOf(arr[1]) + a : -1;
-		while (a >= 0 && b >= 0) {
-			try {
-				return { data: JSON.parse(s.substring(a, b + 1)), a: a, b: b + 1 };
-			} catch (e) {
-				var n = b + 1;
-				b = s.substring(n).indexOf(arr[1]);
-				if (b >= 0) {
-					b += s.length - s.substring(n).length;
-				} else {
-					n = a + 1;
-					a = s.substring(n).indexOf(arr[0]);
-					if (a >= 0) {
-						a += s.length - s.substring(n).length;
-					} else {
-						a = -1;
-					}
-					b = a >= 0 ? s.substring(a).indexOf(arr[1]) + a : -1;
-				}
-			}
-		}
-	},
-
-	jsplit: function (str, inc) {
-		str = (str || "").toString();
-		var s = str;
-		var x = undefined;
-		var ret = [];
-		while (x = array.firstJSON(s)) {
-			s = s.substring(x.b);
-			ret.push(x);
-		}
-		s = str;
-		while (x = array.firstJSON(s, true)) {
-			s = s.substring(x.b);
-			ret.push(x);
-		}
-		ret.sort(function (a, b) { return a.a - b.a; });
-		var gaps = [];
-		if (ret.length) {
-			if (ret[0].a !== 0) {
-				gaps.push([0, ret[0].a]);
-			}
-			for (var CN = 1; CN < ret.length; CN++) {
-				if (ret[CN].a - 1 != ret[CN - 1].b) {
-					gaps.push([ret[CN - 1].b, ret[CN].a]);
-				}
-			}
-			if (ret[ret.length - 1].b != str.length) {
-				gaps.push([ret[ret.length - 1].b, str.length]);
-			}
-			if (inc) {
-				var r = [];
-				while (ret.length) {
-					var o = ret.shift();
-					while (gaps.length) {
-						if (gaps[0][0] < o.a) {
-							var g = gaps.shift();
-							r.push(str.substring(g[0], g[1]));
-						} else {
-							break;
-						}
-					}
-					r.push(o.data);
-				}
-				while (gaps.length) {
-					var g = gaps.shift();
-					r.push(str.substring(g[0], g[1]));
-				}
-				ret = r;
-			} else {
-				for (var n in ret) {
-					ret[n] = ret[n].data;
-				}
-			}
-		}
-		return ret;
-	},
-
 	correct: function (a, t) { return typeof (a) == "object" ? a : (t ? [] : {}); },
 	random: function (a) { a = array.correct(a); var k = Object.keys(a); return k.length ? a[k[math.random(0, k.length - 1)]] : undefined; },
 	first: function (a) { a = array.correct(a); var k = Object.keys(a); return k.length ? a[k[0]] : undefined; },
@@ -372,26 +288,8 @@ array = {
 		});
 		return r;
 	},
-	flip: function (a) { var ret = {}; foreach(a, function (n, o) { ret[tostring(o)] = n; }); return ret; },
-	extend: function () { return array.rawExtend(arguments); },
-	rawExtend: function (ar) {
-		var c = type(ar[0]) == "object" ? {} : [];
-		foreach(ar, function (n, o) {
-			foreach(o, function (k, v) {
-				if (type(c) == "array") {
-					c.push(v);
-				} else {
-					c[k] = v;
-				}
-			});
-		});
-		return c;
-	}
+	flip: function (a) { var ret = {}; foreach(a, function (n, o) { ret[tostring(o)] = n; }); return ret; }
 };
-
-
-Object.defineProperty(String.prototype, "extend", { value: function () { return array.rawExtend(this, arguments); } });
-Object.defineProperty(Object.prototype, "extend", { value: function () { return array.rawExtend(this, arguments); } });
 
 
 
@@ -410,31 +308,6 @@ mask = {
 		foreach(tostring(x).match(/\d\d\d\d\d/g), function (n, o) { r += o.char(); });
 		return r;
 	}
-};
-
-
-encryption = {
-	key: function (l) {
-		l = math.max(1, pround(l) || 6);
-		var x = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		var r = "";
-		for (var CN = 0; CN < l; CN++) {
-			r += x[math.random(x.length - 1)];
-		}
-		return r;
-	},
-	guid: function (s4) {
-		if (s4) {
-			return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-		}
-		s4 = function () { return encryption.guid(true); };
-		return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
-	},
-
-	encode: function (s) { var r = ""; var i = math.random(9001, 13337); s = tostring(s); for (var CN = 0; CN < s.length; CN++) { r += "/" + this.hash(s[CN].byte() * i); } return r.substring(0, r.length / 2) + "/z" + this.hash(string.reverse(i)) + "/z" + r.substring(r.length / 2); },
-	decode: function (s) { s = tostring(s); var i = s.split("/z"); s = (i[0] + i[2]).substring(1).split("/"); i = toNumber(string.reverse(i[1])); var r = ""; for (var CN = 0; CN < s.length; CN++) { var c = string.char(toNumber(s[CN]) / i); if (string.byte(c) > 0) { r += c; } } return string.replace(string.replace(r, "&nbsp;", ""), "&shy;", ""); },
-	"char": function () { var hash = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y"]; var r = ""; for (var CN = 0; CN < math.random(3) ; CN++) { r += math.random(1, 2) == 1 ? array.random(hash).upper() : array.random(hash); if (array.last(hash) != "z") { hash.push("z"); } } return r; },
-	hash: function (n) { n = tostring(n); var r = ""; for (var CN = 0; CN < n.length; CN++) { r += this.char() + n[CN] + this.char(); } return r; }
 };
 
 
@@ -691,14 +564,6 @@ url = {
 		var i = u.indexOf("/");
 		return type(v) == "string" ? (p ? p + "://" : "") + v + (i >= 0 ? u.substring(i) : "") : (i >= 0 ? u.substring(0, i) : u);
 	},
-	domain: function (u, v) {
-		var p = url.protocol(u = u || location.href);
-		u = url.protocol(u, true);
-		var i = u.indexOf("/");
-		var i2 = u.indexOf(":");
-		if (i2 < i && i2 >= 0) { i = i2; }
-		return type(v) == "string" ? (p ? p + "://" : "") + v + (i >= 0 ? u.substring(i) : "") : (i >= 0 ? u.substring(0, i) : u);
-	},
 	port: function (u, v) {
 		if (type(v) == "string") { v = url.port.key(v); } else if (type(v) == "number") { v = v.toString(); }
 		if ((type(v) != "string" && v) || v === "0" || v === 0) { v = ""; }
@@ -732,11 +597,6 @@ url = {
 		return type(v) == "string" ? u.substring(0, i >= 0 ? i : u.length) + (v ? "#" + v : "") : (i >= 0 ? u.substring(i + 1) : "");
 	},
 	send: function (u) { return url.host(url.protocol(u, true), ""); },
-	start: function (u) {
-		var p = url.protocol(u = u || location.href) || "http";
-		u = p + "://" + url.host(u);
-		return p == "http" ? url.port(u, "0") : u;
-	},
 	params: function (u) {
 		u = url.path(u = u || location.href, "").substring(1);
 		var ret = {};
@@ -784,17 +644,6 @@ url.port.key = function (s, m) {
 	}
 	return ret ? Number(ret) : 0;
 };
-
-
-
-hex = {
-	toR: function (h) { return parseInt((hex.cut(h)).substring(0, 2), 16); },
-	toG: function (h) { return parseInt((hex.cut(h)).substring(2, 4), 16); },
-	toB: function (h) { return parseInt((hex.cut(h)).substring(4, 6), 16); },
-	toRGB: function (h) { return { r: hex.toR(h), g: hex.toG(h), b: hex.toB(h) }; },
-	cut: function (h) { h = tostring(h); return (h.charAt(0) == "#") ? h.substring(1, 7) : h; }
-};
-
 
 
 compact = function (arg, ops) {
