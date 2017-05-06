@@ -88,9 +88,6 @@ RPlus.Pages.Money = function () {
 		});
 		$("#TradeRequest .RBXImg[alt='RBX']").attr("alt", "R$");
 		$("#TradeRequest .BuildersClubOverlay:not([src])").remove();
-		$("#TradeRequest .BuildersClubOverlay:not([alt])").each(function () {
-			$(this).attr("alt", users.toBC($(this).attr("src")) + " only");
-		});
 	}, 250);
 	
 	function cancelAll(callBack) {

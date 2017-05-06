@@ -11,7 +11,6 @@ RPlus.Pages.Item = function () {
 		var ret = {
 			assetType: hold.find("#item-container").data("asset-type"),
 			assetTypeId: 0,
-			bc: users.toBC(hold.find("#item-container").data("bc-requirement")),
 			creator: { id: Roblox.users.getIdFromUrl(creator.attr("href")), name: creator.text(), creatorType: creator.attr("href").indexOf("/users/") >= 0 ? "User" : "Group" },
 			description: hold.find("#item-details-description").text().trim(),
 			free: hold.find(".text-robux-lg").text() == "Free",

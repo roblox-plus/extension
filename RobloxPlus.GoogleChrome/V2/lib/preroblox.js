@@ -46,38 +46,6 @@ brickColor = {
 
 
 
-users = {
-	toBC: function (i) {
-		var list = ["NBC", "BC", "TBC", "OBC"];
-		if (type(i) == "string") {
-			i = i.toLowerCase();
-			if (i.length < 4) {
-				return i.autoCorrect(list) || "NBC";
-			} else if (i.indexOf("turbo") >= 0) {
-				return "TBC";
-			} else if (i.indexOf("outrageous") >= 0) {
-				return "OBC";
-			} else if (i.indexOf("builders") >= 0) {
-				return "BC";
-			}
-			var type2 = {
-				"/4fc3a98692c7ea4d17207f1630885f68.png": "BC",
-				"/461fe35725f9db0ece395301b7282df6.png": "BC",
-				"/c8b53df0f5950ac4c2eb1af580b3236d.png": "TBC",
-				"/c0eb8be1211d24fd1efdd36379423797.png": "TBC",
-				"/693399abeaa6eebdc9f45aebc2b36bd8.png": "OBC",
-				"/c208e0d81a53a19d3612d8078a3595e7.png": "OBC"
-			};
-			for (var n in type2) {
-				if (i.indexOf(n) >= 0) {
-					return type2[n];
-				}
-			}
-			return "NBC";
-		}
-		return list[Math.min(pround(i), 3)];
-	}
-};
 
 
 
@@ -191,7 +159,10 @@ soundService.robloxSound = function (id, callBack) {
 	});
 };
 
-forumService = {}; // This is a dummy for the garbage in other scripts.
+
+// These are dummies that exist for the garbage in other scripts
+users = {};
+forumService = {};
 
 
 
