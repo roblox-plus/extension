@@ -82,88 +82,6 @@ users = {
 
 
 catalog = {
-	purchase: request.backgroundFunction("catalog.purchase", compact(function (arg, callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		} else if (type(arg.seller) != "number" || type(arg.productId) != "number" || type(arg.price) != "number") {
-			callBack(false);
-			return;
-		}
-
-		var speed = pnow();
-		var fallback = function () {
-			$.ajax({
-				url: "https://www.roblox.com/API/Item.ashx?rqtype=purchase&expectedSellerID=" + arg.seller + "&productID=" + arg.productId + "&expectedCurrency=1&expectedPrice=" + arg.price + (type(arg.promotion) == "number" ? "&expectedPromoID=" + arg.promotion : "") + (type(arg.userAssetId) == "number" ? "&userAssetID=" + arg.userAssetId : ""),
-				type: "POST",
-				data: ""
-			}).always(function (r) {
-				if (r.status == 403) {
-					if (arg.token = r.getResponseHeader("x-csrf-token")) {
-						fallback();
-					} else {
-						callBack(0);
-					}
-				} else {
-					callBack(!r.errorMsg && r.AssetID ? pnow() - speed : 0);
-				}
-			});
-		};
-
-		if (type(arg.commission) == "number" && arg.price >= 8) {
-			Roblox.users.getCurrentUserId().then(function (id) {
-				if (!id) { callBack(0); return; }
-				$.get("https://www.roblox.com/presence/users?userIds=" + id).success(function (r) {
-					if (r[0] && r[0].UserPresenceType != 2) {
-						var tries = 0;
-						var retry; retry = function () {
-							if (tries++ < 30) {
-								$.get("https://www.roblox.com/Game/PlaceLauncher.ashx?request=RequestGame&placeId=" + arg.commission).success(function (r) {
-									if (r.joinScriptUrl) {
-										$.get(r.joinScriptUrl).success(function (r) {
-											r = JSON.parse(r.substring(r.indexOf("{")));
-											if (r.PingUrl) {
-												$.get(r.PingUrl).success(function () {
-													var temp = pnow() - speed;
-													$.ajax({
-														url: "https://api.roblox.com/marketplace/purchase?productId=" + arg.productId + "&currencyTypeId=1&purchasePrice=" + arg.price + "&locationType=Game&locationId=" + arg.commission,
-														type: "POST",
-														data: "RobloxPurchaseRequest",
-														headers: {
-															"Roblox-Place-Id": tostring(arg.commission),
-															"Roblox-Game-Id": tostring(r.GameId),
-															"Roblox-Session-Id": tostring(r.SessionId)
-														}
-													}).success(function (r) {
-														if (r.success || r.status == "AlreadyOwned") {
-															callBack(temp);
-														} else {
-															fallback();
-														}
-													}).fail(fallback);
-												}).fail(fallback);
-											} else {
-												fallback();
-											}
-										}).fail(fallback);
-									} else {
-										setTimeout(retry, 250);
-									}
-								}).fail(retry);
-							} else {
-								fallback();
-							}
-						};
-						retry();
-					} else {
-						fallback();
-					}
-				}).fail(fallback);
-			}, fallback);
-		} else {
-			fallback();
-		}
-	})),
 	update: request.backgroundFunction("catalog.update", function (arg, callBack) {
 		if (type(arg) != "object" || typeof(arg.id) != "number" || typeof (callBack) != "function") {
 			console.warn("callBack not function! (maybe)");
@@ -280,30 +198,6 @@ forumService = {}; // This is a dummy for the garbage in other scripts.
 if (ext.isBackground) {
 	catalog.limiteds.cache = compact.cache(10 * 1000);
 	
-	/* Load BC statuses */
-	// TODO: Delete. Make sure I know where to find these again first.
-	foreach({ "NBC": "/Thumbs/BCOverlay.ashx?username=1Topcop&rbxp=48103520", "BC": "/images/icons/overlay_bcOnly.png", "TBC": "/images/icons/overlay_tbcOnly.png", "OBC": "/images/icons/overlay_obcOnly.png" }, function (n, o) { $.get("https://www.roblox.com" + o); });
-
-	/* Though not in use, the below code was used for commissions */
-	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
-		if (/^https:\/\/api\.roblox\.com\/marketplace\/purchase\?/i.test(details.url)) {
-			var newHeaders = [
-				{ name: "Accept-Encoding", value: "gzip" },
-				{ name: "Content-Length", value: "21" },
-				{ name: "Host", value: "api.roblox.com" },
-				{ name: "User-Agent", value: "Roblox/WinInet" },
-				{ name: "Requester", value: "Client" }
-			];
-			for (var n in details.requestHeaders) {
-				var na = details.requestHeaders[n].name;
-				if (na == "Cookie" || na == "Roblox-Place-Id" || na == "Roblox-Game-Id" || na == "Roblox-Session-Id") {
-					newHeaders.push(details.requestHeaders[n]);
-				}
-			}
-			return { requestHeaders: newHeaders };
-		}
-	}, { urls: ["https://api.roblox.com/marketplace/*"], types: ["xmlhttprequest"] }, ["requestHeaders", "blocking"]);
-
 	/* Upload models with a post request */
 	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
 		if (url.path(details.url) == "/Data/Upload.ashx") {

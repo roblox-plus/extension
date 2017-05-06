@@ -109,7 +109,8 @@ Roblox.catalog = (function () {
 					creator: {
 						id: r.Creator.CreatorTargetId,
 						name: r.Creator.Name,
-						type: r.Creator.CreatorType
+						type: r.Creator.CreatorType,
+						agentId: r.Creator.Id
 					},
 					robuxPrice: Number(r.PriceInRobux) || 0,
 					sales: sales,
@@ -119,6 +120,45 @@ Roblox.catalog = (function () {
 					isLimitedUnique: r.IsLimitedUnique,
 					remaining: remaining,
 					stock: r.IsLimitedUnique ? remaining + sales : null,
+					buildersClubMembershipType: r.MinimumMembershipLevel
+				});
+			}).fail(function (jxhr, errors) {
+				reject(errors);
+			});
+		}, {
+			queued: true,
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 5 * 1000
+		}),
+		
+		getProductInfo: $.promise.cache(function (resolve, reject, productId) {
+			if (typeof (productId) != "number" || productId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid productId"
+				}]);
+				return;
+			}
+
+			$.get("https://api.roblox.com/marketplace/productdetails", { productId: productId }).done(function (r) {
+				var remaining = Number(r.Remaining) || 0;
+				resolve({
+					id: r.ProductId,
+					assetId: r.AssetId,
+					name: r.Name,
+					description: r.Description,
+					creator: {
+						id: r.Creator.CreatorTargetId,
+						name: r.Creator.Name,
+						type: r.Creator.CreatorType,
+						agentId: r.Creator.Id
+					},
+					robuxPrice: Number(r.PriceInRobux) || 0,
+					isForSale: r.IsForSale,
+					isFree: r.IsPublicDomain,
+					isLimited: r.IsLimited || r.IsLimitedUnique,
+					isLimitedUnique: r.IsLimitedUnique,
+					remaining: remaining,
 					buildersClubMembershipType: r.MinimumMembershipLevel
 				});
 			}).fail(function (jxhr, errors) {

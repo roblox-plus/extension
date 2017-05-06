@@ -222,11 +222,21 @@ if (browser.name == "Chrome") {
 										}
 										notify(note).button1Click(function () {
 											if (limbutton && o.productId) {
-												catalog.purchase({ productId: o.productId, price: pround(o.list.Price), seller: 1 }, function (speed) {
+												var start = performance.now();
+												Roblox.economy.purchaseProduct(o.productId, pround(o.list.Price)).then(function () {
+													var speed = performance.now() - start;
 													notify({
-														header: speed ? "Purchased!" : "Purchase failed",
+														header: "Purchased!",
 														lite: o.content,
-														items: speed ? { 'Speed': speed.toFixed(3) + "ms" } : {},
+														items: speed ? {
+															"Speed": speed.toFixed(3) + "ms"
+														} : {},
+														icon: o.icon
+													});
+												}, function (errors) {
+													notify({
+														header: "Purchase failed",
+														lite: errors[0].message,
 														icon: o.icon
 													});
 												});
