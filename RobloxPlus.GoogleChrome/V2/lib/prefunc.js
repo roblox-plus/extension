@@ -293,25 +293,6 @@ array = {
 
 
 
-mask = {
-	encode: function (x) {
-		x = tostring(x);
-		var r = "";
-		for (var n = 0; n < x.length; n++) {
-			var y = x[n].byte();
-			r += (y < 10 ? "0000" : (y < 100 ? "000" : (y < 1000 ? "00" : (y < 10000 ? "0" : "")))) + y;
-		}
-		return r;
-	},
-	decode: function (x) {
-		var r = "";
-		foreach(tostring(x).match(/\d\d\d\d\d/g), function (n, o) { r += o.char(); });
-		return r;
-	}
-};
-
-
-
 tween = function (a, b, style, direction, time, callBack, finish) {
 	var s = getMil();
 	var e = getMil() + time;

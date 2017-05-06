@@ -168,34 +168,6 @@ forumService = {};
 
 if (ext.isBackground) {
 	catalog.limiteds.cache = compact.cache(10 * 1000);
-	
-	/* Upload models with a post request */
-	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
-		if (url.path(details.url) == "/Data/Upload.ashx") {
-			var headers = {
-				"User-Agent": "Roblox/WinInet",
-				"Host": "data.roblox.com",
-				"Accept": "*/*",
-				"Accept-Encoding": "deflate, gzip",
-				"Cookie": "",
-				"Content-Type": "application/xml",
-				"Requester": "Client",
-				"Content-Length": url.param("length", details.url)
-			};
-			var newhead = [];
-			for (var n in details.requestHeaders) {
-				var na = details.requestHeaders[n].name;
-				if (headers.hasOwnProperty(na)) {
-					newhead.push({ name: na, value: headers[na] || details.requestHeaders[n].value });
-					delete headers[na];
-				}
-			}
-			for (var n in headers) {
-				newhead.push({ name: n, value: headers[n] });
-			}
-			return { requestHeaders: newhead };
-		}
-	}, { urls: ["*://data.roblox.com/Data/*"] }, ["requestHeaders", "blocking"]);
 }
 
 
