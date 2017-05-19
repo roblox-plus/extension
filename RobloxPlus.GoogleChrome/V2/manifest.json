@@ -17,20 +17,9 @@
 
 	"content_scripts": [
 		{
-			"js": [ "theme.js" ],
-			"css": [
-				"/css/icons.css",
-				"/css/hljs.css",
-				"/css/style.css",
-				"/css/themes/obc.css",
-				"/css/themes/easter.css"
-			],
-			"matches": [ "*://*.roblox.com/*" ],
-			"run_at": "document_start"
-		},
-
-		{
 			"js": [
+				"theme.js",
+
 				"lib/jquery/jquery.js",
 				"lib/highlight.pack.js",
 				"lib/global.js",
@@ -42,6 +31,9 @@
 				"lib/jquery/jquery.cache.js",
 				"lib/jquery/jquery.promise.js",
 				"lib/jquery/jquery.notifications.js",
+
+				"/lib/rplus/RobloxPlus.js",
+
 				"lib/roblox/Roblox.js",
 				"lib/roblox/thumbnails.js",
 				"lib/roblox/users.js",
@@ -66,12 +58,21 @@
 				"content/json.js",
 				"content.js"
 			],
+			"css": [
+				"/css/icons.css",
+				"/css/hljs.css",
+				"/css/style.css",
+				"/css/themes/obc.css",
+				"/css/themes/easter.css"
+			],
 			"matches": [ "*://*.roblox.com/*" ],
-			"run_at": "document_end"
+			"run_at": "document_start"
 		},
 
 		{
 			"js": [
+				"/content/core/quickInfoBox.js",
+
 				"/content/pages/Login.js",
 				"/content/pages/Group.js",
 				"/content/pages/Develop.js",
@@ -89,6 +90,7 @@
 				"/content/pages/forum/ShowPost.js",
 				"/content/pages/forum/AddPost.js",
 				"/content/pages/Avatar.js",
+
 				"/content/loadPages.js"
 			],
 			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*", "*://forum.roblox.com/*" ],

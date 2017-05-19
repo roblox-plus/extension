@@ -33,6 +33,7 @@
     <Folder Include="V2\" />
     <Folder Include="V2\background\" />
     <Folder Include="V2\content\" />
+    <Folder Include="V2\content\core\" />
     <Folder Include="V2\content\pages\" />
     <Folder Include="V2\content\pages\forum\" />
     <Folder Include="V2\css\" />
@@ -41,6 +42,7 @@
     <Folder Include="V2\images\icons\" />
     <Folder Include="V2\lib\" />
     <Folder Include="V2\lib\jquery\" />
+    <Folder Include="V2\lib\rplus\" />
     <Folder Include="V2\lib\roblox\" />
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +74,9 @@
     <Compile Include="V2\background\background.js" />
     <Compile Include="V2\background\jquery.notifications.ext.js" />
     <Compile Include="V2\content.js" />
+    <Compile Include="V2\content\core\quickInfoBox.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\content\json.js" />
     <Compile Include="V2\content\loadPages.js" />
     <Compile Include="V2\content\pages\Account.js" />
@@ -122,6 +127,9 @@
     <Compile Include="V2\lib\roblox\ui.js" />
     <Compile Include="V2\lib\roblox\users.js" />
     <Compile Include="V2\lib\roblox\xsrfHandler.js" />
+    <Compile Include="V2\lib\rplus\RobloxPlus.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\middle.js" />
     <Compile Include="V2\notifications.js" />
     <Compile Include="V2\overwrite.js" />
