@@ -52,8 +52,8 @@ RPlus.Pages.Item = function () {
 	if ((item.assetTypeId == 1 || item.assetTypeId == 4) && item.creator.id == 1) {
 		$("#item-details .action-button>button").replaceWith($("<a>").attr({ "class": "btn-primary-lg", "download": item.name, href: "https://assetgame.roblox.com/asset/?id=" + id }).text("Download"));
 	} else if (id == 391072534) {
-		$(".item-type-field-container .field-content").text("ROBLOX+ Enhancement");
-		var buyButton = $(".PurchaseButton").attr("data-asset-type", "ROBLOX+ Enhancement");
+		$(".item-type-field-container .field-content").text("Roblox+ Enhancement");
+		var buyButton = $(".PurchaseButton").attr("data-asset-type", "Roblox+ Enhancement");
 		$("#AssetThumbnail>.thumbnail-span>img").attr("src", ext.getUrl("images/notifier.png")).css("height", "155px");
 
 		if (browser.name != "Chrome") {
@@ -69,7 +69,7 @@ RPlus.Pages.Item = function () {
 			});
 		}
 	} else if (id == 375602203) {
-		//$("#ItemContainer").prepend("<span class=\"status-confirm\" style=\"display: block;width: 81%;text-align: center;font-weight: bold;\">"+($("#ctl00_cphRoblox_btnDelete.invisible").length?"Earn this badge to unlock the Easter theme for ROBLOX+":"By earning this you've unlocked the Easter theme for ROBLOX+")+"</span><br>");
+		//$("#ItemContainer").prepend("<span class=\"status-confirm\" style=\"display: block;width: 81%;text-align: center;font-weight: bold;\">"+($("#ctl00_cphRoblox_btnDelete.invisible").length?"Earn this badge to unlock the Easter theme for Roblox+":"By earning this you've unlocked the Easter theme for Roblox+")+"</span><br>");
 	}
 
 

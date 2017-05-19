@@ -206,7 +206,7 @@ RPlus.Pages.Game = function () {
 		var clanId = data.attr("data-clan-id");
 		var distributorTargetId = data.attr("data-distributor-target-id");
 		var spinner = leaderboard.find(".spinner");
-		$(this).find(".rbx-leaderboard-filter").append($("<span>").text("Your Rank"), $("<a class=\"rbx-menu-item\" href=\"javascript:/* ROBLOX+ */\">").click(function () {
+		$(this).find(".rbx-leaderboard-filter").append($("<span>").text("Your Rank"), $("<a class=\"rbx-menu-item\" href=\"javascript:/* Roblox+ */\">").click(function () {
 			spinner.show();
 			seeMoreButton.hide();
 			containerElem.find(".rbx-leaderboard-item,.rbx-leaderboard-notification").remove();

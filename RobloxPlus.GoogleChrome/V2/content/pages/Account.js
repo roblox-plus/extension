@@ -56,7 +56,7 @@ RPlus.Pages.Account = function () {
 		o.storageHandle = isCB(o.storage) ? o.storage : (function (s) { return function (v) { storage[isCB(v) ? "get" : "set"](s, v); }; })(o.storage);
 
 		if (!o.tip && o.type == "sound") {
-			o.tip = "Paste a ROBLOX audio id that plays with the notification";
+			o.tip = "Paste a Roblox audio id that plays with the notification";
 		}
 		if (o.tip) {
 			o.tip = $("<div class=\"tooltip bottom fade in\">").mouseover(function () {
@@ -293,17 +293,17 @@ RPlus.Pages.Account = function () {
 				}
 			},
 			"Startup": {
-				tip: "When ROBLOX+ starts/updates",
+				tip: "When Roblox+ starts/updates",
 				type: "bool",
 				storage: objectSaver("startupNotification", "on"),
 				tabbed: {
-					"After I visit ROBLOX": {
-						tip: "Only display after you go to ROBLOX",
+					"After I visit Roblox": {
+						tip: "Only display after you go to Roblox",
 						type: "bool",
 						storage: objectSaver("startupNotification", "visit")
 					},
 					"Username Pronunciation": {
-						tip: "How should ROBLOX+ pronounce your name on startup?",
+						tip: "How should Roblox+ pronounce your name on startup?",
 						type: "speak",
 						placeholder: "Leaving blank will disable speaking",
 						width: 250,
@@ -576,7 +576,7 @@ RPlus.Pages.Account = function () {
 		"Forum Notifier": "When someone replies to a forum thread you've replied to or tracked you'll be notified",
 		"Friend Notifier": "Notifications when your friends come online, go offline, or join a game",
 		"Group Shout Notifier": "Notifications when a group your in updates their shout",
-		"ROBLOX+ Notification Center": "Click the R+ icon in the top right to view notifications that haven't yet been closed",
+		"Roblox+ Notification Center": "Click the R+ icon in the top right to view notifications that haven't yet been closed",
 		"Forum Post IDs": "On forum threads find out which post has which id, and click the id for the link directly to that post",
 		"Forum RAP": "Below each poster on the forums will be their RAP",
 		"Forum Blocking": "Threads, and replies made by people you blocked will be hidden",
@@ -589,8 +589,8 @@ RPlus.Pages.Account = function () {
 		"Live Navigation Counters": "Updates Robux, message, trade, and friend request counts live without refreshing",
 		"Live Remaining Counter": "When a new limited comes out the remaining count will update live without refreshing",
 		"Content Assist": "For certain asset types (like hats, packages, and gear) you can see their route content (like textures, and mesh ids) by clicking the Contents on item pages",
-		"Texture Download": "On images made by ROBLOX you'll be able to get a direct download for the texture, remember to add the image extension on the end of the file name (e.g. .png)",
-		"Serial Tracker": "On item pages for assets created by ROBLOX you will be able to see who owns the asset by clicking Owners",
+		"Texture Download": "On images made by Roblox you'll be able to get a direct download for the texture, remember to add the image extension on the end of the file name (e.g. .png)",
+		"Serial Tracker": "On item pages for assets created by Roblox you will be able to see who owns the asset by clicking Owners",
 		"Trade Checker": "See what items you have outbound from the trade window, they'll be highlighted red when the feature is on",
 		"RAP Assist": "When this feature is on trades on the trade page will be colored by who has higher RAP",
 		"Profile RAP": "On profiles next to friends, and followers there will be the player's added RAP (Recent Average Price, how much their limtieds are worth combined)",
@@ -611,7 +611,7 @@ RPlus.Pages.Account = function () {
 		"Comment Timer": "On item pages in comments tells you how long until you can make another",
 		"Money Page Trade Tab Edits": "In the <a href=\"/my/money.aspx#/#TradeItems_tab\">trade</a> tab of the money page under outbound will be a cancel all button, to decline all outbound trades<br>Added clickable trade id in the top left of open trades",
 		"Multi-Messaging": "When sending a new message use the input text box on the <i>To:</i> line to send the message to multiple users",
-		"JSON Pretty-Printing": "On JSON pages from ROBLOX like this one <a href=\"https://search.roblox.com/catalog/json?ResultsPerPage=1\" target=\"_blank\">search.roblox.com\/catalog\/json?ResultsPerPage=1</a> if you press enter it will <i>\"pretty-print\"</i> it",
+		"JSON Pretty-Printing": "On JSON pages from Roblox like this one <a href=\"https://search.roblox.com/catalog/json?ResultsPerPage=1\" target=\"_blank\">search.roblox.com\/catalog\/json?ResultsPerPage=1</a> if you press enter it will <i>\"pretty-print\"</i> it",
 		"Follow from Home": "On the <a href=\"/home\">Home</a> page if your friend is playing a game click the game icon to follow them"
 	};
 	var featuresDiv;

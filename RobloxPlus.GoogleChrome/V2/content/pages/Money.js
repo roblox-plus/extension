@@ -19,7 +19,7 @@ RPlus.Pages.Money = function () {
 
 	storage.get("tradeTab", function (on) {
 		if (on) {
-			$("#ButtonCounterTrade").hide().after($("<a class=\"btn-large btn-neutral\" href=\"javascript:/* ROBLOX+ */\">Counter</a>").click(function () {
+			$("#ButtonCounterTrade").hide().after($("<a class=\"btn-large btn-neutral\" href=\"javascript:/* Roblox+ */\">Counter</a>").click(function () {
 				Roblox.trades.openSettingBasedTradeWindow(Roblox.users.getIdFromUrl($(".TradePartnerName").last().attr("href")), trid.text().replace(/\D+/g, ""));
 			}));
 		}
@@ -116,7 +116,7 @@ RPlus.Pages.Money = function () {
 			setTimeout(cancelAll, 5000, callBack);
 		});
 	}
-	$("#TradeItems_tab>.SortsAndFilters>.TradeType").after($("<a id=\"rplusCancelOutbound\" href=\"javascript:/* ROBLOX+ */;\" class=\"btn-small btn-neutral\">Cancel All</a>").hide().click(function () {
+	$("#TradeItems_tab>.SortsAndFilters>.TradeType").after($("<a id=\"rplusCancelOutbound\" href=\"javascript:/* Roblox+ */;\" class=\"btn-small btn-neutral\">Cancel All</a>").hide().click(function () {
 		var el = $(this);
 		if (confirm("Cancel all outbound trades?")) {
 			cancelAll(function () {

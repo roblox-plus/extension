@@ -42,7 +42,7 @@ foreach({
 		embedSize: 75
 	},
 	"changedLogin": ext.incognito,
-	"groupShoutNotifierList": { 2518656: "ROBLOX+ Fan Group" },
+	"groupShoutNotifierList": { 2518656: "Roblox+ Fan Group" },
 	"navigation": {
 		"sideOpen": false,
 		"counterCommas": 100000000,

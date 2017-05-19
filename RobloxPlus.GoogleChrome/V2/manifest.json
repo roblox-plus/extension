@@ -1,8 +1,8 @@
 {
 	"version": "2.2.57",
-	"name": "ROBLOX+",
-	"short_name": "ROBLOX+",
-	"description": "Adds features and notifiers made by WebGL3D to the ROBLOX website",
+	"name": "Roblox+",
+	"short_name": "Roblox+",
+	"description": "Adds features and notifiers made by WebGL3D to the Roblox website",
 
 	"icons": {
 		"128": "/images/icons/icon_128x128.png",
@@ -101,7 +101,7 @@
 		"default_icon": {
 			"19": "/images/icons/icon_32x32.png"
 		},
-		"default_title": "ROBLOX+",
+		"default_title": "Roblox+",
 		"default_popup": "notifications.html"
 	},
 

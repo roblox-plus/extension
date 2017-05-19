@@ -35,7 +35,7 @@ RPlus.Pages.Profile = function () {
 
 	storage.get(["profileRAP", "tradeTab"], function (vals, rapLabel) {
 		if (vals.profileRAP) {
-			$(".header-details>.details-info").append(rapLabel = $("<li><div class=\"text-label\">RAP</div><a userid=\"" + id + "\" class=\"rplusinventory text-name\" href=\"javascript:/* ROBLOX+ */;\"><h3>...</h3></a></li>"));
+			$(".header-details>.details-info").append(rapLabel = $("<li><div class=\"text-label\">RAP</div><a userid=\"" + id + "\" class=\"rplusinventory text-name\" href=\"javascript:/* Roblox+ */;\"><h3>...</h3></a></li>"));
 			Roblox.inventory.getCollectibles(id).then(function (inv) {
 				rapLabel.find("h3").text(global.addCommas(inv.combinedValue));
 			}, function () {
@@ -66,7 +66,7 @@ RPlus.Pages.Profile = function () {
 				setTimeout(load, 250, page);
 			});
 		};
-		$(".profile-stats-container").append($("<li class=\"profile-stat\">").append($("<p class=\"text-label\">").text(o + " Sales")).append(stat = $("<p class=\"text-lead\">").append($("<a href=\"javascript:/* ROBLOX+ */\">[ Load ]</a>").click(function () { load(1); }))));
+		$(".profile-stats-container").append($("<li class=\"profile-stat\">").append($("<p class=\"text-label\">").text(o + " Sales")).append(stat = $("<p class=\"text-lead\">").append($("<a href=\"javascript:/* Roblox+ */\">[ Load ]</a>").click(function () { load(1); }))));
 	});
 
 	if (($(".btn-friends:not([rplus])>button").text() || "").trim() == "Unfriend") {
