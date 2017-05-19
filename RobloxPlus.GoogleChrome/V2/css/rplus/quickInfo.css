@@ -1,0 +1,39 @@
+﻿/* /css/rplus/quickInfo.css [05/18/2017] */
+#navbar-rplus {
+	padding: 4px;
+}
+
+#navbar-rplus > a {
+	width: 28px;
+	height: 28px;
+	margin: 2px;
+}
+
+
+#rplus-quickinfo {
+	width: 350px;
+	height: 500px;
+	right: 10px;
+}
+
+#rplus-quickinfo, #rplus-quickinfo * {
+	box-sizing: border-box;
+}
+
+#rplus-quickinfo input {
+	font-family: "Source Sans Pro",Arial,Helvetica,sans-serif;
+}
+
+
+#rplus-quickinfo .form-group {
+	width: calc(100% - 10px);
+	margin: 5px;
+}
+
+#rplus-quickinfo .form-control.input-field {
+	width: 100%;
+}
+
+
+
+/* WebGL3D */

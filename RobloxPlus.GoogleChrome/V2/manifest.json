@@ -32,8 +32,6 @@
 				"lib/jquery/jquery.promise.js",
 				"lib/jquery/jquery.notifications.js",
 
-				"/lib/rplus/RobloxPlus.js",
-
 				"lib/roblox/Roblox.js",
 				"lib/roblox/thumbnails.js",
 				"lib/roblox/users.js",
@@ -54,16 +52,19 @@
 				"lib/roblox/navigation.js",
 				"lib/roblox/ui.js",
 				"lib/preroblox.js",
-				"middle.js",
-				"content/json.js",
-				"content.js"
+
+				"/lib/rplus/RobloxPlus.js",
+
+				"/content/core/contentPreload.js"
 			],
 			"css": [
 				"/css/icons.css",
 				"/css/hljs.css",
 				"/css/style.css",
 				"/css/themes/obc.css",
-				"/css/themes/easter.css"
+				"/css/themes/easter.css",
+
+				"/css/rplus/quickInfo.css"
 			],
 			"matches": [ "*://*.roblox.com/*" ],
 			"run_at": "document_start"
@@ -72,6 +73,10 @@
 		{
 			"js": [
 				"/content/core/quickInfoBox.js",
+
+				"middle.js",
+				"content/json.js",
+				"content.js",
 
 				"/content/pages/Login.js",
 				"/content/pages/Group.js",

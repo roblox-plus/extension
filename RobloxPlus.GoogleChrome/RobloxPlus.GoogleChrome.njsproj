@@ -37,6 +37,7 @@
     <Folder Include="V2\content\pages\" />
     <Folder Include="V2\content\pages\forum\" />
     <Folder Include="V2\css\" />
+    <Folder Include="V2\css\rplus\" />
     <Folder Include="V2\css\themes\" />
     <Folder Include="V2\images\" />
     <Folder Include="V2\images\icons\" />
@@ -51,6 +52,12 @@
     <Content Include="V2\css\hljs.css" />
     <Content Include="V2\css\icons.css" />
     <Content Include="V2\css\notifications.css" />
+    <Content Include="V2\css\rplus\images.css">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="V2\css\rplus\quickInfo.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="V2\css\style.css" />
     <Content Include="V2\css\themes\easter.css" />
     <Content Include="V2\css\themes\obc.css" />
@@ -74,6 +81,9 @@
     <Compile Include="V2\background\background.js" />
     <Compile Include="V2\background\jquery.notifications.ext.js" />
     <Compile Include="V2\content.js" />
+    <Compile Include="V2\content\core\contentPreload.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\content\core\quickInfoBox.js">
       <SubType>Code</SubType>
     </Compile>
