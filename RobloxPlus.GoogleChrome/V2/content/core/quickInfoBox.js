@@ -72,26 +72,20 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			return container;
 		})();
 
-		var assetContainer = (function () {
-			var container = $("<div>");
-			return container;
-		})();
-
-		innerContainer.append(userContainer, assetContainer);
+		innerContainer.append(userContainer);
 		outerContainer.append(innerContainer);
 
 		return {
 			outer: outerContainer,
 			inner: innerContainer,
 			user: userContainer,
-			asset: assetContainer,
 			innerList: innerContainer.find(">div")
 		};
 	})();
 
 	var searchBar = (function () {
 		var input = $("<input class=\"form-control input-field\">").attr({
-			"placeholder": "Drag Roblox links here!"
+			"placeholder": "Drag user profile links here!"
 		});
 		var form = $("<form class=\"form-horizontal ng-pristine ng-valid\">").attr({
 			"role": "form"
@@ -109,9 +103,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 
 
 	var displayTypes = {
-		"user": 1,
-		"asset": 2,
-		"catalog": 3
+		"user": 1
 	};
 	var processingId = 0;
 	var processDisplayChange = (function () {
@@ -137,6 +129,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			containers.innerList.removeAttr("selected");
 
 			containers.user.data("userid", user.id);
+			containers.user.find(">.avatar-card-container").removeClass("disabled");
 			containers.user.find(">ul.item-cards").html("");
 
 			containers.user.find(".avatar-card-link").attr("href", Roblox.users.getProfileUrl(user.id));
@@ -205,7 +198,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 
 						var averagePrice = $("<div class=\"item-card-price\">");
 						averagePrice.append($("<span class=\"icon-robux-16x16\">"),
-							$("<span class=\"text-robux\">").text(global.addCommas(collectible.recentAveragePrice)));
+							$("<span class=\"text-robux\">").text(collectible.recentAveragePrice ? global.addCommas(collectible.recentAveragePrice) : "?"));
 
 
 						cardThumb.append(collectibleCounts[collectible.assetId].countLabel, thumbImage);
@@ -216,30 +209,16 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 					}
 				});
 			}).catch(function (e) {
-				containers.user.find(".avatar-card-label").first().text("Failed to load collectibles");
+				if (typeof (e) === "object" && Array.isArray(e.errors) && e.errors[0].code === 1) {
+					containers.user.find(">.avatar-card-container").addClass("disabled");
+					containers.user.find(".avatar-card-label").first().text("User has been restricted.");
+				} else {
+					containers.user.find(".avatar-card-label").first().text("Failed to load collectibles");
+					console.error(e);
+				}
 			});
 
 			containers.user.attr("selected", "selected");
-		}
-
-		function processAssetDisplay(asset, expectedProcessingId) {
-			if (expectedProcessingId !== processingId) {
-				return;
-			}
-			if (!asset) {
-				searchBar.val("");
-				return;
-			}
-			console.log("asset", asset);
-			searchBar.val(Roblox.catalog.getAssetUrl(asset.id, asset.name));
-			containers.innerList.removeAttr("selected");
-
-
-			containers.asset.attr("selected", "selected");
-		}
-
-		function processCatalogDisplay() {
-			console.log("wee woo");
 		}
 
 		return function (expectedProcessingId, target) {
@@ -257,15 +236,6 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 				}).catch(function (e) {
 					processUserDisplay(null, expectedProcessingId);
 				});
-			} else if (currentDisplayType === displayTypes.asset) {
-				Roblox.catalog.getAssetInfo(currentDisplayTargetId).then(function (asset) {
-					processAssetDisplay(asset, expectedProcessingId);
-				}).catch(function (e) {
-					processAssetDisplay(null, expectedProcessingId);
-					console.error("Asset does not exist - handle better!");
-				});
-			} else if (currentDisplayType === displayTypes.catalog) {
-				// we woo...
 			}
 		};
 	})();
@@ -294,16 +264,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			});
 			return;
 		}
-
-		var assetId = Roblox.catalog.getIdFromUrl(input);
-		if (assetId) {
-			processDisplayChange(processId, {
-				displayType: displayTypes.asset,
-				displayTargetId: assetId
-			});
-			return;
-		}
-
+		
 		var usernameMatch = input.match(/^user:(.+)/i) || ["", ""];
 		if (usernameMatch[1].length > 0) {
 			Roblox.users.getByUsername(usernameMatch[1]).then(function (user) {
@@ -328,16 +289,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			});
 			return;
 		}
-
-		var assetIdMatch = input.match(/^asset:(\d+)/i) || ["", ""];
-		if (assetIdMatch[1].length > 0) {
-			processDisplayChange(processId, {
-				displayType: displayTypes.asset,
-				displayTargetId: Number(assetIdMatch[1])
-			});
-			return;
-		}
-
+		
 		var limitedSearchMatch = input.match(/^limi?t?e?d?:(.+)/i) || ["", ""];
 		if (limitedSearchMatch[1].length > 0) {
 			processDisplayChange(processId, {
@@ -367,8 +319,10 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 		}
 	});
 
-	searchBar.on("input", function () {
-		processInputChange($(this).val());
+	searchBar.on("keyup", function (e) {
+		if (e.keyCode === 13) {
+			processInputChange($(this).val());
+		}
 	}).on("drop", function (e) {
 		var dropText = e.originalEvent.dataTransfer.getData("text");
 		if (typeof (dropText) === "string" && dropText.length > 0) {
@@ -399,7 +353,12 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 	return {
 		isContainerOpen: isContainerOpen,
 		openContainer: openContainer,
-		closeContainer: closeContainer
+		closeContainer: closeContainer,
+		trigger: function (input) {
+			if (typeof (input) === "string" && input.length > 0) {
+				processInputChange(input);
+			}
+		}
 	};
 })();
 
