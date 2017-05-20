@@ -64,6 +64,8 @@
 				"/css/themes/obc.css",
 				"/css/themes/easter.css",
 
+				"/css/roblox/itemCards.css",
+
 				"/css/rplus/quickInfo.css"
 			],
 			"matches": [ "*://*.roblox.com/*" ],

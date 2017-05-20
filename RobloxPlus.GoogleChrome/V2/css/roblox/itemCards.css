@@ -1,0 +1,62 @@
+﻿/* roblox/itemCards.css [copied from Roblox] */
+ul.item-cards {
+	padding: 0px;
+	list-style: none;
+	margin: 0px;
+}
+
+ul.item-cards > li.list-item.item-card {
+	float: left;
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+
+ul.item-cards > li.list-item.item-card > .item-card-container {
+	background-color: #fff;
+	position: relative;
+	box-shadow: 0 1px 4px 0 rgba(25, 25, 25, 0.3);
+	border-radius: 3px;
+	padding: 0 0 5px;
+	width: 126px;
+	max-width: 150px;
+}
+
+ul.item-cards > li.list-item.item-card > .item-card-container > a.item-card-link {
+	display: block;
+}
+
+ul.item-cards > li.list-item.item-card > .item-card-container > a.item-card-link > .item-card-thumb-container {
+	border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
+	width: 126px;
+	height: 126px;
+	position: relative;
+	border-bottom: 1px solid #E3E3E3;
+}
+
+ul.item-cards > li.list-item.item-card > .item-card-container > a.item-card-link > .item-card-thumb-container > .item-serial-number {
+	background-color: #191919;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 1em;
+	padding: 4px;
+	position: absolute;
+	top: 6px;
+	right: 6px;
+}
+
+ul.item-cards > li.list-item.item-card > .item-card-container > .item-card-link > .item-card-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding: 0 5px;
+}
+
+ul.item-cards > li.list-item.item-card > .item-card-container > .item-card-price {
+	height: 20px;
+	padding: 0 5px;
+}
+
+/* WebGL3D */

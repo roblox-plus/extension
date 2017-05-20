@@ -43,6 +43,19 @@
 
 
 	return {
+		getIdFromUrl: function (url) {
+			return Number((url.match(/\/games\/(\d+)\//i) || url.match(/place\.aspx.*id=(\d+)/i) || url.match(/place\?.*id=(\d+)/i) || ["", 0])[1]) || 0;
+		},
+
+		getGameUrl: function (placeId, placeName) {
+			if (typeof (placeName) != "string" || !placeName) {
+				placeName = "redirect";
+			} else {
+				placeName = placeName.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "") || "redirect";
+			}
+			return "https://www.roblox.com/games/" + placeId + "/" + placeName;
+		},
+
 		launch: $.promise.cache(function (resolve, reject, launchArguments) {
 			if (typeof (launchArguments) != "object") {
 				reject([{

@@ -11,9 +11,12 @@
 
 
 #rplus-quickinfo {
-	width: 350px;
+	width: 375px;
 	height: 500px;
 	right: 10px;
+	padding: 5px;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 #rplus-quickinfo, #rplus-quickinfo * {
@@ -26,12 +29,37 @@
 
 
 #rplus-quickinfo .form-group {
-	width: calc(100% - 10px);
-	margin: 5px;
+	width: 100%;
 }
 
 #rplus-quickinfo .form-control.input-field {
 	width: 100%;
+}
+
+
+#rplus-quickinfo > div > div {
+	display: none;
+}
+
+#rplus-quickinfo > div > div[selected] {
+	display: block;
+}
+
+
+
+/* Users */
+#rplus-quickinfo .item-cards > .item-card {
+	width: 115px;
+	padding: 5px;
+}
+
+#rplus-quickinfo .item-cards .item-card-container {
+	width: 110px;
+}
+
+#rplus-quickinfo .item-cards .item-card-container .item-card-thumb-container {
+	width: 110px;
+	height: 110px;
 }
 
 
