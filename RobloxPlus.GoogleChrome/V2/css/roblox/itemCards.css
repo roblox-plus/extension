@@ -1,18 +1,21 @@
 ﻿/* roblox/itemCards.css [copied from Roblox] */
-ul.item-cards {
+/*
+	Include rplus class in all ul tags so it doesn't interfere with Roblox's implementation
+*/
+ul.item-cards.rplus {
 	padding: 0px;
 	list-style: none;
 	margin: 0px;
 }
 
-ul.item-cards > li.list-item.item-card {
+ul.item-cards.rplus > li.list-item.item-card {
 	float: left;
 	margin: 0px;
 	padding: 0px;
 	list-style: none;
 }
 
-ul.item-cards > li.list-item.item-card > .item-card-container {
+ul.item-cards.rplus > li.list-item.item-card > .item-card-container {
 	background-color: #fff;
 	position: relative;
 	box-shadow: 0 1px 4px 0 rgba(25, 25, 25, 0.3);
@@ -22,11 +25,11 @@ ul.item-cards > li.list-item.item-card > .item-card-container {
 	max-width: 150px;
 }
 
-ul.item-cards > li.list-item.item-card > .item-card-container > a.item-card-link {
+ul.item-cards.rplus > li.list-item.item-card > .item-card-container > a.item-card-link {
 	display: block;
 }
 
-ul.item-cards > li.list-item.item-card > .item-card-container > a.item-card-link > .item-card-thumb-container {
+ul.item-cards.rplus > li.list-item.item-card > .item-card-container > a.item-card-link > .item-card-thumb-container {
 	border-top-right-radius: 3px;
 	border-top-left-radius: 3px;
 	width: 126px;
@@ -35,7 +38,7 @@ ul.item-cards > li.list-item.item-card > .item-card-container > a.item-card-link
 	border-bottom: 1px solid #E3E3E3;
 }
 
-ul.item-cards > li.list-item.item-card > .item-card-container > a.item-card-link > .item-card-thumb-container > .item-serial-number {
+ul.item-cards.rplus > li.list-item.item-card > .item-card-container > a.item-card-link > .item-card-thumb-container > .item-serial-number {
 	background-color: #191919;
 	color: #fff;
 	font-size: 12px;
@@ -47,14 +50,14 @@ ul.item-cards > li.list-item.item-card > .item-card-container > a.item-card-link
 	right: 6px;
 }
 
-ul.item-cards > li.list-item.item-card > .item-card-container > .item-card-link > .item-card-name {
+ul.item-cards.rplus > li.list-item.item-card > .item-card-container > .item-card-link > .item-card-name {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	padding: 0 5px;
 }
 
-ul.item-cards > li.list-item.item-card > .item-card-container > .item-card-price {
+ul.item-cards.rplus > li.list-item.item-card > .item-card-container > .item-card-price {
 	height: 20px;
 	padding: 0 5px;
 }

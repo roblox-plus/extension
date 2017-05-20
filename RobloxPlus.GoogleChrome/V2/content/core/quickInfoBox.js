@@ -63,7 +63,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			})();
 
 			var collectibles = (function () {
-				var list = $("<ul class=\"hlist item-cards\">");
+				var list = $("<ul class=\"hlist item-cards rplus\">");
 				return list;
 			})();
 
@@ -286,16 +286,6 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			processDisplayChange(processId, {
 				displayType: displayTypes.user,
 				displayTargetId: Number(userIdMatch[1])
-			});
-			return;
-		}
-		
-		var limitedSearchMatch = input.match(/^limi?t?e?d?:(.+)/i) || ["", ""];
-		if (limitedSearchMatch[1].length > 0) {
-			processDisplayChange(processId, {
-				displayType: displayTypes.catalog,
-				displayTargetId: "limited:" + limitedSearchMatch[1],
-				input: limitedSearchMatch[1]
 			});
 			return;
 		}
