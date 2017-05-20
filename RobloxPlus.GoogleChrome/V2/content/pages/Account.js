@@ -552,11 +552,6 @@ RPlus.Pages.Account = function () {
 				tip: "Put clothing/models/audio/decals on/off sale from the develop page",
 				type: "bool",
 				storage: "quickSell"
-			},
-			"Popover Box Icon": {
-				tip: "Display the R+ circle for the popover box on the right",
-				type: "bool",
-				storage: "rplusPopbox"
 			}
 		}
 	}, function (n, o, section) {
@@ -597,7 +592,6 @@ RPlus.Pages.Account = function () {
 		"Sale Stats": "On profiles near the join date will be counts for how many clothing, and model sales the user has",
 		"Changed Username Login": "When signing in you can use a past username, and it will autocorrect to the current one",
 		"Quick-Sell": "From the develop page put clothing, models, decals, and audio on sale for the lowest price with one button click",
-		"Popbox": "Drag item, or user links into the R+ circle/box on the right to load information about them<br>View outfit, inventory, private sellers, and if you created the asset you can put it on/offsale as well as change the description right from the box<br>Credit to <a href=\"/users/1211749/profile\">Acmic</a>/<a href=\"/users/87353706/profile\">zlib</a> for some ideas on making this one!",
 		"Friend Page Options": "Unfollow all, and follow all friends buttons added to the friends page",
 		"Character Page Edits": "Added searchbar, and skin color options to character page",
 		//"Multi-Private Selling": "Tick boxes when selling, or taking your items off sale instead of a dropdown",

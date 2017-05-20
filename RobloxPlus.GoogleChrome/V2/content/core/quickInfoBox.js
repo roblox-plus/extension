@@ -342,7 +342,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 
 	$(function () {
 		// Expirmental feature, only let me see it for now.
-		if (Roblox.page.user.id !== 48103520 || $("#header").length <= 0) {
+		if ($("#header").length <= 0) {
 			return;
 		}
 
@@ -356,6 +356,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 		closeContainer: closeContainer,
 		trigger: function (input) {
 			if (typeof (input) === "string" && input.length > 0) {
+				openContainer();
 				processInputChange(input);
 			}
 		}

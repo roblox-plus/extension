@@ -51,8 +51,7 @@ foreach({
 			{ text: "Forums", href: "/forum" }
 		]
 	},
-	"userSince": getMil(),
-	"rplusPopbox": true
+	"userSince": getMil()
 }, function (n, o) {
 	if (type(storage.get(n)) != type(o)) {
 		storage.set(n, o);
