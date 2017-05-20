@@ -141,6 +141,9 @@
     <Compile Include="V2\lib\roblox\ui.js" />
     <Compile Include="V2\lib\roblox\users.js" />
     <Compile Include="V2\lib\roblox\xsrfHandler.js" />
+    <Compile Include="V2\lib\rplus\copiedAssets.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\lib\rplus\RobloxPlus.js">
       <SubType>Code</SubType>
     </Compile>
