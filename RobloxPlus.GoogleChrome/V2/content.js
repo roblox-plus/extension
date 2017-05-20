@@ -175,10 +175,11 @@ fixCB(({
 				return "<a href=\"" + Roblox.catalog.getAssetUrl(y) + "\" target=\"_blank\">" + Roblox.catalog.getAssetUrl(y) + "</a>";
 			}).replace(/(^|\W)R\+/gi, function (x, y) {
 				return y + "<a href=\"/Groups/Group.aspx?gid=2518656\"><span></span></a>";
-			})).find("a[href*='item']").each(function () {
+			})).find("a[href*='item'],a[href*='/catalog/']").each(function () {
 				var anc = $(this);
 				var u = anc.attr("href") || "";
-				if (u.match(/-item\?/) || u.match(/\/item\.aspx\?/)) {
+				var assetId = Roblox.catalog.getIdFromUrl(u);
+				if (assetId > 0) {
 					Roblox.catalog.getAssetInfo(Roblox.catalog.getIdFromUrl(u)).then(function (asset) {
 						if (asset.assetType == "Audio") {
 							anc.text(" " + asset.name.trim()).before(soundService.robloxSound.button(asset.id));
