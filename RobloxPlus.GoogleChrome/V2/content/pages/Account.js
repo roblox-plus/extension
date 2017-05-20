@@ -1,7 +1,17 @@
 ﻿var RPlus = RPlus || {};
 RPlus.Pages = RPlus.Pages || {};
 
+function loadV2Page() {
+	var pageContent = $("<div class=\"page-content\">");
+}
+
 RPlus.Pages.Account = function () {
+	// Lock off new page to just me for development.
+	if (Roblox.page.user.id === 48103520 && location.search.includes("dev")) {
+		loadV2Page();
+		return;
+	}
+
 	var compileStorage;
 
 	var styleTag = $("<style>");
