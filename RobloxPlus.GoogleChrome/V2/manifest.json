@@ -98,6 +98,7 @@
 				"/content/pages/forum/ShowPost.js",
 				"/content/pages/forum/AddPost.js",
 				"/content/pages/Avatar.js",
+				"/content/pages/Catalog.js",
 
 				"/content/loadPages.js"
 			],

@@ -95,6 +95,9 @@
     <Compile Include="V2\content\loadPages.js" />
     <Compile Include="V2\content\pages\Account.js" />
     <Compile Include="V2\content\pages\Avatar.js" />
+    <Compile Include="V2\content\pages\Catalog.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\content\pages\ComposeMessage.js" />
     <Compile Include="V2\content\pages\Develop.js" />
     <Compile Include="V2\content\pages\forum\AddPost.js" />
