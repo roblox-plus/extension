@@ -1,5 +1,5 @@
 {
-	"version": "2.2.58",
+	"version": "2.2.59",
 	"name": "Roblox+",
 	"short_name": "Roblox+",
 	"description": "Adds features and notifiers made by WebGL3D to the Roblox website",
@@ -66,6 +66,7 @@
 				"/css/themes/easter.css",
 
 				"/css/roblox/itemCards.css",
+				"/css/roblox/icons.css",
 
 				"/css/rplus/quickInfo.css"
 			],

@@ -2,6 +2,9 @@
 RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.Catalog = function () {
+	// Temporarily disable until the back end is better.
+	return {};
+
 	function scanPage() {
 		var assetIds = [];
 		$(".CatalogItemOuter:not([data-asset-id]").each(function () {
@@ -33,8 +36,7 @@ RPlus.Pages.Catalog = function () {
 
 	scanPage();
 
-	return {
-	};
+	return {};
 };
 
 RPlus.Pages.Catalog.patterns = [/^\/catalog\//i];

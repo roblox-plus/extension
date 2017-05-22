@@ -197,7 +197,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 						}
 
 						var averagePrice = $("<div class=\"item-card-price\">");
-						averagePrice.append($("<span class=\"icon-robux-16x16\">"),
+						averagePrice.append($("<span class=\"rplus icon-robux-16x16\">"),
 							$("<span class=\"text-robux\">").text(collectible.recentAveragePrice ? global.addCommas(collectible.recentAveragePrice) : "?"));
 
 

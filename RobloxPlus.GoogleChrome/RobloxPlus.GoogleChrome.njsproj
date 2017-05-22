@@ -56,6 +56,9 @@
     <Content Include="V2\css\roblox\itemCards.css">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="V2\css\roblox\icons.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="V2\css\rplus\images.css">
       <SubType>Code</SubType>
     </Content>

@@ -27,6 +27,8 @@ ul.item-cards.rplus > li.list-item.item-card > .item-card-container {
 
 ul.item-cards.rplus > li.list-item.item-card > .item-card-container > a.item-card-link {
 	display: block;
+	color: rgb(25, 25, 25);
+	font-weight: 300;
 }
 
 ul.item-cards.rplus > li.list-item.item-card > .item-card-container > a.item-card-link > .item-card-thumb-container {
