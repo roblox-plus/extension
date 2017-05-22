@@ -291,8 +291,7 @@ RPlus.Pages.Item = function () {
 	}
 
 	if ((item.assetTypeId === 11 || item.assetTypeId === 12 || item.assetTypeId === 2)
-		&& item.creator.id !== 1
-		&& false) {
+		&& item.creator.id !== 1) {
 		RPlus.copiedAssets.getOriginalAssetIds([item.id]).then(function (report) {
 			if (typeof(report[item.id]) === "number" && report[item.id] !== item.id) {
 				Roblox.ui.feedback($("<a>").text("This item is a copy! Click here for the original.").attr("href", Roblox.catalog.getAssetUrl(report[item.id])),
