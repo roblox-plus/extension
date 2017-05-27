@@ -30,7 +30,7 @@ RPlus.Pages.Account = function () {
 			}
 		});
 	})))).hide();
-	var tabContent = $("#horizontal-tabs").parent().find(">.tab-content");
+	var tabContent = $("#settings-container > .tab-content");
 
 	var labId = 0;
 	var objectSaver = function (s, i, p) {
@@ -622,14 +622,20 @@ RPlus.Pages.Account = function () {
 	controlPanel.append($("<div id=\"rplusFeatures\" class=\"section-content\">").append("<div class=\"col-sm-3\"><h3>Features (" + addComma(Object.keys(features).length) + ")</h3></div>", featuresDiv = $("<div class=\"col-sm-9\">")));
 	foreach(features, function (n, o) { featuresDiv.append($("<div class=\"form-group\">").append($("<label class=\"text-label account-settings-label\">").text(n), $("<p>").html(o))); });
 
-	$("#horizontal-tabs").append($("<li class=\"rbx-tab\">").attr("ui-sref", "rplus").append($("<a class=\"rbx-tab-heading\">").html($("<span class=\"text-lead\">").text(ext.manifest.name)))).on("click", ".rbx-tab", function (x) {
-		$("#horizontal-tabs .rbx-tab").removeClass("active");
+	$("#vertical-menu").append($("<li class=\"menu-option ng-scope\">").attr("ui-sref", "rplus").append($("<a class=\"rbx-tab-heading\">").html($("<span class=\"text-lead\">").text(ext.manifest.name)))).on("click", ".menu-option", function (x) {
+		$("#vertical-menu .menu-option").removeClass("active");
 		$(this).addClass("active");
 		controlPanel[(x = $(this).attr("ui-sref") == "rplus") ? "show" : "hide"]();
-		styleTag.html(".rbx-tabs-horizontal>.tab-content[ng-controller]{display:" + (x ? "none" : "block") + ";}");
+		if ($(this).attr("ui-sref") == "rplus") {
+			controlPanel.show();
+			tabContent.hide();
+		} else {
+			controlPanel.hide();
+			tabContent.show();
+		}
 	}).find(".rbx-tab").css("width", "20%");
-	$("#horizontal-tabs").parent().append(controlPanel).append(styleTag);
-	if (url.param("tab").toLowerCase() == "rplus") { $("li.rbx-tab[ui-sref=\"rplus\"]>a")[0].click(); }
+	$("#settings-container").append(controlPanel).append(styleTag);
+	if (url.param("tab").toLowerCase() == "rplus") { $("li.menu-option[ui-sref=\"rplus\"]>a")[0].click(); }
 
 	request.send({ request: "isBlockingMaliciousContent" }, function (grantedPermission) {
 		if (grantedPermission) {
