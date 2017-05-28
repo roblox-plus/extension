@@ -79,7 +79,6 @@
 				"/content/core/quickInfoBox.js",
 
 				"middle.js",
-				"content/json.js",
 				"content.js",
 
 				"/content/pages/Login.js",
@@ -104,6 +103,14 @@
 				"/content/loadPages.js"
 			],
 			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*", "*://forum.roblox.com/*" ],
+			"run_at": "document_end"
+		},
+
+		{
+			"js": [
+				"content/json.js"
+			],
+			"matches": [ "*://*.roblox.com/*" ],
 			"run_at": "document_end"
 		}
 	],
