@@ -787,12 +787,6 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
 		return { cancel: true };
 	}
 }, { urls: ["*://*.roblox.com/asset/*"], types: ["sub_frame", "main_frame"] }, ["blocking"]);
-chrome.webRequest.onBeforeRequest.addListener(function (details) {
-	var path = url.path(details.url).toLowerCase();
-	if (!string.startsWith(path, /\/games\//i) && (string.startsWith(path, /.*\/.*game.*\/.*getauthticket/i) || string.startsWith(path, /.*\/.*game.*%\d\w.*getauthticket/i))) {
-		return browser.name == "Chrome" ? { redirectUrl: ext.getUrl("warning.html") } : { cancel: true };
-	}
-}, { urls: ["*://*.roblox.com/*game*"], types: ["sub_frame", "main_frame"] }, ["blocking"]);
 
 
 

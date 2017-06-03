@@ -82,7 +82,6 @@
     <Content Include="V2\images\notifier.png" />
     <Content Include="V2\manifest.json" />
     <Content Include="V2\notifications.html" />
-    <Content Include="V2\warning.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="V2\background\background.js" />
