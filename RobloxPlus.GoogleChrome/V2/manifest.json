@@ -60,7 +60,6 @@
 			],
 			"css": [
 				"/css/icons.css",
-				"/css/hljs.css",
 				"/css/style.css",
 				"/css/themes/obc.css",
 				"/css/themes/easter.css",
@@ -71,6 +70,14 @@
 				"/css/rplus/quickInfo.css"
 			],
 			"matches": [ "*://*.roblox.com/*" ],
+			"run_at": "document_start"
+		},
+
+		{
+			"css": [
+				"/css/hljs.css"
+			],
+			"matches": [ "*://forum.roblox.com/*" ],
 			"run_at": "document_start"
 		},
 
