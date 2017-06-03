@@ -97,26 +97,29 @@ RPlus.Pages.Game = function () {
 				var id = ++servers.search.id;
 				servers.search.ul.html("");
 				Roblox.users.getByUsername(el.val()).then(function (u) {
-					if (id != servers.search.id) { return; }
+					if (id !== servers.search.id) {
+						return;
+					}
 					if (u.username.toLowerCase() != el.attr("placeholder").toLowerCase() && u.id) {
 						el.attr("placeholder", u.username);
-						$.get("/users/" + u.id + "/profile").success(function (r) {
-							r = $._(r);
-							var game = r.find(".profile-avatar-status.icon-game");
-							var mayfollow = r.find("div[data-mayfollow]").data("mayfollow");
-							var playingPlace = Number(url.param("PlaceId", game.parent().attr("href")));
-							if ((!mayfollow && users.userId != 48103520 && users.userId != gameCreatorId) || (playingPlace != placeId && playingPlace)) {
+						Roblox.users.getPresence([u.id]).then(function (presences) {
+							var presence = presences[u.id];
+							if (!presence || presence.locationType !== 4
+								|| (presence.game && presence.game.placeId !== placeId)
+								|| (!presence.game && users.userId !== 48103520 && user.userId !== gameCreatorId)) {
+								// Override for the developer of the game, and me
 								servers.search.ul.text("User either is not playing this game, or their privacy settings won't allow you to search for them.");
-								//return;
+								return;
 							}
+
 							Roblox.games.getAllRunningServers(placeId).then(function (serverList) {
-								if (id != servers.search.id) {
+								if (id !== servers.search.id) {
 									return;
 								}
 								var serversFound = [];
 								serverList.forEach(function (server) {
 									for (var pn = 0; pn < server.playerList.length; pn++) {
-										if (server.playerList[pn].id == u.id) {
+										if (server.playerList[pn].id === u.id) {
 											servers.search.ul.append(buildServerListItem(placeId, server));
 											serversFound.push(server);
 											break;
@@ -126,14 +129,14 @@ RPlus.Pages.Game = function () {
 										servers.search.ul.text("No server with " + u.username + " found!");
 									}
 								});
-							}, function () {
-								if (id != servers.search.id) {
+							}).catch(function () {
+								if (id !== servers.search.id) {
 									return;
 								}
 								servers.search.ul.text("Failed to load servers.");
 							});
-						}).fail(function () {
-							servers.search.ul.text("Game status check failed (is user deleted?)");
+						}).catch(function (e) {
+							servers.search.ul.text("Failed to check user presence.");
 						});
 					} else if (!u.id) {
 						servers.search.ul.text("User not found");

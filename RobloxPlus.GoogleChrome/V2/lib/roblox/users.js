@@ -95,6 +95,12 @@ Roblox.users = {
 		queued: true
 	}),
 
+	/*
+		locationTypes:
+			2 - Online
+			3 - Studio
+			4 - Game
+	*/
 	getPresence: $.promise.cache(function (resolve, reject, userIds) {
 		if (!Array.isArray(userIds)) {
 			reject([{

@@ -139,7 +139,7 @@ if (browser.name == "Chrome") {
 		onclick: function (e) {
 			var id = Roblox.users.getIdFromUrl(e.linkUrl);
 			var u = "https://www.roblox.com/Trade/TradeWindow.aspx?TradePartnerID=" + id;
-			$.get(u).success(function (r) {
+			$.get(u).done(function (r) {
 				if (($._(r).find("#aspnetForm[action]").attr("action") || "").endsWith("TradePartnerID=" + id)) {
 					Roblox.trades.openSettingBasedTradeWindow(id);
 				}
@@ -186,11 +186,11 @@ if (browser.name == "Chrome") {
 	}
 	
 	itemNotifier = setupNotifier(function (loop, uid) {
-		$.get("https://assetgame.roblox.com/asset/?id=311113211").success(function (id) {
+		$.get("https://assetgame.roblox.com/asset/?id=311113211").done(function (id) {
 			id = Number((id.match(/\d+/) || [0])[0]);
 			if (itemNotifier.cache < id && itemNotifier.cache) {
 				doesUserHaveButton(uid, function (hasButton) {
-					$.get("https://assetgame.roblox.com/asset/?id=311113132").success(function (r) {
+					$.get("https://assetgame.roblox.com/asset/?id=311113132").done(function (r) {
 						try {
 							r = JSON.parse($._(r).find("string[name='Value']").html().replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/&amp;/g, "&"));
 							for (var n in r) {
@@ -613,7 +613,7 @@ friendNotifier.run();
 /* Group Shout Notifier */
 groupNotifier = setupNotifier(function (loop, uid) {
 	var startup = groupNotifier.ran != uid;
-	$.get("https://www.roblox.com/Feeds/GetUserFeed").success(function (r) {
+	$.get("https://www.roblox.com/Feeds/GetUserFeed").done(function (r) {
 		var whitelist = storage.get("groupShoutNotifierList") || {};
 		var got = {};
 		$._(r).find(".feeds>.list-item").each(function () {

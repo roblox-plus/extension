@@ -24,7 +24,7 @@ RPlus.Pages.Friends = function () {
 							friendIds.push(friend.id);
 						});
 						var removeAll; removeAll = function () {
-							$.get("/users/friends/list-json?pageSize=200&imgWidth=110&imgHeight=110&imgFormat=png&friendsType=Following&userId=" + id).success(function (r) {
+							$.get("/users/friends/list-json?pageSize=200&imgWidth=110&imgHeight=110&imgFormat=png&friendsType=Following&userId=" + id).done(function (r) {
 								var mcb = r.Friends && r.Friends.length;
 								var dcb = 0;
 								var fcb = function () {

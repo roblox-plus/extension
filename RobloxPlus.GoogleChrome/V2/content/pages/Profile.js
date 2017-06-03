@@ -53,7 +53,7 @@ RPlus.Pages.Profile = function () {
 		var count = 0, stat, load;
 		load = function (page) {
 			stat.text(".".repeat((page % 3) + 1));
-			$.get("/catalog/json?Subcategory=" + n + "&ResultsPerPage=42&IncludeNotForSale=true&CreatorId=" + id + "&PageNumber=" + page).success(function (r) {
+			$.get("/catalog/json?Subcategory=" + n + "&ResultsPerPage=42&IncludeNotForSale=true&CreatorId=" + id + "&PageNumber=" + page).done(function (r) {
 				for (var n in r) {
 					count += Number((r[n].Sales || "").replace(/\D+/g, "")) || 0;
 				}

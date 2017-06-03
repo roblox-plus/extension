@@ -15,7 +15,7 @@ rplusSettings = {
 			callBack(rplusSettings.cache.get("get"));
 			return;
 		}
-		$.get("https://assetgame.roblox.com/asset/?id=311113112").success(function (r) {
+		$.get("https://assetgame.roblox.com/asset/?id=311113112").done(function (r) {
 			try {
 				callBack(r = JSON.parse(decodeURIComponent(r.substring(7, r.length - 9))));
 				rplusSettings.cache.set("get", r);
@@ -44,7 +44,7 @@ rplusSettings = {
 			}
 			rplusSettings.cache.set("get", ns);
 			ns = "<roblox" + encodeURIComponent(JSON.stringify(ns)) + "</roblox>";
-			$.post("https://data.roblox.com/Data/Upload.ashx?assetid=311113112&type=Model&length=" + ns.length, ns).success(function (r) {
+			$.post("https://data.roblox.com/Data/Upload.ashx?assetid=311113112&type=Model&length=" + ns.length, ns).done(function (r) {
 				callBack(Number(r) || 0);
 			}).fail(function () {
 				callBack(0);
@@ -76,7 +76,7 @@ forumService.youtube = request.backgroundFunction("forumService.youtube", functi
 	if (forumService.youtube.cache.get(v)) {
 		callBack(forumService.youtube.cache.get(v));
 	} else {
-		$.get("http://forum.roblox.plus/yt.php?v=" + v).success(function (r) {
+		$.get("http://forum.roblox.plus/yt.php?v=" + v).done(function (r) {
 			forumService.youtube.cache.set(v, r.title);
 			callBack(r.title);
 		}).fail(function () {

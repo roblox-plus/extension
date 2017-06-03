@@ -39,7 +39,7 @@ catalog = {
 			return;
 		}
 
-		$.get("https://www.roblox.com/My/Item.aspx?ID=" + arg.id).success(function (r) {
+		$.get("https://www.roblox.com/My/Item.aspx?ID=" + arg.id).done(function (r) {
 			r = $._(r);
 			if (r.find("#EditItem").length) {
 				arg.robux = round(type(arg.robux) == "number" ? arg.robux : r.find("#ctl00_cphRoblox_RobuxPrice").val()) || 0;
@@ -80,7 +80,7 @@ catalog = {
 			return;
 		}
 
-		$.get("https://assetgame.roblox.com/asset/?id=317944503").success(function (r) {
+		$.get("https://assetgame.roblox.com/asset/?id=317944503").done(function (r) {
 			var ret = {};
 			try {
 				r = JSON.parse(decodeURIComponent((r.match(/\[\[([^\]]*)\]\]/) || ["", encodeURIComponent("{\"data\":[]}")])[1]));
