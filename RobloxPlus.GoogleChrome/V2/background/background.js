@@ -698,12 +698,19 @@ if (browser.name == "Chrome") {
 	}
 })(storage.get("startupNotification"), function (startnote) {
 	Roblox.users.getAuthenticatedUser().then(function (user) {
-		for (var n in startnote.names) { ext.tts.replacements.push([RegExp.escape(n).regex("gi"), startnote.names[n]]); }
+		var username = user ? user.username : "";
+		for (var n in startnote.names) {
+			if (n.toLowerCase() === username.toLowerCase()) {
+				username = startnote.names[n];
+				break;
+			}
+		}
+
 		var note = $.notification({
 			speachGender: "male",
 			title: ext.manifest.name + " started",
 			context: user ? "Hello, " + user.username + "!" : "You're currently signed out",
-			speak: user ? "Hello, " + user.username : "",
+			speak: username ? "Hello, " + username : "",
 			buttons: [
 				"Problems? Suggestions? Message me!"
 			],
