@@ -90,6 +90,9 @@
     <Compile Include="V2\background\notifiers\catalogNotifier.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="V2\background\notifiers\groupShoutNotifier.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\content.js" />
     <Compile Include="V2\content\core\contentPreload.js">
       <SubType>Code</SubType>
