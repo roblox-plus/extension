@@ -5,6 +5,10 @@ var Roblox = Roblox || {};
 
 Roblox.groups = (function () {
 	return {
+		getIdFromUrl: function (url) {
+			return typeof (url) === "string" ? Number((url.match(/gid=(\d+)/i) || ["", 0])[1]) || 0 : 0;
+		},
+
 		getGroupRoles: $.promise.cache(function (resolve, reject, groupId) {
 			if (typeof (groupId) != "number" || groupId <= 0) {
 				reject([{
@@ -35,6 +39,7 @@ Roblox.groups = (function () {
 			resolveExpiry: 60 * 1000,
 			queued: true
 		}),
+
 		setUserRole: $.promise.cache(function (resolve, reject, groupId, userId, groupRolesetId) {
 			if (typeof (groupId) != "number" || groupId <= 0) {
 				reject([{
@@ -71,6 +76,7 @@ Roblox.groups = (function () {
 			resolveExpiry: 100,
 			rejectExpiry: 500
 		}),
+
 		getUserRole: $.promise.cache(function (resolve, reject, groupId, userId) {
 			if (typeof (groupId) != "number" || groupId <= 0) {
 				reject([{
