@@ -90,6 +90,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="V2\background\jquery.notifications.ext.js" />
+    <Compile Include="V2\background\maliciousContentBlocker.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\background\notifiers\catalogNotifier.js">
       <SubType>Code</SubType>
     </Compile>
