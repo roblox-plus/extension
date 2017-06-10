@@ -18,7 +18,7 @@ RPlus.Pages.Group = function () {
 	var postChar = function () { $("#ctl00_cphRoblox_GroupWallPane_NewPostButton").val("Post (" + (500 - tostring(postInput.val()).length) + ")"); };
 	postInput.keyup(postChar).keydown(postChar).keypress(postChar).change(postChar).trigger("change");
 
-	storage.get(["groupShoutNotifierList", "groupShoutNotifier_mode"], function (s) {
+	storage.get(["groupShoutNotifierList", "groupShoutNotifier_mode", "groupRoleDisplay"], function (s) {
 		s.groupShoutNotifierList = type(s.groupShoutNotifierList) == "object" ? s.groupShoutNotifierList : {};
 		s.wl = s.groupShoutNotifier_mode != "whitelist";
 		$(".GroupControlsBox").append($("<div>").append($("<button class=\"btn-control-medium btn-control" + (s.wl ? "-disabled" : "") + "\">").click(s.wl ? function () { } : function (e) {
@@ -32,6 +32,26 @@ RPlus.Pages.Group = function () {
 			}
 			storage.set("groupShoutNotifierList", s.groupShoutNotifierList);
 		}).prop("disabled", s.wl).text("Shout Notifier: O" + (s.groupShoutNotifierList[id] || s.wl ? "n" : "ff"))));
+
+		if (s.groupRoleDisplay) {
+			setInterval(function () {
+				$(".GroupWall_PostDate:not([rplus])").attr("rplus", "").each(function () {
+					var el = $(this);
+					var userLink = el.find(".UserLink > a");
+					if (userLink.length <= 0) {
+						return;
+					}
+					var posterId = Roblox.users.getIdFromUrl(userLink.attr("href"));
+					if (posterId > 0) {
+						Roblox.groups.getUserRole(id, posterId).then(function (role) {
+							el.prepend($("<span>").text(role.name), "<br/>");
+						}).catch(function (e) {
+							console.error(e);
+						});
+					}
+				});
+			}, 500);
+		}
 	});
 
 	if (id == 650266) {

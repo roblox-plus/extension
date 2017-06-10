@@ -524,6 +524,13 @@ RPlus.Pages.Account = function () {
 				storage: "profileRAP"
 			}
 		},
+		"Groups": {
+			"Role Display": {
+				tip: "Show a user's role on their wall posts",
+				type: "bool",
+				storage: "groupRoleDisplay"
+			}
+		},
 		"Other": {
 			"Changed Username Login": {
 				tip: "Allows logging with a previous username",
