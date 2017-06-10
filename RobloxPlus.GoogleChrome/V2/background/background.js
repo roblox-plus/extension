@@ -61,39 +61,6 @@ foreach({
 
 
 /* Notifications, and notifiers */
-function setupNotifier(run, arg, ret) {
-	arg = type(arg) == "object" ? arg : {};
-	arg.timeout = arg.timeout || 60000;
-	arg.interval = arg.interval || 5000;
-	return ret = {
-		id: 0,
-		run: function (id) {
-			if (id == undefined) { id = ++ret.id; } else if (id != ret.id) { return; }
-			var tim = setTimeout(function () {
-				ret.run(++ret.id);
-			}, arg.timeout);
-			var go = function (loop) {
-				if (!tim) { return; }
-				clearTimeout(tim);
-				tim = 0;
-				loop = loop || arg.interval;
-				setTimeout(ret.run, loop, id);
-			};
-			if (type(arg.storage) != "string" || storage.get(arg.storage)) {
-				Roblox.users.getCurrentUserId().then(function (uid) {
-					if (!arg.userId || uid) {
-						run(go, uid);
-					} else {
-						go();
-					}
-				}, go);
-			} else {
-				go();
-			}
-		}
-	};
-}
-
 notification.properties.robloxSound = function (a, note) {
 	if (!Number(a)) { return notification.properties.speak(note.header + "\n" + note.lite, note); }
 	soundService.robloxSound(a, function (s) {
