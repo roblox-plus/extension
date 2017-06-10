@@ -68,69 +68,9 @@ catalog = {
 		}).fail(function () {
 			callBack(false);
 		});
-	}),
-
-	limiteds: request.backgroundFunction("catalog.limiteds", function (callBack) {
-		if (typeof (callBack) != "function") {
-			console.warn("callBack not function!");
-			return;
-		}
-		if (catalog.limiteds.cache.data.hasOwnProperty("get")) {
-			callBack(catalog.limiteds.cache.get("get"));
-			return;
-		}
-
-		$.get("https://assetgame.roblox.com/asset/?id=317944503").done(function (r) {
-			var ret = {};
-			try {
-				r = JSON.parse(decodeURIComponent((r.match(/\[\[([^\]]*)\]\]/) || ["", encodeURIComponent("{\"data\":[]}")])[1]));
-				foreach(r.data, function (n, o) {
-					ret[o.id] = {
-						id: o.id,
-						name: o.name,
-						rap: o.rap,
-						stock: o.stock
-					};
-				});
-				catalog.limiteds.cache.set("get", ret);
-			} catch (e) { }
-			callBack(ret);
-		}).fail(function () {
-			callBack({});
-		});
 	})
 };
 
-catalog.limiteds.search = function (lims, phrase, exact) {
-	phrase = phrase.toLowerCase();
-	var possible = [];
-	for (var n in lims) {
-		var o = lims[n];
-		var na = o.name.toLowerCase();
-		if (phrase == na) {
-			if (exact) {
-				return [o];
-			} else {
-				possible.push(o);
-			}
-		} else if (na.indexOf(phrase) >= 0) {
-			possible.push(o);
-		} else {
-			var ac = [];
-			na.split(/\s+/).forEach(function (p) { p = p.replace(/\W+/g, ""); if (p) { ac.push(p.charAt(0)); } });
-			if (ac.length && ac.join("") == phrase) {
-				if (exact) {
-					return [o];
-				} else {
-					possible.push(o);
-				}
-			} else if (ac.length && ac.join("").indexOf(phrase) >= 0) {
-				possible.push(o);
-			}
-		}
-	}
-	return possible;
-};
 
 
 soundService.robloxSound = function (id, callBack) {
@@ -146,12 +86,6 @@ soundService.robloxSound = function (id, callBack) {
 // These are dummies that exist for the garbage in other scripts
 users = {};
 forumService = {};
-
-
-
-if (ext.isBackground) {
-	catalog.limiteds.cache = compact.cache(10 * 1000);
-}
 
 
 // WebGL3D
