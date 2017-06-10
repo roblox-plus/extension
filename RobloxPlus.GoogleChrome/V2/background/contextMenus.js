@@ -24,13 +24,13 @@ chrome.contextMenus.create({
 	documentUrlPatterns: ["*://*.roblox.com/*"],
 	parentId: "mainContext",
 	onclick: function (e) {
-		var id = Roblox.users.getIdFromUrl(e.linkUrl);
-		$.get("https://www.roblox.com/Trade/TradeWindow.aspx", {
-			TradePartnerID: id
-		}).done(function (r) {
-			if (($._(r).find("#aspnetForm[action]").attr("action") || "").endsWith("TradePartnerID=" + id)) {
-				Roblox.trades.openSettingBasedTradeWindow(id);
+		var userId = Roblox.users.getIdFromUrl(e.linkUrl);
+		Roblox.trades.canTradeWithUser(userId).then(function (canTrade) {
+			if (canTrade) {
+				Roblox.trades.openSettingBasedTradeWindow(userId);
 			}
+		}).catch(function (e) {
+			console.error(e);
 		});
 	}
 });
