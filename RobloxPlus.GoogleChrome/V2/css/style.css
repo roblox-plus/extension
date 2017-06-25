@@ -615,4 +615,9 @@ tr.forum-post a[href*='youtu.be']>span{
 }
 
 
+#catalog-content {
+	background-color: #E3E3E3;
+}
+
+
 /* WebGL3D */
