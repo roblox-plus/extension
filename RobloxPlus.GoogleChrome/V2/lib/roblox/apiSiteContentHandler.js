@@ -4,7 +4,7 @@
 (window.Roblox || (Roblox = {})).apiSiteContentHandler = (function () {
 	var validContentMethods = ["POST", "PATCH", "DELETE"];
 	var contentTrigger = $.addTrigger({
-		apiSubdomains: ["inventory", "avatar", "develop", "publish", "abuse", "chat"]
+		apiSubdomains: ["inventory", "avatar", "develop", "publish", "abuse", "chat", "groups"]
 	});
 
 	var originalAjax = $.ajax;

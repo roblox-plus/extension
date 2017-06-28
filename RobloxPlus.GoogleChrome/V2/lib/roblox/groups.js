@@ -116,6 +116,56 @@ Roblox.groups = (function () {
 		}, {
 			queued: true,
 			resolveExpiry: 15 * 1000
+		}),
+
+		deleteGroupWallPost: $.promise.cache(function (resolve, reject, groupId, groupWallPostId) {
+			if (typeof (groupId) !== "number" || groupId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid groupId"
+				}]);
+				return;
+			}
+			if (typeof (groupWallPostId) !== "number" || groupWallPostId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid groupWallPostId"
+				}]);
+				return;
+			}
+
+			$.ajax({
+				type: "DELETE",
+				url: "https://groups.roblox.com/v1/groups/" + groupId + "/wall/posts/" + groupWallPostId
+			}).done(function () {
+				resolve();
+			}).fail(function (jxhr, errors) {
+				reject(errors);
+			});
+		}, {
+			queued: true,
+			resolveExpiry: 5 * 1000,
+			rejectExpiry: 5 * 1000
+		}),
+
+		getGroupWallPosts: $.promise.cache(function (resolve, reject, groupId, cursor) {
+			if (typeof (groupId) !== "number" || groupId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid groupId"
+				}]);
+				return;
+			}
+
+			$.get("https://groups.roblox.com/v1/groups/" + groupId + "/wall/posts", { cursor: cursor || "", limit: 100, sortOrder: "Desc" }).done(function (posts) {
+				resolve(posts);
+			}).fail(function (jxhr, errors) {
+				reject(errors);
+			});
+		}, {
+			resolveExpiry: 10 * 1000,
+			rejectExpiry: 10 * 1000,
+			queued: true
 		})
 	};
 })();
