@@ -1,6 +1,7 @@
 ﻿/* background/notifiers/tradeNotifier.js [06/04/2017] */
 RPlus.notifiers.trade = (function () {
 	var headers = {
+		"Pending approval from you": "inbound", // This is here because the way I check if it should have a notification uses a different field than the one it displays with
 		"Inbound": "inbound",
 		"Completed": "completed",
 		"Declined": "declined",
@@ -48,6 +49,7 @@ RPlus.notifiers.trade = (function () {
 						var tradeMoved = cache[trade.id] !== tradeType;
 						if (tradeMoved || outboundCheck) {
 							cache[trade.id] = tradeType;
+							// headers.hasOwnProperty maps with line 4, and 63
 							if ((outboundCheck && !outbound.hasOwnProperty(trade.id)) || (tradeMoved && headers.hasOwnProperty(trade.status) && rerun)) {
 								mcb++;
 								Roblox.trades.get(trade.id).then(function (trade) {
