@@ -133,6 +133,7 @@
 
 	"homepage_url": "https://www.roblox.com/my/account?tab=rplus",
 	"permissions": [
+		"gcm",
 		"contextMenus",
 		"webRequest",
 		"webRequestBlocking",
@@ -140,7 +141,6 @@
 		"notifications",
 		"*://*.roblox.com/*",
 		"*://*.rbxcdn.com/*",
-		"*://*.robloxplus.com/*",
 		"*://*.roblox.plus/*"
 	],
 	"optional_permissions": [ "<all_urls>" ],

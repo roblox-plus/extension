@@ -40,7 +40,7 @@ Roblox.economy = (function () {
 				if (!product.isForSale) {
 					reject([{
 						code: 0,
-						message: "Asset does not have valid product."
+						message: "Asset is not for sale."
 					}]);
 					return;
 				}
