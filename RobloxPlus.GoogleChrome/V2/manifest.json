@@ -1,5 +1,5 @@
 {
-	"version": "2.2.62",
+	"version": "2.2.63",
 	"name": "Roblox+",
 	"short_name": "Roblox+",
 	"description": "Adds features and notifiers made by WebGL3D to the Roblox website",
@@ -156,7 +156,6 @@
 		"/images/notifier.png",
 		"*://*.roblox.com/*",
 		"*://*.rbxcdn.com/*",
-		"*://*.robloxplus.com/*",
 		"*://*.roblox.plus/*"
 	],
 
