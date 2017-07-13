@@ -46,7 +46,7 @@ RPlus.Pages.Game = function () {
 			}
 			servers.firstPage.toggleClass("disabled", servers.page() <= 1);
 			servers.prevPage.toggleClass("disabled", servers.page() <= 1);
-			servers.anchor.attr("href", "javascript:Roblox.GameInstance.fetchServers(" + placeId + "," + ((servers.page() - 1) * 10) + ");")[0].click();
+			servers.anchor.attr("href", "javascript:Roblox.AllRunningGameInstances.fetchServers(" + placeId + "," + ((servers.page() - 1) * 10) + ");")[0].click();
 		},
 
 		search: {
@@ -200,6 +200,7 @@ RPlus.Pages.Game = function () {
 
 		return element.html();
 	};
+
 	$(".rbx-leaderboard-container").each(function () {
 		var leaderboard = $(this);
 		var data = leaderboard.find(".rbx-leaderboard-data").attr("data-rank-max", 10);
