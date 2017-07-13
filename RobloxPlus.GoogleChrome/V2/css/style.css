@@ -396,14 +396,6 @@ tr.forum-post a[href*='youtu.be']>span{
 
 
 
-/* Games */
-.rbx-running-games-footer .pager{
-	width: 250px;
-	margin: 0px auto;
-}
-
-
-
 /* Inventory */
 .recommended-thumb{
 	position: relative;

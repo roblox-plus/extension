@@ -15,53 +15,12 @@ RPlus.Pages.Game = function () {
 	}
 	console.log("Game creator id", gameCreatorId);
 
-	var servers; servers = {
-		anchor: $("<a>"),
-		page: function () { return Number(servers.curPage.text()) || 1; },
-		maxPage: $("<span>1</span>"),
-		curPage: $("<span>1</span>"),
-		firstPage: $("<li class=\"first disabled\">").append("<a><span class=\"icon-first-page\"></span></a>").click(function () {
-			if (!$(this).hasClass("disabled")) {
-				servers.fetch(1);
-			}
-		}),
-		lastPage: $("<li class=\"last disabled\">").append("<a><span class=\"icon-last-page\"></span></a>").click(function () {
-			if (!$(this).hasClass("disabled")) {
-				servers.fetch(Number(servers.maxPage.text()) || 1);
-			}
-		}),
-		prevPage: $("<li class=\"pager-prev disabled\">").append("<a><span class=\"icon-left\"></span></a>").click(function () {
-			if (!$(this).hasClass("disabled")) {
-				servers.fetch(Math.max(1, servers.page() - 1));
-			}
-		}),
-		nextPage: $("<li class=\"pager-next disabled\">").append("<a><span class=\"icon-right\"></span></a>").click(function () {
-			if (!$(this).hasClass("disabled")) {
-				servers.fetch(Math.min(Number(servers.maxPage.text()) || 1, servers.page() + 1));
-			}
-		}),
-		fetch: function (p) {
-			if (type(p) == "number") {
-				servers.curPage.text(p.toString());
-			}
-			servers.firstPage.toggleClass("disabled", servers.page() <= 1);
-			servers.prevPage.toggleClass("disabled", servers.page() <= 1);
-			servers.anchor.attr("href", "javascript:Roblox.AllRunningGameInstances.fetchServers(" + placeId + "," + ((servers.page() - 1) * 10) + ");")[0].click();
-		},
-
+	var servers = {
 		search: {
 			id: 0,
 			ul: $("<ul class=\"rbx-game-server-item-container\">")
 		}
 	};
-	$(".rbx-running-games-footer").html("").append($("<ul class=\"pager\">")
-		.append(servers.firstPage)
-		.append(servers.prevPage)
-		.append($("<li class=\"pager-cur\"></li>").append(servers.curPage))
-		.append($("<li class=\"pager-total\"><span class=\"fixed-spacing\">of</span></li>").append(servers.maxPage))
-		.append(servers.nextPage)
-		.append(servers.lastPage)
-	);
 
 	$(".rbx-gear-item-delete>.icon-delete").addClass("icon-alert");
 
@@ -152,12 +111,6 @@ RPlus.Pages.Game = function () {
 			}
 		})
 	).append(servers.search.ul));
-
-	$(".rbx-running-games-refresh").click(function () {
-		servers.curPage.text("1");
-		servers.firstPage.addClass("disabled");
-		servers.prevPage.addClass("disabled");
-	});
 
 	$(".voting-panel.body").each(function () {
 		var up = Number($(this).attr("data-total-up-votes")) || 0;

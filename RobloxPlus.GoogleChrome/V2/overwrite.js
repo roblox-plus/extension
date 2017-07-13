@@ -4,10 +4,6 @@ rplus = window.rplus || {};
 
 rplus.ajax = [
 {
-	match: /^\/games\/getgameinstancesjson/i,
-	before: function (d) {
-		$("#rbx-running-games .rbx-game-server-item-container").html("");
-	},
 	success: function (r) {
 		try { r = JSON.parse(r); } catch (e) { return; }
 		var maxPage = Math.max(1, Math.ceil(r.TotalCollectionSize / 10));
