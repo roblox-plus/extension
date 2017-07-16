@@ -32,7 +32,7 @@ RPlus.notifiers.catalog = useBeta ? (function () {
 				var data = JSON.parse(message.data.json);
 				var notification = {
 					title: data.title || "Roblox+ Catalog Notifier",
-					message: data.message || "",
+					context: data.message || "",
 					icon: data.icon || ext.manifest.icons['48'],
 					buttons: data.buttons || []
 				};
