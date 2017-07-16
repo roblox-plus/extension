@@ -57,7 +57,7 @@ RPlus.notifiers.catalog = useBeta ? (function () {
 								console.log("Purchased!", receipt);
 								var speed = performance.now() - start;
 								$.notification({
-									header: "Purchased!",
+									title: "Purchased!",
 									context: asset.name,
 									items: speed > 0 ? {
 										"Speed": speed.toFixed(3) + "ms"
