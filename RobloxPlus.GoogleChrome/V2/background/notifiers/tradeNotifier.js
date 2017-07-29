@@ -64,9 +64,11 @@ RPlus.notifiers.trade = (function () {
 										fcb();
 										return;
 									}
-									var note;
-									note = notify({
-										header: "Trade " + headers[trade.status],
+
+									var title = "Trade " + headers[trade.status];
+									$.notification({
+										tag: "trade" + trade.id,
+										title: title,
 										icon: Roblox.thumbnails.getUserHeadshotThumbnailUrl(trade.tradePartnerOffer.user.id, 3),
 										items: {
 											"Partner": trade.tradePartnerOffer.user.username,
@@ -75,13 +77,14 @@ RPlus.notifiers.trade = (function () {
 										},
 										buttons: trade.status === "Outbound" ? ["Cancel"] : [],
 										clickable: true,
-										robloxSound: Number((storage.get("notifierSounds") || {})["trade" + (trade.status == "Rejected" ? "Declined" : trade.status)]) || 0,
-										url: {
+										metadata: {
 											url: "https://www.roblox.com/My/Money.aspx?tradeId=" + trade.id + "#/#TradeItems_tab",
-											close: true
-										},
-										tag: "trade" + trade.id
-									}).button1Click(function () {
+											robloxSound: Number((storage.get("notifierSounds") || {})["trade" + (trade.status == "Rejected" ? "Declined" : trade.status)]) || 0,
+											speak: title
+										}
+									}).click(function () {
+										this.close();
+									}).buttonClick(function () {
 										Roblox.trades.decline(trade.id).then(function () {
 											note.close();
 										}).catch(function (e) {

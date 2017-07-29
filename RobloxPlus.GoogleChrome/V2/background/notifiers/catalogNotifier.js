@@ -30,26 +30,24 @@ RPlus.notifiers.catalog = useBeta ? (function () {
 		if (message.data && typeof (message.data.json) === "string") {
 			try {
 				var data = JSON.parse(message.data.json);
-				var notification = {
-					title: data.title || "Roblox+ Catalog Notifier",
-					context: data.message || "",
-					icon: data.icon || ext.manifest.icons['48'],
-					buttons: data.buttons || []
-				};
-
 				var assetId = NaN;
 				if (data.url) {
-					notification.url = data.url;
 					assetId = Roblox.catalog.getIdFromUrl(data.url) || NaN;
 				}
 
-				if (data.items && Object.keys(data.items).length > 0) {
-					notification.items = data.items;
-				}
-
-				$.notification(notification).buttonClick(function (button) {
-					if (!isNaN(assetId) && notification.buttons[0] && notification.buttons[0].text && notification.buttons[0].text.includes("Buy for")) {
-						this.close();
+				$.notification({
+					title: data.title || "Roblox+ Catalog Notifier",
+					context: data.message || "",
+					icon: data.icon || ext.manifest.icons['48'],
+					buttons: data.buttons || [],
+					items: data.items || {},
+					metadata: {
+						url: data.url
+					}
+				}).buttonClick(function (index) {
+					var notification = this;
+					if (!isNaN(assetId) && notification.buttons[index].includes("Buy for")) {
+						notification.close();
 						var start = performance.now();
 						Roblox.catalog.getAssetInfo(assetId).then(function (asset) {
 							// Use the price from the notification - worst case scenario it fails but we don't want to charge the user more than they think they're being charged.
@@ -63,14 +61,18 @@ RPlus.notifiers.catalog = useBeta ? (function () {
 										"Speed": speed.toFixed(3) + "ms"
 									} : {},
 									icon: notification.icon,
-									url: notification.url
+									metadata: {
+										url: data.url
+									}
 								});
 							}).catch(function (e) {
 								$.notification({
 									title: "Purchase failed",
 									icon: notification.icon,
 									context: e[0] && e[0].message ? e[0].message : "Unknown issue",
-									url: notification.url
+									metadata: {
+										url: data.url
+									}
 								});
 							});
 						}).catch(function (e) {
@@ -78,7 +80,9 @@ RPlus.notifiers.catalog = useBeta ? (function () {
 								title: "Purchase failed",
 								icon: notification.icon,
 								context: e[0] && e[0].message ? e[0].message : "Unknown issue",
-								url: notification.url
+								metadata: {
+									url: data.url
+								}
 							});
 						});
 					}
