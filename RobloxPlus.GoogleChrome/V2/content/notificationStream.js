@@ -37,11 +37,16 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		return container;
 	}
 
-	function createNotificationCard(icon, title, context, link, items) {
-		var card = $("<li class=\"notification-stream-item clickable unInteracted\">");
-		var innerCard = $("<a class=\"notification-item\">").attr("href", link || "javascript:/* Roblox+ */");
-		var imageContainer = createNotificationImageContainer(icon, "", link);
-		var contentContainer = createNotificationContentContainer(title, context, items);
+	function createNotificationCard(notification) {
+		var card = $("<li class=\"notification-stream-item unInteracted\">");
+		var innerCard = $("<a class=\"notification-item\" disabled>").attr("href", notification.metadata.url || "javascript:/* Roblox+ */");
+		var imageContainer = createNotificationImageContainer(notification.icon, "", notification.metadata.url);
+		var contentContainer = createNotificationContentContainer(notification.title, notification.context, notification.items);
+
+		if (notification.clickable) {
+			card.addClass("clickable");
+			innerCard.removeAttr("disabled");
+		}
 
 		innerCard.append(imageContainer, contentContainer);
 		card.append(innerCard);
@@ -49,8 +54,8 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		return card.hide();
 	}
 
-	function pushNotification(icon, title, context, link, items) {
-		var notification = createNotificationCard(icon, title, context, link, items);
+	function pushNotification(data) {
+		var notification = createNotificationCard(data);
 		customStreamDiv.prepend(notification);
 		notification.slideDown();
 		return notification;
@@ -79,8 +84,8 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		robloxStreamDiv.after(customStreamDiv);
 		robloxNotificationsButton.after(customNotificationsButton);
 
-		$.notificationV2.on("notification", function (notification) {
-			var card = pushNotification(notification.icon, notification.title, notification.context, notification.metadata.url, notification.items);
+		$.notification.on("notification", function (notification) {
+			var card = pushNotification(notification);
 
 			card.click(function () {
 				notification.click();
@@ -93,7 +98,7 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 			});
 		});
 
-		$.notificationV2.init();
+		$.notification.init();
 	}
 
 	$(init);

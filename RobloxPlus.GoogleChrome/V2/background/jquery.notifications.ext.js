@@ -6,53 +6,51 @@
 	var speaking = "";
 
 
-	$.notification.on("beforeCreate", function () {
-		if (this.details.hasOwnProperty("url")) {
-			this.creationDetails.isClickable = true;
+	$.notification.on("notification", function (notification) {
+		if (notification.metadata.hasOwnProperty("url")) {
+			notification.click(function (tabId) {
+				if (tabId === 0) {
+					window.open(this.metadata.url);
+				}
+			});
 		}
-	});
 
-	$.notification.on("click", function () {
-		if (this.details.hasOwnProperty("url")) {
-			window.open(this.details.url);
-		}
-	});
-
-	$.notification.on("close", function () {
-		if (audioPlayers[this.details.tag]) {
-			audioPlayers[this.details.tag].stop();
-		}
-		if (speaking == this.details.tag) {
-			chrome.tts.stop();
-		}
-	});
-
-
-	$.notification.on("afterCreate", function () {
-		var note = this;
-		var volume = note.details.hasOwnProperty("volume") ? note.details.volume : .5;
-		if (note.details.hasOwnProperty("robloxSound") && note.details.robloxSound) {
-			Roblox.audio.getSoundPlayer(note.details.robloxSound).then(function (player) {
-				audioPlayers[note.details.tag] = player;
+		var volume = notification.metadata.hasOwnProperty("volume") ? notification.metadata.volume : 0.5;
+		if (notification.metadata.robloxSound) {
+			Roblox.audio.getSoundPlayer(notification.metadata.robloxSound).then(function (player) {
+				audioPlayers[notification.tag] = player;
 				player.play(volume).stop(function () {
-					delete audioPlayers[note.details.tag];
+					delete audioPlayers[notification.tag];
 				});
 			});
-		} else if (note.details.hasOwnProperty("speak") && note.details.speak) {
-			chrome.tts.speak(note.details.speak, {
+		} else if (notification.metadata.speak) {
+			chrome.tts.speak(notification.metadata.speak, {
 				lang: "en-GB",
-				gender: note.details.speachGender || "male",
+				gender: notification.metadata.speachGender || "male",
 				volume: volume,
 				onEvent: function (e) {
 					if (e.type == "start") {
-						speaking = note.details.tag;
+						speaking = notification.tag;
 					} else {
-						if (speaking == note.details.tag) {
+						if (speaking == notification.tag) {
 							speaking = "";
 						}
 					}
 				}
 			});
+		}
+
+		if (notification.metadata.hasOwnProperty("expiration")) {
+			setTimeout(function () {
+				notification.close();
+			}, notification.metadata.expiration);
+		}
+	}).on("close", function (notification) {
+		if (audioPlayers[notification.tag]) {
+			audioPlayers[notification.tag].stop();
+		}
+		if (speaking == notification.tag) {
+			chrome.tts.stop();
 		}
 	});
 })();

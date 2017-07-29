@@ -178,29 +178,29 @@ if (browser.name == "Chrome") {
 			}
 		}
 
-		var note = $.notificationV2({
-			speachGender: "male",
-			title: ext.manifest.name + " started",
-			context: user ? "Hello, " + user.username + "!" : "You're currently signed out",
-			speak: username ? "Hello, " + username : "",
-			buttons: [
-				"Problems? Suggestions? Message me!"
-			],
-			items: {
-				"Version": ext.manifest.version,
-				"Made by": "WebGL3D"
-			},
-			clickable: true
-		}).click(function () {
-			this.close();
-			rplusSettings.get(function (ul) {
-				window.open(ul.updateLog || "https://www.roblox.com/users/48103520/profile?rbxp=48103520");
+		rplusSettings.get(function (ul) {
+			var note = $.notification({
+				title: ext.manifest.name + " started",
+				context: user ? "Hello, " + user.username + "!" : "You're currently signed out",
+				buttons: [
+					"Problems? Suggestions? Message me!"
+				],
+				items: {
+					"Version": ext.manifest.version,
+					"Made by": "WebGL3D"
+				},
+				clickable: true,
+				metadata: {
+					speak: username ? "Hello, " + username : "",
+					speachGender: "male",
+					url: ul.updateLog || "https://www.roblox.com/users/48103520/profile?rbxp=48103520",
+					expiration: 15 * 1000
+				}
+			}).buttonClick(function () {
+				note.close();
+				window.open("https://www.roblox.com/messages/compose?recipientId=48103520");
 			});
-		}).buttonClick(function () {
-			note.close();
-			window.open("https://www.roblox.com/messages/compose?recipientId=48103520");
 		});
-		setTimeout(note.close, 15 * 1000);
 	});
 });
 
