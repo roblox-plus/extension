@@ -14,29 +14,38 @@ browser = (function (userAgentInfo) {
 	};
 })(navigator.userAgent.match(/(opera|chrome|safari|firefox|msie)\/([\d.]+)/i) || ["Unknown", "0.0"]);
 
-ext = {
-	"id": chrome.runtime.id,
-	"manifest": chrome.runtime.getManifest(),
-	"incognito": chrome.extension.inIncognitoContext,
-	"isBackground": location.protocol.startsWith("chrome-extension"),
-	"isContentScript": !location.protocol.startsWith("chrome-extension"),
+ext = (function () {
+	var manifest = chrome.runtime.getManifest();
 
-	"getUrl": function (path) {
+	function getUrl(path) {
 		return chrome.extension.getURL(path);
-	},
-
-	tabs: {},
-	update: function (cb) {
-		cb = fixCB(cb);
-		if (browser.name == "Chrome") {
-			chrome.runtime.requestUpdateCheck(function (m) {
-				cb(m == "update_available");
-			});
-		} else {
-			cb(false);
-		}
 	}
-};
+
+	var isBackground = getUrl(manifest.background.page) === location.href;
+
+	return {
+		"id": chrome.runtime.id,
+		"manifest": manifest,
+		"incognito": chrome.extension.inIncognitoContext,
+		"isBackground": isBackground,
+		"isContentScript": !location.protocol.startsWith("chrome-extension"),
+		"isBrowserAction": location.protocol.startsWith("chrome-extension") && !isBackground,
+
+		"getUrl": getUrl,
+
+		tabs: {},
+		update: function (cb) {
+			cb = fixCB(cb);
+			if (browser.name == "Chrome") {
+				chrome.runtime.requestUpdateCheck(function (m) {
+					cb(m == "update_available");
+				});
+			} else {
+				cb(false);
+			}
+		}
+	};
+})();
 
 console.log(ext.manifest.name + " " + ext.manifest.version + " started" + (ext.incognito ? " in icognito" : ""));
 
@@ -153,8 +162,8 @@ ipc = (function () {
 			return;
 		}
 
-		if(data.ping){
-			if(tabs.indexOf(sender.tab.id) < 0){
+		if (data.ping) {
+			if (tabs.indexOf(sender.tab.id) < 0) {
 				tabs.push(sender.tab.id);
 			}
 			callBack(sender.tab.id);

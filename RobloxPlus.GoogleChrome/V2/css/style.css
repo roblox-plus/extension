@@ -13,9 +13,24 @@ textarea,code{
 }
 
 
+/* Notification Stream */
+.notification-stream-header > span.text-label {
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+.notification-stream-header > span.text-link {
+	float: left;
+	cursor: pointer;
+}
+
+.rplus-stream-list {
+	padding: 0;
+}
+
 
 /* Basic */
-.notification-blue:empty,.notification-red:empty{
+.notification-blue:empty, .notification-red:empty {
 	display: none;
 }
 

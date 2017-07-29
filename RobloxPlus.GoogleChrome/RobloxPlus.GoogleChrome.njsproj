@@ -117,6 +117,9 @@
     </Compile>
     <Compile Include="V2\content\json.js" />
     <Compile Include="V2\content\loadPages.js" />
+    <Compile Include="V2\content\notificationStream.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\content\pages\Account.js" />
     <Compile Include="V2\content\pages\Avatar.js" />
     <Compile Include="V2\content\pages\Catalog.js">
