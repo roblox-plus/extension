@@ -46,25 +46,27 @@ RPlus.notifiers.groupShout = (function () {
 						});
 
 						var note = {
-							header: group.text(),
-							lite: string.clean(shout.replace(/https?:\/\/w?w?w?\./gi, "")),
+							tag: "groupshout" + groupId,
+							title: group.text(),
+							message: string.clean(shout.replace(/https?:\/\/w?w?w?\./gi, "")),
 							icon: $(this).find(".header-thumb").attr("src"),
 							buttons: buttons,
 							clickable: true,
-							robloxSound: Number((storage.get("notifierSounds") || {}).groupShout) || 0,
-							tag: "groupshout" + groupId,
-							url: { url: group.attr("href"), close: true }
+							metadata: {
+								robloxSound: Number((storage.get("notifierSounds") || {}).groupShout) || 0,
+								url: group.attr("href")
+							}
 						};
 
-						if (!note.robloxSound) {
-							delete note.robloxSound;
-							note.speak = "Group shout from " + note.header;
+						if (!note.metadata.robloxSound) {
+							delete note.metadata.robloxSound;
+							note.metadata.speak = "Group shout from " + note.title;
 						}
 
-						notify(note).button1Click(function () {
-							window.open(links[0]);
-						}).button2Click(function () {
-							window.open(links[1]);
+						$.notification(note).click(function () {
+							this.close();
+						}).buttonClick(function (index) {
+							window.open(links[index]);
 						});
 					}
 				});
