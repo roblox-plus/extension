@@ -54,10 +54,10 @@ Roblox.economy = (function () {
 
 				$.post("https://www.roblox.com/API/Item.ashx?rqtype=purchase&expectedSellerID=" + product.creator.agentId + "&productID=" + product.id + "&expectedCurrency=1&expectedPrice=" + expectedPrice).done(function (receipt) {
 					console.log("Product purchased\n\tReceipt:", receipt);
-					if (receipt.title === "Item Owned") {
+					if (receipt.TransactionVerb !== "bought") {
 						reject([{
 							code: 1,
-							message: "Product already owned"
+							message: receipt.title
 						}]);
 						return;
 					}

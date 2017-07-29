@@ -15,7 +15,14 @@
 			});
 		}
 
-		var volume = notification.metadata.hasOwnProperty("volume") ? notification.metadata.volume : 0.5;
+		var volume = 0.5;
+		if (notification.metadata.hasOwnProperty("volume")) {
+			volume = notification.metadata.volume;
+		} else {
+			var storedVolume = Number(storage.get("notificationVolume"));
+			volume = isNaN(storedVolume) ? 0.5 : storedVolume;
+		}
+
 		if (notification.metadata.robloxSound) {
 			Roblox.audio.getSoundPlayer(notification.metadata.robloxSound).then(function (player) {
 				audioPlayers[notification.tag] = player;
@@ -53,6 +60,12 @@
 			chrome.tts.stop();
 		}
 	});
+
+	if (!ext.incognito) {
+		setInterval(function () {
+			chrome.browserAction.setBadgeText({ text: (Object.keys($.notification.getNotifications()).length || "").toString() });
+		}, 250);
+	}
 })();
 
 

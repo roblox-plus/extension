@@ -88,7 +88,9 @@ RPlus.Pages.Account = function () {
 			group.addClass("checkbox").append(o.checkbox = $("<input type=\"checkbox\">")).append($("<label for>").text(n)).css("cursor", "pointer").click(function () {
 				window.open(Roblox.catalog.getAssetUrl(391072534));
 			});
-			request.send({ request: "buttonOwner" }, function (x) { o.checkbox.prop("checked", !!x); });
+			ipc.send("catalogNotifier:userOwnsButton", {}, function (x) {
+				o.checkbox.prop("checked", !!x);
+			});
 			return group;
 		} else if (o.type == "speak" && !ext.tts.enabled) {
 			return "";

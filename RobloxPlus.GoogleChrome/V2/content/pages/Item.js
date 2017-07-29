@@ -59,10 +59,15 @@ RPlus.Pages.Item = function () {
 		if (browser.name != "Chrome") {
 			buyButton.attr("disabled", "").attr("title", "Available on Chrome only");
 		} else {
-			buyButton.parent().after($("<button class=\"btn-primary-md\">Example</button>").click(function () {
-				request.send({ request: "buttonTest" });
-			}));
-			request.send({ request: "buttonOwner" }, function (o) {
+			var exampleButton = $("<button class=\"btn-primary-md\">Example</button>").click(function () {
+				ipc.send("catalogNotifier:testBuyButton", {});
+			});
+			if (buyButton.length) {
+				buyButton.parent().after(exampleButton);
+			} else {
+				$("#edit-avatar-button").after("<br>", exampleButton);
+			}
+			ipc.send("catalogNotifier:userOwnsButton", {}, function (o) {
 				if (o) {
 					buyButton.attr("disabled", "").attr("title", "You already own this item.");
 				}

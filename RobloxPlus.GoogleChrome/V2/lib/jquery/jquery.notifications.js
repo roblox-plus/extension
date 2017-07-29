@@ -131,7 +131,8 @@ $.notification = (function () {
 			iconUrl: data.hasOwnProperty("icon") ? data.icon : ext.getUrl(ext.manifest.icons['48']),
 			message: data.hasOwnProperty("message") ? data.message : "",
 			contextMessage: data.hasOwnProperty("context") ? data.context : "",
-			isClickable: !!data.clickable
+			isClickable: !!data.clickable,
+			priority: 2
 		};
 		var responseJson = {
 			tag: data.tag,

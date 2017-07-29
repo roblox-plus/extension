@@ -60,29 +60,6 @@ foreach({
 
 
 
-/* Notifications, and notifiers */
-notification.properties.robloxSound = function (a, note) {
-	if (!Number(a)) { return notification.properties.speak(note.header + "\n" + note.lite, note); }
-	soundService.robloxSound(a, function (s) {
-		if (s && !note.closed) {
-			s.volume(Number(storage.get("notificationVolume")) || .5).play(function () {
-				if (note.closed) {
-					s.stop();
-				}
-			}).play();
-			note.close(function () { s.stop(); });
-		}
-	});
-};
-
-if (!ext.incognito) {
-	setInterval(function () {
-		chrome.browserAction.setBadgeText({ text: (Object.keys(notification.server).length || "").toString() });
-	}, 250);
-}
-
-
-
 /* Forums */
 chrome.webRequest.onBeforeRedirect.addListener(function (details) {
 	if (url.path(details.url).toLowerCase() == "/forum/addpost.aspx" && details.method == "POST") {
@@ -98,6 +75,9 @@ chrome.webRequest.onBeforeRedirect.addListener(function (details) {
 
 /* Extension Icon */
 chrome.browserAction.setTitle({ title: ext.manifest.name + " " + ext.manifest.version });
+chrome.browserAction.onClicked.addListener(function () {
+	window.open(ext.manifest.homepage_url);
+});
 
 
 

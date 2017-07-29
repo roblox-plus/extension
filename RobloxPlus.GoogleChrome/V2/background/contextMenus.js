@@ -4,7 +4,7 @@ chrome.contextMenus.create({
 	title: "Clear Notifications",
 	contexts: ["browser_action"],
 	onclick: function () {
-		notification.clear();
+		$.notification.clear();
 	}
 });
 
