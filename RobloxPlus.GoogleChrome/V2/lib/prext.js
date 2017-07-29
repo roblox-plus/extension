@@ -53,9 +53,9 @@ console.log(ext.manifest.name + " " + ext.manifest.version + " started" + (ext.i
 
 /*
 	inter process communication
-	ipc.send("request name", { data }, function(response){ });
+	ipc.send("request name", { data }, function(response){ }[, tab]);
 	ipc.on("request name", function(data, callBack, senderTabId) { });
-	ipc.on("message", function(data, callBack, 
+	ipc.on("message", function(data, callBack, -- why didn't I finish this doc?
 */
 ipc = (function () {
 	// A lot of this code is hard to follow, and all over the place.

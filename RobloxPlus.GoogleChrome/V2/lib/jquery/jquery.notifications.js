@@ -61,6 +61,263 @@
 		// Same as .click
 	});
 */
+$.notificationV2 = (function () {
+	var generateTagId = 0;
+	var initData = ["tag", "title", "message", "context", "icon", "clickable", "items", "buttons", "metadata"];
+	var namespace = "$.notificationV2.";
+	var notifications = {};
+	var self;
+
+
+	function createResponseNotification(data) {
+		var notification = $.addTrigger({
+			tag: "",
+			title: "",
+			message: "",
+			context: "",
+			icon: "",
+			clickable: false,
+			items: {},
+			buttons: [],
+			metadata: {},
+			raw: {},
+
+			setData: function (data) {
+				this.raw = data;
+				var note = this;
+				initData.forEach(function (field) {
+					if (data.hasOwnProperty(field)) {
+						note[field] = data[field];
+					}
+				});
+			},
+
+			click: function (callBack) {
+				if (callBack) {
+					this.on("click", callBack);
+				} else {
+					ipc.send(namespace + "internalClick", { tag: this.tag });
+				}
+				return this;
+			},
+			buttonClick: function (index) {
+				if (typeof(index) === "function") {
+					this.on("buttonClick", index);
+				} else {
+					ipc.send(namespace + "internalButtonClick", { tag: this.tag, index: index });
+				}
+				return this;
+			},
+			close: function (callBack) {
+				if (callBack) {
+					this.on("close", callBack);
+				} else {
+					ipc.send(namespace + "internalClose", { tag: this.tag });
+				}
+				return this;
+			}
+		});
+
+		if (typeof (data) === "string") {
+			notification.tag = data;
+		} else if (data) {
+			notification.setData(data);
+		}
+
+		return notification;
+	}
+
+	function broadcast(event, data) {
+		ipc.send(event, data, function () { }, 0);
+		for (var tabId in ext.tabs) {
+			ipc.send(event, data, function () { }, tabId);
+		}
+	}
+
+
+	ipc.on(namespace + "create", function (data, callBack, senderTabId) {
+		if (typeof (data.tag) !== "string") {
+			data.tag = (++generateTagId).toString();
+		}
+
+		var creationJson = {
+			title: data.hasOwnProperty("title") ? data.title : ext.manifest.name,
+			iconUrl: data.hasOwnProperty("icon") ? data.icon : ext.getUrl(ext.manifest.icons['48']),
+			message: data.hasOwnProperty("message") ? data.message : "",
+			contextMessage: data.hasOwnProperty("context") ? data.context : "",
+			isClickable: !!data.clickable
+		};
+		var responseJson = {
+			tag: data.tag,
+			title: creationJson.title,
+			message: creationJson.message,
+			context: creationJson.contextMessage,
+			icon: creationJson.iconUrl,
+			clickable: creationJson.isClickable,
+			items: {},
+			buttons: [],
+			metadata: typeof (data.metadata) === "object" ? data.metadata : {},
+			created: +new Date
+		};
+
+		if (data.hasOwnProperty("items")) {
+			responseJson.items = data.items;
+			creationJson.type = "list";
+			creationJson.items = [];
+			for (var n in data.items) {
+				creationJson.items.push({
+					title: n,
+					message: data.items[n]
+				});
+			}
+		} else {
+			creationJson.type = "basic";
+		}
+
+		if (data.requireInteraction && (
+			brower.name == "Chrome" && browser.wholeVersion >= 50
+		)) {
+			creationJson.requireInteraction = true;
+		}
+
+		if (data.hasOwnProperty("buttons") && data.buttons.length > 0) {
+			creationJson.buttons = [];
+			for (var n = 0; n < 2; n++) {
+				var button = data.buttons[n];
+				if (!button) {
+					break;
+				} else if (typeof (button) === "string") {
+					creationJson.buttons.push({
+						title: button
+					});
+					responseJson.buttons.push(button);
+				} else {
+					creationJson.buttons.push({
+						title: button.text,
+						iconUrl: button.icon
+					});
+					responseJson.buttons.push(button.text);
+				}
+			}
+		}
+
+		chrome.notifications.create(data.tag, creationJson, function (id) {
+			callBack(responseJson);
+			broadcast(namespace + "created", responseJson);
+		});
+	}).on(namespace + "created", function (data, callBack) {
+		if (!notifications.hasOwnProperty(data.tag)) {
+			notifications[data.tag] = createResponseNotification(data);
+		}
+		self.trigger("notification", notifications[data.tag], false);
+	}).on(namespace + "closed", function (data, callBack) {
+		if (notifications.hasOwnProperty(data.tag)) {
+			notifications[data.tag].trigger("close");
+			self.trigger("close", notifications[data.tag]);
+			delete notifications[data.tag];
+		}
+	}).on(namespace + "clicked", function (data, callBack) {
+		if (notifications.hasOwnProperty(data.tag)) {
+			notifications[data.tag].trigger("click");
+			self.trigger("click", notifications[data.tag]);
+		}
+	}).on(namespace + "buttonClicked", function (data, callBack) {
+		if (notifications.hasOwnProperty(data.tag)) {
+			notifications[data.tag].trigger("buttonClick", data.index);
+			self.trigger("buttonClick", notifications[data.tag], data.index);
+		}
+	});
+
+
+	if (ext.isBackground) {
+		function onClosed(tag, explicit) {
+			if (notifications.hasOwnProperty(tag) && explicit) {
+				broadcast(namespace + "closed", { tag: tag });
+			}
+		}
+
+		function onClicked(tag) {
+			if (notifications.hasOwnProperty(tag)) {
+				broadcast(namespace + "clicked", { tag: tag });
+			}
+		}
+
+		function onButtonClicked(tag, index) {
+			if (notifications.hasOwnProperty(tag) && notifications[tag].buttons[index]) {
+				broadcast(namespace + "buttonClicked", { tag: tag, index: index });
+			}
+		}
+
+		chrome.notifications.onClosed.addListener(onClosed);
+		chrome.notifications.onClicked.addListener(onClicked);
+		chrome.notifications.onButtonClicked.addListener(onButtonClicked);
+
+		ipc.on(namespace + "internalClose", function (data) {
+			onClosed(data.tag, true);
+		}).on(namespace + "internalClick", function (data) {
+			onClicked(data.tag);
+		}).on(namespace + "internalButtonClick", function (data) {
+			onButtonClicked(data.tag, data.index);
+		}).on(namespace + "getNotifications", function (data, callBack) {
+			var response = [];
+			for (var n in notifications) {
+				response.push(notifications[n].raw);
+			}
+			response.sort(function (a, b) {
+				return a.created - b.created;
+			});
+			callBack(response);
+		}).on(namespace + "clear", function (data, callBack) {
+			for (var n in notifications) {
+				notifications[n].close();
+			}
+		});
+	}
+
+
+	self = $.addTrigger(function (data, callBack) {
+		var noteData = {};
+		if (typeof (data) === "string") {
+			noteData = {
+				title: data
+			};
+		} else {
+			noteData = {};
+			initData.forEach(function (field) {
+				if (data.hasOwnProperty(field)) {
+					noteData[field] = data[field];
+				}
+			});
+		}
+
+		var responseNotification = createResponseNotification();
+
+		ipc.send(namespace + "create", noteData, function (note) {
+			responseNotification.setData(note);
+			notifications[note.tag] = responseNotification;
+		});
+
+		return responseNotification;
+	});
+
+	self.init = function () {
+		if (!ext.isBackground) {
+			ipc.send(namespace + "getNotifications", {}, function (notes) {
+				notes.forEach(function (data) {
+					notifications[data.tag] = createResponseNotification(data);
+					self.trigger("notification", notifications[data.tag], true);
+				});
+			});
+		}
+	};
+
+	self.clear = function () {
+		ipc.send(namespace + "clear", {}, function () { });
+	};
+
+	return self;
+})();
+
 (function(){
 	var generateTagId = 0;
 	var updateFields = {

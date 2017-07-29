@@ -3,7 +3,7 @@
 */
 var RPlus = RPlus || {};
 RPlus.notificationStream = RPlus.notificationStream || (function () {
-	var customStreamDiv, robloxStreamDiv, robloxNotificationsButton, customNotificationsButton, streamContainer, buttonContainer;
+	var customStreamDiv, streamContainer, buttonContainer;
 
 	function createNotificationImageContainer(src, title, link) {
 		var container = $("<div class=\"notification-image-container\">");
@@ -61,9 +61,9 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 
 	function init() {
 		customStreamDiv = $("<ul class=\"rplus-stream-list notification-stream-list\">").attr("data-extension-stream", ext.id).hide();
-		robloxStreamDiv = $(".notification-stream-list").attr("data-extension-stream", "roblox");
-		robloxNotificationsButton = $(".notification-stream-header > span").attr("data-extension-stream", "roblox");
-		customNotificationsButton = $("<span class=\"text-label small text-link\">").attr("data-extension-stream", ext.id).text(ext.manifest.name);
+		var robloxStreamDiv = $(".notification-stream-list").attr("data-extension-stream", "roblox");
+		var robloxNotificationsButton = $(".notification-stream-header > span").attr("data-extension-stream", "roblox");
+		var customNotificationsButton = $("<span class=\"text-label small text-link\">").attr("data-extension-stream", ext.id).text(ext.manifest.name);
 		streamContainer = robloxStreamDiv.parent();
 		buttonContainer = robloxNotificationsButton.parent();
 
@@ -71,6 +71,22 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 
 		robloxStreamDiv.after(customStreamDiv);
 		robloxNotificationsButton.after(customNotificationsButton);
+
+		$.notificationV2.on("notification", function (notification) {
+			var card = pushNotification(notification.icon, notification.title, notification.context, notification.metadata.url);
+
+			card.click(function () {
+				notification.click();
+			});
+
+			notification.close(function () {
+				card.slideUp(function () {
+					card.remove();
+				});
+			});
+		});
+
+		$.notificationV2.init();
 	}
 
 	$(init);
