@@ -137,7 +137,7 @@ $.notificationV2 = (function () {
 
 	ipc.on(namespace + "create", function (data, callBack, senderTabId) {
 		if (typeof (data.tag) !== "string") {
-			data.tag = (++generateTagId).toString();
+			data.tag = namespace + (++generateTagId);
 		}
 
 		var creationJson = {
@@ -313,6 +313,10 @@ $.notificationV2 = (function () {
 
 	self.clear = function () {
 		ipc.send(namespace + "clear", {}, function () { });
+	};
+
+	self.getNotifications = function () {
+		return notifications;
 	};
 
 	return self;

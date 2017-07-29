@@ -178,7 +178,7 @@ if (browser.name == "Chrome") {
 			}
 		}
 
-		var note = $.notification({
+		var note = $.notificationV2({
 			speachGender: "male",
 			title: ext.manifest.name + " started",
 			context: user ? "Hello, " + user.username + "!" : "You're currently signed out",

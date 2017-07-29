@@ -19,22 +19,29 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		return container;
 	}
 
-	function createNotificationContentContainer(title, context) {
+	function createNotificationContentContainer(title, context, items) {
 		var container = $("<div class=\"notificaiton-item-content\">");
 		var innerContainer = $("<div class=\"notification-data-container\">");
 
 		var titleContainer = $("<div class=\"small notification-display-text\">").text(title);
+		var itemsContainer = $("<span class=\"small notification-display-text\">");
 		var contextContainer = $("<div class=\"text-date-hint\">").text(context);
 
-		container.append(innerContainer.append(titleContainer, contextContainer));
+		for (var n in items) {
+			var item = $("<div class=\"small message-preview\">").text(n + ": " + items[n]);
+			itemsContainer.append(item);
+			break;
+		}
+
+		container.append(innerContainer.append(titleContainer, itemsContainer, contextContainer));
 		return container;
 	}
 
-	function createNotificationCard(icon, title, context, link) {
+	function createNotificationCard(icon, title, context, link, items) {
 		var card = $("<li class=\"notification-stream-item clickable unInteracted\">");
 		var innerCard = $("<a class=\"notification-item\">").attr("href", link || "javascript:/* Roblox+ */");
 		var imageContainer = createNotificationImageContainer(icon, "", link);
-		var contentContainer = createNotificationContentContainer(title, context);
+		var contentContainer = createNotificationContentContainer(title, context, items);
 
 		innerCard.append(imageContainer, contentContainer);
 		card.append(innerCard);
@@ -42,8 +49,8 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		return card.hide();
 	}
 
-	function pushNotification(icon, title, context, link) {
-		var notification = createNotificationCard(icon, title, context, link);
+	function pushNotification(icon, title, context, link, items) {
+		var notification = createNotificationCard(icon, title, context, link, items);
 		customStreamDiv.prepend(notification);
 		notification.slideDown();
 		return notification;
@@ -73,7 +80,7 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		robloxNotificationsButton.after(customNotificationsButton);
 
 		$.notificationV2.on("notification", function (notification) {
-			var card = pushNotification(notification.icon, notification.title, notification.context, notification.metadata.url);
+			var card = pushNotification(notification.icon, notification.title, notification.context, notification.metadata.url, notification.items);
 
 			card.click(function () {
 				notification.click();
