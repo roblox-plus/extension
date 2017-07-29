@@ -44,8 +44,8 @@ RPlus.notifiers.groupShout = (function () {
 								return true;
 							}
 						});
-
-						var note = {
+						
+						$.notification({
 							tag: "groupshout" + groupId,
 							title: group.text(),
 							message: string.clean(shout.replace(/https?:\/\/w?w?w?\./gi, "")),
@@ -54,16 +54,10 @@ RPlus.notifiers.groupShout = (function () {
 							clickable: true,
 							metadata: {
 								robloxSound: Number((storage.get("notifierSounds") || {}).groupShout) || 0,
-								url: group.attr("href")
+								url: group.attr("href"),
+								speak: "Group shout from " + group.text()
 							}
-						};
-
-						if (!note.metadata.robloxSound) {
-							delete note.metadata.robloxSound;
-							note.metadata.speak = "Group shout from " + note.title;
-						}
-
-						$.notification(note).click(function () {
+						}).click(function () {
 							this.close();
 						}).buttonClick(function (index) {
 							window.open(links[index]);

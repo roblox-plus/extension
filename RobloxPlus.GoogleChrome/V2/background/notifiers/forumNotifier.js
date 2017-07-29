@@ -42,28 +42,24 @@ RPlus.notifiers.forum = (function () {
 									return;
 								}
 
-								var note = {
-									header: string.clean(reply.poster.username + " replied to thread\n" + post.subject.substring(0, 50)),
-									lite: string.clean(reply.body.split("\n")[0]),
+								var title = string.clean(reply.poster.username + " replied to thread\n" + post.subject.substring(0, 50));
+								$.notification({
+									tag: "forum" + reply.id,
+									title: title,
+									context: string.clean(reply.body.split("\n")[0]),
 									icon: Roblox.thumbnails.getUserHeadshotThumbnailUrl(reply.poster.id, 3),
 									buttons: ["Reply"],
 									clickable: true,
-									robloxSound: Number((storage.get("notifierSounds") || {}).forum) || 0,
-									tag: "forum" + reply.id,
-									url: {
+									metadata: {
 										url: "https://forum.roblox.com/Forum/ShowPost.aspx?PostID=" + reply.id + (thread.lastReply.page != 1 ? "&PageIndex=" + thread.lastReply.page : "") + "#" + reply.id,
-										close: true
+										robloxSound: Number((storage.get("notifierSounds") || {}).forum) || 0,
+										speak: title.split(/\n/)[0]
 									}
-								};
-
-								if (!note.robloxSound) {
-									delete note.robloxSound;
-									note.speak = note.header.split(/\n/)[0];
-								}
-
-								note = notify(note).button1Click(function () {
+								}).click(function () {
+									this.close();
+								}).buttonClick(function () {
+									this.close();
 									window.open("https://forum.roblox.com/Forum/AddPost.aspx?mode=flat&PostID=" + reply.id);
-									note.close();
 								});
 							});
 
