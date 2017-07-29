@@ -28,11 +28,13 @@ RPlus.maliciousContentBlocker = (function () {
 				mustCloseUrls = mustCloseUrls.concat(blockList);
 			}
 			chrome.webRequest.onBeforeRequest.addListener(function (details) {
-				var note = notify({
-					header: "Attempt to load malicious content blocked",
-					lite: "Reason: " + reason
+				$.notification({
+					title: "Attempt to load malicious content blocked",
+					context: "Reason: " + reason,
+					metadata: {
+						expiration: 5000
+					}
 				});
-				setTimeout(note.close, 5000);
 				return { cancel: true };
 			}, { urls: blockList }, ["blocking"]);
 		}
@@ -75,26 +77,46 @@ RPlus.maliciousContentBlocker = (function () {
 	});
 
 	setTimeout(function () {
+		var tabNotifications = {};
+
 		setInterval(function () {
 			if (mustCloseUrls.length) {
 				chrome.tabs.query({
-					url: mustCloseUrls,
-					status: "loading"
+					url: mustCloseUrls
 				}, function (tabs) {
 					var tabIds = [];
-					tabs.forEach(function (tab) { tabIds.push(tab.id); });
-					if (tabs.length && tabs.length < 3) { // Failsafe...
-						console.log("Closing " + tabIds.length + " tab" + (tabIds.length === 1 ? "" : "s") + " for malicious content.");
-						var note = notify({
-							header: tabIds.length + " tab" + (tabIds.length === 1 ? "" : "s") + " closed for malicious content"
-						});
-						setTimeout(note.close, 5000);
-						chrome.tabs.remove(tabIds, function () { });
+					tabs.forEach(function (tab) {
+						tabIds.push(tab.id);
+						if (!tabNotifications.hasOwnProperty(tab.id)) {
+							tabNotifications[tab.id] = $.notification({
+								tag: "maliciousTab:" + tab.id,
+								title: "You're viewing a tab marked as malicious!",
+								message: "At least one tab you have open is marked as malicous",
+								context: "Click to close",
+								clickable: true
+							}).click(function () {
+								this.close();
+								chrome.tabs.remove([tab.id], function () { });
+							}).close(function () {
+								delete tabNotifications[tab.id];
+							});
+						}
+					});
+					for (var n in tabNotifications) {
+						if (!tabIds.includes(Number(n))) {
+							tabNotifications[n].close();
+						}
 					}
 				});
 			}
 		}, 100);
-	}, 60 * 1000);
+
+		chrome.tabs.onRemoved.addListener(function (tabId) {
+			if (tabNotifications[tabId]) {
+				tabNotifications[tabId].close();
+			}
+		});
+	}, 100);
 
 	return {
 	};

@@ -246,6 +246,7 @@ $.notification = (function () {
 
 		ipc.on(namespace + "internalClose", function (data, callBack, tabId) {
 			onClosed(data.tag, true, tabId);
+			chrome.notifications.clear(data.tag);
 		}).on(namespace + "internalClick", function (data, callBack, tabId) {
 			onClicked(data.tag, tabId);
 		}).on(namespace + "internalButtonClick", function (data, callBack, tabId) {
@@ -291,7 +292,9 @@ $.notification = (function () {
 		ipc.send(namespace + "create", noteData, function (note) {
 			responseNotification.setData(note);
 			notifications[note.tag] = responseNotification;
-			callBack(responseNotification);
+			if (callBack) {
+				callBack(responseNotification);
+			}
 		});
 
 		return responseNotification;

@@ -24,8 +24,10 @@ textarea,code{
 	cursor: pointer;
 }
 
-.rplus-stream-list {
-	padding: 0;
+.rplus-stream-list .message-preview {
+	max-height: 16px;
+	overflow: hidden;
+	white-space: pre-wrap;
 }
 
 

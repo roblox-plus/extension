@@ -19,7 +19,7 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		return container;
 	}
 
-	function createNotificationContentContainer(title, context, items) {
+	function createNotificationContentContainer(title, context, message) {
 		var container = $("<div class=\"notificaiton-item-content\">");
 		var innerContainer = $("<div class=\"notification-data-container\">");
 
@@ -27,10 +27,9 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		var itemsContainer = $("<span class=\"small notification-display-text\">");
 		var contextContainer = $("<div class=\"text-date-hint\">").text(context);
 
-		for (var n in items) {
-			var item = $("<div class=\"small message-preview\">").text(n + ": " + items[n]);
-			itemsContainer.append(item);
-			break;
+		if (message) {
+			var messageLabel = $("<div class=\"small message-preview\">").text(message);
+			itemsContainer.append(messageLabel);
 		}
 
 		container.append(innerContainer.append(titleContainer, itemsContainer, contextContainer));
@@ -38,10 +37,20 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 	}
 
 	function createNotificationCard(notification) {
+		var message = notification.message;
+		if (!message) {
+			for (var n in notification.items) {
+				message += n + ": " + notification.items[n] + "\n";
+			}
+		}
+
 		var card = $("<li class=\"notification-stream-item unInteracted\">");
-		var innerCard = $("<a class=\"notification-item\" disabled>").attr("href", notification.metadata.url || "javascript:/* Roblox+ */");
+		var innerCard = $("<a class=\"notification-item\" disabled>").attr({
+			"href": notification.metadata.url || "javascript:/* Roblox+ */",
+			"title": message
+		});
 		var imageContainer = createNotificationImageContainer(notification.icon, "", notification.metadata.url);
-		var contentContainer = createNotificationContentContainer(notification.title, notification.context, notification.items);
+		var contentContainer = createNotificationContentContainer(notification.title, notification.context, message);
 
 		if (notification.clickable) {
 			card.addClass("clickable");
