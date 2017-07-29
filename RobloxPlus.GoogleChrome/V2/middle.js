@@ -5,7 +5,7 @@
 */
 rplusSettings = {
 	cache: compact.cache(10 * 1000),
-	fields: { "updateLog": "", "serialTracker": true },
+	fields: { "updateLog": "", "serialTracker": true, "forumFloodCheck": 15 },
 	get: request.backgroundFunction("rplusSettings.get", compact(function (callBack) {
 		if (typeof (callBack) != "function") {
 			console.warn("callBack not function!");
