@@ -73,14 +73,6 @@ chrome.webRequest.onBeforeRedirect.addListener(function (details) {
 
 
 
-/* Extension Icon */
-chrome.browserAction.setTitle({ title: ext.manifest.name + " " + ext.manifest.version });
-chrome.browserAction.onClicked.addListener(function () {
-	window.open(ext.manifest.homepage_url);
-});
-
-
-
 /* hueee no image or ticket stealing */
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
 	var path = url.path(details.url);

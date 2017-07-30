@@ -108,6 +108,13 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		});
 
 		$.notification.init();
+
+		ipc.on("rplus:showNotifications", function (data, callBack) {
+			customNotificationsButton.click();
+			if (!streamContainer.is(":visible")) {
+				$("#nav-ns-icon")[0].click();
+			}
+		});
 	}
 
 	$(init);

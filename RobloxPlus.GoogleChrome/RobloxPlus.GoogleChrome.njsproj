@@ -84,6 +84,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="V2\background\background.js" />
+    <Compile Include="V2\background\browserAction.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\background\contextMenus.js">
       <SubType>Code</SubType>
     </Compile>
