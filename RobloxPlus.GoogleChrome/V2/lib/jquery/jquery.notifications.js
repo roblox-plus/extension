@@ -149,13 +149,17 @@ $.notification = (function () {
 
 		if (data.hasOwnProperty("items")) {
 			responseJson.items = data.items;
-			creationJson.type = "list";
 			creationJson.items = [];
 			for (var n in data.items) {
 				creationJson.items.push({
 					title: n,
 					message: data.items[n]
 				});
+			}
+			if (creationJson.items.length) {
+				creationJson.type = "list";
+			} else {
+				creationJson.type = "basic";
 			}
 		} else {
 			creationJson.type = "basic";

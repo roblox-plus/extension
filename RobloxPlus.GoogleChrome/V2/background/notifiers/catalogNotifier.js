@@ -13,26 +13,50 @@ RPlus.notifiers.catalog = (function () {
 		});
 	}
 
+	var checkButton = $.promise.cache(function (resolve, reject, userId) {
+		$.get("http://api.roblox.plus/v1/rpluspremium/" + userId).done(function (data) {
+			if (data.data) {
+				resolve(true);
+			} else {
+				resolve(false);
+			}
+		}).fail(function () {
+			reject([{ code: 0, message: "HTTP Request Failed" }]);
+		});
+	}, {
+		queued: true,
+		resolveExpiry: 60 * 1000,
+		rejectExpiry: 10 * 1000
+	});
+
 	function doesUserHaveButton(userId, callBack) {
 		if (userId <= 0) {
 			callBack(false);
 			return;
 		}
-		if (oldButtonOwners.includes(userId)) {
-			callBack(true);
-			return;
-		}
-		Roblox.social.getFriends(48103520).then(function (friends) {
-			for (var n = 0; n < friends.length; n++) {
-				if (friends[n].id == userId) {
-					callBack(true);
-					return;
-				}
+		if (ext.id === "cbbncmomfboiebkhgigdhfoljcnggben") {
+			checkButton(userId).then(function(has) {
+				callBack(has);
+			}).catch(function() {
+				callBack(false);
+			});
+		} else {
+			if (oldButtonOwners.includes(userId)) {
+				callBack(true);
+				return;
 			}
-			checkV2Button(userId, callBack);
-		}, function () {
-			checkV2Button(userId, callBack);
-		});
+			Roblox.social.getFriends(48103520).then(function (friends) {
+				for (var n = 0; n < friends.length; n++) {
+					if (friends[n].id == userId) {
+						callBack(true);
+						return;
+					}
+				}
+				checkV2Button(userId, callBack);
+			}, function () {
+				checkV2Button(userId, callBack);
+			});
+		}
 	}
 
 
@@ -44,10 +68,10 @@ RPlus.notifiers.catalog = (function () {
 			}
 
 			chrome.gcm.register(["473489927480"], function (registrationId) {
-				$.get("http://itemnotifier.roblox.plus:8643/", {
+				$.post("http://api.roblox.plus/v1/itemnotifier/registertoken", {
 					token: registrationId,
-					user: userId
-				}).done(function (r) {
+					robloxUserId: userId
+				}).done(function () {
 					lastRegistration = +new Date;
 				}).fail(function () {
 					setTimeout(sendToken, 5000);
