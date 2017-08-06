@@ -61,10 +61,12 @@ RPlus.Pages.Item = function () {
 			} else {
 				$("#edit-avatar-button").after("<br>", exampleButton);
 			}
-			ipc.send("catalogNotifier:userOwnsButton", {}, function (o) {
-				if (o) {
+			RPlus.premium.isPremium(users.userId).then(function(ispremium) {
+				if (ispremium) {
 					buyButton.attr("disabled", "").attr("title", "You already own this item.");
 				}
+			}).catch(function(e) {
+				console.warn(e);
 			});
 		}
 	} else if (id == 375602203) {

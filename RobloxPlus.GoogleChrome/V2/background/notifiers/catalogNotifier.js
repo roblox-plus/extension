@@ -1,41 +1,12 @@
 ﻿/* background/notifiers/catalogNotifier.js [06/03/2017] */
 RPlus.notifiers.catalog = (function () {
 	var lastRegistration = 0;
-	var cachedOwnings = {};
 	
-	var checkButton = $.promise.cache(function (resolve, reject, userId) {
-		$.get("http://api.roblox.plus/v1/rpluspremium/" + userId).done(function (data) {
-			if (data.data) {
-				cachedOwnings[userId] = true;
-				resolve(true);
-			} else {
-				resolve(false);
-			}
-		}).fail(function () {
-			reject([{ code: 0, message: "HTTP Request Failed" }]);
-		});
-	}, {
-		queued: true,
-		resolveExpiry: 60 * 1000,
-		rejectExpiry: 10 * 1000
-	});
-
 	function doesUserHaveButton(userId, callBack) {
-		if (userId <= 0) {
-			callBack(false);
-			return;
-		}
-		if (cachedOwnings[userId]) {
-			callBack(true);
-			return;
-		}
-		checkButton(userId).then(function (has) {
-			callBack(has);
-		}).catch(function () {
+		RPlus.premium.isPremium(userId).then(callBack).catch(function(e) {
 			callBack(false);
 		});
 	}
-
 
 	function sendToken() {
 		Roblox.users.getCurrentUserId().then(function (userId) {
@@ -158,12 +129,6 @@ RPlus.notifiers.catalog = (function () {
 				})
 			},
 			from: "self"
-		});
-	}).on("catalogNotifier:userOwnsButton", function (data, callBack) {
-		Roblox.users.getCurrentUserId().then(function (id) {
-			doesUserHaveButton(id, callBack);
-		}, function (err) {
-			callBack(false);
 		});
 	});
 

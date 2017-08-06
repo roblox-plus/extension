@@ -175,6 +175,9 @@
     <Compile Include="V2\lib\rplus\notifiers.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="V2\lib\rplus\premium.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\lib\rplus\settings.js">
       <SubType>Code</SubType>
     </Compile>

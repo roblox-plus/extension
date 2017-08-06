@@ -55,6 +55,7 @@
 
 				"/lib/rplus/RobloxPlus.js",
 				"/lib/rplus/copiedAssets.js",
+				"/lib/rplus/premium.js",
 
 				"/content/core/contentPreload.js"
 			],
