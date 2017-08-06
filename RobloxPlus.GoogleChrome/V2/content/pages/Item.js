@@ -5,22 +5,16 @@ RPlus.Pages.Item = function () {
 	var id = Roblox.catalog.getIdFromUrl(location.href);
 	var item = (function (hold) {
 		// TODO: wow look how ridiculously bad this looks, fix
-		hold.find("#item-details-description>span").remove();
 		var creator = hold.find(".item-name-container>div>span.text-label>a.text-name");
 
 		var ret = {
 			assetType: hold.find("#item-container").data("asset-type"),
 			assetTypeId: 0,
 			creator: { id: Roblox.users.getIdFromUrl(creator.attr("href")), name: creator.text(), creatorType: creator.attr("href").indexOf("/users/") >= 0 ? "User" : "Group" },
-			description: hold.find("#item-details-description").text().trim(),
-			free: hold.find(".text-robux-lg").text() == "Free",
 			id: Number((hold.find("link[rel='canonical']").attr("href").match(/\/catalog\/(\d+)\//) || ["", 0])[1]),
 			limited: hold.find("#AssetThumbnail .icon-limited-unique-label, #AssetThumbnail .icon-limited-label").length > 0,
-			limitedUnique: hold.find("#AssetThumbnail .icon-limited-unique-label").length > 0,
 			name: hold.find("#item-container").data("item-name"),
 			"new": hold.find(".asset-status-icon.status-New").length > 0,
-			productId: Number(hold.find(".PurchaseButton[data-product-id]").data("product-id")) || 0,
-			robuxPrice: Number(hold.find(".icon-robux-price-container .text-robux-lg").text().replace(/\D+/g, "")) || 0,
 			thumbnail: hold.find("#AssetThumbnail>.thumbnail-span>img").attr("src"),
 			url: hold.find("link[rel='canonical']").attr("href")
 		};
