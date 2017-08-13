@@ -6,57 +6,57 @@ var Roblox = Roblox || {};
 Roblox.catalog = (function () {
 	return {
 		assetTypes: {
-			[1]: "Image",
-			[2]: "T-Shirt",
-			[3]: "Audio",
-			[4]: "Mesh",
-			[5]: "Lua",
-			[6]: "HTML",
-			[7]: "Text",
-			[8]: "Hat",
-			[9]: "Place",
-			[10]: "Model",
-			[11]: "Shirt",
-			[12]: "Pants",
-			[13]: "Decal",
-			[16]: "Avatar",
-			[17]: "Head",
-			[18]: "Face",
-			[19]: "Gear",
-			[21]: "Badge",
-			[22]: "Group Emblem",
-			[24]: "Animation",
-			[25]: "Arms",
-			[26]: "Legs",
-			[27]: "Torso",
-			[28]: "Right Arm",
-			[29]: "Left Arm",
-			[30]: "Left Leg",
-			[31]: "Right Leg",
-			[32]: "Package",
-			[33]: "YoutubeVideo",
-			[34]: "Game Pass",
-			[35]: "App",
-			[37]: "Code",
-			[38]: "Plugin",
-			[39]: "SolidModel",
-			[40]: "MeshPart",
-			[41]: "Hair Accessory",
-			[42]: "Face Accessory",
-			[43]: "Neck Accessory",
-			[44]: "Shoulder Accessory",
-			[45]: "Front Accessory",
-			[46]: "Back Accessory",
-			[47]: "Waist Accessory",
-			[48]: "Climb Animation",
-			[49]: "Death Animation",
-			[50]: "Fall Animation",
-			[51]: "Idle Animation",
-			[52]: "Jump Animation",
-			[53]: "Run Animation",
-			[54]: "Swim Animation",
-			[55]: "Walk Animation",
-			[56]: "Pose Animation"
+			"1": "Image",
+			"2": "T-Shirt",
+			"3": "Audio",
+			"4": "Mesh",
+			"5": "Lua",
+			"6": "HTML",
+			"7": "Text",
+			"8": "Hat",
+			"9": "Place",
+			"10": "Model",
+			"11": "Shirt",
+			"12": "Pants",
+			"13": "Decal",
+			"16": "Avatar",
+			"17": "Head",
+			"18": "Face",
+			"19": "Gear",
+			"21": "Badge",
+			"22": "Group Emblem",
+			"24": "Animation",
+			"25": "Arms",
+			"26": "Legs",
+			"27": "Torso",
+			"28": "Right Arm",
+			"29": "Left Arm",
+			"30": "Left Leg",
+			"31": "Right Leg",
+			"32": "Package",
+			"33": "YoutubeVideo",
+			"34": "Game Pass",
+			"35": "App",
+			"37": "Code",
+			"38": "Plugin",
+			"39": "SolidModel",
+			"40": "MeshPart",
+			"41": "Hair Accessory",
+			"42": "Face Accessory",
+			"43": "Neck Accessory",
+			"44": "Shoulder Accessory",
+			"45": "Front Accessory",
+			"46": "Back Accessory",
+			"47": "Waist Accessory",
+			"48": "Climb Animation",
+			"49": "Death Animation",
+			"50": "Fall Animation",
+			"51": "Idle Animation",
+			"52": "Jump Animation",
+			"53": "Run Animation",
+			"54": "Swim Animation",
+			"55": "Walk Animation",
+			"56": "Pose Animation"
 		},
 		wearableAssetTypeIds: [2, 8, 11, 12, 17, 18, 19, 25, 26, 27, 28, 29, 30, 31, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56],
 		collectibleAssetTypeIds: [8, 18, 19, 41, 42, 43, 44, 45, 46, 47],
@@ -168,6 +168,74 @@ Roblox.catalog = (function () {
 			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 5 * 1000
+		}),
+
+		configureAsset: $.promise.cache(function (resolve, reject, assetId, configuration) {
+			if (typeof (assetId) != "number" || assetId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid assetId"
+				}]);
+				return;
+			}
+			if (typeof (configuration) !== "object") {
+				reject([{
+					code: 0,
+					message: "Invalid configuration (expected object)"
+				}]);
+				return;
+			}
+			
+			$.get("https://www.roblox.com/My/Item.aspx?ID=" + assetId).done(function (r) {
+				r = $._(r);
+				if (r.find("#EditItem").length) {
+					configuration.robux = round(typeof (configuration.robux) == "number" ? configuration.robux : r.find("#ctl00_cphRoblox_RobuxPrice").val()) || 0;
+					configuration.genre = typeof (configuration.genre) == "number" ? configuration.genre : r.find("#ctl00_cphRoblox_actualGenreSelection").val();
+					var data = {
+						"ctl00$cphRoblox$NameTextBox": typeof (configuration.name) === "string" && configuration.name ? configuration.name : r.find("#ctl00_cphRoblox_NameTextBox").val(),
+						"ctl00$cphRoblox$DescriptionTextBox": typeof (configuration.description) === "string" ? configuration.description : r.find("#ctl00_cphRoblox_DescriptionTextBox").val(),
+						"ctl00$cphRoblox$SellThisItemCheckBox": (configuration.hasOwnProperty("free") && configuration.free) || configuration.robux > 0 ? "on" : "",
+						"ctl00$cphRoblox$SellForRobux": configuration.robux > 0 ? "on" : "",
+						"ctl00$cphRoblox$RobuxPrice": configuration.robux,
+						"ctl00$cphRoblox$PublicDomainCheckBox": configuration.hasOwnProperty("free") ? (configuration.free ? "on" : "") : (r.find("#ctl00_cphRoblox_PublicDomainCheckBox").prop("checked") ? "on" : ""),
+						"GenreButtons2": configuration.genre,
+						"ctl00$cphRoblox$actualGenreSelection": configuration.genre,
+						"ctl00$cphRoblox$EnableCommentsCheckBox": configuration.hasOwnProperty("comments") ? (configuration.comments ? "on" : "") : (r.find("#ctl00_cphRoblox_EnableCommentsCheckBox").prop("checked") ? "on" : ""),
+						__EVENTTARGET: "ctl00$cphRoblox$SubmitButtonBottom",
+						__PREVIOUSPAGE: r.find("#__PREVIOUSPAGE").val(),
+						__EVENTVALIDATION: r.find("#__EVENTVALIDATION").val(),
+						__VIEWSTATEGENERATOR: r.find("#__VIEWSTATEGENERATOR").val(),
+						__VIEWSTATE: r.find("#__VIEWSTATE").val()
+					};
+					for (var n in data) {
+						if (!r.find("*[name='" + n + "']").length) {
+							delete data[n];
+						}
+					};
+					$.post("https://www.roblox.com/My/Item.aspx?ID=" + assetId, data).done(function() {
+						resolve();
+					}).fail(function () {
+						reject([{
+							code: 0,
+							message: "HTTP request failed"
+						}]);
+					});
+				} else {
+					reject([{
+						code: 1,
+						message: "You can't configure this asset!"
+					}]);
+				}
+			}).fail(function () {
+				reject([{
+					code: 0,
+					message: "HTTP request failed"
+				}]);
+			});
+		}, {
+			queued: true,
+			resolveExpiry: 100,
+			rejectExpiry: 1000
 		})
 	};
 })();

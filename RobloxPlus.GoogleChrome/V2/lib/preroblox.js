@@ -33,42 +33,18 @@ url.roblox = {
 
 
 catalog = {
-	update: request.backgroundFunction("catalog.update", function (arg, callBack) {
+	update: function (arg, callBack) {
 		if (type(arg) != "object" || typeof(arg.id) != "number" || typeof (callBack) != "function") {
 			console.warn("callBack not function! (maybe)");
 			return;
 		}
 
-		$.get("https://www.roblox.com/My/Item.aspx?ID=" + arg.id).done(function (r) {
-			r = $._(r);
-			if (r.find("#EditItem").length) {
-				arg.robux = round(type(arg.robux) == "number" ? arg.robux : r.find("#ctl00_cphRoblox_RobuxPrice").val()) || 0;
-				arg.genre = type(arg.genre) == "number" ? arg.genre : r.find("#ctl00_cphRoblox_actualGenreSelection").val();
-				var data = {
-					"ctl00$cphRoblox$NameTextBox": type(arg.name) == "string" && arg.name ? arg.name : r.find("#ctl00_cphRoblox_NameTextBox").val(),
-					"ctl00$cphRoblox$DescriptionTextBox": type(arg.description) == "string" ? arg.description : r.find("#ctl00_cphRoblox_DescriptionTextBox").val(),
-					"ctl00$cphRoblox$SellThisItemCheckBox": (arg.hasOwnProperty("free") && arg.free) || arg.robux > 0 ? "on" : "",
-					"ctl00$cphRoblox$SellForRobux": arg.robux > 0 ? "on" : "",
-					"ctl00$cphRoblox$RobuxPrice": arg.robux,
-					"ctl00$cphRoblox$PublicDomainCheckBox": arg.hasOwnProperty("free") ? (arg.free ? "on" : "") : (r.find("#ctl00_cphRoblox_PublicDomainCheckBox").prop("checked") ? "on" : ""),
-					"GenreButtons2": arg.genre,
-					"ctl00$cphRoblox$actualGenreSelection": arg.genre,
-					"ctl00$cphRoblox$EnableCommentsCheckBox": arg.hasOwnProperty("comments") ? (arg.comments ? "on" : "") : (r.find("#ctl00_cphRoblox_EnableCommentsCheckBox").prop("checked") ? "on" : ""),
-					__EVENTTARGET: "ctl00$cphRoblox$SubmitButtonBottom",
-					__PREVIOUSPAGE: r.find("#__PREVIOUSPAGE").val(),
-					__EVENTVALIDATION: r.find("#__EVENTVALIDATION").val(),
-					__VIEWSTATEGENERATOR: r.find("#__VIEWSTATEGENERATOR").val(),
-					__VIEWSTATE: r.find("#__VIEWSTATE").val()
-				};
-				for (var n in data) { if (!r.find("*[name='" + n + "']").length) { delete data[n]; } };
-				$.post("https://www.roblox.com/My/Item.aspx?ID=" + arg.id, data, function (r, s) { callBack(s == "success"); });
-			} else {
-				callBack(false);
-			}
-		}).fail(function () {
+		Roblox.catalog.configureAsset(arg.id, arg).then(function() {
+			callBack(true);
+		}).catch(function() {
 			callBack(false);
 		});
-	})
+	}
 };
 
 
