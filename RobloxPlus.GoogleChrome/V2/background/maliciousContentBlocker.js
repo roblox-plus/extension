@@ -66,14 +66,12 @@ RPlus.maliciousContentBlocker = (function () {
 	}
 	checkPermissions();
 
-	request.sent(function (req, callBack) {
-		if (req.request == "isBlockingMaliciousContent") {
-			callBack(hasPermission);
-		} else if (req.request == "startBlockingMaliciousContent") {
-			chrome.permissions.request(permissions, function (granted) {
-				callBack(granted);
-			});
-		}
+	ipc.on("maliciousContentBlocker:isBlocking", function(data, callBack) {
+		callBack(hasPermission);
+	}).on("maliciousContentBlocker:start", function (data, callBack) {
+		chrome.permissions.request(permissions, function (granted) {
+			callBack(granted);
+		});
 	});
 
 	setTimeout(function () {

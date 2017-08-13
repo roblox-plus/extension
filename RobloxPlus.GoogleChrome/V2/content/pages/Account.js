@@ -648,12 +648,12 @@ RPlus.Pages.Account = function () {
 	$("#settings-container").append(controlPanel).append(styleTag);
 	if (url.param("tab").toLowerCase() == "rplus") { $("li.menu-option[ui-sref=\"rplus\"]>a")[0].click(); }
 
-	request.send({ request: "isBlockingMaliciousContent" }, function (grantedPermission) {
+	ipc.send("maliciousContentBlocker:isBlocking", {}, function (grantedPermission) {
 		if (grantedPermission) {
 			return;
 		}
 		var html = $("<a href=\"javascript:/* Enable Malicious Content Blocker */\">").click(function (e) {
-			request.send({ request: "startBlockingMaliciousContent" }, function (granted) {
+			ipc.send("maliciousContentBlocker:start", {}, function (granted) {
 				if (granted) {
 					feedback.hide();
 				}
