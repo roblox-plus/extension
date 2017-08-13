@@ -44,11 +44,7 @@ RPlus.premium = RPlus.premium || (function () {
 					return;
 				}
 
-				$.get("https://www.roblox.com/Game/Badge/HasBadge.ashx", { UserID: userId, BadgeID: 375602203 }).done(function(r) {
-					resolve(r === "Success");
-				}).fail(function() {
-					reject([{ code: 0, message: "HTTP Request Failed" }]);
-				});
+				Roblox.inventory.userHasBadge(userId, 375602203).then(resolve).catch(reject);
 			}).catch(reject);
 		})
 	};

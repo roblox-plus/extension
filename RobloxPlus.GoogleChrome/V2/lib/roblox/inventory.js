@@ -96,6 +96,36 @@ Roblox.inventory = (function () {
 			queued: true
 		}),
 
+		userHasBadge: $.promise.cache(function (resolve, reject, userId, badgeId) {
+			if (typeof (userId) != "number" || userId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid userId"
+				}]);
+				return;
+			}
+			if (typeof (badgeId) != "number" || badgeId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid badgeId"
+				}]);
+				return;
+			}
+
+			$.get("https://assetgame.roblox.com/Game/Badge/HasBadge.ashx", { UserID: userId, BadgeID: badgeId }).done(function (r) {
+				resolve(r === "Success");
+			}).fail(function () {
+				reject([{
+					code: 0,
+					message: "HTTP request failed"
+				}]);
+			});
+		}, {
+			rejectExpiry: 5 * 1000,
+			resolveExpiry: 60 * 1000,
+			queued: true
+		}),
+
 		getCollectibles: $.promise.cache(function (resolve, reject, userId) {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
