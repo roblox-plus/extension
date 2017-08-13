@@ -64,7 +64,6 @@ ipc = (function () {
 	// Comment for future self: try not to edit this.
 	var connected = true;
 	var pendingResponse = {};
-	var duplicateCatch = {};
 	var queue = ext.isBackground ? null : [];
 	var thisTab = 0;
 	var tabs = [];
@@ -289,126 +288,6 @@ $.addTrigger.init(function (obj) {
 });
 
 
-
-/* Requests */
-request = {
-	cb: {},
-	id: function () { return getMil() + "_" + (++request.id.num); },
-	connected: true,
-	handle: function (a, s) {
-		if (a.hasOwnProperty("response")) {
-			a.response = JSON.parse(a.response)[0];
-			foreach(request.cb[a.requestId], function (n, o) { o(a.response, a.finished ? a.tab : true); });
-			if (a.finished) {
-				delete request.cb[a.requestId];
-			}
-		} else {
-			foreach(request.sent.cb, function (n, o) {
-				o(a.arg, function (r, c) {
-					r = { requestId: a.requestId, response: JSON.stringify([r]) };
-					if (!c) { r.finished = true; }
-					if (s) {
-						r.tab = -2;
-						request.handle(r);
-					} else if (a.tab == -1) {
-						chrome.runtime.sendMessage(r);
-					} else {
-						chrome.tabs.sendMessage(a.tab, r);
-					}
-				}, a.tab);
-			});
-		}
-	},
-	send: function (arg, callBack, tab) {
-		arg = { requestId: request.id(), arg: arg };
-		if (isCB(callBack)) {
-			request.cb[arg.requestId] = request.cb[arg.requestId] || [];
-			request.cb[arg.requestId].push(callBack);
-		}
-		if (tab || ext.isBackground) {
-			if (ext.isContentScript || type(tab) != "number") {
-				arg.tab = -2;
-				request.handle(arg, true);
-			} else {
-				chrome.tabs.sendMessage(tab, arg);
-			}
-		} else {
-			try {
-				if (request.connected) {
-					chrome.runtime.sendMessage(arg);
-				}
-			} catch (e) {
-				request.connected = false;
-				console.warn(ext.manifest.name + " has been disconnected from the background\n\tRefresh to reconnect");
-			}
-		}
-	},
-	sent: function (cb) { if (isCB(cb)) { request.sent.cb.push(cb); } },
-
-	backgroundFunction: function (path, func) {
-		func.functionPath = path;
-		if (ext.isBackground) {
-			return func;
-		} else {
-			var retFunc = function () {
-				var args = [];
-				var callBack;
-				var callBackPosition = -1;
-				for (var n = 0; n < arguments.length; n++) {
-					if (typeof (arguments[n]) == "function") {
-						callBack = arguments[n];
-						callBackPosition = n;
-						args.push("callBack");
-					} else {
-						args.push(arguments[n]);
-					}
-				}
-				request.send({
-					request: "request.backgroundFunction",
-					args: args,
-					path: path,
-					callBackPosition: callBackPosition
-				}, callBack || function () { });
-			};
-			retFunc.functionPath = path;
-			return retFunc;
-		}
-	}
-};
-
-request.sent.cb = [];
-request.id.num = 0;
-
-
-chrome.runtime.onMessage.addListener(function (a, b, c, d) {
-	if (a.requestId) {
-		a.tab = b.tab ? b.tab.id : -1;
-		request.handle(a);
-	}
-});
-
-if (ext.isBackground) {
-	request.sent(function (data, callBack, tab) {
-		if (data.request == "request.backgroundFunction") {
-			var path = data.path.split(".");
-			var func = window;
-			var namespace = this;
-			while (path.length) {
-				func = func[path.shift()];
-				if (path.length == 1) {
-					namespace = func;
-				}
-			}
-			if (data.callBackPosition >= 0) {
-				data.args.splice(data.callBackPosition, 1, callBack);
-			}
-			func.apply(namespace, data.args);
-		}
-	});
-}
-
-
-
 /* storage */
 storage = {
 	get: function (k, cb) {
@@ -430,7 +309,7 @@ storage = {
 				return ret;
 			}
 		} else {
-			request.send({ request: "storage", method: "get", key: k }, cb);
+			ipc.send("storage.", { request: "storage", method: "get", key: k }, cb);
 		}
 	},
 	set: function (k, v, cb) {
@@ -448,7 +327,7 @@ storage = {
 				return true;
 			}
 		} else {
-			request.send({ request: "storage", method: "set", key: k, value: v }, cb);
+			ipc.send("storage.", { request: "storage", method: "set", key: k, value: v }, cb);
 		}
 	},
 	remove: function (k, cb) {
@@ -461,7 +340,7 @@ storage = {
 			fixCB(cb)(true);
 			return true;
 		} else {
-			request.send({ request: "storage", method: "remove", key: k }, cb);
+			ipc.send("storage.", { request: "storage", method: "remove", key: k }, cb);
 		}
 	},
 	updated: function (cb) {
@@ -472,12 +351,12 @@ storage = {
 };
 storage.updated.cb = [function (k, v) {
 	ipc.getTabs().forEach(function(tabId) {
-		request.send({ request: "storage", key: k, value: v }, _, tabId);
+		ipc.send("storage.", { request: "storage", key: k, value: v }, _, tabId);
 	});
 }];
 
 if (ext.isBackground) {
-	request.sent(function (a, callBack) {
+	ipc.on("storage.", function (a, callBack) {
 		if (a.request == "storage") {
 			if (a.method == "get") {
 				storage.get(a.key, callBack);
@@ -493,7 +372,7 @@ if (ext.isBackground) {
 		}
 	});
 } else {
-	request.sent(function (a, callBack) {
+	ipc.on("storage.", function (a, callBack) {
 		if (a.request == "storage" && type(a.key) == "string") {
 			foreach(storage.updated.cb, function (n, o) { o(a.key, a.value); });
 		}
