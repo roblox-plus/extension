@@ -2,12 +2,6 @@
 RPlus.notifiers.catalog = (function () {
 	var lastRegistration = 0;
 	
-	function doesUserHaveButton(userId, callBack) {
-		RPlus.premium.isPremium(userId).then(callBack).catch(function(e) {
-			callBack(false);
-		});
-	}
-
 	function sendToken() {
 		Roblox.users.getCurrentUserId().then(function (userId) {
 			if (userId <= 0 || !storage.get("itemNotifier")) {
@@ -16,7 +10,7 @@ RPlus.notifiers.catalog = (function () {
 			}
 
 			chrome.gcm.register(["473489927480"], function (registrationId) {
-				$.post("http://api.roblox.plus/v1/itemnotifier/registertoken", {
+				$.post("https://api.roblox.plus/v1/itemnotifier/registertoken", {
 					token: registrationId,
 					robloxUserId: userId
 				}).done(function () {
