@@ -24,10 +24,12 @@ RPlus.Pages.Account = function () {
 			}
 		});
 	}) : "").append($("<button class=\"btn-control-md acct-settings-btn\">").text("Update Log").click(function () {
-		rplusSettings.get(function (s) {
+		rplusSettings.get().then(function (s) {
 			if (s.updateLog) {
 				window.open(s.updateLog);
 			}
+		}).catch(function(e) {
+			console.error("failed to get update log", e);
 		});
 	})))).hide();
 	var tabContent = $("#settings-container > .tab-content");

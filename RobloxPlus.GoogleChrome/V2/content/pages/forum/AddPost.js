@@ -151,13 +151,15 @@ RPlus.Pages.ForumAddPost = function () {
 		});
 	}
 
-	rplusSettings.get(function (settings) {
+	rplusSettings.get().then(function (settings) {
 		var floodcheck = settings.forumFloodCheck || 15;
 		setInterval(function () {
 			storage.get("forums", function (f) {
 				postStatus(floodcheck - ((getMil() - (Number(f.floodcheck) || 0)) / 1000));
 			});
 		}, 250);
+	}).catch(function(e) {
+		console.warn("uh oh the floodcheck", e);
 	});
 
 	$("#ctl00_cphRoblox_Createeditpost1_PostForm_Cancel").attr("type", "button").click(function (e) {

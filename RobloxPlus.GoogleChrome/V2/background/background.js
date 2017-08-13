@@ -150,7 +150,7 @@ if (browser.name == "Chrome") {
 			}
 		}
 
-		rplusSettings.get(function (ul) {
+		rplusSettings.get().then(function (ul) {
 			var note = $.notification({
 				title: ext.manifest.name + " started",
 				context: user ? "Hello, " + user.username + "!" : "You're currently signed out",
@@ -172,6 +172,8 @@ if (browser.name == "Chrome") {
 				note.close();
 				window.open("https://www.roblox.com/messages/compose?recipientId=48103520");
 			});
+		}).catch(function(e) {
+			console.warn("no startup notification", e);
 		});
 	});
 });
