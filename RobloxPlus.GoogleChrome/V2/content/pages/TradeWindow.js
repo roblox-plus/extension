@@ -7,7 +7,7 @@ RPlus.Pages.TradeWindow = function () {
 	setInterval(function () {
 		storage.get("tradeChecker", function (on) {
 			if (!on) { return; }
-			request.send({ request: "outboundTrades" }, function (list) {
+			ipc.send("RPlus.notifiers.trade:outboundTrades", {}, function (list) {
 				$(".InventoryItemContainerOuter[userassetid]").each(function () {
 					$(this).find(".InventoryItemContainerInner").css("background-color", list.indexOf(Number($(this).attr("userassetid"))) >= 0 ? "rgb(255,230,230)" : "#FFF");
 				});

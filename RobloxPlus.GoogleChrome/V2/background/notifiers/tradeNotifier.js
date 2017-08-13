@@ -10,14 +10,12 @@ RPlus.notifiers.trade = (function () {
 	};
 	var outboundTrades = {};
 	
-	request.sent(function (req, callBack) {
-		if (req.request == "outboundTrades") {
-			var uaidList = [];
-			for (var n in outboundTrades) {
-				uaidList = uaidList.concat(outboundTrades[n]);
-			}
-			callBack(uaidList);
+	ipc.on("RPlus.notifiers.trade:outboundTrades", function (data, callBack) {
+		var uaidList = [];
+		for (var n in outboundTrades) {
+			uaidList = uaidList.concat(outboundTrades[n]);
 		}
+		callBack(uaidList);
 	});
 
 	return RPlus.notifiers.init({
