@@ -628,5 +628,10 @@ tr.forum-post a[href*='youtu.be']>span{
 	background-color: #E3E3E3;
 }
 
+/* everything else */
+.create-server-banner-text {
+	white-space: pre-wrap;
+}
+
 
 /* WebGL3D */

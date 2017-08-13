@@ -112,6 +112,10 @@ RPlus.Pages.Game = function () {
 		})
 	).append(servers.search.ul));
 
+	if (placeId === 258257446) {
+		$(".create-server-banner-text").text("Purchasing a VIP server in this place will activate Roblox+ Premium!\nRoblox+ Premium will unlock:\n\tA purchase button on new limited notifications\n\tThe Roblox+ Easter site theme")
+	}
+
 	$(".voting-panel.body").each(function () {
 		var up = Number($(this).attr("data-total-up-votes")) || 0;
 		var down = Number($(this).attr("data-total-down-votes")) || 0;

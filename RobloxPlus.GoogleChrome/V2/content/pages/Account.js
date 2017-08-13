@@ -88,7 +88,7 @@ RPlus.Pages.Account = function () {
 
 		if (n == "New Limited Buy Button") {
 			group.addClass("checkbox").append(o.checkbox = $("<input type=\"checkbox\">")).append($("<label for>").text(n)).css("cursor", "pointer").click(function () {
-				window.open(Roblox.catalog.getAssetUrl(391072534));
+				window.open(Roblox.games.getGameUrl(258257446, "Roblox+ Hub"));
 			});
 			RPlus.premium.isPremium(users.userId).then(function(ispremium) {
 				o.checkbox.prop("checked", ispremium);
