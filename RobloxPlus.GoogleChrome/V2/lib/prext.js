@@ -32,8 +32,7 @@ ext = (function () {
 		"isBrowserAction": location.protocol.startsWith("chrome-extension") && !isBackground,
 
 		"getUrl": getUrl,
-
-		tabs: {},
+		
 		update: function (cb) {
 			cb = fixCB(cb);
 			if (browser.name == "Chrome") {
@@ -410,24 +409,6 @@ if (ext.isBackground) {
 
 
 
-/* Tabs */
-if (ext.isBackground) {
-	request.sent(function (a, cb, t) {
-		if (a.request == "tab") {
-			if (ext.tabs[t]) {
-				clearTimeout(ext.tabs[t]);
-			}
-			ext.tabs[t] = setTimeout(function () {
-				delete ext.tabs[t];
-			}, 3000);
-		}
-	});
-} else if (ext.isContentScript) {
-	setInterval(request.send, 1000, { request: "tab" });
-}
-
-
-
 /* storage */
 storage = {
 	get: function (k, cb) {
@@ -489,7 +470,11 @@ storage = {
 		}
 	}
 };
-storage.updated.cb = [function (k, v) { for (var n in ext.tabs) { request.send({ request: "storage", key: k, value: v }, _, Number(n)); } }];
+storage.updated.cb = [function (k, v) {
+	ipc.getTabs().forEach(function(tabId) {
+		request.send({ request: "storage", key: k, value: v }, _, tabId);
+	});
+}];
 
 if (ext.isBackground) {
 	request.sent(function (a, callBack) {

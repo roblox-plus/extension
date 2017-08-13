@@ -115,9 +115,9 @@ $.notification = (function () {
 
 	function broadcast(event, data) {
 		ipc.send(event, data, function () { }, 0);
-		for (var tabId in ext.tabs) {
+		ipc.getTabs().forEach(function (tabId) {
 			ipc.send(event, data, function () { }, tabId);
-		}
+		});
 	}
 
 
