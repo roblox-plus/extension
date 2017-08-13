@@ -43,6 +43,9 @@ ext = (function () {
 			} else {
 				cb(false);
 			}
+		},
+		reload: function (callBack) {
+			ipc.send("ext:reload", {}, callBack);
 		}
 	};
 })();
@@ -614,30 +617,16 @@ if (ext.isBackground) {
 /* Reloading */
 if (ext.isBackground) {
 	$(window).on("unload", function () {
-		ext.reload();
+		ext.reload(function(){ });
 	});
 }
-request.sent(function (a, callBack) {
-	if (a.request == "ext_reload") {
-		callBack(true);
-		setTimeout(ext.reload, 500);
-	}
-});
-ext.reload = function (callBack) {
-	if (ext.reload.enabled) {
-		if (!ext.isBackground) {
-			request.send({ request: "ext_reload" }, callBack);
-			return;
-		}
-		/*if (browser.name == "Chrome") {
-			foreach(notification.list, function (n) { chrome.notifications.clear(n, function () { }); });
-		}*/
+ipc.on("ext:reload", function (data, callBack) {
+	callBack(true);
+	setTimeout(function() {
 		chrome.runtime.reload();
-	} else {
-		fixCB(callBack)(false);
-	}
-};
-ext.reload.enabled = browser.name == "Chrome";
+	}, 500);
+});
+ext.reload.enabled = true;
 
 
 
