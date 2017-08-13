@@ -574,7 +574,7 @@ ext.tts = {
 			}
 		} else if (ext.tts.enabled) {
 			ext.tts.reading = true;
-			request.send({ request: "tts", method: "speak", arg: arg }, callBack);
+			ipc.send("ext.tts", { request: "tts", method: "speak", arg: arg }, callBack);
 		} else {
 			callBack(0);
 		}
@@ -586,7 +586,7 @@ ext.tts = {
 			chrome.tts.stop();
 			callBack(true);
 		} else if (ext.tts.enabled) {
-			request.send({ request: "tts", method: "stop" }, function (x) {
+			ipc.send("ext.tts", { request: "tts", method: "stop" }, function (x) {
 				ext.tts.reading = false;
 				callBack(x);
 			});
@@ -597,7 +597,7 @@ ext.tts = {
 };
 
 if (ext.isBackground) {
-	request.sent(function (a, callBack) {
+	ipc.on("ext.tts", function (a, callBack) {
 		if (a.request == "tts" && a.method == "speak") {
 			ext.tts.speak(a.arg, callBack);
 		} else if (a.request == "tts" && a.method == "stop") {
