@@ -194,29 +194,29 @@ fixCB(({
 			content.find("a[href*='youtu.be'][data-video]").each(function (i) {
 				if (i < 3) {
 					var anc = $(this);
-					forumService.youtube(anc.attr("data-video"), function (t) {
-						if (t) {
-							var time = 0;
-							var turl = url.param("t", anc.attr("href"));
-							if (turl.match(/\d+s/i)) {
-								time = Number((turl.match(/(\d+)s/i) || [0, 0])[1]) || 0;
-								time += (Number((turl.match(/(\d+)m/i) || [0, 0])[1]) || 0) * 60;
-							} else {
-								time = Number(turl) || 0;
-							}
-							var frame = $("<iframe width=\"560\" height=\"315\" frameborder=\"0\" allowfullscreen>").attr("src", "https://www.youtube-nocookie.com/embed/" + anc.attr("data-video") + "?rel=0&start=" + time).attr("style", "margin-right: calc(100% - 560px);").hide();
-							anc.after(frame);
-							content.find(".rplusLua").each(function () {
-								var s = $(this);
-								$(this).find("iframe").each(function () {
-									s.after($(this));
-								});
-							});
-							anc.find("span").attr("title", t).click(function (e) {
-								e.preventDefault();
-								frame[frame.is(":hidden") ? "slideDown" : "slideUp"]();
-							});
+					forumService.youtube(anc.attr("data-video")).then(function (t) {
+						var time = 0;
+						var turl = url.param("t", anc.attr("href"));
+						if (turl.match(/\d+s/i)) {
+							time = Number((turl.match(/(\d+)s/i) || [0, 0])[1]) || 0;
+							time += (Number((turl.match(/(\d+)m/i) || [0, 0])[1]) || 0) * 60;
+						} else {
+							time = Number(turl) || 0;
 						}
+						var frame = $("<iframe width=\"560\" height=\"315\" frameborder=\"0\" allowfullscreen>").attr("src", "https://www.youtube-nocookie.com/embed/" + anc.attr("data-video") + "?rel=0&start=" + time).attr("style", "margin-right: calc(100% - 560px);").hide();
+						anc.after(frame);
+						content.find(".rplusLua").each(function () {
+							var s = $(this);
+							$(this).find("iframe").each(function () {
+								s.after($(this));
+							});
+						});
+						anc.find("span").attr("title", t).click(function (e) {
+							e.preventDefault();
+							frame[frame.is(":hidden") ? "slideDown" : "slideUp"]();
+						});
+					}).catch(function(e) {
+						console.warn("Failed to get video title", anc.attr("data-video"), e);
 					});
 				}
 			});
