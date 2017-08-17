@@ -5,6 +5,14 @@
 	var audioPlayers = {};
 	var speaking = "";
 
+	function setNotificationCount() {
+		if (ext.incognito) {
+			return;
+		}
+		chrome.browserAction.setBadgeText({
+			text: (Object.keys($.notification.getNotifications()).length || "").toString()
+		});
+	}
 
 	$.notification.on("notification", function (notification) {
 		if (notification.metadata.hasOwnProperty("url")) {
@@ -52,6 +60,8 @@
 				notification.close();
 			}, notification.metadata.expiration);
 		}
+
+		setNotificationCount();
 	}).on("close", function (notification) {
 		if (audioPlayers[notification.tag]) {
 			audioPlayers[notification.tag].stop();
@@ -59,13 +69,18 @@
 		if (speaking == notification.tag) {
 			chrome.tts.stop();
 		}
+
+		setNotificationCount();
 	});
 
-	if (!ext.incognito) {
-		setInterval(function () {
-			chrome.browserAction.setBadgeText({ text: (Object.keys($.notification.getNotifications()).length || "").toString() });
-		}, 250);
-	}
+	chrome.contextMenus.create({
+		id: "clearNotifications",
+		title: "Clear Notifications",
+		contexts: ["browser_action"],
+		onclick: function () {
+			$.notification.clear();
+		}
+	});
 })();
 
 

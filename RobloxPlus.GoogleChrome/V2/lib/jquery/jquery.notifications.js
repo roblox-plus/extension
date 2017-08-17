@@ -203,9 +203,10 @@ $.notification = (function () {
 		self.trigger("notification", notifications[data.tag], false);
 	}).on(namespace + "closed", function (data, callBack) {
 		if (notifications.hasOwnProperty(data.tag)) {
-			notifications[data.tag].trigger("close", data.tabId);
-			self.trigger("close", notifications[data.tag]);
+			var notification = notifications[data.tag];
 			delete notifications[data.tag];
+			notification.trigger("close", data.tabId);
+			self.trigger("close", notification);
 		}
 	}).on(namespace + "clicked", function (data, callBack) {
 		if (notifications.hasOwnProperty(data.tag)) {
