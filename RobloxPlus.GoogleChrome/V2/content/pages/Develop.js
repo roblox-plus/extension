@@ -27,16 +27,21 @@ RPlus.Pages.Develop = function () {
 						var onsale = asset.isFree || asset.robuxPrice;
 						row.find(".details-table tbody").append(Roblox.users.authenticatedUserId === 2533795 || Roblox.users.authenticatedUserId === 77907390 ? $("<tr>").append($("<button style=\"font-size: 11px;\">Clear Description</button>").click(function () {
 							var button = $(this).text("...");
-							catalog.update({ id: asset.id, description: "" }, function (s) {
-								button.text(s ? "Cleared Description" : "Clear Description");
+							Roblox.catalog.configureAsset(asset.id, {
+								description: ""
+							}).then(function () {
+								button.text("Cleared Description");
+							}).catch(function (e) {
+								console.error(e);
+								button.text("Failed to clear");
 							});
 						})) : "").find(">tr:first-child").prepend($("<td class=\"activate-cell\">").append($("<a class=\"place-" + (onsale ? "" : "in") + "active\" href=\"javascript:/* Change Status */\">").text((onsale ? "On" : "Off") + "sale").click(function () {
 							var button = $(this);
 							var x = (onsale = !onsale);
-							catalog.update((v == 2 || v == 11 || v == 12) ? { id: asset.id, robux: x ? 1 : 0 } : { id: asset.id, free: x }, function (s) {
-								if (s) {
-									button.attr("class", "place-" + (x ? "" : "in") + "active").text((x ? "On" : "Off") + "sale");
-								}
+							Roblox.catalog.configureAsset(asset.id, (v === 2 || v === 11 || v === 12) ? { robux: x ? 1 : 0 } : { free: x }).then(function () {
+								button.attr("class", "place-" + (x ? "" : "in") + "active").text((x ? "On" : "Off") + "sale");
+							}).catch(function (e) {
+								console.error(e);
 							});
 						})));
 					});

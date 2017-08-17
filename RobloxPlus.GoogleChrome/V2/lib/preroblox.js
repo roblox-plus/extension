@@ -8,24 +8,6 @@ url.roblox = {
 };
 
 
-
-catalog = {
-	update: function (arg, callBack) {
-		if (type(arg) != "object" || typeof(arg.id) != "number" || typeof (callBack) != "function") {
-			console.warn("callBack not function! (maybe)");
-			return;
-		}
-
-		Roblox.catalog.configureAsset(arg.id, arg).then(function() {
-			callBack(true);
-		}).catch(function() {
-			callBack(false);
-		});
-	}
-};
-
-
-
 soundService.robloxSound = function (id, callBack) {
 	if (!isCB(callBack)) { return; }
 	Roblox.audio.getSoundUrl(Number(id)).then(function (url) {
@@ -37,6 +19,7 @@ soundService.robloxSound = function (id, callBack) {
 
 
 // These are dummies that exist for the garbage in other scripts
+catalog = {};
 users = {};
 forumService = {};
 
