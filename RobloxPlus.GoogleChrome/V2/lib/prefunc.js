@@ -104,18 +104,7 @@ string = {
 	tostring: tostring,
 	lower: function (s) { return tostring(s).toLowerCase(); },
 	upper: function (s) { return tostring(s).toUpperCase(); },
-	byte: function (s) { return tostring(s).charCodeAt(0); },
 	char: function (c) { return String.fromCharCode(toNumber(c)); },
-	find: function (s, f, i) {
-		if (i) {
-			s = string.lower(s);
-			f = string.lower(f);
-		} else {
-			s = tostring(s);
-			f = tostring(f);
-		}
-		return s.indexOf(f) !== -1 ? [s.indexOf(f), s.indexOf(f) + f.length] : [-1, -1];
-	},
 	rep: function (s, r) { return new Array(toNumber(r) + 1).join(tostring(s)); },
 	len: function (s) { return tostring(s).length; },
 	sub: function (s, a, b) { return tostring(s).substring(toNumber(a), toNumber(b || string.len(s))); },
@@ -154,22 +143,6 @@ string = {
 	},
 	escapeHTML: function (s) { return tostring(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); },
 	unescapeHTML: function (s) { return tostring(s).replace(/&amp;/gi, '&').replace(/&quot;/gi, '"').replace(/&apos;/gi, "'").replace(/&#39;/g, '\'').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>'); },
-	scramble: function (s, nu) { var a = tostring(s).split(""); var a2 = tostring(s).split(""); var n = a.length; var nums = tostring(toNumber(s)).split(""); var moved = {}; for (var CN = n - 1; CN > 0; CN--) { var r = math.random(CN) - 1; var tmp = a[CN]; a[CN] = a[r]; a[r] = tmp; moved[CN] = CN; } if (nu) { var nums = []; var n2 = 0; for (var CN = 0; CN < a2.length; CN++) { if (math.isNumber(a2[CN])) { nums.push(a2[CN]); } } for (var CN = 0; CN < a.length; CN++) { if (math.isNumber(a[CN])) { a[CN] = nums[n2++]; } } } return a.join(""); },
-	reverse: function (s) { return tostring(s).split("").reverse().join(""); },
-	startsWith: function (s, a, i) {
-		if (type(a) == "regexp") {
-			return !!tostring(s).match(string.regex("^" + a.source, a.ignoreCase || i ? "i" : ""));
-		} else {
-			if (i) {
-				s = string.lower(s);
-				a = string.lower(a);
-			} else {
-				s = tostring(s);
-				a = tostring(a);
-			}
-			return s.indexOf(a) === 0;
-		}
-	},
 	endsWith: function (s, a, i) {
 		if (type(a) == "regexp") {
 			return !!tostring(s).match(string.regex(a.source + "$", a.ignoreCase || i ? "i" : ""));
@@ -256,8 +229,8 @@ RegExp.change = function (data, reg, n, d, order) {
 math.round = round = function (n, t) {
 	n = toNumber(n); return t ? (
 		t == "odd" ? (n % 2 == 0 ? n + 1 : n[n.floor() % 2 == 0 ? "ceil" : "floor"]())
-		: (t == "even" ? (n % 2 == 0 ? n : (n % 1 == 0 ? n + 1 : n[n.floor() % 2 != 0 ? "ceil" : "floor"]()))
-		: math.floor((n / toNumber(t)) + .5) * toNumber(t))
+			: (t == "even" ? (n % 2 == 0 ? n : (n % 1 == 0 ? n + 1 : n[n.floor() % 2 != 0 ? "ceil" : "floor"]()))
+				: math.floor((n / toNumber(t)) + .5) * toNumber(t))
 	) : math.floor(n + .5);
 };
 math.posRound = pround = function (n, t, m) { return math.max(round(n, t), m || 0); }
@@ -274,20 +247,6 @@ foreach(math, function (n, o) {
 array = {
 	correct: function (a, t) { return typeof (a) == "object" ? a : (t ? [] : {}); },
 	random: function (a) { a = array.correct(a); var k = Object.keys(a); return k.length ? a[k[math.random(0, k.length - 1)]] : undefined; },
-	first: function (a) { a = array.correct(a); var k = Object.keys(a); return k.length ? a[k[0]] : undefined; },
-	last: function (a) { a = array.correct(a); var k = Object.keys(a); return k.length ? a[k[k.length - 1]] : undefined; },
-	keys: function (a) { return Object.keys(array.correct(a)); },
-	correctKeys: function (a, k) {
-		a = array.correct(a, true);
-		var r = {};
-		foreach(k, function (n, o) {
-			var c = string.autoCorrect(o, Object.keys(a));
-			if (c) {
-				r[o] = a[c];
-			}
-		});
-		return r;
-	},
 	flip: function (a) { var ret = {}; foreach(a, function (n, o) { ret[tostring(o)] = n; }); return ret; }
 };
 
