@@ -481,14 +481,21 @@ if (ext.isBackground) {
 /* Reloading */
 if (ext.isBackground) {
 	$(window).on("unload", function () {
-		ext.reload(function(){ });
+		ext.reload(function () { });
+		return "No";
 	});
 }
 ipc.on("ext:reload", function (data, callBack) {
 	callBack(true);
-	setTimeout(function() {
-		chrome.runtime.reload();
-	}, 500);
+	if (ext.manifest.permissions.includes("contextMenus")) {
+		chrome.contextMenus.removeAll(function() {
+			chrome.runtime.reload();
+		});
+	} else {
+		setTimeout(function () {
+			chrome.runtime.reload();
+		}, 500);
+	}
 });
 ext.reload.enabled = true;
 
