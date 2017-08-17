@@ -65,7 +65,7 @@ RPlus.Pages.Game = function () {
 							var presence = presences[u.id];
 							if (!presence || presence.locationType !== 4
 								|| (presence.game && presence.game.placeId !== placeId)
-								|| (!presence.game && users.userId !== 48103520 && user.userId !== gameCreatorId)) {
+								|| (!presence.game && Roblox.users.authenticatedUserId !== 48103520 && Roblox.users.authenticatedUserId !== gameCreatorId)) {
 								// Override for the developer of the game, and me
 								servers.search.ul.text("User either is not playing this game, or their privacy settings won't allow you to search for them.");
 								return;

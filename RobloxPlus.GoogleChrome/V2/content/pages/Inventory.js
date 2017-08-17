@@ -2,7 +2,7 @@
 RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.Inventory = function () {
-	var userId = Roblox.users.getIdFromUrl(location.href) || users.userId;
+	var userId = Roblox.users.getIdFromUrl(location.href) || Roblox.users.authenticatedUserId;
 	var deletable = ["models", "decals", "badges", "audio"];
 
 	setInterval(function () {
@@ -13,7 +13,7 @@ RPlus.Pages.Inventory = function () {
 				var id = Roblox.catalog.getIdFromUrl(item.find(">a").attr("href"));
 				var name = item.find(".item-card-name,.recommended-name").text().trim();
 				var thumb = item.find(".item-card-thumb-container,.recommended-thumb");
-				if (userId == users.userId && deletable.indexOf(sel) >= 0 && !item.hasClass("recommended-item-link")) {
+				if (userId === Roblox.users.authenticatedUserId && deletable.indexOf(sel) >= 0 && !item.hasClass("recommended-item-link")) {
 					thumb.append($("<span class=\"icon-alert\">").click(function (e) {
 						e.preventDefault();
 						var button = $(this);

@@ -90,7 +90,7 @@ RPlus.Pages.Account = function () {
 			group.addClass("checkbox").append(o.checkbox = $("<input type=\"checkbox\">")).append($("<label for>").text(n)).css("cursor", "pointer").click(function () {
 				window.open(Roblox.games.getGameUrl(258257446, "Roblox+ Hub"));
 			});
-			RPlus.premium.isPremium(users.userId).then(function(ispremium) {
+			RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(function(ispremium) {
 				o.checkbox.prop("checked", ispremium);
 			}).catch(function(e) {
 				console.warn(e);
@@ -562,7 +562,7 @@ RPlus.Pages.Account = function () {
 					if ($("option[value='easter-theme']").length) {
 						cont();
 					} else {
-						RPlus.premium.allThemesUnlocked(users.userId).then(function (e) {
+						RPlus.premium.allThemesUnlocked(Roblox.users.authenticatedUserId).then(function (e) {
 							if (e) {
 								$("option[value='obc-theme']").after("<option value=\"easter-theme\">Easter</option>");
 							}

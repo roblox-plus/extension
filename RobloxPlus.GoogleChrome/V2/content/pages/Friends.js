@@ -2,9 +2,9 @@
 RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.Friends = function () {
-	var id = Roblox.users.getIdFromUrl(location.href) || users.userId;
+	var id = Roblox.users.getIdFromUrl(location.href) || Roblox.users.authenticatedUserId;
 
-	if (id == users.userId) {
+	if (id === Roblox.users.authenticatedUserId) {
 		var unfollowAll;
 		var followFriends;
 

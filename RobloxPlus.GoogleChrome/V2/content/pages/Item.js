@@ -33,7 +33,7 @@ RPlus.Pages.Item = function () {
 		setInterval(function () {
 			storage.get("commentTimer", function (commentTimer) {
 				var waitTime = 60 * 1000; // floodcheck time
-				var remaining = commentTimer[users.userId] && commentTimer[users.userId].hasOwnProperty(id) ? waitTime - (getMil() - commentTimer[users.userId][id]) : 0;
+				var remaining = commentTimer[Roblox.users.authenticatedUserId] && commentTimer[Roblox.users.authenticatedUserId].hasOwnProperty(id) ? waitTime - (getMil() - commentTimer[Roblox.users.authenticatedUserId][id]) : 0;
 				if (commentTimer.last && getMil() < commentTimer.last + (60 * 1000)) {
 					remaining = Math.max(remaining, (60 * 1000) - (getMil() - commentTimer.last));
 				}
@@ -61,7 +61,7 @@ RPlus.Pages.Item = function () {
 			} else {
 				$("#edit-avatar-button").after("<br>", exampleButton);
 			}
-			RPlus.premium.isPremium(users.userId).then(function(ispremium) {
+			RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(function(ispremium) {
 				if (ispremium) {
 					buyButton.attr("disabled", "").attr("title", "You already own this item.");
 				}
@@ -204,7 +204,7 @@ RPlus.Pages.Item = function () {
 
 
 	if ((["LeftArm", "RightArm", "Torso", "Head", "RightLeg", "LeftLeg", "Hat", "Gear", "Face", "Package", "Waist Accessory", "Back Accessory", "Front Accessory", "Hair Accessory", "Shoulder Accessory", "Neck Accessory", "Face Accessory"]).indexOf(item.assetType) >= 0
-		|| ((["MeshPart", "Decal"]).indexOf(item.assetType) >= 0 && item.creator.id == users.userId)
+		|| ((["MeshPart", "Decal"]).indexOf(item.assetType) >= 0 && item.creator.id === Roblox.users.authenticatedUserId)
 		|| Roblox.page.user.id === 48103520) {
 		// I'm the creator of the extension, sometimes I need to view specific asset contents to debug.
 		var assetContentTab = createTab("Content", "h");

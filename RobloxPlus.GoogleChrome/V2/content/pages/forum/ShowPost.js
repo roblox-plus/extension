@@ -9,7 +9,7 @@ RPlus.Pages.ForumShowPost = function () {
 
 	storage.get("forums", function (f) {
 		f.admins = ["Moderators", "Admins", "Alts", "Asset Control", "Developer"];
-		Roblox.groups.getUserRole(2518656, users.userId).then(function (authenticatedUserRole) {
+		Roblox.groups.getUserRole(2518656, Roblox.users.authenticatedUserId).then(function (authenticatedUserRole) {
 			var firstPost = Number($("a[name]").attr("name"));
 			var page = ($("#ctl00_cphRoblox_PostView1_ctl00_Pager .normalTextSmallBold").text() || "Page 1 of 1").replace(/,/g, "").match(/^Page\s*(\d+)\s*of\s*(\d+)/i) || ["", 1, 1];
 			var maxPage = Number(page[2]) || 1;

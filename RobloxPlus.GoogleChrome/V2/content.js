@@ -22,9 +22,6 @@ fixCB(({
 		plusSlider.backgroundColor = "rgb(175,175,175)";
 
 
-		users.userId = Number($("#chat-data-model").data("userid")) || 0;
-
-
 		soundService.robloxSound.button = function (id, tag) {
 			var v2, button, volume, state, connect, sound, stopper;
 			if (v2 = !!document.querySelector(".container-main>.content")) {
@@ -228,7 +225,7 @@ fixCB(({
 				friends.forEach(function (friend) {
 					ids.push(friend.id);
 				});
-				if (ids.includes(users.userId)) {
+				if (ids.includes(Roblox.users.authenticatedUserId)) {
 					$(".ad-slot[rplus!='replacedAd']").html("<iframe allowtransparency=\"true\" frameborder=\"0\" height=\"" + $(this).parent().attr("data-ad-height") + "\" scrolling=\"no\" src=\"/userads/3\" width=\"" + $(this).parent().attr("data-ad-width") + "\" data-js-adtype=\"iframead\">").attr("rplus", "replacedAd");
 					$(".adp-gpt-container[rplus!='replacedAd'],.ads-container[rplus!='replacedAd'],.roblox-skyscraper[rplus!='replacedAd'],#Skyscraper[rplus!='replacedAd']").attr("rplus", "replacedAd").each(function () { var width = $(this).width(); if (width) { $(this).html("<iframe allowtransparency=\"true\" frameborder=\"0\" height=\"" + (({ 300: 270, 160: 600, 728: 90 })[width] || 0) + "\" scrolling=\"no\" src=\"/userads/" + (({ 300: 3, 160: 2, 728: 1 })[width] || 1) + "\" width=\"" + width + "\" data-js-adtype=\"iframead\">"); } });
 				}

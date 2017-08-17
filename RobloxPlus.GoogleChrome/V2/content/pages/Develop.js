@@ -25,7 +25,7 @@ RPlus.Pages.Develop = function () {
 					}
 					Roblox.catalog.getAssetInfo(assetId).then(function (asset) {
 						var onsale = asset.isFree || asset.robuxPrice;
-						row.find(".details-table tbody").append(users.userId == 2533795 || users.userId == 77907390 ? $("<tr>").append($("<button style=\"font-size: 11px;\">Clear Description</button>").click(function () {
+						row.find(".details-table tbody").append(Roblox.users.authenticatedUserId === 2533795 || Roblox.users.authenticatedUserId === 77907390 ? $("<tr>").append($("<button style=\"font-size: 11px;\">Clear Description</button>").click(function () {
 							var button = $(this).text("...");
 							catalog.update({ id: asset.id, description: "" }, function (s) {
 								button.text(s ? "Cleared Description" : "Clear Description");

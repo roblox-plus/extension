@@ -2,8 +2,6 @@
 RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.TradeWindow = function () {
-	users.userId = Number(($(".TradeWindowContainer>script").html().match(/Offer\.initialize\((\d+),/) || [0, 0])[1]) || 0;
-
 	setInterval(function () {
 		storage.get("tradeChecker", function (on) {
 			if (!on) { return; }
