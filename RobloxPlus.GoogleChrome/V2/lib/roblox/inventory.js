@@ -219,6 +219,43 @@ Roblox.inventory = (function () {
 			queued: true,
 			resolveExpiry: 30 * 1000,
 			rejectExpiry: 10 * 1000
+		}),
+
+		getPlayerBadges: $.promise.cache(function (resolve, reject, userId, cursor) {
+			if (typeof (userId) != "number" || userId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid userId"
+				}]);
+				return;
+			}
+
+			$.get("https://www.roblox.com/users/inventory/list-json", {
+				cursor: cursor || "",
+				sortOrder: "Desc",
+				itemsPerPage: 100,
+				assetTypeId: 21,
+				userId: userId
+			}).done(function(r) {
+				var response = {
+					previousPageCursor: r.Data ? r.Data.previousPageCursor : null,
+					nextPageCursor: r.Data ? r.Data.nextPageCursor : null,
+					data: []
+				};
+				(r.Data && r.Data.Items || []).forEach(function(badge) {
+					response.data.push({
+						id: badge.Item.AssetId,
+						name: badge.Item.Name
+					});
+				});
+				resolve(response);
+			}).fail(function (jxhr, errors) {
+				reject(errors);
+			});
+		}, {
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 15 * 1000,
+			queued: true
 		})
 	};
 })();

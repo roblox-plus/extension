@@ -49,6 +49,44 @@ RPlus.Pages.Profile = function () {
 		}
 	});
 
+	setTimeout(function () {
+		// Delayed because angular loads in widget
+
+		var originalButton = $(".container-header > a[ng-href *= '/badges']");
+		var header = originalButton.parent().find(">h3");
+		var ticks = 0;
+
+		function countBadges(count, cursor) {
+			ticks++;
+			header.text("Player Badges (Counting" + (".").repeat((ticks % 3) + 1) + ")");
+
+			return new Promise(function (resolve, reject) {
+				Roblox.inventory.getPlayerBadges(id, cursor).then(function(badges) {
+					if (badges.nextPageCursor) {
+						countBadges(count + badges.data.length, badges.nextPageCursor).then(resolve).catch(reject);
+					} else {
+						resolve(badges.data.length + count);
+					}
+				}).catch(reject);
+			});
+		}
+
+		var button = $("<a>").attr({
+			href: "javascript:/* Roblox+ */",
+			class: "btn-fixed-width btn-secondary-xs"
+		}).click(function () {
+			$(this).hide();
+			header.text("Player Badges (Counting...)");
+			countBadges(0, "").then(function(count) {
+				header.text("Player Badges (" + count + ")");
+			}).catch(function(e) {
+				console.warn(e);
+			});
+		}).css("float", "right").text("Count");
+
+		$(".container-header > a[ng-href *= '/badges']").after(button);
+	}, 1337);
+
 	foreach({ 3: "Clothing", 6: "Model" }, function (n, o) {
 		var count = 0, stat, load;
 		load = function (page) {
