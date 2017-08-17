@@ -26,7 +26,7 @@ foreach({
 	"changedLogin": ext.incognito,
 	"startupNotification": {
 		on: !ext.incognito,
-		visit: browser.name != "Chrome",
+		visit: browser.name !== "Chrome",
 		names: {}
 	},
 	"forums": {
@@ -41,7 +41,6 @@ foreach({
 		embedding: false,
 		embedSize: 75
 	},
-	"changedLogin": ext.incognito,
 	"groupShoutNotifierList": { 2518656: "Roblox+ Fan Group" },
 	"navigation": {
 		"sideOpen": false,

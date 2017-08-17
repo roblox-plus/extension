@@ -80,13 +80,9 @@ math = {
 		}
 		return c;
 	},
-
-	rad: function (n) { return toNumber(n) * (math.pi / 180); },
-	deg: function (n) { return toNumber(n) / (math.pi / 180); },
+	
 	bound: function (n, a, b) { return math.max(math.min(a, b), math.min(math.max(a, b), toNumber(n))); },
-
-	closest: function (n, ar) { n = toNumber(n); if (typeof (ar) == "object" && Object.keys(ar).length) { if (Object.keys(ar).length > 1) { var r = n; var m = math.huge; for (var i in ar) { var o = toNumber(ar[i]); var d = math.abs(n - o); if (math.number(ar[i]) && (d < m || (m == d && o > r))) { r = o; m = d; } } return r; } else { return math.number(ar[0]) ? toNumber(ar[0]) : n; } } return n; },
-
+	
 	huge: 1.7976931348623157E+10308,
 	pi: Math.PI
 };
