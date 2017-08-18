@@ -3,7 +3,7 @@
 	Include rplus class in all ul tags so it doesn't interfere with Roblox's implementation
 */
 .rplus.icon-robux-16x16 {
-	background-image: url(https://www.roblox.com/images/Shared/branded_05092016.svg);
+	background-image: url(https://static.rbxcdn.com/images/Shared/branded_06282017.svg);
 	background-repeat: no-repeat;
 	background-size: 32px auto;
 	width: 16px;
