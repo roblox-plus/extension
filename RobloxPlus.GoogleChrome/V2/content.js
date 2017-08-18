@@ -264,12 +264,6 @@ fixCB(({
 						$(".rbx-nav-collapse")[0].click();
 					}
 				});
-				storage.get("siteTheme", function (x) {
-					localStorage.setItem("rplusTheme", x);
-					if (!url.send().match(/^\/games\/341017984\//)) {
-						$("body").addClass(x);
-					}
-				});
 			}
 
 			storage.get("navcounter", function (x) {
@@ -324,19 +318,13 @@ fixCB(({
 		mainLoop();
 		window.comma = mainLoop.comma;
 
-		storage.updated(function (k, v) {
-			if (k == "siteTheme") {
-				localStorage.setItem("rplusTheme", v);
-				if (url.send().match(/^\/games\/341017984\//)) {
-					$("body").attr("class", "easter-theme");
-				} else if (url.send().match(/\/users\/\d+\/profile/) && document.querySelector(".profile-avatar-image .icon-obc")) {
-					$("body").attr("class", "obc-theme");
-				} else if (!isTradeWindow) {
-					$("body").attr("class", v);
-				}
+		storage.get("siteTheme", function(v) {
+			localStorage.setItem("rplusTheme", v);
+			if (location.pathname.toLowerCase().startsWith("/users/") && document.querySelector(".profile-header-top .icon-obc")) {
+				RPlus.style.overrideTheme(RPlus.style.themeTypes.obc);
 			}
+			RPlus.style.loadThemeFromStorage();
 		});
-
 
 		$("body").on("change", "*[storage]", function (s, v) {
 			s = $(this).attr("storage"), v = $(this).val();

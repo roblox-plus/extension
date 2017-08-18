@@ -1,5 +1,5 @@
 /* obc.css [4/5/2016] */
-.obc-theme,.obc-theme .nav-content-inner{
+.obc-theme,.obc-theme body,.obc-theme .nav-content-inner{
 	background: url(https://images.rbxcdn.com/7b740ce2fe1bb189612252b3b93c5b83.jpg) top center repeat-x rgb(34, 34, 34);
 }
 

@@ -18,8 +18,9 @@
 	"content_scripts": [
 		{
 			"js": [
-				"/theme.js",
-
+				"/content/preload/style.js",
+				"/content/preload/loadStylesheets.js",
+				
 				"/lib/jquery/jquery.js",
 				"/lib/highlight.pack.js",
 				"/lib/global.js",
@@ -55,15 +56,11 @@
 
 				"/lib/rplus/RobloxPlus.js",
 				"/lib/rplus/copiedAssets.js",
-				"/lib/rplus/premium.js",
-
-				"/content/core/contentPreload.js"
+				"/lib/rplus/premium.js"
 			],
 			"css": [
 				"/css/icons.css",
 				"/css/style.css",
-				"/css/themes/obc.css",
-				"/css/themes/easter.css",
 
 				"/css/roblox/itemCards.css",
 				"/css/roblox/icons.css",

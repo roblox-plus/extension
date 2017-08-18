@@ -547,24 +547,23 @@ RPlus.Pages.Account = function () {
 				tip: "Changes the theme of the website",
 				type: {
 					"Default": "",
-					"OBC": "obc-theme"
+					"OBC": "obc"
 				},
 				storage: function (v) {
 					var cont = function () {
-						storage.get("siteTheme", function (x) {
-							if (isCB(v)) {
-								v(x);
-							} else {
-								storage.set("siteTheme", v);
-							}
-						});
+						if (isCB(v)) {
+							v(localStorage.getItem("rplusTheme"));
+						} else {
+							RPlus.style.setTheme(RPlus.style.themeTypes[v]);
+							storage.set("siteTheme", v);
+						}
 					};
-					if ($("option[value='easter-theme']").length) {
+					if ($("option[value='easter']").length) {
 						cont();
 					} else {
 						RPlus.premium.allThemesUnlocked(Roblox.users.authenticatedUserId).then(function (e) {
 							if (e) {
-								$("option[value='obc-theme']").after("<option value=\"easter-theme\">Easter</option>");
+								$("option[value='obc']").after("<option value=\"easter\">Easter</option>");
 							}
 							cont();
 						}).catch(cont);

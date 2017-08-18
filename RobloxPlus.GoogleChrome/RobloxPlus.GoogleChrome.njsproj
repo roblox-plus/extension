@@ -35,6 +35,7 @@
     <Folder Include="V2\background\notifiers\" />
     <Folder Include="V2\content\" />
     <Folder Include="V2\content\core\" />
+    <Folder Include="V2\content\preload\" />
     <Folder Include="V2\content\pages\" />
     <Folder Include="V2\content\pages\forum\" />
     <Folder Include="V2\css\" />
@@ -110,7 +111,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="V2\content.js" />
-    <Compile Include="V2\content\core\contentPreload.js">
+    <Compile Include="V2\content\preload\loadStylesheets.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="V2\content\core\quickInfoBox.js">
@@ -118,6 +119,9 @@
     </Compile>
     <Compile Include="V2\content\json.js" />
     <Compile Include="V2\content\loadPages.js" />
+    <Compile Include="V2\content\preload\style.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\content\notificationStream.js">
       <SubType>Code</SubType>
     </Compile>
@@ -189,7 +193,6 @@
     </Compile>
     <Compile Include="V2\middle.js" />
     <Compile Include="V2\overwrite.js" />
-    <Compile Include="V2\theme.js" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
