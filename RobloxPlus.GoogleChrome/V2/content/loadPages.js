@@ -6,7 +6,7 @@ RPlus.Pages = RPlus.Pages || {};
 	Roblox.users.authenticatedUserId = $("meta[name='user-data']").data("userid")
 		|| $("#chat-data-model").data("userid")
 		|| $("#push-notification-registrar-settings").data("userid")
-		|| Number(($(".TradeWindowContainer>script").html().match(/Offer\.initialize\((\d+),/) || [0, 0])[1])
+		|| Number((($(".TradeWindowContainer>script").html() || "").match(/Offer\.initialize\((\d+),/) || [0, 0])[1])
 		|| 0;
 
 	for (var pageName in RPlus.Pages) {
