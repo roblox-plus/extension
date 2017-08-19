@@ -4,6 +4,7 @@ RPlus.Pages = RPlus.Pages || {};
 function loadV2Page() {
 	var settings = {
 		"Sound": [],
+		"Premium": [],
 		"Item": [
 			{
 				"name": "Catalog notifier",
@@ -168,6 +169,56 @@ function loadV2Page() {
 					});
 				},
 				"description": "Master on/off switch for any friend notifications from the extension."
+			}, {
+				"name": "Notify me when my friend joins a game",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("friendNotifier", function (friendNotifier) {
+						callBack(friendNotifier ? !!friendNotifier.game : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("friendNotifier", function (friendNotifier) {
+						friendNotifier = friendNotifier || {};
+						friendNotifier.game = !!val;
+						storage.set("friendNotifier", friendNotifier);
+					});
+				},
+				"description": "If the friend notifier and this are enabled you will get a notification when a friend of yours joins a game."
+			}, {
+				"name": "Notify me when my friend comes online",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("friendNotifier", function (friendNotifier) {
+						callBack(friendNotifier ? !!friendNotifier.online : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("friendNotifier", function (friendNotifier) {
+						friendNotifier = friendNotifier || {};
+						friendNotifier.online = !!val;
+						storage.set("friendNotifier", friendNotifier);
+					});
+				},
+				"description": "If the friend notifier and this are enabled you will get a notification when a friend of yours comes online.",
+				"unsupported": true
+			}, {
+				"name": "Notify me when my friend goes offline",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("friendNotifier", function (friendNotifier) {
+						callBack(friendNotifier ? !!friendNotifier.offline : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("friendNotifier", function (friendNotifier) {
+						friendNotifier = friendNotifier || {};
+						friendNotifier.offline = !!val;
+						storage.set("friendNotifier", friendNotifier);
+					});
+				},
+				"description": "If the friend notifier and this are enabled you will get a notification when a friend of yours goes offline.",
+				"unsupported": true
 			}],
 		"Other": [
 			{
@@ -186,6 +237,38 @@ function loadV2Page() {
 				"type": typeof (true),
 				"storage": "profileRAP",
 				"description": "Display a users Recent Average Price (RAP) of all of their collectibles on their profile."
+			}, {
+				"name": "Startup notification",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("startupNotification", function (startup) {
+						callBack(startup ? !!startup.on : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("startupNotification", function (startup) {
+						startup = startup || {};
+						startup.on = !!val;
+						storage.set("startupNotification", startup);
+					});
+				},
+				"description": "When the extension turns on if this is ticked it will give you a notification with a link to the update log, and current version."
+			}, {
+				"name": "Only display startup notification after visiting Roblox",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("startupNotification", function (startup) {
+						callBack(startup ? !!startup.visit : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("startupNotification", function (startup) {
+						startup = startup || {};
+						startup.visit = !!val;
+						storage.set("startupNotification", startup);
+					});
+				},
+				"description": "Will display the startup notification after you visit Roblox rather than when the extension starts."
 			}]
 	};
 
