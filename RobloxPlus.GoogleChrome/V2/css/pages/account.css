@@ -17,4 +17,11 @@
 	padding-left: 50px;
 }
 
+.page-content .section.rplus .section-content .section-content {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding-top: 0;
+	padding-bottom: 3px;
+}
+
 /* WebGL3D */

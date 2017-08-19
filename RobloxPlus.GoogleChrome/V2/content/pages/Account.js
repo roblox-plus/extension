@@ -232,6 +232,18 @@ function loadV2Page() {
 				"storage": "groupShoutNotifier",
 				"description": "When a group your in changes their group shout you will get a notification."
 			}, {
+				"name": "Group shout notifier mode",
+				"type": [
+					{
+						"name": "All notifications",
+						"value": "all"
+					}, {
+						"name": "Whitelisted groups",
+						"value": "whitelist"
+					}],
+				"storage": "groupShoutNotifier_mode",
+				"description": "How the group shout notifier should decide whether or not to show you a notification."
+			}, {
 				"name": "Display roles on posts",
 				"type": typeof (true),
 				"storage": "groupRoleDisplay",
@@ -412,6 +424,15 @@ function loadV2Page() {
 								setting.set = function (val) {
 									storage.set(setting.storage, !!val);
 								};
+							} else if (Array.isArray(setting.type)) {
+								setting.get = function (callBack) {
+									storage.get(setting.storage, function (val) {
+										callBack(val || "");
+									});
+								};
+								setting.set = function (val) {
+									storage.set(setting.storage, val);
+								};
 							}
 						}
 
@@ -440,6 +461,7 @@ function loadV2Page() {
 						} else if (Array.isArray(setting.type)) {
 							var radioContainer = $("<div>").attr("class", "section-content");
 							var radioTitle = $("<h4>").text(setting.name);
+							var radioDescription = $("<div>").text(setting.description);
 
 							setting.type.forEach(function (radio, n) {
 								var radioId = id + "-" + n;
@@ -469,7 +491,7 @@ function loadV2Page() {
 								$("input[type='radio'][name='" + id + "'][value='" + val + "']").prop("checked", true);
 							});
 
-							row.append(radioContainer.prepend(radioTitle));
+							row.append(radioContainer.prepend(radioTitle, radioDescription));
 						} else {
 							console.warn("Unknown setting type: " + setting.type);
 							return;
