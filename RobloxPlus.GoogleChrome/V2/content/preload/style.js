@@ -51,6 +51,9 @@ RPlus.style = RPlus.style || (function () {
 			} else {
 				localStorage.removeItem(themeStorageName);
 			}
+			if (window.storage) {
+				storage.set("siteTheme", storageTheme);
+			}
 		}
 	}
 

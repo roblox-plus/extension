@@ -2,8 +2,46 @@
 RPlus.Pages = RPlus.Pages || {};
 
 function loadV2Page() {
+	function constantBoolSetting(name, description, value, unsupported) {
+		var setting = {
+			"name": name,
+			"type": typeof (true),
+			"get": function (callBack) { callBack(true); },
+			"set": function () { },
+			"description": description,
+			"disabled": true
+		};
+		if (unsupported) {
+			setting.unsupported = true;
+		}
+		return setting;
+	}
+
+	var themeSetting = {
+		"name": "Website theme",
+		"type": [
+			{
+				"name": "Default",
+				"value": ""
+			}, {
+				"name": "OBC",
+				"value": RPlus.style.themeTypes.obc.type
+			}
+		],
+		"get": function (callBack) {
+			storage.get("siteTheme", function(val) {
+				callBack(val);
+			});
+		},
+		"set": function(val) {
+			RPlus.style.setTheme(RPlus.style.themeTypes[val]);
+		},
+		"description": "Sets a style for the website."
+	};
 	var settings = {
-		"Sound": [],
+		"Sound": [
+			constantBoolSetting("Sound volume control", "Upgrades all audio play buttons on the website to have volume controls.", true)
+		],
 		"Premium": [],
 		"Item": [
 			{
@@ -15,8 +53,8 @@ function loadV2Page() {
 				"name": "Purchase button on new limited notifications",
 				"type": typeof (true),
 				"disabled": true,
-				"get": function(callBack) {
-					RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(callBack).catch(function() {
+				"get": function (callBack) {
+					RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(callBack).catch(function () {
 						callBack(false);
 					});
 				},
@@ -27,13 +65,18 @@ function loadV2Page() {
 				"type": typeof (true),
 				"storage": "remainingCounter",
 				"description": "Collectible items with have their remaining counters updated without refreshing the page."
-			}],
+			},
+			constantBoolSetting("Asset content", "View assets contained inside another asset under a Content tab on specific asset pages.", true),
+			constantBoolSetting("Texture download", "Adds a download button to the pages of Roblox created image assets.", true),
+			constantBoolSetting("Asset owners", "On Roblox created assets see a list of everyone who owns that asset.", true),
+			constantBoolSetting("Easily delete items from inventory page", "Adds delete buttons to all free items on your inventory page.", true),
+			constantBoolSetting("Comments timer", "Keeps track of how long it will be until you can post another comment", true, true)],
 		"Forum": [
 			{
 				"name": "Display individual post Ids",
 				"type": typeof (true),
-				"get": function(callBack) {
-					storage.get("forums", function(forums) {
+				"get": function (callBack) {
+					storage.get("forums", function (forums) {
 						callBack(forums ? !!forums.postIds : false);
 					});
 				},
@@ -93,7 +136,10 @@ function loadV2Page() {
 					});
 				},
 				"description": "Convert audio links to playable format, YouTube links into videos, decals into images, Lua syntax highlighting, and more!"
-			}],
+			},
+			constantBoolSetting("Forum stretch prevention", "Prevents forum post titles from stretching the page. Double click under a poster to shrink their height as well.", true),
+			constantBoolSetting("Forum flood checking", "When posting on the forums a timer will kick off in the background to keep track of when you can post again.", true),
+			constantBoolSetting("Background thread tracking", "Tracking, and untracking forum threads won't refresh the page. My Forums will have tracked threads with tick boxes to untrack them.", true, true)],
 		"Trade": [
 			{
 				"name": "Outbound asset checker",
@@ -110,7 +156,10 @@ function loadV2Page() {
 				"type": typeof (true),
 				"storage": "tradePageRapAssist",
 				"description": "Loads trade information beforing opening the trade and determines who has higher value."
-			}, {
+			},
+			constantBoolSetting("Trade and transaction counters", "Counts how many trades, or transactions you have on the money page.", true, true),
+			constantBoolSetting("Cancel all outbound trades button", "On the trades page for outbound trade there will be a button to cancel all trades outboundl.", true),
+			{
 				"name": "Trade notifier",
 				"type": typeof (true),
 				"storage": "tradeNotifier",
@@ -219,8 +268,11 @@ function loadV2Page() {
 				},
 				"description": "If the friend notifier and this are enabled you will get a notification when a friend of yours goes offline.",
 				"unsupported": true
-			}],
+			},
+			constantBoolSetting("Unfollow all users button on friends page", "Unfollows all users who you are not friends with.", true),
+			constantBoolSetting("Follow all friends button on friends page", "Follows all users who you are friends with.", true)],
 		"Other": [
+			themeSetting,
 			{
 				"name": "Changed username login",
 				"type": typeof (true),
@@ -269,7 +321,12 @@ function loadV2Page() {
 					});
 				},
 				"description": "Will display the startup notification after you visit Roblox rather than when the extension starts."
-			}]
+			},
+			constantBoolSetting("Avatar filter bar", "On the avatar page a filter bar will be added to only show items that match text you've put in.", true),
+			constantBoolSetting("Roblox+ Notification Center", "In the Roblox notification stream there is also a section for Roblox+ which is a history of all unclosed notifications from the extension per session.", true),
+			constantBoolSetting("Profile sale statistics", "On user profiles sale counters are added for how many clothing, or models they've sold.", true, true),
+			constantBoolSetting("Allow multiple private message sending", "Send the same message to multiple people at the same time by adding more users in the \"to\" bar.", true, true),
+			constantBoolSetting("JSON Pretty Printing", "On JSON pages from Roblox hitting enter will \"pretty-print\" the page.", true, true)]
 	};
 
 	var pageContent = $("<div class=\"page-content rplus\">");
@@ -288,77 +345,134 @@ function loadV2Page() {
 		return container.append(icon);
 	}
 
-	for (var n in settings) {
-		if (settings.hasOwnProperty(n)) {
-			(function (title, list) {
-				var section = $("<div>").attr("class", "section rplus");
-				var header = $("<h3>").text(title);
-				var outerContainer = $("<div>").attr("class", "section-content");
-				var container = $("<div>").attr("class", "col-sm-12");
-
-				list.forEach(function (setting) {
-					var id = getSettingId();
-					if (setting.storage) {
-						if (typeof(true) === setting.type) {
-							setting.get = function (callBack) {
-								storage.get(setting.storage, function (val) {
-									callBack(!!val);
-								});
-							};
-							setting.set = function (val) {
-								storage.set(setting.storage, !!val);
-							};
-						}
-					}
-
-					var row = $("<div>");
-
-					if (typeof(true) === setting.type) {
-						row.attr("class", "checkbox");
-						var checkbox = $("<input>").attr({
-							"type": "checkbox",
-							"id": id
-						});
-						var label = $("<label>").attr("for", id).text(setting.name);
-
-						if (setting.disabled) {
-							checkbox.prop("disabled", true);
-						}
-
-						setting.get(function (val) {
-							checkbox.prop("checked", val).change(function () {
-								setting.set(checkbox.prop("checked"));
-							});
-						});
-
-						var tooltip = createToolTip(setting.description);
-						row.append(tooltip, checkbox, label);
-					} else {
-						console.warn("Unknown setting type: " + setting.type);
-						return;
-					}
-
-					if (setting.unsupported) {
-						var warning = $("<p>").text("Warning: This feature is unsupported by the creator of this extension. If it stops working it may not be fixed!").attr("class", "text-warning");
-						warning.prepend($("<span>").attr("class", "icon-warning-orange"));
-						row.append(warning);
-					}
-
-					container.append(row);
-				});
-
-				header.click(function() {
-					if (outerContainer.is(":visible")) {
-						outerContainer.slideUp();
-					} else {
-						outerContainer.slideDown();
-					}
-				});
-
-				pageContent.append(section.append(header).append(outerContainer.append(container)));
-			})(n, settings[n]);
+	for (var n in RPlus.style.themeTypes) {
+		if (RPlus.style.themeTypes.hasOwnProperty(n) && n !== "obc") {
+			themeSetting.type.push({
+				"name": RPlus.style.themeTypes[n].name,
+				"value": RPlus.style.themeTypes[n].type,
+				"disabled": true
+			});
 		}
 	}
+
+	function loadSettings() {
+		for (var n in settings) {
+			if (settings.hasOwnProperty(n)) {
+				(function (title, list) {
+					var section = $("<div>").attr("class", "section rplus");
+					var header = $("<h3>").text(title);
+					var outerContainer = $("<div>").attr("class", "section-content");
+					var container = $("<div>").attr("class", "col-sm-12");
+
+					list.forEach(function (setting) {
+						var id = getSettingId();
+						if (setting.storage) {
+							if (typeof (true) === setting.type) {
+								setting.get = function (callBack) {
+									storage.get(setting.storage, function (val) {
+										callBack(!!val);
+									});
+								};
+								setting.set = function (val) {
+									storage.set(setting.storage, !!val);
+								};
+							}
+						}
+
+						var row = $("<div>");
+
+						if (typeof (true) === setting.type) {
+							row.attr("class", "checkbox");
+							var checkbox = $("<input>").attr({
+								"type": "checkbox",
+								"id": id
+							});
+							var label = $("<label>").attr("for", id).text(setting.name);
+
+							if (setting.disabled) {
+								checkbox.prop("disabled", true);
+							}
+
+							setting.get(function(val) {
+								checkbox.prop("checked", val).change(function() {
+									setting.set(checkbox.prop("checked"));
+								});
+							});
+
+							var tooltip = createToolTip(setting.description);
+							row.append(tooltip, checkbox, label);
+						} else if (Array.isArray(setting.type)) {
+							var radioContainer = $("<div>").attr("class", "section-content");
+							var radioTitle = $("<h4>").text(setting.name);
+
+							setting.type.forEach(function (radio, n) {
+								var radioId = id + "-" + n;
+								var radioRow = $("<div>").attr("class", "radio");
+								var input = $("<input>").attr({
+									"id": radioId,
+									"name": id,
+									"type": "radio"
+								}).val(radio.value);
+								var label = $("<label>").attr("for", radioId).text(radio.name);
+
+								if (radio.disabled) {
+									input.prop("disabled", true);
+								}
+
+								input.change(function () {
+									if (input.prop("checked")) {
+										setting.set(radio.value);
+									}
+								});
+
+								radioContainer.append(radioRow.append(input, label));
+							});
+
+							setting.get(function (val) {
+								console.log("This one!", val);
+								$("input[type='radio'][name='" + id + "'][value='" + val + "']").prop("checked", true);
+							});
+
+							row.append(radioContainer.prepend(radioTitle));
+						} else {
+							console.warn("Unknown setting type: " + setting.type);
+							return;
+						}
+
+						if (setting.unsupported) {
+							var warning = $("<p>").text("Warning: This feature is unsupported by the creator of this extension. If it stops working it may not be fixed!").attr("class", "text-warning");
+							warning.prepend($("<span>").attr("class", "icon-warning-orange"));
+							row.append(warning);
+						}
+
+						container.append(row);
+					});
+
+					header.click(function () {
+						if (outerContainer.is(":visible")) {
+							outerContainer.slideUp();
+						} else {
+							outerContainer.slideDown();
+						}
+					});
+
+					pageContent.append(section.append(header).append(outerContainer.append(container)));
+				})(n, settings[n]);
+			}
+		}
+	}
+
+	RPlus.premium.allThemesUnlocked(Roblox.users.authenticatedUserId).then(function (unlocked) {
+		if (unlocked) {
+			themeSetting.type.forEach(function (setting) {
+				delete setting.disabled;
+			});
+		}
+		loadSettings();
+	}).catch(function (e) {
+		console.warn("Failed to check theme status", e);
+		loadSettings();
+	});
 
 	RPlus.style.loadStylesheet(ext.getUrl("/css/pages/account.css"));
 	$("#settings-container").html(pageContent);
@@ -388,7 +502,7 @@ RPlus.Pages.Account = function () {
 			if (s.updateLog) {
 				window.open(s.updateLog);
 			}
-		}).catch(function(e) {
+		}).catch(function (e) {
 			console.error("failed to get update log", e);
 		});
 	})))).hide();
@@ -450,9 +564,9 @@ RPlus.Pages.Account = function () {
 			group.addClass("checkbox").append(o.checkbox = $("<input type=\"checkbox\">")).append($("<label for>").text(n)).css("cursor", "pointer").click(function () {
 				window.open(Roblox.games.getGameUrl(258257446, "Roblox+ Hub"));
 			});
-			RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(function(ispremium) {
+			RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(function (ispremium) {
 				o.checkbox.prop("checked", ispremium);
-			}).catch(function(e) {
+			}).catch(function (e) {
 				console.warn(e);
 			});
 			return group;
