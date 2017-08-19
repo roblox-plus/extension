@@ -580,9 +580,9 @@ function loadV2Page() {
 							var tooltip = createToolTip(setting.description);
 							row.append(tooltip, checkbox, label);
 						} else if (Array.isArray(setting.type)) {
-							var radioContainer = $("<div>").attr("class", "section-content");
+							row.addClass("section-content");
 							var radioTitle = $("<h4>").text(setting.name);
-							var radioDescription = $("<div>").text(setting.description);
+							var radioDescription = $("<div>").addClass("text-date-hint").text(setting.description);
 
 							setting.type.forEach(function(radio, n) {
 								var radioId = id + "-" + n;
@@ -604,15 +604,14 @@ function loadV2Page() {
 									}
 								});
 
-								radioContainer.append(radioRow.append(input, label));
+								row.append(radioRow.append(input, label));
 							});
 
 							setting.get(function(val) {
-								console.log("This one!", val);
 								$("input[type='radio'][name='" + id + "'][value='" + val + "']").prop("checked", true);
 							});
 
-							row.append(radioContainer.prepend(radioTitle, radioDescription));
+							row.prepend(radioTitle, radioDescription);
 						} else if (setting.type === typeof("")) {
 							row.attr("class", "form-group");
 							var label = $("<label>").attr("class", "text-label").text(setting.name);
@@ -636,15 +635,22 @@ function loadV2Page() {
 							});
 
 							row.append(label, input);
+						} else if (setting.type === typeof ({}) && setting.type.min && setting.type.max) {
+
 						} else {
 							console.warn("Unknown setting type: " + setting.type);
 							return;
 						}
 
 						if (setting.unsupported) {
-							var warning = $("<p>").text("Warning: This feature is unsupported by the creator of this extension. If it stops working it may not be fixed!").attr("class", "text-warning");
+							var warning = $("<p>").text("Warning: This feature is unsupported by the creator of this extension. If it stops working it may not be fixed!").addClass("text-warning").hide();
 							warning.prepend($("<span>").attr("class", "icon-warning-orange"));
 							row.append(warning);
+							row.find("label,h4").mouseover(function() {
+								warning.slideDown(100);
+							}).mouseout(function() {
+								warning.slideUp(100);
+							});
 						}
 
 						container.append(row);
