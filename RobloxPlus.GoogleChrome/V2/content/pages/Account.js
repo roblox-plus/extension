@@ -139,7 +139,25 @@ function loadV2Page() {
 			},
 			constantBoolSetting("Forum stretch prevention", "Prevents forum post titles from stretching the page. Double click under a poster to shrink their height as well.", true),
 			constantBoolSetting("Forum flood checking", "When posting on the forums a timer will kick off in the background to keep track of when you can post again.", true),
-			constantBoolSetting("Background thread tracking", "Tracking, and untracking forum threads won't refresh the page. My Forums will have tracked threads with tick boxes to untrack them.", true, true)],
+			constantBoolSetting("Background thread tracking", "Tracking, and untracking forum threads won't refresh the page. My Forums will have tracked threads with tick boxes to untrack them.", true, true),
+			{
+				"name": "Forum signature",
+				"type": typeof (""),
+				"get": function (callBack) {
+					storage.get("forums", function (forums) {
+						callBack(forums ? forums.signature : "");
+					});
+				},
+				"set": function (val) {
+					storage.get("forums", function (forums) {
+						forums = forums || {};
+						forums.signature = val;
+						storage.set("forums", forums);
+					});
+				},
+				"description": "A line of text added to posts you make on the forum.",
+				"maxlength": 250
+			}],
 		"Trade": [
 			{
 				"name": "Outbound asset checker",
@@ -224,6 +242,74 @@ function loadV2Page() {
 					});
 				},
 				"description": "Will cut off navigation counters and start capping at this value."
+			}, {
+				"name": "Navigation button one text",
+				"type": typeof (""),
+				"get": function (callBack) {
+					storage.get("navigation", function (navigation) {
+						callBack(navigation && navigation.buttons && navigation.buttons[0] ? navigation.buttons[0].text : "Develop");
+					});
+				},
+				"set": function (val) {
+					storage.get("navigation", function (navigation) {
+						navigation = navigation || {};
+						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Forums", "href": "/forum" }];
+						navigation.buttons[0].text = val;
+						storage.set("navigation", navigation);
+					});
+				},
+				"description": "Sets the text for the first overrideable navigation button"
+			}, {
+				"name": "Navigation button one link",
+				"type": typeof (""),
+				"get": function (callBack) {
+					storage.get("navigation", function (navigation) {
+						callBack(navigation && navigation.buttons && navigation.buttons[0] ? navigation.buttons[0].href : "/develop");
+					});
+				},
+				"set": function (val) {
+					storage.get("navigation", function (navigation) {
+						navigation = navigation || {};
+						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Forums", "href": "/forum" }];
+						navigation.buttons[0].href = val;
+						storage.set("navigation", navigation);
+					});
+				},
+				"description": "Sets the link for the first overrideable navigation button"
+			}, {
+				"name": "Navigation button two text",
+				"type": typeof (""),
+				"get": function (callBack) {
+					storage.get("navigation", function (navigation) {
+						callBack(navigation && navigation.buttons && navigation.buttons[1] ? navigation.buttons[1].text : "Forums");
+					});
+				},
+				"set": function (val) {
+					storage.get("navigation", function (navigation) {
+						navigation = navigation || {};
+						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Forums", "href": "/forum" }];
+						navigation.buttons[1].text = val;
+						storage.set("navigation", navigation);
+					});
+				},
+				"description": "Sets the text for the second overrideable navigation button"
+			}, {
+				"name": "Navigation button two link",
+				"type": typeof (""),
+				"get": function (callBack) {
+					storage.get("navigation", function (navigation) {
+						callBack(navigation && navigation.buttons && navigation.buttons[1] ? navigation.buttons[1].href : "/forum");
+					});
+				},
+				"set": function (val) {
+					storage.get("navigation", function (navigation) {
+						navigation = navigation || {};
+						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Forums", "href": "/forum" }];
+						navigation.buttons[1].href = val;
+						storage.set("navigation", navigation);
+					});
+				},
+				"description": "Sets the link for the second overrideable navigation button"
 			}],
 		"Groups": [
 			{
@@ -424,7 +510,7 @@ function loadV2Page() {
 								setting.set = function (val) {
 									storage.set(setting.storage, !!val);
 								};
-							} else if (Array.isArray(setting.type)) {
+							} else if (Array.isArray(setting.type) || setting.type === typeof ("")) {
 								setting.get = function (callBack) {
 									storage.get(setting.storage, function (val) {
 										callBack(val || "");
@@ -463,7 +549,7 @@ function loadV2Page() {
 							var radioTitle = $("<h4>").text(setting.name);
 							var radioDescription = $("<div>").text(setting.description);
 
-							setting.type.forEach(function (radio, n) {
+							setting.type.forEach(function(radio, n) {
 								var radioId = id + "-" + n;
 								var radioRow = $("<div>").attr("class", "radio");
 								var input = $("<input>").attr({
@@ -477,7 +563,7 @@ function loadV2Page() {
 									input.prop("disabled", true);
 								}
 
-								input.change(function () {
+								input.change(function() {
 									if (input.prop("checked")) {
 										setting.set(radio.value);
 									}
@@ -486,12 +572,35 @@ function loadV2Page() {
 								radioContainer.append(radioRow.append(input, label));
 							});
 
-							setting.get(function (val) {
+							setting.get(function(val) {
 								console.log("This one!", val);
 								$("input[type='radio'][name='" + id + "'][value='" + val + "']").prop("checked", true);
 							});
 
 							row.append(radioContainer.prepend(radioTitle, radioDescription));
+						} else if (setting.type === typeof("")) {
+							row.attr("class", "form-group");
+							var label = $("<label>").attr("class", "text-label").text(setting.name);
+							var input = $("<input>").attr({
+								"id": id,
+								"type": "text",
+								"class": "form-control input-field",
+								"maxlength": setting.maxlength
+							});
+
+							input.blur(function() {
+								setting.set(input.val());
+							}).keyup(function(key) {
+								if (key.keyCode === 13) {
+									$(this).blur();
+								}
+							});
+
+							setting.get(function(val) {
+								input.val(val);
+							});
+
+							row.append(label, input);
 						} else {
 							console.warn("Unknown setting type: " + setting.type);
 							return;
