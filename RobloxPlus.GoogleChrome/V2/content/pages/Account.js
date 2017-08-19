@@ -39,16 +39,82 @@ function loadV2Page() {
 		"description": "Sets a style for the website."
 	};
 	var settings = {
-		"Sound": [
-			constantBoolSetting("Sound volume control", "Upgrades all audio play buttons on the website to have volume controls.", true)
+		"General": [
+			{
+				"name": "Roblox+ Premium",
+				"type": typeof (true),
+				"disabled": true,
+				"get": function (callBack) {
+					RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(callBack).catch(function () {
+						callBack(false);
+					});
+				},
+				"set": function () { },
+				"description": "Roblox+ Premium unlocks the purchase button for new collectible items, and all the website themes.",
+				"after": function(row) {
+					this.get(function(hasPremium) {
+						if (!hasPremium || Roblox.users.authenticatedUserId === 48103520) {
+							row.append($("<br>"), "To get Roblox+ Premium buy a VIP server from this place: ", $("<a>").attr({
+								"href": Roblox.games.getGameUrl(258257446, "Roblox+ Hub"),
+								"class": "text-link",
+								"target": "_blank"
+							}).text("Roblox+ Hub"));
+						}
+					});
+				}
+			},
+			themeSetting
 		],
-		"Premium": [],
+		"Sound": [
+			constantBoolSetting("Sound volume control", "Upgrades all audio play buttons on the website to have volume controls.", true),
+			{
+				"name": "Audio volume",
+				"type": { "min": 0, "max": 100 },
+				"get": function(callBack) {
+					storage.get("volume", function (x) {
+						callBack(typeof(x) === "number" ? x * 100 : 50);
+					});
+				},
+				"set": function(val) {
+					storage.set("volume", val / 100);
+				},
+				"description": "The default volume for audio"
+			}, {
+				"name": "Voice volume",
+				"type": { "min": 0, "max": 100 },
+				"get": function (callBack) {
+					storage.get("voiceVolume", function (x) {
+						callBack(typeof (x) === "number" ? x * 100 : 50);
+					});
+				},
+				"set": function (val) {
+					storage.set("voiceVolume", val / 100);
+				},
+				"description": "The default volume for the voice"
+			}
+		],
 		"Item": [
 			{
 				"name": "Catalog notifier",
 				"type": typeof (true),
 				"storage": "itemNotifier",
 				"description": "Get notifications when an official Roblox item in the catalog gets updated or created."
+			}, {
+				"name": "Catalog notifier sound",
+				"type": "audio",
+				"get": function (callBack) {
+					storage.get("notifierSounds", function(notifierSounds) {
+						callBack(notifierSounds ? notifierSounds.item : 205318910);
+					});
+				},
+				"set": function (val) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						notifierSounds = notifierSounds || {};
+						notifierSounds.item = Number(val);
+						storage.set("notifierSounds", notifierSounds);
+					});
+				},
+				"description": "An id of a Roblox sound that will play when a catalog item notification pops up."
 			}, {
 				"name": "Purchase button on new limited notifications",
 				"type": typeof (true),
@@ -136,6 +202,22 @@ function loadV2Page() {
 					});
 				},
 				"description": "Convert audio links to playable format, YouTube links into videos, decals into images, Lua syntax highlighting, and more!"
+			}, {
+				"name": "Post embedding size",
+				"type": { "min": 25, "max": 100, "step": 25 },
+				"get": function (callBack) {
+					storage.get("forums", function (forums) {
+						callBack(forums ? forums.embedSize : 75);
+					});
+				},
+				"set": function (val) {
+					storage.get("forums", function (forums) {
+						forums = forums || {};
+						forums.embedSize = Number(val);
+						storage.set("forums", forums);
+					});
+				},
+				"description": "The size of images when embedded on posts."
 			},
 			constantBoolSetting("Forum stretch prevention", "Prevents forum post titles from stretching the page. Double click under a poster to shrink their height as well.", true),
 			constantBoolSetting("Forum flood checking", "When posting on the forums a timer will kick off in the background to keep track of when you can post again.", true),
@@ -157,6 +239,43 @@ function loadV2Page() {
 				},
 				"description": "A line of text added to posts you make on the forum.",
 				"maxlength": 250
+			}, {
+				"name": "How many lines to put below your post before the signature",
+				"type": { "min": 1, "max": 4 },
+				"get": function (callBack) {
+					storage.get("forums", function (forums) {
+						callBack(forums ? forums.lines : 3);
+					});
+				},
+				"set": function (val) {
+					storage.get("forums", function (forums) {
+						forums = forums || {};
+						forums.lines = Number(val);
+						storage.set("forums", forums);
+					});
+				},
+				"description": "The size of images when embedded on posts."
+			}, {
+				"name": "Forum notifier",
+				"type": typeof (true),
+				"storage": "forumNotifier",
+				"description": "Get notifications when someone replies to a thread you're tracking, or have replied to."
+			}, {
+				"name": "Forum notifier sound",
+				"type": "audio",
+				"get": function (callBack) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						callBack(notifierSounds ? notifierSounds.forum : 0);
+					});
+				},
+				"set": function (val) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						notifierSounds = notifierSounds || {};
+						notifierSounds.forum = Number(val);
+						storage.set("notifierSounds", notifierSounds);
+					});
+				},
+				"description": "An id of a Roblox sound that will play when the forum notifier goes off."
 			}],
 		"Trade": [
 			{
@@ -182,6 +301,70 @@ function loadV2Page() {
 				"type": typeof (true),
 				"storage": "tradeNotifier",
 				"description": "Get notified about new inbound, completed, declined, or outbound trades."
+			}, {
+				"name": "Trade inbound sound",
+				"type": "audio",
+				"get": function (callBack) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						callBack(notifierSounds ? notifierSounds.tradeInbound : 0);
+					});
+				},
+				"set": function (val) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						notifierSounds = notifierSounds || {};
+						notifierSounds.tradeInbound = Number(val);
+						storage.set("notifierSounds", notifierSounds);
+					});
+				},
+				"description": "An id of a Roblox sound that will play when a trade comes inbound."
+			}, {
+				"name": "Trade outbound sound",
+				"type": "audio",
+				"get": function (callBack) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						callBack(notifierSounds ? notifierSounds.tradeOutbound : 0);
+					});
+				},
+				"set": function (val) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						notifierSounds = notifierSounds || {};
+						notifierSounds.tradeOutbound = Number(val);
+						storage.set("notifierSounds", notifierSounds);
+					});
+				},
+				"description": "An id of a Roblox sound that will play when a trade goes outbound."
+			}, {
+				"name": "Trade completed sound",
+				"type": "audio",
+				"get": function (callBack) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						callBack(notifierSounds ? notifierSounds.tradeCompleted : 0);
+					});
+				},
+				"set": function (val) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						notifierSounds = notifierSounds || {};
+						notifierSounds.tradeCompleted = Number(val);
+						storage.set("notifierSounds", notifierSounds);
+					});
+				},
+				"description": "An id of a Roblox sound that will play when a trade is completed."
+			}, {
+				"name": "Trade declined sound",
+				"type": "audio",
+				"get": function (callBack) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						callBack(notifierSounds ? notifierSounds.tradeDeclined : 0);
+					});
+				},
+				"set": function (val) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						notifierSounds = notifierSounds || {};
+						notifierSounds.tradeDeclined = Number(val);
+						storage.set("notifierSounds", notifierSounds);
+					});
+				},
+				"description": "An id of a Roblox sound that will play when a trade comes inbound."
 			}],
 		"Navigation": [
 			{
@@ -318,6 +501,22 @@ function loadV2Page() {
 				"storage": "groupShoutNotifier",
 				"description": "When a group your in changes their group shout you will get a notification."
 			}, {
+				"name": "Group shout notifier sound",
+				"type": "audio",
+				"get": function (callBack) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						callBack(notifierSounds ? notifierSounds.groupShout : 0);
+					});
+				},
+				"set": function (val) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						notifierSounds = notifierSounds || {};
+						notifierSounds.groupShout = Number(val);
+						storage.set("notifierSounds", notifierSounds);
+					});
+				},
+				"description": "An id of a Roblox sound that will play when the group shout notifier pops up a notification."
+			}, {
 				"name": "Group shout notifier mode",
 				"type": [
 					{
@@ -337,22 +536,6 @@ function loadV2Page() {
 			}],
 		"Friends": [
 			{
-				"name": "Friends notifier",
-				"type": typeof (true),
-				"get": function (callBack) {
-					storage.get("friendNotifier", function (friendNotifier) {
-						callBack(friendNotifier ? !!friendNotifier.on : false);
-					});
-				},
-				"set": function (val) {
-					storage.get("friendNotifier", function (friendNotifier) {
-						friendNotifier = friendNotifier || {};
-						friendNotifier.on = !!val;
-						storage.set("friendNotifier", friendNotifier);
-					});
-				},
-				"description": "Master on/off switch for any friend notifications from the extension."
-			}, {
 				"name": "Notify me when my friend joins a game",
 				"type": typeof (true),
 				"get": function (callBack) {
@@ -403,10 +586,42 @@ function loadV2Page() {
 				"description": "If the friend notifier and this are enabled you will get a notification when a friend of yours goes offline.",
 				"unsupported": true
 			},
-			constantBoolSetting("Unfollow all users button on friends page", "Unfollows all users who you are not friends with.", true),
-			constantBoolSetting("Follow all friends button on friends page", "Follows all users who you are friends with.", true)],
+			constantBoolSetting("Unfollow all users button on friends page", "Unfollows all users who you are not friends with.", true), 
+			constantBoolSetting("Follow all friends button on friends page", "Follows all users who you are friends with.", true),
+			{
+				"name": "Friends notifier",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("friendNotifier", function (friendNotifier) {
+						callBack(friendNotifier ? !!friendNotifier.on : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("friendNotifier", function (friendNotifier) {
+						friendNotifier = friendNotifier || {};
+						friendNotifier.on = !!val;
+						storage.set("friendNotifier", friendNotifier);
+					});
+				},
+				"description": "Master on/off switch for any friend notifications from the extension."
+			}, {
+				"name": "Friend notifier sound",
+				"type": "audio",
+				"get": function (callBack) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						callBack(notifierSounds ? notifierSounds.friend : 0);
+					});
+				},
+				"set": function (val) {
+					storage.get("notifierSounds", function (notifierSounds) {
+						notifierSounds = notifierSounds || {};
+						notifierSounds.friend = Number(val);
+						storage.set("notifierSounds", notifierSounds);
+					});
+				},
+				"description": "An id of a Roblox sound that will play when a notification for the friends notifier pops up."
+			}],
 		"Other": [
-			themeSetting,
 			{
 				"name": "Changed username login",
 				"type": typeof (true),
@@ -612,7 +827,7 @@ function loadV2Page() {
 							});
 
 							row.prepend(radioTitle, radioDescription);
-						} else if (setting.type === typeof("")) {
+						} else if (setting.type === typeof ("")) {
 							row.attr("class", "form-group");
 							var label = $("<label>").attr("class", "text-label").text(setting.name);
 							var input = $("<input>").attr({
@@ -622,21 +837,65 @@ function loadV2Page() {
 								"maxlength": setting.maxlength
 							});
 
-							input.blur(function() {
+							input.blur(function () {
 								setting.set(input.val());
-							}).keyup(function(key) {
+							}).keyup(function (key) {
 								if (key.keyCode === 13) {
 									$(this).blur();
 								}
 							});
 
-							setting.get(function(val) {
+							setting.get(function (val) {
 								input.val(val);
 							});
 
 							row.append(label, input);
-						} else if (setting.type === typeof ({}) && setting.type.min && setting.type.max) {
+						} else if (setting.type === "audio") {
+							row.attr("class", "form-group");
+							var label = $("<label>").attr("class", "text-label").text(setting.name);
+							var input = $("<input>").attr({
+								"id": id,
+								"type": "number",
+								"class": "form-control input-field",
+								"maxlength": 12
+							});
+							var soundButton = soundService.robloxSound.button(input, "div");
 
+							input.blur(function () {
+								setting.set(input.val());
+							}).keyup(function (key) {
+								if (key.keyCode === 13) {
+									$(this).blur();
+								}
+							});
+
+							setting.get(function (val) {
+								input.val(val.toString()).trigger("change");
+							});
+
+							row.append(label, input, soundButton);
+						} else if (typeof(setting.type) === typeof ({}) && setting.type.hasOwnProperty("min") && setting.type.hasOwnProperty("max")) {
+							row.attr("class", "form-group");
+							var label = $("<label>").attr("class", "text-label").text(setting.name);
+							var input = $("<input>").attr({
+								"id": id,
+								"type": "range",
+								"class": "form-control",
+								"max": setting.type.max,
+								"min": setting.type.min,
+								"step": setting.type.step || 1
+							});
+
+							input.on("input", function () {
+								setting.set(input.val());
+								input.attr("title", input.val());
+							});
+
+							setting.get(function (val) {
+								input.val(val).attr("title", val);
+							});
+
+							row.append(label, input);
 						} else {
 							console.warn("Unknown setting type: " + setting.type);
 							return;
@@ -651,6 +910,10 @@ function loadV2Page() {
 							}).mouseout(function() {
 								warning.slideUp(100);
 							});
+						}
+
+						if (setting.after) {
+							setting.after(row);
 						}
 
 						container.append(row);
@@ -682,9 +945,30 @@ function loadV2Page() {
 		loadSettings();
 	});
 
+
+	var updateLogButton = $("<button>").addClass("btn-control-md").text("Update Log");
+	var reloadButton = $("<button>").addClass("btn-control-md").text("Reload");
+
+	updateLogButton.click(function () {
+		rplusSettings.get().then(function (s) {
+			if (s.updateLog) {
+				window.open(s.updateLog);
+			}
+		}).catch(function (e) {
+			console.error("failed to get update log", e);
+		});
+	});
+	reloadButton.click(function () {
+		ext.reload(function () {
+			setTimeout(function () {
+				window.location.reload(true);
+			}, 1500);
+		});
+	});
+	
 	RPlus.style.loadStylesheet(ext.getUrl("/css/pages/account.css"));
 	$("#settings-container").html(pageContent);
-	$(".user-account-header").text(ext.manifest.name + " " + ext.manifest.version);
+	$(".user-account-header").text(ext.manifest.name + " " + ext.manifest.version).append(reloadButton, updateLogButton);
 }
 
 RPlus.Pages.Account = function () {

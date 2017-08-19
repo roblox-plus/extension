@@ -24,4 +24,21 @@
 	padding-bottom: 3px;
 }
 
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+}
+
+.user-account-header > button {
+	float: right;
+	margin: 10px;
+}
+
+.page-content .section.rplus .rplusaudio {
+	margin-top: -34px;
+	margin-right: 10px;
+	float: right;
+}
+
+
 /* WebGL3D */
