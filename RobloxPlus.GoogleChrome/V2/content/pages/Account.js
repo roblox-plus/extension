@@ -460,7 +460,42 @@ function loadV2Page() {
 			constantBoolSetting("Roblox+ Notification Center", "In the Roblox notification stream there is also a section for Roblox+ which is a history of all unclosed notifications from the extension per session.", true),
 			constantBoolSetting("Profile sale statistics", "On user profiles sale counters are added for how many clothing, or models they've sold.", true, true),
 			constantBoolSetting("Allow multiple private message sending", "Send the same message to multiple people at the same time by adding more users in the \"to\" bar.", true, true),
-			constantBoolSetting("JSON Pretty Printing", "On JSON pages from Roblox hitting enter will \"pretty-print\" the page.", true, true)]
+			constantBoolSetting("JSON Pretty Printing", "On JSON pages from Roblox hitting enter will \"pretty-print\" the page.", true, true),
+			{
+				"name": "How Roblox+ should pronounce your name",
+				"type": typeof (""),
+				"get": function(callBack) {
+					Roblox.users.getAuthenticatedUser().then(function (user) {
+						if (user) {
+							storage.get("startupNotification", function (x) {
+								var names = x && x.names ? x.names : {};
+								callBack(names[user.username.toLowerCase()] || user.username);
+							});
+						} else {
+							callBack("");
+						}
+					}).catch(function () {
+						callBack("");
+					});
+				},
+				"set": function (val) {
+					Roblox.users.getAuthenticatedUser().then(function (user) {
+						if (user) {
+							storage.get("startupNotification", function (x) {
+								x = x || {};
+								x.names = x.names || {};
+								x.names[user.username.toLowerCase()] = val;
+								storage.set("startupNotification", x);
+							});
+						} else {
+							console.warn("Failed to set username pronunciation: no user");
+						}
+					}).catch(function (e) {
+						console.warn("Failed to set username pronunciation", e);
+					});
+				},
+				"description": "Currently only has effect on the startup notification."
+			}]
 	};
 
 	var pageContent = $("<div class=\"page-content rplus\">");
