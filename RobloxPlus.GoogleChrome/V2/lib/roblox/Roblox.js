@@ -16,14 +16,4 @@ Roblox.getOpenRobloxTabs = $.cache(ipc.backgroundFunction("Roblox.getOpenRobloxT
 }), 1000);
 
 
-if (ext.isContentScript) {
-	$(function () {
-		Roblox.page.user = {
-			id: $("#chat-data-model").data("userid") || 0,
-			username: $("#navigation>ul>li.text-lead>a.text-overflow").text() || ""
-		};
-	});
-}
-
-
 // WebGL3D

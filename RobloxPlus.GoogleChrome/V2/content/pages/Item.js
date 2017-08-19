@@ -205,7 +205,7 @@ RPlus.Pages.Item = function () {
 
 	if ((["LeftArm", "RightArm", "Torso", "Head", "RightLeg", "LeftLeg", "Hat", "Gear", "Face", "Package", "Waist Accessory", "Back Accessory", "Front Accessory", "Hair Accessory", "Shoulder Accessory", "Neck Accessory", "Face Accessory"]).indexOf(item.assetType) >= 0
 		|| ((["MeshPart", "Decal"]).indexOf(item.assetType) >= 0 && item.creator.id === Roblox.users.authenticatedUserId)
-		|| Roblox.page.user.id === 48103520) {
+		|| Roblox.users.authenticatedUserId === 48103520) {
 		// I'm the creator of the extension, sometimes I need to view specific asset contents to debug.
 		var assetContentTab = createTab("Content", "h");
 		assetContentTab.content.parent().css("padding", "10px");

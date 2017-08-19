@@ -1,0 +1,20 @@
+﻿/* Account Page [8/18/2017] */
+.page-content .section.rplus > h3 {
+	cursor: pointer;
+	user-select: none;
+}
+
+.page-content .section.rplus .tooltip-container {
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+.page-content .section.rplus .checkbox input[type='checkbox']+label {
+	width: calc(100% - 50px);
+}
+
+.page-content .section.rplus .text-warning {
+	padding-left: 50px;
+}
+
+/* WebGL3D */

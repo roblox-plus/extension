@@ -2,14 +2,291 @@
 RPlus.Pages = RPlus.Pages || {};
 
 function loadV2Page() {
-	var pageContent = $("<div class=\"page-content\">");
+	var settings = {
+		"Sound": [],
+		"Item": [
+			{
+				"name": "Catalog notifier",
+				"type": typeof (true),
+				"storage": "itemNotifier",
+				"description": "Get notifications when an official Roblox item in the catalog gets updated or created."
+			}, {
+				"name": "Purchase button on new limited notifications",
+				"type": typeof (true),
+				"disabled": true,
+				"get": function(callBack) {
+					RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(callBack).catch(function() {
+						callBack(false);
+					});
+				},
+				"set": function () { },
+				"description": "When a new collectible item comes out in the catalog if you have this enabled you will have a purchase button directly on the notification."
+			}, {
+				"name": "Live collectible remaining counter",
+				"type": typeof (true),
+				"storage": "remainingCounter",
+				"description": "Collectible items with have their remaining counters updated without refreshing the page."
+			}],
+		"Forum": [
+			{
+				"name": "Display individual post Ids",
+				"type": typeof (true),
+				"get": function(callBack) {
+					storage.get("forums", function(forums) {
+						callBack(forums ? !!forums.postIds : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("forums", function (forums) {
+						forums = forums || {};
+						forums.postIds = !!val;
+						storage.set("forums", forums);
+					});
+				},
+				"description": "Display the ids of each individual post next to the date they were posted."
+			}, {
+				"name": "Respect blocked users list",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("forums", function (forums) {
+						callBack(forums ? !!forums.blocked : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("forums", function (forums) {
+						forums = forums || {};
+						forums.blocked = !!val;
+						storage.set("forums", forums);
+					});
+				},
+				"description": "If a user is on your block list hide their posts."
+			}, {
+				"name": "Collectibles value on posts",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("forums", function (forums) {
+						callBack(forums ? !!forums.rap : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("forums", function (forums) {
+						forums = forums || {};
+						forums.rap = !!val;
+						storage.set("forums", forums);
+					});
+				},
+				"description": "Display a users Recent Average Price (RAP) of all of their collectibles under their character on their posts."
+			}, {
+				"name": "Post embedding",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("forums", function (forums) {
+						callBack(forums ? !!forums.embedding : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("forums", function (forums) {
+						forums = forums || {};
+						forums.embedding = !!val;
+						storage.set("forums", forums);
+					});
+				},
+				"description": "Convert audio links to playable format, YouTube links into videos, decals into images, Lua syntax highlighting, and more!"
+			}],
+		"Trade": [
+			{
+				"name": "Outbound asset checker",
+				"type": typeof (true),
+				"storage": "tradeChecker",
+				"description": "Items you have in outbound trades will be highlighted in the trade window."
+			}, {
+				"name": "Open trades in new tab",
+				"type": typeof (true),
+				"storage": "tradeTab",
+				"description": "Trades will open in a new tab instead of a new window."
+			}, {
+				"name": "Trade evaluator",
+				"type": typeof (true),
+				"storage": "tradePageRapAssist",
+				"description": "Loads trade information beforing opening the trade and determines who has higher value."
+			}, {
+				"name": "Trade notifier",
+				"type": typeof (true),
+				"storage": "tradeNotifier",
+				"description": "Get notified about new inbound, completed, declined, or outbound trades."
+			}],
+		"Navigation": [
+			{
+				"name": "Live navigation counters",
+				"type": typeof (true),
+				"storage": "navcounter",
+				"description": "Up-to-date navigation counters without refreshing for Robux, Messages, Friends, and Trades."
+			}, {
+				"name": "Side navigation bar always open",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("navigation", function (navigation) {
+						callBack(navigation ? !!navigation.sideOpen : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("navigation", function (navigation) {
+						navigation = navigation || {};
+						navigation.sideOpen = !!val;
+						storage.set("navigation", navigation);
+					});
+				},
+				"description": "Keeps the side navigation bar open on smaller screens.",
+				"unsupported": true
+			}],
+		"Groups": [
+			{
+				"name": "Group shout notifier",
+				"type": typeof (true),
+				"storage": "groupShoutNotifier",
+				"description": "When a group your in changes their group shout you will get a notification."
+			}, {
+				"name": "Display roles on posts",
+				"type": typeof (true),
+				"storage": "groupRoleDisplay",
+				"description": "Display a users role in the group on their wall posts."
+			}],
+		"Friends": [
+			{
+				"name": "Friends notifier",
+				"type": typeof (true),
+				"get": function (callBack) {
+					storage.get("friendNotifier", function (friendNotifier) {
+						callBack(friendNotifier ? !!friendNotifier.on : false);
+					});
+				},
+				"set": function (val) {
+					storage.get("friendNotifier", function (friendNotifier) {
+						friendNotifier = friendNotifier || {};
+						friendNotifier.on = !!val;
+						storage.set("friendNotifier", friendNotifier);
+					});
+				},
+				"description": "Master on/off switch for any friend notifications from the extension."
+			}],
+		"Other": [
+			{
+				"name": "Changed username login",
+				"type": typeof (true),
+				"storage": "changedLogin",
+				"description": "Allows you to log in with a previous username."
+			}, {
+				"name": "Sale toggle buttons on the develop page",
+				"type": typeof (true),
+				"storage": "quickSell",
+				"description": "Buttons on items on the develop page for toggling whether or not an item is on sale (using lowest price) from the develop page.",
+				"unsupported": true
+			}, {
+				"name": "Collectibles value on profiles",
+				"type": typeof (true),
+				"storage": "profileRAP",
+				"description": "Display a users Recent Average Price (RAP) of all of their collectibles on their profile."
+			}]
+	};
+
+	var pageContent = $("<div class=\"page-content rplus\">");
+
+	var settingIdBase = 0;
+	function getSettingId() {
+		return "rplus-setting-" + (++settingIdBase);
+	}
+
+	function createToolTip(tip) {
+		var container = $("<span>").attr({
+			"class": "tooltip-container",
+			"title": tip
+		});
+		var icon = $("<span>").attr("class", "icon-moreinfo");
+		return container.append(icon);
+	}
+
+	for (var n in settings) {
+		if (settings.hasOwnProperty(n)) {
+			(function (title, list) {
+				var section = $("<div>").attr("class", "section rplus");
+				var header = $("<h3>").text(title);
+				var outerContainer = $("<div>").attr("class", "section-content");
+				var container = $("<div>").attr("class", "col-sm-12");
+
+				list.forEach(function (setting) {
+					var id = getSettingId();
+					if (setting.storage) {
+						if (typeof(true) === setting.type) {
+							setting.get = function (callBack) {
+								storage.get(setting.storage, function (val) {
+									callBack(!!val);
+								});
+							};
+							setting.set = function (val) {
+								storage.set(setting.storage, !!val);
+							};
+						}
+					}
+
+					var row = $("<div>");
+
+					if (typeof(true) === setting.type) {
+						row.attr("class", "checkbox");
+						var checkbox = $("<input>").attr({
+							"type": "checkbox",
+							"id": id
+						});
+						var label = $("<label>").attr("for", id).text(setting.name);
+
+						if (setting.disabled) {
+							checkbox.prop("disabled", true);
+						}
+
+						setting.get(function (val) {
+							checkbox.prop("checked", val).change(function () {
+								setting.set(checkbox.prop("checked"));
+							});
+						});
+
+						var tooltip = createToolTip(setting.description);
+						row.append(tooltip, checkbox, label);
+					} else {
+						console.warn("Unknown setting type: " + setting.type);
+						return;
+					}
+
+					if (setting.unsupported) {
+						var warning = $("<p>").text("Warning: This feature is unsupported by the creator of this extension. If it stops working it may not be fixed!").attr("class", "text-warning");
+						warning.prepend($("<span>").attr("class", "icon-warning-orange"));
+						row.append(warning);
+					}
+
+					container.append(row);
+				});
+
+				header.click(function() {
+					if (outerContainer.is(":visible")) {
+						outerContainer.slideUp();
+					} else {
+						outerContainer.slideDown();
+					}
+				});
+
+				pageContent.append(section.append(header).append(outerContainer.append(container)));
+			})(n, settings[n]);
+		}
+	}
+
+	RPlus.style.loadStylesheet(ext.getUrl("/css/pages/account.css"));
+	$("#settings-container").html(pageContent);
+	$(".user-account-header").text(ext.manifest.name + " " + ext.manifest.version);
 }
 
 RPlus.Pages.Account = function () {
 	// Lock off new page to just me for development.
-	if (Roblox.page.user.id === 48103520 && location.search.includes("dev")) {
+	if (Roblox.users.authenticatedUserId === 48103520 && location.search.includes("dev")) {
 		loadV2Page();
-		return;
+		return {};
 	}
 
 	var compileStorage;

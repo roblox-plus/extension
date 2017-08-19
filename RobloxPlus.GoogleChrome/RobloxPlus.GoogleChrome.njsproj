@@ -39,6 +39,7 @@
     <Folder Include="V2\content\pages\" />
     <Folder Include="V2\content\pages\forum\" />
     <Folder Include="V2\css\" />
+    <Folder Include="V2\css\pages\" />
     <Folder Include="V2\css\roblox\" />
     <Folder Include="V2\css\rplus\" />
     <Folder Include="V2\css\themes\" />
@@ -54,6 +55,9 @@
     <Content Include="V2\css\customIcon.css" />
     <Content Include="V2\css\hljs.css" />
     <Content Include="V2\css\icons.css" />
+    <Content Include="V2\css\pages\account.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="V2\css\roblox\itemCards.css">
       <SubType>Code</SubType>
     </Content>
@@ -180,9 +184,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="V2\lib\rplus\premium.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="V2\lib\rplus\settings.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="V2\lib\rplus\copiedAssets.js">
