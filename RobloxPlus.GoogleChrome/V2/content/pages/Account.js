@@ -188,6 +188,42 @@ function loadV2Page() {
 				},
 				"description": "Keeps the side navigation bar open on smaller screens.",
 				"unsupported": true
+			}, {
+				"name": "Navigation counter caps",
+				"type": [
+					{
+						"name": "1,000",
+						"value": 1000
+					}, {
+						"name": "10,000",
+						"value": 10000
+					}, {
+						"name": "100,000",
+						"value": 100000
+					}, {
+						"name": "1,000,000",
+						"value": 1000000
+					}, {
+						"name": "10,000,000",
+						"value": 10000000
+					}, {
+						"name": "100,000,000",
+						"value": 100000000
+					}
+				],
+				"get": function (callBack) {
+					storage.get("navigation", function (navigation) {
+						callBack(navigation ? navigation.counterCommas : 10000);
+					});
+				},
+				"set": function (val) {
+					storage.get("navigation", function (navigation) {
+						navigation = navigation || {};
+						navigation.counterCommas = val;
+						storage.set("navigation", navigation);
+					});
+				},
+				"description": "Will cut off navigation counters and start capping at this value."
 			}],
 		"Groups": [
 			{
