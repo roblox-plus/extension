@@ -72,7 +72,9 @@
     </Content>
     <Content Include="V2\css\style.css" />
     <Content Include="V2\css\themes\easter.css" />
-    <Content Include="V2\css\themes\obc.css" />
+    <Content Include="V2\css\themes\obcV2.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="V2\images\EasterBackground.png" />
     <Content Include="V2\images\EasterBar.png" />
     <Content Include="V2\images\EasterIcons.svg" />

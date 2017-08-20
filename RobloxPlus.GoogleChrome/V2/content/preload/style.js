@@ -7,25 +7,13 @@ RPlus.style = RPlus.style || (function () {
 		{
 			type: "obc",
 			name: "OBC",
-			className: "obc-theme",
-			file: "/css/themes/obc.css",
-			isUnlocked: function () {
-				return new Promise(function (resolve, reject) {
-					resolve(true);
-				});
-			}
+			className: "obc-theme-v2",
+			file: "/css/themes/obcV2.css"
 		}, {
 			type: "easter",
 			name: "Easter",
 			className: "easter-theme",
-			file: "/css/themes/easter.css",
-			isUnlocked: function () {
-				return new Promise(function (resolve, reject) {
-					RPlus.premium.allThemesUnlocked(Roblox.users.authenticatedUserId).then(function (e) {
-						resolve(e);
-					}).catch(reject);
-				});
-			}
+			file: "/css/themes/easter.css"
 		}];
 	var themeTypes = {};
 
