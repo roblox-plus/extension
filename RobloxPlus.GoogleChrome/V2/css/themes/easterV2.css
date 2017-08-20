@@ -10,7 +10,7 @@
 /* Background */
 .easter-theme-v2 .container-main,
 .easter-theme-v2 #navContent {
-	background: url(images/EasterBackground.png) top center repeat-x rgb(254, 212, 252);
+	background: url(images/themes/easter/EasterBackground.png) top center repeat-x rgb(254, 212, 252);
 }
 
 .easter-theme-v2 .container-footer {
@@ -100,7 +100,7 @@
 }
 
 .easter-theme-v2 #header {
-	background-image: url(images/EasterBar.png);
+	background-image: url(images/themes/easter/EasterBar.png);
 	background-repeat: repeat-x;
 }
 
@@ -110,7 +110,7 @@
 .easter-theme-v2 .icon-nav-inventory, 
 .easter-theme-v2 .icon-nav-group, 
 .easter-theme-v2 .icon-nav-shop {
-	background-image: url(images/EasterIcons.svg);
+	background-image: url(images/themes/easter/EasterIcons.svg);
 }
 
 /* Chat */

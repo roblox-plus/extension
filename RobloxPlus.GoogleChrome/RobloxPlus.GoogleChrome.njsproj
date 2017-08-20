@@ -45,6 +45,8 @@
     <Folder Include="V2\css\themes\" />
     <Folder Include="V2\images\" />
     <Folder Include="V2\images\icons\" />
+    <Folder Include="V2\images\themes\" />
+    <Folder Include="V2\images\themes\easter\" />
     <Folder Include="V2\lib\" />
     <Folder Include="V2\lib\jquery\" />
     <Folder Include="V2\lib\rplus\" />
@@ -75,9 +77,9 @@
     <Content Include="V2\css\themes\obcV2.css">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="V2\images\EasterBackground.png" />
-    <Content Include="V2\images\EasterBar.png" />
-    <Content Include="V2\images\EasterIcons.svg" />
+    <Content Include="V2\images\themes\easter\EasterBackground.png" />
+    <Content Include="V2\images\themes\easter\EasterBar.png" />
+    <Content Include="V2\images\themes\easter\EasterIcons.svg" />
     <Content Include="V2\images\icons\favicon.ico" />
     <Content Include="V2\images\icons\icon_128x128.png" />
     <Content Include="V2\images\icons\icon_16x16.png" />
@@ -85,7 +87,6 @@
     <Content Include="V2\images\icons\icon_32x32.png" />
     <Content Include="V2\images\icons\icon_64x64.png" />
     <Content Include="V2\images\navicon.png" />
-    <Content Include="V2\images\navicon2.png" />
     <Content Include="V2\images\notifier.png" />
     <Content Include="V2\manifest.json" />
   </ItemGroup>
