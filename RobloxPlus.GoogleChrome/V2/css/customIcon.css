@@ -10,23 +10,6 @@
 	color: rgb(230, 61, 59);
 }
 
-
-/* Theme images */
-.easter-theme,.easter-theme .nav-content-inner{
-	background: url(images/EasterBackground.png) top center repeat-x rgb(255, 218, 254);
-}
-
-.easter-theme .icon-nav-profile,.easter-theme .icon-nav-friends,.easter-theme .icon-nav-charactercustomizer,.easter-theme .icon-nav-inventory,.easter-theme .icon-nav-group,.easter-theme .icon-nav-shop{
-	background-image: url(images/EasterIcons.svg);
-}
-
-.easter-theme #header{
-	background-image: url(images/EasterBar.png);
-	background-repeat: repeat-x;
-}
-
-
-
 /* Forums */
 .forum-post a[href*='2518656']>span{
 	background-image: url(images/icons/icon_16x16.png);

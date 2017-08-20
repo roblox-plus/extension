@@ -4,6 +4,8 @@
 	- Background: 34, 34, 34
 	- Navigation: 49, 49, 49
 	- Bubbles: 79, 79, 79
+	
+	TODO: How do radio buttons get their border when clicked?
 */
 /* Background */
 .obc-theme-v2 .container-main, .obc-theme-v2 #navContent {
@@ -47,7 +49,7 @@
 }
 
 .obc-theme-v2 .dropdown-menu li:hover,
-.notification-stream-list .notification-stream-item:hover,
+.obc-theme-v2 .notification-stream-list .notification-stream-item:hover,
 .obc-theme-v2 .input-group-btn .dropdown-menu li a:hover,
 .obc-theme-v2 .input-group-btn .dropdown-menu li a:focus,
 .obc-theme-v2 .input-group-btn .dropdown-menu li a.active,
@@ -84,8 +86,8 @@
 }
 
 
-.rbx-header .rbx-navbar li .nav-menu-title:hover,
-.rbx-header .rbx-navbar li .nav-menu-title:focus {
+.obc-theme-v2 .rbx-header .rbx-navbar li .nav-menu-title:hover,
+.obc-theme-v2 .rbx-header .rbx-navbar li .nav-menu-title:focus {
 	background-color: rgba(25, 25, 25, 0.75);
 }
 

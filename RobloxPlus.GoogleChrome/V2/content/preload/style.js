@@ -12,8 +12,8 @@ RPlus.style = RPlus.style || (function () {
 		}, {
 			type: "easter",
 			name: "Easter",
-			className: "easter-theme",
-			file: "/css/themes/easter.css"
+			className: "easter-theme-v2",
+			file: "/css/themes/easterV2.css"
 		}];
 	var themeTypes = {};
 
