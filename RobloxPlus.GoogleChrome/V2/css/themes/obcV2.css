@@ -19,7 +19,7 @@
 .obc-theme-v2 .content,
 .obc-theme-v2 #BodyWrapper {
 	background-color: rgba(255, 255, 255, 0.4);
-	padding: 10px;
+	outline: rgba(255, 255, 255, 0.4) solid 10px;
 }
 
 .obc-theme-v2 #Body {
