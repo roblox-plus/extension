@@ -21,10 +21,14 @@
 	color: rgb(91, 56, 109);
 }
 
-.easter-theme-v2 .container-main > .content,
+.easter-theme-v2 .container-main > .content {
+	background-color: #E3E3E3;
+	outline: #E3E3E3 solid 10px;
+}
+
 .easter-theme-v2 #BodyWrapper {
-	background-color: rgba(255, 255, 255, 0.4);
-	outline: rgba(255, 255, 255, 0.4) solid 10px;
+	background-color: white;
+	outline: white solid 10px;
 }
 
 .easter-theme-v2 #Body {

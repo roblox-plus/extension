@@ -16,10 +16,14 @@
 	background-color: rgb(34, 34, 34);
 }
 
-.obc-theme-v2 .container-main > .content,
+.obc-theme-v2 .container-main > .content {
+	background-color: #E3E3E3;
+	outline: #E3E3E3 solid 10px;
+}
+
 .obc-theme-v2 #BodyWrapper {
-	background-color: rgba(255, 255, 255, 0.4);
-	outline: rgba(255, 255, 255, 0.4) solid 10px;
+	background-color: white;
+	outline: white solid 10px;
 }
 
 .obc-theme-v2 #Body {
