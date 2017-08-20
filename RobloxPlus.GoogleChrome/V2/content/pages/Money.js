@@ -61,10 +61,6 @@ RPlus.Pages.Money = function () {
 	}));
 
 	setInterval(function () {
-		if (!Roblox.hasOwnProperty("page") || !Roblox.page.hasOwnProperty("user")) {
-			return;
-		}
-
 		storage.get("tradePageRapAssist", function (on) {
 			if (!on) { return; }
 			$("#TradeItems_tab .TradeItemsContainer>table>tbody>tr.datarow:not([rplus])").each(function () {
