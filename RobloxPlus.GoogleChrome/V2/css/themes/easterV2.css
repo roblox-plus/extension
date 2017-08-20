@@ -22,10 +22,13 @@
 }
 
 .easter-theme-v2 .content,
-.easter-theme-v2 #Body,
 .easter-theme-v2 #BodyWrapper {
 	background-color: rgba(255, 255, 255, 0.4);
-	outline: rgba(255, 255, 255, 0.4) solid 10px;
+	padding: 10px;
+}
+
+.easter-theme-v2 #Body {
+	background: transparent;
 }
 
 /* Standard */

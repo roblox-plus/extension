@@ -17,10 +17,13 @@
 }
 
 .obc-theme-v2 .content,
-.obc-theme-v2 #Body,
 .obc-theme-v2 #BodyWrapper {
 	background-color: rgba(255, 255, 255, 0.4);
-	outline: rgba(255, 255, 255, 0.4) solid 10px;
+	padding: 10px;
+}
+
+.obc-theme-v2 #Body {
+	background: transparent;
 }
 
 /* Standard */
@@ -38,6 +41,7 @@
 }
 
 .obc-theme-v2 .radio label:hover::before,
+.obc-theme-v2 .radio input[type="radio"]:focus + label::before,
 .obc-theme-v2 .checkbox label:hover::before,
 .obc-theme-v2 .checkbox input[type="checkbox"]:focus + label::before,
 .obc-theme-v2 .input-field:focus {
