@@ -33,7 +33,11 @@ RPlus.Pages.ComposeMessage = function () {
 		return recipients;
 	}
 
-	addRecipient.input = $("<input>").attr("placeholder", "Add username").enterBlur().blur(function () {
+	addRecipient.input = $("<input>").attr("placeholder", "Add username").keyup(function(e) {
+		if (e.keyCode === 13) {
+			$(this).blur();
+		}
+	}).blur(function () {
 		if ($(this).val()) {
 			addRecipient($(this).val());
 		}

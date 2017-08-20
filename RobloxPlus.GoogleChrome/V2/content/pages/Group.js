@@ -11,11 +11,11 @@ RPlus.Pages.Group = function () {
 	console.log("Group:", id);
 
 	var shoutInput = $("#ctl00_cphRoblox_GroupStatusPane_StatusTextBox").attr("placeholder", "Enter group shout").attr("maxlength", "255").removeClass("default").removeAttr("value").removeAttr("onfocus");
-	var shoutChar = function () { $("#ctl00_cphRoblox_GroupStatusPane_StatusSubmitButton").val("Shout (" + (255 - tostring(shoutInput.val()).length) + ")"); };
+	var shoutChar = function () { $("#ctl00_cphRoblox_GroupStatusPane_StatusSubmitButton").val("Shout (" + (255 - (shoutInput.val() || "").length) + ")"); };
 	shoutInput.keyup(shoutChar).keydown(shoutChar).keypress(shoutChar).change(shoutChar).trigger("change");
 
 	var postInput = $("#ctl00_cphRoblox_GroupWallPane_NewPost").attr("maxlength", "500");
-	var postChar = function () { $("#ctl00_cphRoblox_GroupWallPane_NewPostButton").val("Post (" + (500 - tostring(postInput.val()).length) + ")"); };
+	var postChar = function () { $("#ctl00_cphRoblox_GroupWallPane_NewPostButton").val("Post (" + (500 - (postInput.val() || "").length) + ")"); };
 	postInput.keyup(postChar).keydown(postChar).keypress(postChar).change(postChar).trigger("change");
 
 	storage.get(["groupShoutNotifierList", "groupShoutNotifier_mode", "groupRoleDisplay"], function (s) {

@@ -167,7 +167,7 @@ fixCB(({
 					t = "";
 				}
 				var vid = y.toLowerCase() == "youtu.be" ? url.path(z).substring(1) : url.param("v", z);
-				return vid ? $("<a target=\"_blank\">").attr("data-video", vid).attr("href", "https://youtu.be/" + vid + t).text(" youtu.be/" + vid + t).prepend($("<span>")).outerHtml() : x;
+				return vid ? $("<a target=\"_blank\">").attr("data-video", vid).attr("href", "https://youtu.be/" + vid + t).text(" youtu.be/" + vid + t).prepend($("<span>"))[0].outerHTML : x;
 			}).replace(/r\+:\/\/(\d+)/gi, function (x, y) {
 				return "<a href=\"" + Roblox.catalog.getAssetUrl(y) + "\" target=\"_blank\">" + Roblox.catalog.getAssetUrl(y) + "</a>";
 			}).replace(/(^|\W)R\+/gi, function (x, y) {
