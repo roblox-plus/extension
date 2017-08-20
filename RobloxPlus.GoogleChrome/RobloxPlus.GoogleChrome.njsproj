@@ -117,7 +117,7 @@
     <Compile Include="V2\background\notifiers\tradeNotifier.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="V2\content.js" />
+    <Compile Include="V2\content\content.js" />
     <Compile Include="V2\content\preload\loadStylesheets.js">
       <SubType>Code</SubType>
     </Compile>
@@ -193,6 +193,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="V2\lib\rplus\RobloxPlus.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="V2\lib\rplus\settings.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="V2\middle.js" />

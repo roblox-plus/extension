@@ -151,7 +151,7 @@ RPlus.Pages.ForumAddPost = function () {
 		});
 	}
 
-	rplusSettings.get().then(function (settings) {
+	RPlus.settings.get().then(function (settings) {
 		var floodcheck = settings.forumFloodCheck || 15;
 		setInterval(function () {
 			storage.get("forums", function (f) {

@@ -55,6 +55,7 @@
 				"/lib/preroblox.js",
 
 				"/lib/rplus/RobloxPlus.js",
+				"/lib/rplus/settings.js",
 				"/lib/rplus/copiedAssets.js",
 				"/lib/rplus/premium.js"
 			],
@@ -84,7 +85,7 @@
 				"/content/core/quickInfoBox.js",
 
 				"/middle.js",
-				"/content.js",
+				"/content/content.js",
 				"/content/notificationStream.js",
 
 				"/content/pages/Login.js",

@@ -149,7 +149,7 @@ if (browser.name == "Chrome") {
 			}
 		}
 
-		rplusSettings.get().then(function (ul) {
+		RPlus.settings.get().then(function (ul) {
 			var note = $.notification({
 				title: ext.manifest.name + " started",
 				context: user ? "Hello, " + user.username + "!" : "You're currently signed out",

@@ -6,8 +6,7 @@
 fixCB(({
 	"text/html": function (subdomain, upath, list, mainLoop) {
 		if (document.querySelector("#navigation .rplus-icon") || (["help", "corp", "developer", "wiki", "devforum", "blog", "api", "m", "bloxcon", "setup", "content", "polls"]).indexOf(subdomain = subdomain[subdomain.length - 3]) >= 0) { return; }
-		var isTradeWindow = !!url.send().match(/\/Trade\/TradeWindow\.aspx/i);
-
+		
 
 		function plusSlider(input) {
 			return input.each(function () {
@@ -356,9 +355,6 @@ fixCB(({
 		plusSlider($(plusSlider.selector));
 
 		$(".MediaPlayerIcon[data-mediathumb-url]").each(function () { $(this).replaceWith(soundService.robloxSound.button($(this).attr("data-mediathumb-url"), $(this).prop("tagName"))); });
-
-
-
 	}
 })[document.contentType])(window.location.hostname.split("."), url.send(), []);
 

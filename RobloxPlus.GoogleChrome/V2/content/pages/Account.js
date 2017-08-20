@@ -953,7 +953,7 @@ RPlus.Pages.Account = function () {
 	var reloadButton = $("<button>").addClass("btn-control-md").text("Reload");
 
 	updateLogButton.click(function () {
-		rplusSettings.get().then(function (s) {
+		RPlus.settings.get().then(function (s) {
 			if (s.updateLog) {
 				window.open(s.updateLog);
 			}
