@@ -89,6 +89,7 @@
 /* Forums and navigation */
 .easter-theme-v2 #header,
 .easter-theme-v2 .forum-table-header,
+.easter-theme-v2 th.tableHeaderText,
 .easter-theme-v2 .forum-table-header th,
 .easter-theme-v2 .forum-table-footer,
 .easter-theme-v2 .dialog-container .dialog-header,
@@ -121,7 +122,7 @@
 }
 
 /* Chat */
-@keyframes rplus-blink-dialog {
+@keyframes rplus-easter-blink-dialog {
 	from {
 		background-color: rgb(220, 126, 207);
 	}
@@ -133,7 +134,7 @@
 
 .easter-theme-v2 .dialog-container.active .dialog-header,
 .easter-theme-v2 .dialog-container.active .dialog-header .dialog-header-title {
-	animation: rplus-blink-dialog .5s alternate infinite;
+	animation: rplus-easter-blink-dialog .5s alternate infinite;
 }
 
 

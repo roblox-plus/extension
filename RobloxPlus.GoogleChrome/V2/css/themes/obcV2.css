@@ -82,6 +82,7 @@
 /* Forums and navigation */
 .obc-theme-v2 #header,
 .obc-theme-v2 .forum-table-header,
+.obc-theme-v2 th.tableHeaderText,
 .obc-theme-v2 .forum-table-header th,
 .obc-theme-v2 .forum-table-footer,
 .obc-theme-v2 .dialog-container .dialog-header,
@@ -100,7 +101,7 @@
 }
 
 /* Chat */
-@keyframes rplus-blink-dialog {
+@keyframes rplus-obc-blink-dialog {
 	from {
 		background-color: rgb(49, 49, 49);
 	}
@@ -112,7 +113,7 @@
 
 .obc-theme-v2 .dialog-container.active .dialog-header,
 .obc-theme-v2 .dialog-container.active .dialog-header .dialog-header-title {
-	animation: rplus-blink-dialog .5s alternate infinite;
+	animation: rplus-obc-blink-dialog .5s alternate infinite;
 }
 
 
