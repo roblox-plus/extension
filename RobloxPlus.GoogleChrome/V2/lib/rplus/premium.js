@@ -1,10 +1,10 @@
 ﻿var RPlus = RPlus || {};
 
 RPlus.premium = RPlus.premium || (function () {
-	var knownPremiums = [];
+	var knownPremiums = {};
 
 	return {
-		isPremium: $.promise.cache(function (resolve, reject, userId) {
+		getPremium: $.promise.cache(function (resolve, reject, userId) {
 			if (typeof (userId) !== "number") {
 				reject([{
 					code: 0,
@@ -14,23 +14,31 @@ RPlus.premium = RPlus.premium || (function () {
 			}
 
 			if (userId <= 0) {
-				resolve(false);
+				resolve(null);
 				return;
-			} else if (knownPremiums.includes(userId)) {
-				resolve(true);
+			} else if (knownPremiums.hasOwnProperty(userId)) {
+				resolve(knownPremiums[userId]);
 				return;
 			}
 
 			$.get("http://api.roblox.plus/v1/rpluspremium/" + userId).done(function (data) {
 				if (data.data) {
-					knownPremiums.push(userId);
-					resolve(true);
+					knownPremiums[userId] = {
+						expiration: data.data.expiration ? new Date(data.data.expiration).getTime() : null
+					};
+					resolve(knownPremiums[userId]);
 				} else {
-					resolve(false);
+					resolve(null);
 				}
 			}).fail(function () {
 				reject([{ code: 0, message: "HTTP Request Failed" }]);
 			});
+		}),
+
+		isPremium: $.promise.cache(function (resolve, reject, userId) {
+			this.getPremium(userId).then(function(premium) {
+				resolve(premium ? true : false);
+			}).catch(reject);
 		}, {
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 10 * 1000,

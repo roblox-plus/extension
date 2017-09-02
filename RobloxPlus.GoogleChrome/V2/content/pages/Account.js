@@ -54,15 +54,35 @@ RPlus.Pages.Account = function () {
 				},
 				"set": function () { },
 				"description": "Roblox+ Premium unlocks the purchase button for new collectible items, and all the website themes.",
-				"after": function(row) {
-					this.get(function(hasPremium) {
-						if (!hasPremium || Roblox.users.authenticatedUserId === 48103520) {
-							row.append($("<br>"), "To get Roblox+ Premium buy a VIP server from this place: ", $("<a>").attr({
-								"href": Roblox.games.getGameUrl(258257446, "Roblox+ Hub"),
-								"class": "text-link",
-								"target": "_blank"
-							}).text("Roblox+ Hub"));
+				"after": function (row) {
+					RPlus.premium.getPremium(Roblox.users.authenticatedUserId).then(function (premium) {
+						row.append($("<br>"));
+						var hubLink = $("<a>").attr({
+							"href": Roblox.games.getGameUrl(258257446, "Roblox+ Hub"),
+							"class": "text-link",
+							"target": "_blank"
+						}).text("Roblox+ Hub");
+
+						if (premium) {
+							if (premium.expiration) {
+								var expiration = new Date(premium.expiration);
+								row.append("You have Roblox+ Premium, thanks for the support!",
+									$("<br>"),
+									"Your premium membership expires on: " + expiration.toLocaleDateString(),
+									$("<br>"),
+									"To keep premium going after this date make sure you have automatic renewal for the VIP server turned on at the ", hubLink);
+							} else {
+								row.append("You have a lifetime Roblox+ Premium membership! Nice!",
+									$("<br>"),
+									"You are either a friend of WebGL3D, or bought it when it was still a t-shirt.",
+									$("<br>"),
+									"Either way, thanks for sticking around!");
+							}
+						} else {
+							row.append("To get Roblox+ Premium buy a VIP server from this place: ", hubLink);
 						}
+					}).catch(function() {
+						row.append($("<br>"), "Failed to load premium membership status. Try reloading the extension.");
 					});
 				}
 			},
