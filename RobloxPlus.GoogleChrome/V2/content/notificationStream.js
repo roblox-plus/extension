@@ -49,6 +49,9 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 			"href": notification.metadata.url || "javascript:/* Roblox+ */",
 			"title": message
 		});
+		var closeButton = $("<span class=\"icon-turn-off\">").attr({
+			"title": "Close notification"
+		});
 		var imageContainer = createNotificationImageContainer(notification.icon, "", notification.metadata.url);
 		var contentContainer = createNotificationContentContainer(notification.title, notification.context, message);
 
@@ -57,7 +60,14 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 			innerCard.removeAttr("disabled");
 		}
 
-		innerCard.append(imageContainer, contentContainer);
+		innerCard.click(function (e) {
+			if (e.target === closeButton[0]) {
+				notification.close();
+				return false;
+			}
+		});
+
+		innerCard.append(imageContainer, contentContainer, closeButton);
 		card.append(innerCard);
 
 		return card.hide();
