@@ -21,7 +21,7 @@ RPlus.premium = RPlus.premium || (function () {
 				return;
 			}
 
-			$.get("http://api.roblox.plus/v1/rpluspremium/" + userId).done(function (data) {
+			$.get("https://api.roblox.plus/v1/rpluspremium/" + userId).done(function (data) {
 				if (data.data) {
 					knownPremiums[userId] = {
 						expiration: data.data.expiration ? new Date(data.data.expiration).getTime() : null
