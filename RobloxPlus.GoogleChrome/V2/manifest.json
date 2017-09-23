@@ -20,7 +20,7 @@
 			"js": [
 				"/content/preload/style.js",
 				"/content/preload/loadStylesheets.js",
-				
+
 				"/lib/jquery/jquery.js",
 				"/lib/highlight.pack.js",
 				"/lib/global.js",
@@ -106,6 +106,7 @@
 				"/content/pages/forum/AddPost.js",
 				"/content/pages/Avatar.js",
 				"/content/pages/Catalog.js",
+				"/content/pages/Messages.js",
 
 				"/content/loadPages.js"
 			],
