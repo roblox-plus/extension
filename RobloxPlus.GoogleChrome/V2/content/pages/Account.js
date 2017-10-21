@@ -2,6 +2,9 @@
 RPlus.Pages = RPlus.Pages || {};
 RPlus.Pages.Account = function () {
 	if (!location.search.includes("rplus")) {
+		var li = $("<li class=\"menu-option\">");
+		var a = $("<a class=\"rbx-tab-heading text-lead\">").text(ext.manifest.name).attr("href", ext.manifest.homepage_url);
+		$("#vertical-menu").append(li.append(a));
 		return {};
 	}
 
