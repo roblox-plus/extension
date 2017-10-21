@@ -154,7 +154,7 @@ if (browser.name == "Chrome") {
 				title: ext.manifest.name + " started",
 				context: user ? "Hello, " + user.username + "!" : "You're currently signed out",
 				buttons: [
-					"Problems? Suggestions? Message me!"
+					"Problems? Suggestions? Post here!"
 				],
 				items: {
 					"Version": ext.manifest.version,
@@ -169,7 +169,7 @@ if (browser.name == "Chrome") {
 				}
 			}).buttonClick(function () {
 				note.close();
-				window.open("https://www.roblox.com/messages/compose?recipientId=48103520");
+				window.open("https://www.roblox.com/Groups/Group.aspx?gid=2518656&rbxp=48103520");
 			});
 		}).catch(function(e) {
 			console.warn("no startup notification", e);
