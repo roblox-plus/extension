@@ -52,6 +52,7 @@ $.notification = (function () {
 	var initData = ["tag", "title", "message", "context", "icon", "clickable", "items", "buttons", "metadata"];
 	var namespace = "$.notification.";
 	var notifications = {};
+	var byUserCloseOverride = {};
 	var self;
 
 
@@ -195,6 +196,13 @@ $.notification = (function () {
 		chrome.notifications.create(data.tag, creationJson, function (id) {
 			callBack(responseJson);
 			broadcast(namespace + "created", responseJson);
+
+			setTimeout(function () {
+				if (notifications.hasOwnProperty(id)) {
+					byUserCloseOverride[id] = false;
+					chrome.notifications.clear(id);
+				}
+			}, 10 * 1000);
 		});
 	}).on(namespace + "created", function (data, callBack) {
 		if (!notifications.hasOwnProperty(data.tag)) {
@@ -241,7 +249,11 @@ $.notification = (function () {
 		}
 
 		chrome.notifications.onClosed.addListener(function (tag, explicit) {
-			onClosed(tag, explicit, 0);
+			if (byUserCloseOverride.hasOwnProperty(tag)) {
+				onClosed(tag, byUserCloseOverride[tag], 0);
+			} else {
+				onClosed(tag, explicit, 0);
+			}
 		});
 		chrome.notifications.onClicked.addListener(function (tag) {
 			onClicked(tag, 0);

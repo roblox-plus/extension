@@ -33,6 +33,10 @@ RPlus.premium = RPlus.premium || (function () {
 			}).fail(function () {
 				reject([{ code: 0, message: "HTTP Request Failed" }]);
 			});
+		}, {
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 10 * 1000,
+			queued: true
 		}),
 
 		isPremium: $.promise.cache(function (resolve, reject, userId) {
