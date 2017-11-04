@@ -305,6 +305,29 @@ RPlus.Pages.Item = function () {
 		});
 	}
 
+	if(Roblox.catalog.wearableAssetTypeIds.includes(item.assetTypeId)) {
+		var tryItOnButton = $("<span>").attr({
+			class: "btn-control-md"
+		}).css({
+			"position": "absolute",
+			"bottom": "10px",
+			"left": "10px"
+		}).text("Try");
+		tryItOnButton.click(function () {
+			$.ajax({
+				type: "PUT",
+				url: "https://api.catalogheaven.com/v1/users/" + Roblox.users.authenticatedUserId + "/join-info",
+				contentType: "application/json",
+				data: JSON.stringify({ type: "asset", id: item.id })
+			}).done(function () {
+				Roblox.games.launch({ placeId: 26838733 });
+			}).fail(function () {
+				console.error("catalogheaven don't want it");
+			});
+		});
+		$("#AssetThumbnail").append(tryItOnButton);
+	}
+
 	return {};
 };
 
