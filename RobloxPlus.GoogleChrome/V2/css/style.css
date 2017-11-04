@@ -119,6 +119,13 @@ input.rplusslider[type='range']::-webkit-slider-thumb{
 }
 
 
+/* Games */		
+.rbx-running-games-footer .pager {
+	width: 250px;
+	margin: 0px auto;
+}
+
+
 
 /* Audio */
 .rplusaudio{

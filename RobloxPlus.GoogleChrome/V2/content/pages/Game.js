@@ -16,11 +16,47 @@ RPlus.Pages.Game = function () {
 	console.log("Game creator id", gameCreatorId);
 
 	var servers = {
-		search: {
-			id: 0,
-			ul: $("<ul class=\"rbx-game-server-item-container\">")
+		anchor: $("<a>"),
+		page: function () { return Number(servers.curPage.text()) || 1; },
+		maxPage: $("<span>1</span>"),
+		curPage: $("<span>1</span>"),
+		firstPage: $("<li class=\"first disabled\">").append("<a><span class=\"icon-first-page\"></span></a>").click(function () {
+			if (!$(this).hasClass("disabled")) {
+				servers.fetch(1);
+			}
+		}),
+		lastPage: $("<li class=\"last disabled\">").append("<a><span class=\"icon-last-page\"></span></a>").click(function () {
+			if (!$(this).hasClass("disabled")) {
+				servers.fetch(Number(servers.maxPage.text()) || 1);
+			}
+		}),
+		prevPage: $("<li class=\"pager-prev disabled\">").append("<a><span class=\"icon-left\"></span></a>").click(function () {
+			if (!$(this).hasClass("disabled")) {
+				servers.fetch(Math.max(1, servers.page() - 1));
+			}
+		}),
+		nextPage: $("<li class=\"pager-next disabled\">").append("<a><span class=\"icon-right\"></span></a>").click(function () {
+			if (!$(this).hasClass("disabled")) {
+				servers.fetch(Math.min(Number(servers.maxPage.text()) || 1, servers.page() + 1));
+			}
+		}),
+		fetch: function (p) {
+			if (type(p) == "number") {
+				servers.curPage.text(p.toString());
+			}
+			servers.firstPage.toggleClass("disabled", servers.page() <= 1);
+			servers.prevPage.toggleClass("disabled", servers.page() <= 1);
+			servers.anchor.attr("href", "javascript:Roblox.AllRunningGameInstances.fetchServers(" + placeId + "," + ((servers.page() - 1) * 10) + ");")[0].click();
 		}
 	};
+
+	$(".rbx-running-games-footer").html("").append($("<ul class=\"pager\">")
+		.append(servers.firstPage)
+		.append(servers.prevPage)
+		.append($("<li class=\"pager-cur\"></li>").append(servers.curPage))
+		.append($("<li class=\"pager-total\"><span class=\"fixed-spacing\">of</span></li>").append(servers.maxPage))
+		.append(servers.nextPage)
+		.append(servers.lastPage));
 
 	$(".rbx-gear-item-delete>.icon-delete").addClass("icon-alert");
 
@@ -48,69 +84,12 @@ RPlus.Pages.Game = function () {
 		});
 		return ret.append(playerList);
 	}
-
-	$("#game-instances").prepend($("<div class=\"container-list\">").prepend("<div class=\"container-header\"><h3>Server Search</h3></div>").append(
-		$("<input class=\"input-field\" maxlength=\"25\" placeholder=\"Username\" style=\"height: 24px;margin-bottom: 5px;\"/>").blur(function () {
-			var el = $(this);
-			if (el.val()) {
-				var id = ++servers.search.id;
-				servers.search.ul.html("");
-				Roblox.users.getByUsername(el.val()).then(function (u) {
-					if (id !== servers.search.id) {
-						return;
-					}
-					if (u.username.toLowerCase() != el.attr("placeholder").toLowerCase() && u.id) {
-						el.attr("placeholder", u.username);
-						Roblox.users.getPresence([u.id]).then(function (presences) {
-							var presence = presences[u.id];
-							if (!presence || presence.locationType !== 4
-								|| (presence.game && presence.game.placeId !== placeId)
-								|| (!presence.game && Roblox.users.authenticatedUserId !== 48103520 && Roblox.users.authenticatedUserId !== gameCreatorId)) {
-								// Override for the developer of the game, and me
-								servers.search.ul.text("User either is not playing this game, or their privacy settings won't allow you to search for them.");
-								return;
-							}
-
-							Roblox.games.getAllRunningServers(placeId).then(function (serverList) {
-								if (id !== servers.search.id) {
-									return;
-								}
-								var serversFound = [];
-								serverList.forEach(function (server) {
-									for (var pn = 0; pn < server.playerList.length; pn++) {
-										if (server.playerList[pn].id === u.id) {
-											servers.search.ul.append(buildServerListItem(placeId, server));
-											serversFound.push(server);
-											break;
-										}
-									}
-									if (serversFound.length <= 0) {
-										servers.search.ul.text("No server with " + u.username + " found!");
-									}
-								});
-							}).catch(function () {
-								if (id !== servers.search.id) {
-									return;
-								}
-								servers.search.ul.text("Failed to load servers.");
-							});
-						}).catch(function (e) {
-							servers.search.ul.text("Failed to check user presence.");
-						});
-					} else if (!u.id) {
-						servers.search.ul.text("User not found");
-					}
-				}, function () {
-					servers.search.ul.text("Failed to load user.");
-				});
-				el.val("");
-			}
-		}).keyup(function (e) {
-			if (e.keyCode == 13) {
-				$(this).blur();
-			}
-		})
-	).append(servers.search.ul));
+	
+	$(".rbx-running-games-refresh").click(function () {
+		servers.curPage.text("1");
+		servers.firstPage.addClass("disabled");
+		servers.prevPage.addClass("disabled");
+	});
 
 	if (placeId === 258257446) {
 		$(".create-server-banner-text").text("Purchasing a VIP server in this place will activate Roblox+ Premium!\nRoblox+ Premium will unlock:\n\tA purchase button on new limited notifications\n\tThe Roblox+ Easter site theme")
