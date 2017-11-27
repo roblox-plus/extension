@@ -27,6 +27,7 @@ RPlus.premium = RPlus.premium || (function () {
 						expiration: data.data.expiration ? new Date(data.data.expiration).getTime() : null
 					};
 					resolve(knownPremiums[userId]);
+					RPlus.notifiers.catalog.updateToken();
 				} else {
 					resolve(null);
 				}
