@@ -81,6 +81,17 @@
 	height: 110px;
 }
 
+#rplus-quickinfo .avatar-card-container .rplus-icon-32x32 {
+	display: none;
+}
+
+#rplus-quickinfo .avatar-card-container[data-is-premium='true'] .rplus-icon-32x32 {
+	display: block;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
 
 
 /* WebGL3D */

@@ -32,6 +32,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 				var cardLabel1 = $("<div class=\"avatar-card-label\">");
 				var cardLabel2 = $("<div class=\"avatar-card-label\">");
 				var detailsLink = $("<a class=\"text-link text-overflow avatar-status-link\">");
+				var rplusPremiumIcon = $("<span class=\"rplus-icon-32x32\">");
 
 				var followButton = $("<button class=\"btn-primary-md\">").text("Join Game");
 
@@ -39,7 +40,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 				presenceAnchor.append(presenceIcon);
 				character.append(headshotAnchor, presenceAnchor);
 
-				details.append(username, cardLabel1, cardLabel2, detailsLink);
+				details.append(username, cardLabel1, cardLabel2, detailsLink, rplusPremiumIcon);
 
 				cardButtons.append(followButton);
 
@@ -111,9 +112,9 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 		var currentDisplayTargetId = 0;
 
 		var userPresenceIcons = {
-			[2]: "online",
-			[3]: "studio",
-			[4]: "game"
+			"2": "online",
+			"3": "studio",
+			"4": "game"
 		};
 
 		function processUserDisplay(user, expectedProcessingId) {
@@ -137,6 +138,29 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			containers.user.find(".avatar-name").text(user.username);
 			containers.user.find(".avatar-card-label").text("");
 			containers.user.find(".avatar-card-btns").slideUp();
+
+			Roblox.users.getAuthenticatedUser().then(function (authenticatedUser) {
+				if (expectedProcessingId !== processingId || authenticatedUser == null || authenticatedUser.id !== 48103520) {
+					return;
+				}
+
+				RPlus.premium.getPremium(user.id).then(function (premium) {
+					if (expectedProcessingId !== processingId) {
+						return;
+					}
+
+					var expiration = premium && premium.expiration ? new Date(premium.expiration) : null;
+					containers.user.find(".avatar-card-container").attr({
+						"data-premium-expiration": expiration ? expiration.getTime() : "null",
+						"data-is-premium": premium != null
+					});
+					containers.user.find(".avatar-card-container .rplus-icon-32x32").attr("title", "Expiration: " + (expiration ? expiration.toLocaleDateString() : "Lifetime"));
+				}).catch(function(e) {
+					console.error(e);
+				});
+			}).catch(function(e) {
+				console.error(e);
+			});
 
 			Roblox.users.getPresence([user.id]).then(function (presence) {
 				if (expectedProcessingId !== processingId) {
