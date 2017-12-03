@@ -153,6 +153,29 @@ RPlus.Pages.Account = function () {
 				"set": function () { },
 				"description": "When a new collectible item comes out in the catalog if you have this enabled you will have a purchase button directly on the notification."
 			}, {
+				"name": "Automatically take new free items",
+				"type": typeof (true),
+				"disabled": function (callBack) {
+					RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(function (premium) {
+						callBack(!premium);
+					}).catch(function () {
+						callBack(true);
+					});
+				},
+				"get": function (callBack) {
+					RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(function (premium) {
+						storage.get("autoTakeFreeItems", function (autoTake) {
+							callBack(!!(premium && autoTake));
+						});
+					}).catch(function () {
+						callBack(false);
+					});
+				},
+				"set": function (val) {
+					storage.set("autoTakeFreeItems", val);
+				},
+				"description": "When a new free item created by Roblox comes out in the catalog it will automatically be purchased for you."
+			}, {
 				"name": "Live collectible remaining counter",
 				"type": typeof (true),
 				"storage": "remainingCounter",
@@ -808,7 +831,11 @@ RPlus.Pages.Account = function () {
 							});
 							var label = $("<label>").attr("for", id).text(setting.name);
 
-							if (setting.disabled) {
+							if(typeof(setting.disabled) === "function") {
+								setting.disabled(function (isDisabled) {
+									checkbox.prop("disabled", isDisabled);
+								});
+							} else if (setting.disabled) {
 								checkbox.prop("disabled", true);
 							}
 

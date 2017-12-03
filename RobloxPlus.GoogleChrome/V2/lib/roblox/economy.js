@@ -28,7 +28,7 @@ Roblox.economy = (function () {
 		}),
 
 		purchaseProduct: $.promise.cache(function (resolve, reject, productId, expectedPrice) {
-			if (typeof (expectedPrice) != "number" || expectedPrice <= 0) {
+			if (typeof (expectedPrice) != "number" || expectedPrice < 0 || Math.floor(expectedPrice) !== expectedPrice) {
 				reject([{
 					code: 0,
 					message: "Invalid expectedPrice"
@@ -37,14 +37,14 @@ Roblox.economy = (function () {
 			}
 
 			Roblox.catalog.getProductInfo(productId).then(function (product) {
-				if (!product.isForSale) {
+				if ((!product.isFree && expectedPrice === 0) || (!product.isForSale && expectedPrice > 0)) {
 					reject([{
 						code: 0,
 						message: "Asset is not for sale."
 					}]);
 					return;
 				}
-				if (product.robuxPrice != expectedPrice) {
+				if ((expectedPrice === 0 && !product.isFree) || product.robuxPrice !== expectedPrice) {
 					reject([{
 						code: 0,
 						message: "Price changed"

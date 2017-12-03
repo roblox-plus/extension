@@ -11,11 +11,11 @@ RPlus.notifiers.catalog = (function () {
 				}).done(function () {
 					lastRegistration = +new Date;
 				}).fail(function () {
-					setTimeout(updateToken, 5000);
+					setTimeout(updateToken, 15000);
 				});
 			});
 		}).catch(function () {
-			setTimeout(updateToken, 5000);
+			setTimeout(updateToken, 15000);
 		});
 	}
 
@@ -78,28 +78,53 @@ RPlus.notifiers.catalog = (function () {
 			}
 		});
 	}
-	
-	function processTopicMessage(topic) {
-		topic = "/topics/" + topic;
-		return function (message) {
-			if (message.from !== topic) {
-				return;
-			}
 
-			console.log("Message from: " + topic, message);
+	function processMessage(message) {
+		console.log("Message from: " + message.from, message);
+
+		if (message.from === "/topics/catalog-notifier" || message.from === "/topics/catalog-notifier-premium") {
 			if (message.data && message.data.notification) {
 				try {
 					processNotification(JSON.parse(message.data.notification));
-				} catch(e) {
+				} catch (e) {
 					console.error("Failed to parse notification.", message);
 				}
 			}
-		};
-	}
+		} else if (message.from === "/topics/catalog-notifier-freebies") {
+			try {
+				storage.get("autoTakeFreeItems", function (autoTake) {
+					if(!autoTake) {
+						return;
+					}
 
-	var processMessage = processTopicMessage("catalog-notifier-premium");
+					var asset = message.data;
+					var productId = Number(asset.ProductId);
+					var isFree = (asset.IsFree || "").toString() === "true";
+					console.log("IT'S FREE!", asset);
+					if (isFree && productId) {
+						Roblox.economy.purchaseProduct(productId, 0).then(function (receipt) {
+							console.log("Got me a freebie", receipt);
+							$.notification({
+								title: "Purchased new free item!",
+								context: asset.Name,
+								icon: Roblox.thumbnails.getAssetThumbnailUrl(Number(asset.Id), 4),
+								clickable: true,
+								metadata: {
+									url: asset.Uri
+								}
+							});
+						}).catch(function (e) {
+							console.error("Did a new item really come out? Why did this fail to purchase?", e);
+						});
+					}
+				});
+			} catch (e) {
+				console.error("Failed to parse asset.", message);
+			}
+		}
+	}
+	
 	chrome.gcm.onMessage.addListener(processMessage);
-	chrome.gcm.onMessage.addListener(processTopicMessage("catalog-notifier"));
 	chrome.instanceID.onTokenRefresh.addListener(updateToken);
 
 	ipc.on("catalogNotifier:testBuyButton", function () {
