@@ -1,6 +1,6 @@
 ﻿#updateLogText, #updateLogEdit {
 	width: calc(100% - 20px);
-	height: 192px;
+	height: 256px;
 	padding: 5px;
 	overflow-x: hidden;
 	overflow-y: auto;
