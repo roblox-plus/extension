@@ -1,0 +1,11 @@
+﻿#updateLogText, #updateLogEdit {
+	width: calc(100% - 20px);
+	height: 192px;
+	padding: 5px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#GroupsPeoplePane_Clan[rplus-update-log] {
+	padding: 20px;
+}

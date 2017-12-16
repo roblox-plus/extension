@@ -69,6 +69,8 @@ rplus.startup("$", function () {
 
 		setInterval(function () {
 			datTipsy($("#BuyWithRobux>div[data-item-id='391072534'][title]"), { "gravity": "s" });
+
+			$("[rplus-linkify-ready]").removeAttr("rplus-linkify-ready").linkify();
 		}, 250);
 	});
 });

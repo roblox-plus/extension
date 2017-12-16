@@ -58,6 +58,9 @@
     <Content Include="V2\css\pages\account.css">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="V2\css\pages\groups.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="V2\css\roblox\itemCards.css">
       <SubType>Code</SubType>
     </Content>

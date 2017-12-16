@@ -71,6 +71,47 @@ RPlus.Pages.Group = function () {
 				}
 			}).find(">a[href^='javascript']").removeAttr("style");
 		}, 250);
+	} else if (id === 2518656) {
+		$("#GroupsPeople_Clan").text("Update Log " + ext.manifest.version);
+
+		var updateLogText = $("<pre id=\"updateLogText\">").text("Loading update log...");
+		var updateLogPane = $("#GroupsPeoplePane_Clan").attr("rplus-update-log", +new Date);
+		updateLogPane.html(updateLogText);
+
+		RPlus.style.loadStylesheet(ext.getUrl("/css/pages/groups.css"));
+		RPlus.settings.get().then(function (settings) {
+			try {
+				updateLogText.text(atob(settings.updateLogPost)).attr("rplus-linkify-ready", +new Date);
+			} catch(e) {
+				updateLogText.text("No update log to display right now.");
+			}
+
+			if (Roblox.users.authenticatedUserId === 48103520) {
+				var editBox = $("<textarea id=\"updateLogEdit\">").val(updateLogText.text()).hide();
+				updateLogText.after(editBox);
+				updateLogPane.dblclick(function (e) {
+					if (e.target !== updateLogPane[0]) {
+						return;
+					}
+
+					if (updateLogText.is(":hidden")) {
+						updateLogText.show();
+						editBox.hide();
+						RPlus.settings.set({ "updateLogPost": btoa(editBox.val()) }).then(function () {
+							updateLogText.text(editBox.val()).attr("rplus-linkify-ready", +new Date);
+						}).catch(function () {
+							updateLogText.text("Failed to update update log.");
+						});
+					} else {
+						updateLogText.hide();
+						editBox.show();
+					}
+				});
+			}
+		}).catch(function (e) {
+			console.error(e);
+			updateLogText.html($("<b>").text("Failed to load update log. :("));
+		});
 	}
 
 	return {};
