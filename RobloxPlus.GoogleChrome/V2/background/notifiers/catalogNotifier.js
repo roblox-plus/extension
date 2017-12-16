@@ -84,11 +84,17 @@ RPlus.notifiers.catalog = (function () {
 
 		if (message.from === "/topics/catalog-notifier" || message.from === "/topics/catalog-notifier-premium") {
 			if (message.data && message.data.notification) {
-				try {
-					processNotification(JSON.parse(message.data.notification));
-				} catch (e) {
-					console.error("Failed to parse notification.", message);
-				}
+				storage.get("itemNotifier", function (itemNotifierOn) {
+					if(!itemNotifierOn) {
+						return;
+					}
+
+					try {
+						processNotification(JSON.parse(message.data.notification));
+					} catch (e) {
+						console.error("Failed to parse notification.", message);
+					}
+				});
 			}
 		} else if (message.from === "/topics/catalog-notifier-freebies") {
 			try {
