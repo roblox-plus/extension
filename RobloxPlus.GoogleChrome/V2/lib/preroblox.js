@@ -21,7 +21,6 @@ soundService.robloxSound = function (id, callBack) {
 // These are dummies that exist for the garbage in other scripts
 catalog = {};
 users = {};
-forumService = {};
 
 
 // WebGL3D

@@ -87,137 +87,7 @@ fixCB(({
 			});
 			return button;
 		};
-
-
-		forumService.signatureTips = [
-			"Up to 256 characters, one line",
-			"Start with #code to use Lua syntax",
-			"Compress item links with r+://ID",
-			"Add #Robux to display your Robux",
-			"Add #RAP to display your RAP"
-		];
-
-		forumService.parseSignature = function (sig, callBack) {
-			if (sig.toLowerCase().indexOf("#rap") >= 0) {
-				Roblox.users.getCurrentUserId().then(function (id) {
-					Roblox.inventory.getCollectibles(id).then(function (inv) {
-						callBack(forumService.parseSignature.finish(sig.replace(/#rap/gi, addComma(inv.rap))));
-					}, function() {
-						callBack(forumService.parseSignature.finish(sig));
-					});
-				}, function () {
-					callBack(forumService.parseSignature.finish(sig));
-				});
-			} else {
-				callBack(forumService.parseSignature.finish(sig));
-			}
-		};
-		forumService.parseSignature.finish = function (sig) {
-			return sig.replace(/#Robux/gi, "R$" + addComma($("#nav-robux-balance").text())).trim();
-		};
-
-		forumService.embed = function (content, maxImages, size) {
-			if (content.html(content.html().replace(/<\s*br\s*\/?>/g, "\n")).html().toLowerCase().indexOf("#code") >= 0) {
-				var newHtml = "";
-				var lines = 0;
-				var blankLine = false;
-				content.html().split(/\n/).forEach(function (line) {
-					var newBlock = line.trim().toLowerCase().startsWith("#code");
-					if (newBlock) {
-						if (lines) {
-							newHtml += "</code></span>";
-							lines = 0;
-						}
-						newHtml += "<span class=\"rplusLua\"><span></span><code class=\"lua hljs\">";
-					}
-					if (newBlock || (lines && line.startsWith("\t"))) {
-						newHtml += (lines++ && !blankLine ? "\n" : "") + (line = line.substring(newBlock ? 6 : 1).trim());
-						blankLine = lines == 1 && !line;
-					} else if (lines) {
-						newHtml += "</code></span>" + line + "\n";
-						lines = 0;
-					} else {
-						newHtml += line + "\n";
-					}
-				});
-				if (lines) {
-					newHtml += "</code></span>";
-					lines = 0;
-				}
-				content.html(newHtml).find(".rplusLua").each(function () {
-					for (var lines = 0; lines < $(this).find("code").html().split(/\n/).length; ++lines) {
-						$(this).find("span").append((lines === 0 ? "" : "\n") + (lines + 1).toString());
-					}
-					$(this).css("height", ((17 * lines) + 6) + "px").find("span").css("height", (17 * lines) + "px");
-					if ($(this).find("code").html()) {
-						hljs.highlightBlock($(this).find("code").css("height", (17 * lines) + "px")[0]);
-					} else {
-						$(this).remove();
-					}
-				});
-			}
-			content.html(content.html().replace(/(^|\W)R\$(\d[\d,]+)/gi, function (x, y, z) {
-				return y + "<span class=\"robux\">" + z + "</span>";
-			}).replace(/(^|\W)Ti?x(\d[\d,]+)/gi, function (x, y, z) {
-				return y + "<span class=\"tickets\">" + z + "</span>";
-			}).replace(/h?t?t?p?s?:?\/{0,2}w?w?w?\.?(youtu.be|youtube.com)(\/?[^\s<]*)/gi, function (x, y, z) {
-				var t = url.param("t", z) ? "?t=" + url.param("t", z) : "";
-				if (!t.match(/^\d*m?\d+s?$/) && !Number(t)) {
-					t = "";
-				}
-				var vid = y.toLowerCase() == "youtu.be" ? url.path(z).substring(1) : url.param("v", z);
-				return vid ? $("<a target=\"_blank\">").attr("data-video", vid).attr("href", "https://youtu.be/" + vid + t).text(" youtu.be/" + vid + t).prepend($("<span>"))[0].outerHTML : x;
-			}).replace(/r\+:\/\/(\d+)/gi, function (x, y) {
-				return "<a href=\"" + Roblox.catalog.getAssetUrl(y) + "\" target=\"_blank\">" + Roblox.catalog.getAssetUrl(y) + "</a>";
-			}).replace(/(^|\W)R\+/gi, function (x, y) {
-				return y + "<a href=\"/Groups/Group.aspx?gid=2518656\"><span></span></a>";
-			})).find("a[href*='item'],a[href*='/catalog/']").each(function () {
-				var anc = $(this);
-				var u = anc.attr("href") || "";
-				var assetId = Roblox.catalog.getIdFromUrl(u);
-				if (assetId > 0) {
-					Roblox.catalog.getAssetInfo(Roblox.catalog.getIdFromUrl(u)).then(function (asset) {
-						if (asset.assetType == "Audio") {
-							anc.text(" " + asset.name.trim()).before(soundService.robloxSound.button(asset.id));
-						} else if ((asset.assetType == "Image" || asset.assetType == "Decal") && maxImages-- > 0) {
-							anc.html("").append($("<img>").css({ "width": size + "px", "height": size + "px" }).attr("alt", u).attr("title", asset.name).attr("src", Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 9)));
-						} else if (asset.assetType == "Image" || asset.assetType == "Decal") {
-							anc.text(asset.name);
-						}
-					});
-				}
-			});
-			content.find("a[href*='youtu.be'][data-video]").each(function (i) {
-				if (i < 3) {
-					var anc = $(this);
-					forumService.youtube(anc.attr("data-video")).then(function (t) {
-						var time = 0;
-						var turl = url.param("t", anc.attr("href"));
-						if (turl.match(/\d+s/i)) {
-							time = Number((turl.match(/(\d+)s/i) || [0, 0])[1]) || 0;
-							time += (Number((turl.match(/(\d+)m/i) || [0, 0])[1]) || 0) * 60;
-						} else {
-							time = Number(turl) || 0;
-						}
-						var frame = $("<iframe width=\"560\" height=\"315\" frameborder=\"0\" allowfullscreen>").attr("src", "https://www.youtube-nocookie.com/embed/" + anc.attr("data-video") + "?rel=0&start=" + time).attr("style", "margin-right: calc(100% - 560px);").hide();
-						anc.after(frame);
-						content.find(".rplusLua").each(function () {
-							var s = $(this);
-							$(this).find("iframe").each(function () {
-								s.after($(this));
-							});
-						});
-						anc.find("span").attr("title", t).click(function (e) {
-							e.preventDefault();
-							frame[frame.is(":hidden") ? "slideDown" : "slideUp"]();
-						});
-					}).catch(function(e) {
-						console.warn("Failed to get video title", anc.attr("data-video"), e);
-					});
-				}
-			});
-		};
-
+		
 		mainLoop = function () {
 			Roblox.social.getFriends(4810352).then(function (friends) {
 				var ids = [];
@@ -346,8 +216,6 @@ fixCB(({
 					followUserId: id
 				});
 			}
-		}).on("dblclick", ".rplusLua>span:first-child", function () {
-			$(this).parent().find(">code").selectText();
 		}).on("click", ".rplusinventory[userid]", function () {
 			RPlus.quickInfo.trigger(Roblox.users.getProfileUrl(Number($(this).attr("userid"))));
 		});

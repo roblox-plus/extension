@@ -10,12 +10,6 @@
 	color: rgb(230, 61, 59);
 }
 
-/* Forums */
-.forum-post a[href*='2518656']>span{
-	background-image: url(images/icons/icon_16x16.png);
-	margin-top: -2px;
-}
-
 
 
 /* WebGL3D */

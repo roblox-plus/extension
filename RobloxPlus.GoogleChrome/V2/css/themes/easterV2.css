@@ -86,19 +86,11 @@
 	box-shadow: 0 -4px 0 0 rgb(220, 126, 207) inset;
 }
 
-/* Forums and navigation */
+/* navigation */
 .easter-theme-v2 #header,
-.easter-theme-v2 .forum-table-header,
-.easter-theme-v2 th.tableHeaderText,
-.easter-theme-v2 .forum-table-header th,
-.easter-theme-v2 .forum-table-footer,
 .easter-theme-v2 .dialog-container .dialog-header,
 .easter-theme-v2 .chat-main .chat-header {
 	background-color: rgb(220, 126, 207);
-}
-
-.easter-theme-v2 .forum-table-header .normalTextSmallBold {
-	color: rgb(255, 255, 255);
 }
 
 

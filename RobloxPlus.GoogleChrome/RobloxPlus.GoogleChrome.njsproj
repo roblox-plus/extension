@@ -37,7 +37,6 @@
     <Folder Include="V2\content\core\" />
     <Folder Include="V2\content\preload\" />
     <Folder Include="V2\content\pages\" />
-    <Folder Include="V2\content\pages\forum\" />
     <Folder Include="V2\css\" />
     <Folder Include="V2\css\pages\" />
     <Folder Include="V2\css\roblox\" />
@@ -55,7 +54,6 @@
   <ItemGroup>
     <Content Include="V2\background\background.html" />
     <Content Include="V2\css\customIcon.css" />
-    <Content Include="V2\css\hljs.css" />
     <Content Include="V2\css\icons.css" />
     <Content Include="V2\css\pages\account.css">
       <SubType>Code</SubType>
@@ -105,9 +103,6 @@
     <Compile Include="V2\background\notifiers\catalogNotifier.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="V2\background\notifiers\forumNotifier.js">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="V2\background\notifiers\friendNotifier.js">
       <SubType>Code</SubType>
     </Compile>
@@ -142,10 +137,6 @@
     </Compile>
     <Compile Include="V2\content\pages\ComposeMessage.js" />
     <Compile Include="V2\content\pages\Develop.js" />
-    <Compile Include="V2\content\pages\forum\AddPost.js" />
-    <Compile Include="V2\content\pages\forum\Default.js" />
-    <Compile Include="V2\content\pages\forum\ShowForum.js" />
-    <Compile Include="V2\content\pages\forum\ShowPost.js" />
     <Compile Include="V2\content\pages\Friends.js" />
     <Compile Include="V2\content\pages\Game.js" />
     <Compile Include="V2\content\pages\Group.js" />
@@ -156,7 +147,6 @@
     <Compile Include="V2\content\pages\Profile.js" />
     <Compile Include="V2\content\pages\TradeWindow.js" />
     <Compile Include="V2\lib\global.js" />
-    <Compile Include="V2\lib\highlight.pack.js" />
     <Compile Include="V2\lib\jquery\jquery.cache.js" />
     <Compile Include="V2\lib\jquery\jquery.js" />
     <Compile Include="V2\lib\jquery\jquery.notifications.js" />
@@ -172,7 +162,6 @@
     <Compile Include="V2\lib\roblox\content.js" />
     <Compile Include="V2\lib\roblox\develop.js" />
     <Compile Include="V2\lib\roblox\economy.js" />
-    <Compile Include="V2\lib\roblox\forum.js" />
     <Compile Include="V2\lib\roblox\games.js" />
     <Compile Include="V2\lib\roblox\groups.js" />
     <Compile Include="V2\lib\roblox\inventory.js" />

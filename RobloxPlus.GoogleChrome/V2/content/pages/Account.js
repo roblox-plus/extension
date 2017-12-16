@@ -163,146 +163,6 @@ RPlus.Pages.Account = function () {
 			constantBoolSetting("Asset owners", "On Roblox created assets see a list of everyone who owns that asset.", true),
 			constantBoolSetting("Easily delete items from inventory page", "Adds delete buttons to all free items on your inventory page.", true),
 			constantBoolSetting("Comments timer", "Keeps track of how long it will be until you can post another comment", true, true)],
-		"Forum": [
-			{
-				"name": "Display individual post Ids",
-				"type": typeof (true),
-				"get": function (callBack) {
-					storage.get("forums", function (forums) {
-						callBack(forums ? !!forums.postIds : false);
-					});
-				},
-				"set": function (val) {
-					storage.get("forums", function (forums) {
-						forums = forums || {};
-						forums.postIds = !!val;
-						storage.set("forums", forums);
-					});
-				},
-				"description": "Display the ids of each individual post next to the date they were posted."
-			}, {
-				"name": "Respect blocked users list",
-				"type": typeof (true),
-				"get": function (callBack) {
-					storage.get("forums", function (forums) {
-						callBack(forums ? !!forums.blocked : false);
-					});
-				},
-				"set": function (val) {
-					storage.get("forums", function (forums) {
-						forums = forums || {};
-						forums.blocked = !!val;
-						storage.set("forums", forums);
-					});
-				},
-				"description": "If a user is on your block list hide their posts."
-			}, {
-				"name": "Collectibles value on posts",
-				"type": typeof (true),
-				"get": function (callBack) {
-					storage.get("forums", function (forums) {
-						callBack(forums ? !!forums.rap : false);
-					});
-				},
-				"set": function (val) {
-					storage.get("forums", function (forums) {
-						forums = forums || {};
-						forums.rap = !!val;
-						storage.set("forums", forums);
-					});
-				},
-				"description": "Display a users Recent Average Price (RAP) of all of their collectibles under their character on their posts."
-			}, {
-				"name": "Post embedding",
-				"type": typeof (true),
-				"get": function (callBack) {
-					storage.get("forums", function (forums) {
-						callBack(forums ? !!forums.embedding : false);
-					});
-				},
-				"set": function (val) {
-					storage.get("forums", function (forums) {
-						forums = forums || {};
-						forums.embedding = !!val;
-						storage.set("forums", forums);
-					});
-				},
-				"description": "Convert audio links to playable format, YouTube links into videos, decals into images, Lua syntax highlighting, and more!"
-			}, {
-				"name": "Post embedding size",
-				"type": { "min": 25, "max": 100, "step": 25 },
-				"get": function (callBack) {
-					storage.get("forums", function (forums) {
-						callBack(forums ? forums.embedSize : 75);
-					});
-				},
-				"set": function (val) {
-					storage.get("forums", function (forums) {
-						forums = forums || {};
-						forums.embedSize = Number(val);
-						storage.set("forums", forums);
-					});
-				},
-				"description": "The size of images when embedded on posts."
-			},
-			constantBoolSetting("Forum stretch prevention", "Prevents forum post titles from stretching the page. Double click under a poster to shrink their height as well.", true),
-			constantBoolSetting("Forum flood checking", "When posting on the forums a timer will kick off in the background to keep track of when you can post again.", true),
-			constantBoolSetting("Background thread tracking", "Tracking, and untracking forum threads won't refresh the page. My Forums will have tracked threads with tick boxes to untrack them.", true, true),
-			{
-				"name": "Forum signature",
-				"type": typeof (""),
-				"get": function (callBack) {
-					storage.get("forums", function (forums) {
-						callBack(forums ? forums.signature : "");
-					});
-				},
-				"set": function (val) {
-					storage.get("forums", function (forums) {
-						forums = forums || {};
-						forums.signature = val;
-						storage.set("forums", forums);
-					});
-				},
-				"description": "A line of text added to posts you make on the forum.",
-				"maxlength": 250
-			}, {
-				"name": "How many lines to put below your post before the signature",
-				"type": { "min": 1, "max": 4 },
-				"get": function (callBack) {
-					storage.get("forums", function (forums) {
-						callBack(forums ? forums.lines : 3);
-					});
-				},
-				"set": function (val) {
-					storage.get("forums", function (forums) {
-						forums = forums || {};
-						forums.lines = Number(val);
-						storage.set("forums", forums);
-					});
-				},
-				"description": "The size of images when embedded on posts."
-			}, {
-				"name": "Forum notifier",
-				"type": typeof (true),
-				"storage": "forumNotifier",
-				"description": "Get notifications when someone replies to a thread you're tracking, or have replied to."
-			}, {
-				"name": "Forum notifier sound",
-				"type": "audio",
-				"get": function (callBack) {
-					storage.get("notifierSounds", function (notifierSounds) {
-						callBack(notifierSounds ? notifierSounds.forum : 0);
-					});
-				},
-				"set": function (val) {
-					storage.get("notifierSounds", function (notifierSounds) {
-						notifierSounds = notifierSounds || {};
-						notifierSounds.forum = Number(val);
-						storage.set("notifierSounds", notifierSounds);
-					});
-				},
-				"description": "An id of a Roblox sound that will play when the forum notifier goes off."
-			}],
 		"Trade": [
 			{
 				"name": "Outbound asset checker",
@@ -462,7 +322,7 @@ RPlus.Pages.Account = function () {
 				"set": function (val) {
 					storage.get("navigation", function (navigation) {
 						navigation = navigation || {};
-						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Forums", "href": "/forum" }];
+						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
 						navigation.buttons[0].text = val;
 						storage.set("navigation", navigation);
 					});
@@ -479,7 +339,7 @@ RPlus.Pages.Account = function () {
 				"set": function (val) {
 					storage.get("navigation", function (navigation) {
 						navigation = navigation || {};
-						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Forums", "href": "/forum" }];
+						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
 						navigation.buttons[0].href = val;
 						storage.set("navigation", navigation);
 					});
@@ -490,13 +350,13 @@ RPlus.Pages.Account = function () {
 				"type": typeof (""),
 				"get": function (callBack) {
 					storage.get("navigation", function (navigation) {
-						callBack(navigation && navigation.buttons && navigation.buttons[1] ? navigation.buttons[1].text : "Forums");
+						callBack(navigation && navigation.buttons && navigation.buttons[1] ? navigation.buttons[1].text : "Trade");
 					});
 				},
 				"set": function (val) {
 					storage.get("navigation", function (navigation) {
 						navigation = navigation || {};
-						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Forums", "href": "/forum" }];
+						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
 						navigation.buttons[1].text = val;
 						storage.set("navigation", navigation);
 					});
@@ -507,13 +367,13 @@ RPlus.Pages.Account = function () {
 				"type": typeof (""),
 				"get": function (callBack) {
 					storage.get("navigation", function (navigation) {
-						callBack(navigation && navigation.buttons && navigation.buttons[1] ? navigation.buttons[1].href : "/forum");
+						callBack(navigation && navigation.buttons && navigation.buttons[1] ? navigation.buttons[1].href : "/my/money.aspx#/#TradeItems_tab");
 					});
 				},
 				"set": function (val) {
 					storage.get("navigation", function (navigation) {
 						navigation = navigation || {};
-						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Forums", "href": "/forum" }];
+						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
 						navigation.buttons[1].href = val;
 						storage.set("navigation", navigation);
 					});

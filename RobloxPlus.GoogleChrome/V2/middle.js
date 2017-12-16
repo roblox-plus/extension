@@ -16,21 +16,4 @@ Roblox.trades.openSettingBasedTradeWindow = function (userId, counterTradeId) {
 };
 
 
-forumService.youtube = $.promise.background("forumService.youtube", $.promise.cache(function (resolve, reject, v) {
-	$.get("http://forum.roblox.plus/yt.php", { v: v }).done(function (r) {
-		resolve(r.title);
-	}).fail(function () {
-		reject([{
-			code: 0,
-			message: "HTTP request failed"
-		}]);
-	});
-}, {
-	resolveExpiry: 24 * 60 * 60 * 1000,
-	rejectExpiry: 15 * 1000,
-	queued: true
-}));
-
-
-
 // WebGL3D

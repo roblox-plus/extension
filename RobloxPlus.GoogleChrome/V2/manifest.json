@@ -22,7 +22,6 @@
 				"/content/preload/loadStylesheets.js",
 
 				"/lib/jquery/jquery.js",
-				"/lib/highlight.pack.js",
 				"/lib/global.js",
 				"/lib/jquery/jquery.trigger.js",
 				"/lib/roblox/xsrfHandler.js",
@@ -48,7 +47,6 @@
 				"/lib/roblox/privateMessages.js",
 				"/lib/roblox/resellers.js",
 				"/lib/roblox/develop.js",
-				"/lib/roblox/forum.js",
 				"/lib/roblox/economy.js",
 				"/lib/roblox/navigation.js",
 				"/lib/roblox/ui.js",
@@ -73,14 +71,6 @@
 		},
 
 		{
-			"css": [
-				"/css/hljs.css"
-			],
-			"matches": [ "*://forum.roblox.com/*" ],
-			"run_at": "document_start"
-		},
-
-		{
 			"js": [
 				"/content/core/quickInfoBox.js",
 
@@ -100,17 +90,13 @@
 				"/content/pages/Money.js",
 				"/content/pages/Item.js",
 				"/content/pages/Account.js",
-				"/content/pages/forum/Default.js",
-				"/content/pages/forum/ShowForum.js",
-				"/content/pages/forum/ShowPost.js",
-				"/content/pages/forum/AddPost.js",
 				"/content/pages/Avatar.js",
 				"/content/pages/Catalog.js",
 				"/content/pages/Messages.js",
 
 				"/content/loadPages.js"
 			],
-			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*", "*://forum.roblox.com/*" ],
+			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*" ],
 			"run_at": "document_end"
 		},
 

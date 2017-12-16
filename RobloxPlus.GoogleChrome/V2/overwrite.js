@@ -68,7 +68,6 @@ rplus.startup("$", function () {
 		}
 
 		setInterval(function () {
-			datTipsy($("tr.forum-post a[href*='youtu.be']>span[title]"), { "gravity": "n" });
 			datTipsy($("#BuyWithRobux>div[data-item-id='391072534'][title]"), { "gravity": "s" });
 		}, 250);
 	});

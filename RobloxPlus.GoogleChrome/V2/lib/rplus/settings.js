@@ -1,6 +1,6 @@
 ﻿var RPlus = RPlus || {};
 RPlus.settings = RPlus.settings || (function () {
-	var settingFields = { "updateLog": "", "serialTracker": true, "forumFloodCheck": 15, "checkPremiumOnServer": false };
+	var settingFields = { "updateLog": "", "serialTracker": true, "checkPremiumOnServer": false };
 
 	if (ext.isBackground) {
 		/* Upload models with a post request */

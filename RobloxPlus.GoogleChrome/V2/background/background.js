@@ -19,7 +19,6 @@ foreach({
 		tradeCompleted: 0,
 		tradeDeclined: 0,
 		friend: 0,
-		forum: 0,
 		messages: 0,
 		groupShout: 0
 	},
@@ -29,25 +28,13 @@ foreach({
 		visit: browser.name !== "Chrome",
 		names: {}
 	},
-	"forums": {
-		last: 0,
-		floodcheck: 0,
-		signature: "",
-		lines: 3,
-		blacklist: [],
-		postIds: false,
-		rap: false,
-		blocking: false,
-		embedding: false,
-		embedSize: 75
-	},
 	"groupShoutNotifierList": { 2518656: "Roblox+ Fan Group" },
 	"navigation": {
 		"sideOpen": false,
 		"counterCommas": 100000000,
 		"buttons": [
 			{ text: "Develop", href: "/develop" },
-			{ text: "Forums", href: "/forum" }
+			{ text: "Trade", href: "/my/money.aspx#/#TradeItems_tab" }
 		]
 	},
 	"userSince": getMil()
@@ -58,20 +45,6 @@ foreach({
 });
 
 
-
-/* Forums */
-chrome.webRequest.onBeforeRedirect.addListener(function (details) {
-	if (url.path(details.url).toLowerCase() == "/forum/addpost.aspx" && details.method == "POST") {
-		storage.get("forums", function (f) {
-			f.last = Number(url.hash(details.redirectUrl))
-			f.floodcheck = getMil();
-			storage.set("forums", f);
-		});
-	}
-}, { urls: ["*://*.roblox.com/Forum/*"] }, ["responseHeaders"]);
-
-
-
 /* hueee no image or ticket stealing */
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
 	var path = url.path(details.url);
@@ -79,7 +52,6 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
 		return { cancel: true };
 	}
 }, { urls: ["*://*.roblox.com/asset/*"], types: ["sub_frame", "main_frame"] }, ["blocking"]);
-
 
 
 /* Comment Timer */

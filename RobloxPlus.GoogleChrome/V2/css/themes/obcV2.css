@@ -79,19 +79,11 @@
 	box-shadow: 0 -4px 0 0 rgb(49, 49, 49) inset;
 }
 
-/* Forums and navigation */
+/* navigation */
 .obc-theme-v2 #header,
-.obc-theme-v2 .forum-table-header,
-.obc-theme-v2 th.tableHeaderText,
-.obc-theme-v2 .forum-table-header th,
-.obc-theme-v2 .forum-table-footer,
 .obc-theme-v2 .dialog-container .dialog-header,
 .obc-theme-v2 .chat-main .chat-header {
 	background-color: rgb(49, 49, 49);
-}
-
-.obc-theme-v2 .forum-table-header .normalTextSmallBold {
-	color: rgb(255, 255, 255);
 }
 
 

@@ -24,42 +24,7 @@ RPlus.Pages.Money = function () {
 			}));
 		}
 	});
-
-	$(".ViewButtonContainer").parent().append($("<div id=\"rplusLMaD\" class=\"btn-small btn-neutral\">LMaD</div>").click(function () {
-		var post = "";
-		var giveDiv = $("#TradeRequest:visible div[list-id='OfferList0']");
-		var getDiv = $("#TradeRequest:visible div[list-id='OfferList1']");
-		var give = { items: [], robux: pround(giveDiv.find(".OfferValue").text()), rap: 0 };
-		var get = { items: [], robux: pround(getDiv.find(".OfferValue").text()), rap: 0 };
-		giveDiv.find(".InventoryItemContainerOuter").each(function (r) {
-			give.rap += (r = pround($(this).find(".InventoryItemAveragePrice").text()));
-			give.items.push({
-				name: $(this).find(".InventoryItemName").text(),
-				rap: r
-			});
-		});
-		getDiv.find(".InventoryItemContainerOuter").each(function (r) {
-			get.rap += (r = pround($(this).find(".InventoryItemAveragePrice").text()));
-			get.items.push({
-				name: $(this).find(".InventoryItemName").text(),
-				rap: r
-			});
-		});
-		give.robux -= give.rap;
-		get.robux -= get.rap;
-		post = giveDiv.find("h3.OfferHeader").text() + " (" + addComma(give.rap) + ")" + (give.robux ? " + R$" + addComma(give.robux) : "") + "\n";
-		foreach(give.items, function (n, o) { post += "\t" + o.name + " (" + addComma(o.rap) + ")\n"; });
-		post += "\n" + getDiv.find("h3.OfferHeader").text() + " (" + addComma(get.rap) + ")" + (get.robux ? " + R$" + addComma(get.robux) : "") + "\n";
-		foreach(get.items, function (n, o) { post += "\t" + o.name + " (" + addComma(o.rap) + ")\n"; });
-
-		storage.get("forums", function (f) {
-			f.nextPost = post;
-			storage.set("forums", f, function () {
-				window.open("https://forum.roblox.com/Forum/AddPost.aspx?ForumID=35");
-			});
-		});
-	}));
-
+	
 	setInterval(function () {
 		storage.get("tradePageRapAssist", function (on) {
 			if (!on) { return; }
