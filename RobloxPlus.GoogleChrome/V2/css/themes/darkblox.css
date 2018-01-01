@@ -305,6 +305,7 @@ html.darkblox-theme,
 .darkblox-theme .input-field,
 .darkblox-theme .SearchKeyword,
 .darkblox-theme .input-group-btn .input-dropdown-btn,
+.darkblox-theme .rbx-select-group .rbx-select,
 .darkblox-theme textarea:not(#dialog-input) {
 	color: #ffffff;
 	background-color: #303030;
