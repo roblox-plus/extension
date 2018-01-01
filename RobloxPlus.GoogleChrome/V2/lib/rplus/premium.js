@@ -49,16 +49,21 @@ RPlus.premium = RPlus.premium || (function () {
 			rejectExpiry: 10 * 1000,
 			queued: true
 		}),
-
-		allThemesUnlocked: $.promise.cache(function(resolve, reject, userId) {
-			this.isPremium(userId).then(function(premium) {
+		
+		isThemeUnlocked: $.promise.cache(function (resolve, reject, userId, themeType) {
+			this.isPremium(userId).then(function (premium) {
 				if (premium) {
 					resolve(true);
 					return;
 				}
 
-				Roblox.inventory.userHasBadge(userId, 375602203).then(resolve).catch(reject);
-			}).catch(reject);
+				if (themeType === "easter") {
+					Roblox.inventory.userHasBadge(userId, 375602203).then(resolve).catch(reject);
+				} else {
+					resolve(true);
+					return;
+				}
+			});
 		})
 	};
 })();

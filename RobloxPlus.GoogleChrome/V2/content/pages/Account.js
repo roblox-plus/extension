@@ -29,9 +29,6 @@ RPlus.Pages.Account = function () {
 			{
 				"name": "Default",
 				"value": ""
-			}, {
-				"name": "OBC",
-				"value": RPlus.style.themeTypes.obc.type
 			}
 		],
 		"get": function (callBack) {
@@ -615,15 +612,26 @@ RPlus.Pages.Account = function () {
 		return container.append(icon);
 	}
 
-	for (var n in RPlus.style.themeTypes) {
-		if (RPlus.style.themeTypes.hasOwnProperty(n) && n !== "obc") {
-			themeSetting.type.push({
-				"name": RPlus.style.themeTypes[n].name,
-				"value": RPlus.style.themeTypes[n].type,
-				"disabled": true
-			});
+	var themePromises = [];
+	Object.keys(RPlus.style.themeTypes).forEach(function (n) {
+		var theme = {
+			"name": RPlus.style.themeTypes[n].name,
+			"value": RPlus.style.themeTypes[n].type,
+			"disabled": n !== "obc"
+		};
+
+		if (theme.disabled) {
+			themePromises.push(RPlus.premium.isThemeUnlocked(Roblox.users.authenticatedUserId, n).then(function (unlocked) {
+				if (unlocked) {
+					delete theme.disabled;
+				}
+			}).catch(function (e) {
+				console.warn("Failed to check theme status: " + n, e);
+			}));
 		}
-	}
+		
+		themeSetting.type.push(theme);
+	});
 
 	function loadSettings() {
 		for (var n in settings) {
@@ -823,18 +831,15 @@ RPlus.Pages.Account = function () {
 		}
 	}
 
-	RPlus.premium.allThemesUnlocked(Roblox.users.authenticatedUserId).then(function (unlocked) {
-		if (unlocked) {
-			themeSetting.type.forEach(function (setting) {
-				delete setting.disabled;
-			});
-		}
+	if (themePromises.length) {
+		Promise.all(themePromises).then(function () {
+			loadSettings();
+		}).catch(function () {
+			loadSettings();
+		});
+	} else {
 		loadSettings();
-	}).catch(function (e) {
-		console.warn("Failed to check theme status", e);
-		loadSettings();
-	});
-
+	}
 
 	var updateLogButton = $("<button>").addClass("btn-control-md").text("Update Log");
 	var reloadButton = $("<button>").addClass("btn-control-md").text("Reload");

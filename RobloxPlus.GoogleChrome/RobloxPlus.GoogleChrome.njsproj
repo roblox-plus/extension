@@ -74,6 +74,7 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="V2\css\style.css" />
+    <Content Include="V2\css\themes\darkblox.css" />
     <Content Include="V2\css\themes\easterV2.css" />
     <Content Include="V2\css\themes\obcV2.css">
       <SubType>Code</SubType>

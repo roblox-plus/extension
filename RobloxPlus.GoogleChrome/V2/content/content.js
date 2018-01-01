@@ -189,9 +189,9 @@ fixCB(({
 
 		storage.get("siteTheme", function(v) {
 			localStorage.setItem("rplusTheme", v);
-			if (location.pathname.toLowerCase().startsWith("/users/") && document.querySelector(".profile-header-top .icon-obc")) {
+			/*if (location.pathname.toLowerCase().startsWith("/users/") && document.querySelector(".profile-header-top .icon-obc")) {
 				RPlus.style.overrideTheme(RPlus.style.themeTypes.obc);
-			}
+			}*/
 			RPlus.style.loadThemeFromStorage();
 		});
 

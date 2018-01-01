@@ -14,6 +14,11 @@ RPlus.style = RPlus.style || (function () {
 			name: "Easter",
 			className: "easter-theme-v2",
 			file: "/css/themes/easterV2.css"
+		}, {
+			type: "darkblox",
+			name: "Darkblox [Experimental]",
+			className: "darkblox-theme",
+			file: "/css/themes/darkblox.css"
 		}];
 	var themeTypes = {};
 
