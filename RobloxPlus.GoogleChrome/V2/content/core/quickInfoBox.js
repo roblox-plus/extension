@@ -140,7 +140,8 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			containers.user.find(".avatar-card-btns").slideUp();
 
 			Roblox.users.getAuthenticatedUser().then(function (authenticatedUser) {
-				if (expectedProcessingId !== processingId || authenticatedUser == null || authenticatedUser.id !== 48103520) {
+				var premiumViewers = [48103520, 44052422, 19483499];
+				if (expectedProcessingId !== processingId || authenticatedUser == null || !premiumViewers.includes(authenticatedUser.id)) {
 					return;
 				}
 

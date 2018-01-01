@@ -285,11 +285,11 @@ html.darkblox-theme,
 	background-color: #303030;
 }
 
-.darkblox-theme .notification-stream-list .notification-stream-item.unInteracted .notification-display-text:before {
+.darkblox-theme .notification-stream-list .notification-stream-item .notification-display-text:before {
 	content: '';
 }
 
-.darkblox-theme .notification-stream-list .notification-stream-item.unInteracted .notification-display-text:after {
+.darkblox-theme .notification-stream-list .notification-stream-item .notification-display-text:after {
 	background: transparent;
 }
 
