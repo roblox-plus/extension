@@ -89,6 +89,21 @@ setInterval(function () {
 
 
 
+/* Some garbage that shouldn't be in this extension */
+Roblox.users.getAuthenticatedUser().then(function (user) {
+	if (user.id === 48103520) {
+		chrome.webRequest.onBeforeRequest.addListener(function (details) {
+			if (details.url.includes("navigation_06282017.svg")) {
+				return { redirectUrl: ext.getUrl("/images/navigation_06282017.svg") };
+			}
+		}, { urls: ["*://static.rbxcdn.com/images/*"] }, ["blocking"]);
+	}
+}).catch(function (e) {
+	// oh well..
+});
+
+
+
 /* Update Check */
 if (browser.name == "Chrome") {
 	setInterval(function () {
