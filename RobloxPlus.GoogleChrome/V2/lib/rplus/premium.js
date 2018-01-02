@@ -60,8 +60,7 @@ RPlus.premium = RPlus.premium || (function () {
 				if (themeType === "easter") {
 					Roblox.inventory.userHasBadge(userId, 375602203).then(resolve).catch(reject);
 				} else {
-					resolve(true);
-					return;
+					resolve(false);
 				}
 			});
 		})
