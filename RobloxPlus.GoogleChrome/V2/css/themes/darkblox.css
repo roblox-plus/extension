@@ -59,7 +59,7 @@ html.darkblox-theme,
 
 
 /* Legacy */
-.status-confirm {
+.darkblox-theme .status-confirm {
 	color: #191919;
 }
 
@@ -359,11 +359,11 @@ html.darkblox-theme,
 	color: #ffffff;
 }
 
-.rbx-scrollbar li span[class ^= 'icon'] {
+.darkblox-theme .rbx-scrollbar li span[class ^= 'icon'] {
 	filter: invert(100%);
 }
 
-.rbx-scrollbar li:hover span[class ^= 'icon'] {
+.darkblox-theme .rbx-scrollbar li:hover span[class ^= 'icon'] {
 	filter: invert(0%);
 }
 
