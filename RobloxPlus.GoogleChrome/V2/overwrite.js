@@ -62,7 +62,7 @@ rplus.startup("$", function () {
 
 	$(window).load(function () {
 		function datTipsy(elements, data) {
-			if (elements.length) {
+			if (elements.length && elements.tipsy) {
 				elements.tipsy(data);
 			}
 		}
@@ -70,7 +70,10 @@ rplus.startup("$", function () {
 		setInterval(function () {
 			datTipsy($("#BuyWithRobux>div[data-item-id='391072534'][title]"), { "gravity": "s" });
 
-			$("[rplus-linkify-ready]").removeAttr("rplus-linkify-ready").linkify();
+			var links = $("[rplus-linkify-ready]").removeAttr("rplus-linkify-ready");
+			if (links && links.linkify) {
+				links.linkify();
+			}
 		}, 250);
 	});
 });

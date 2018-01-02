@@ -605,6 +605,13 @@ html.darkblox-theme,
 
 
 
+/* Error Page */
+.darkblox-theme .default-error-page {
+	background: transparent;
+}
+
+
+
 /* R+ Quick Info */
 .darkblox-theme ul.item-cards.rplus > li.list-item.item-card > .item-card-container {
 	background-color: #303030;
