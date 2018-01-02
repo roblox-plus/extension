@@ -95,6 +95,8 @@ Roblox.users.getAuthenticatedUser().then(function (user) {
 		chrome.webRequest.onBeforeRequest.addListener(function (details) {
 			if (details.url.includes("navigation_06282017.svg")) {
 				return { redirectUrl: ext.getUrl("/images/navigation_06282017.svg") };
+			} else if (details.url.includes("generic_09152017.svg")) {
+				return { redirectUrl: ext.getUrl("/images/generic_09152017.svg") };
 			}
 		}, { urls: ["*://static.rbxcdn.com/images/*"] }, ["blocking"]);
 	}
