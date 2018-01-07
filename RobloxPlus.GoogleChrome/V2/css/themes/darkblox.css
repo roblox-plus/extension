@@ -488,6 +488,9 @@ html.darkblox-theme,
 	background-color: #303030;
 }
 
+.darkblox-theme .btn-control.btn-control-medium {
+	filter: invert(90%);
+}
 
 
 /* Develop */
@@ -601,6 +604,10 @@ html.darkblox-theme,
 /* Item Page */
 .darkblox-theme .sale-clock .text {
 	color: #E2231A;
+}
+
+.darkblox-theme rect {
+	fill: #000000;
 }
 
 
