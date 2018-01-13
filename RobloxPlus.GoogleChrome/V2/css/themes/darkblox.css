@@ -308,7 +308,8 @@ html.darkblox-theme,
 .darkblox-theme .SearchKeyword,
 .darkblox-theme .input-group-btn .input-dropdown-btn,
 .darkblox-theme .rbx-select-group .rbx-select,
-.darkblox-theme textarea:not(#dialog-input) {
+.darkblox-theme .chat-search-input,
+.darkblox-theme textarea {
 	color: #ffffff;
 	background-color: #303030;
 }
@@ -627,6 +628,72 @@ html.darkblox-theme,
 
 
 /* Chat */
-#chat-container {
-	color: #191919;
+.darkblox-theme .dialog-container .dialog-header,
+.darkblox-theme .chat-main .chat-header,
+.darkblox-theme .chat-windows-header {
+	background-color: #212121;
+	border-color: #212121;
+}
+
+.darkblox-theme .dialog-container .dialog-body,
+.darkblox-theme .dialog-container .dialog-input-container {
+	background-color: #303030;
+	border-color: #212121;
+}
+
+.darkblox-theme .dialog-container .dialog-message-container.message-inbound .dialog-message {
+	background-color: #424242;
+	border-color: #424242;
+	color: #ffffff;
+}
+
+.darkblox-theme .dialog-container .dialog-message-container.message-inbound .dialog-triangle:before {
+	border-color: transparent #424242 transparent transparent;
+}
+
+.darkblox-theme .dialog-container .typing {
+	filter: invert(70%);
+}
+
+.darkblox-theme .chat-main,
+.darkblox-theme #chat-container .details-container,
+.darkblox-theme #chat-container .friends-list-container,
+.darkblox-theme #chat-container .details-members-container .add-friends-option,
+.darkblox-theme #chat-container .details-btns {
+	background-color: #303030;
+}
+
+.darkblox-theme .chat-friend-list .chat-friend-info,
+.darkblox-theme #chat-container .friends-list-container .friend-container .friend-info-action,
+.darkblox-theme #chat-container .details-members-container .add-friends-option .add-friends-label,
+.darkblox-theme #chat-container .details-members-label,
+.darkblox-theme .chat-search {
+	border-color: #212121;
+}
+
+.darkblox-theme .chat-friend-list .chat-friend-container:hover,
+.darkblox-theme #chat-container .friends-list-container .friend-container:hover,
+.darkblox-theme #chat-container #dialog-member-header {
+	background-color: #212121;
+}
+
+.darkblox-theme .chat-friend-list .chat-friend-info .chat-friend-message {
+	color: #B8B8B8;
+}
+
+.darkblox-theme .dialog-container .dialog-message-container .indicated-message-bubble {
+	background: #212121;
+	color: #B8B8B8;
+}
+
+.darkblox-theme .participant-list-container .dropdown-menu li a,
+.darkblox-theme .participant-list-container .dropdown-menu li a:hover,
+.darkblox-theme .participant-list-container .dropdown-menu li a:visited {
+	color: #ffffff;
+}
+
+.darkblox-theme .dialog-container .dialog-banner .group-member,
+.darkblox-theme .chat-friend-list .chat-friend-container .chat-friend-avatar,
+.darkblox-theme .chat-friend-list .chat-friend-container .chat-friend-info {
+	border-color: transparent;
 }
