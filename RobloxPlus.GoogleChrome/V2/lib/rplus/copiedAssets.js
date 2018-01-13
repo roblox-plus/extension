@@ -4,6 +4,8 @@
 (window.RPlus || (RPlus = {})).copiedAssets = (function () {
 	return {
 		getOriginalAssetIds: $.promise.cache(function (resolve, reject, assetIds) {
+			resolve({});
+			return;
 			$.get("http://copiedclothing.roblox.plus:48103/copiedassets/original?assetId=" + assetIds.join("&assetId=")).done(function (r) {
 				resolve(r);
 			}).fail(function () {
