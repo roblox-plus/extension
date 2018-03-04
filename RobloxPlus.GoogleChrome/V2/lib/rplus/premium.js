@@ -51,6 +51,14 @@ RPlus.premium = RPlus.premium || (function () {
 		}),
 		
 		isThemeUnlocked: $.promise.cache(function (resolve, reject, userId, themeType) {
+			if (themeType === "obc") {
+				resolve(true);
+				return;
+			} else if (typeof(themeType) !== "string" || themeType === "") {
+				resolve(false);
+				return;
+			}
+
 			this.isPremium(userId).then(function (premium) {
 				if (premium) {
 					resolve(true);

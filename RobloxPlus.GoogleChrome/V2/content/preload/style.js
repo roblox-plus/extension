@@ -79,8 +79,10 @@ RPlus.style = RPlus.style || (function () {
 				theme = "obc";
 			} else if (theme === "easter-theme") {
 				theme = "easter";
-			} else {
+			}
+			if (typeof(theme) !== "string" || !themeTypes.hasOwnProperty(theme)) {
 				localStorage.removeItem(themeStorageName);
+				return;
 			}
 		}
 		setTheme(RPlus.style.themeTypes[theme], true);

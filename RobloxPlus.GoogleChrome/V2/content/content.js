@@ -187,12 +187,27 @@ fixCB(({
 		mainLoop();
 		window.comma = mainLoop.comma;
 
-		storage.get("siteTheme", function(v) {
-			localStorage.setItem("rplusTheme", v);
-			/*if (location.pathname.toLowerCase().startsWith("/users/") && document.querySelector(".profile-header-top .icon-obc")) {
-				RPlus.style.overrideTheme(RPlus.style.themeTypes.obc);
-			}*/
-			RPlus.style.loadThemeFromStorage();
+		storage.get("siteTheme", function (v) {
+			function setTheme(t) {
+				localStorage.setItem("rplusTheme", t);
+				RPlus.style.loadThemeFromStorage();
+			}
+
+			if (typeof(v) !== "string" || !RPlus.style.themeTypes.hasOwnProperty(v)) {
+				setTheme("");
+			} else if (Roblox.users.authenticatedUserId > 0) {
+				RPlus.premium.isThemeUnlocked(Roblox.users.authenticatedUserId, v).then(function (unlocked) {
+					if (unlocked) {
+						setTheme(v);
+					} else {
+						setTheme("");
+					}
+				}).catch(function () {
+					setTheme(v);
+				});
+			} else {
+				setTheme(v);
+			}
 		});
 
 		$("body").on("change", "*[storage]", function (s, v) {
