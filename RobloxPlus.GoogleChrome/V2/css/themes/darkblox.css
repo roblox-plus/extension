@@ -338,6 +338,7 @@ html.darkblox-theme,
 .darkblox-theme .icon-plus,
 .darkblox-theme .icon-minus,
 .darkblox-theme .icon-edit,
+.darkblox-theme .icon-nav-group,
 .darkblox-theme .icon-moreinfo {
 	filter: invert(100%);
 }
@@ -494,6 +495,12 @@ html.darkblox-theme,
 }
 
 
+/* Group Search */
+.darkblox-theme .list-item .group-card {
+	background-color: #303030;
+}
+
+
 /* Develop */
 .darkblox-theme #build-page .gear-button-wrapper:not([style *= '239' ]) {
 	border: none !important;
@@ -636,7 +643,8 @@ html.darkblox-theme,
 }
 
 .darkblox-theme .dialog-container .dialog-body,
-.darkblox-theme .dialog-container .dialog-input-container {
+.darkblox-theme .dialog-container .dialog-input-container,
+.darkblox-theme .dialog-container .dialog-message-container .link-card-container {
 	background-color: #303030;
 	border-color: #212121;
 }
