@@ -46,7 +46,7 @@ RPlus.Pages.Game = function () {
 			}
 			servers.firstPage.toggleClass("disabled", servers.page() <= 1);
 			servers.prevPage.toggleClass("disabled", servers.page() <= 1);
-			servers.anchor.attr("href", "javascript:Roblox.AllRunningGameInstances.fetchServers(" + placeId + "," + ((servers.page() - 1) * 10) + ");")[0].click();
+			servers.anchor.attr("href", "javascript:Roblox.RunningGameInstances.fetchServers(" + placeId + "," + ((servers.page() - 1) * 10) + ");")[0].click();
 		}
 	};
 

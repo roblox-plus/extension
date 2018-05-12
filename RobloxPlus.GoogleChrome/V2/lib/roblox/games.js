@@ -103,13 +103,7 @@
 				};
 			}
 
-			$.ajax({
-				type: "GET",
-				url: authTicketUrl,
-				headers: {
-					"RBX-For-Gameauth": "true"
-				}
-			}).done(function (authTicket) {
+			$.get(authTicketUrl).done(function (authTicket) {
 				var launchUrl = baseLaunchUrl + $.param(launchParameters);
 				launchFrame.attr("src", "roblox-player:1+launchmode:play+gameinfo:" + authTicket + "+launchtime:" + (+new Date) + "+placelauncherurl:" + encodeURIComponent(launchUrl));
 				resolve();
