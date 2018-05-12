@@ -28,9 +28,10 @@ RPlus.notifiers.catalog = (function () {
 			metadata.url = notification.url;
 			assetId = Roblox.catalog.getIdFromUrl(notification.url) || NaN;
 			if (!isNaN(assetId)) {
+				var notifierSounds = storage.get("notifierSounds") || {};
 				metadata.robloxSound = (notification.title || "").toLowerCase().includes("it's free")
 					? 130771265
-					: Number((storage.get("notifierSounds") || {}).items) || 205318910;
+					: Number(notifierSounds.item) || 205318910;
 			}
 		}
 
