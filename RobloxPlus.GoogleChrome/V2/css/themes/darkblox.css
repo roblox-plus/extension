@@ -309,6 +309,8 @@ html.darkblox-theme,
 .darkblox-theme .input-group-btn .input-dropdown-btn,
 .darkblox-theme .rbx-select-group .rbx-select,
 .darkblox-theme .chat-search-input,
+.darkblox-theme .dialog-container .dialog-input-container .dialog-input,
+.darkblox-theme .details-input-container .select-friends-input,
 .darkblox-theme textarea {
 	color: #ffffff;
 	background-color: #303030;
@@ -637,7 +639,8 @@ html.darkblox-theme,
 /* Chat */
 .darkblox-theme .dialog-container .dialog-header,
 .darkblox-theme .chat-main .chat-header,
-.darkblox-theme .chat-windows-header {
+.darkblox-theme .chat-windows-header,
+.darkblox-theme .details-header-container {
 	background-color: #212121;
 	border-color: #212121;
 }
