@@ -4,7 +4,7 @@
 (window.Roblox || (Roblox = {})).games = (function () {
 	var launchFrame = $("<iframe>").hide();
 	var baseLaunchUrl = "https://assetgame.roblox.com/game/PlaceLauncher.ashx?";
-	var authTicketUrl = "https://www.roblox.com/game/getauthticket?" + $.param({ verification: ext.id, _: +new Date });
+	var authTicketUrl = "https://www.roblox.com/game-auth/getauthticket?" + $.param({ verification: ext.id, _: +new Date });
 
 	var getServers = $.promise.cache(function (resolve, reject, placeId, cursor) {
 		$.get("https://www.roblox.com/games/getgameinstancesjson", { placeId: placeId, startindex: (cursor - 1) * 10 }).done(function (r) {
@@ -103,7 +103,13 @@
 				};
 			}
 
-			$.get(authTicketUrl).done(function (authTicket) {
+			$.ajax({
+				type: "GET",
+				url: authTicketUrl,
+				headers: {
+					"RBX-For-Gameauth": "true"
+				}
+			}).done(function (authTicket) {
 				var launchUrl = baseLaunchUrl + $.param(launchParameters);
 				launchFrame.attr("src", "roblox-player:1+launchmode:play+gameinfo:" + authTicket + "+launchtime:" + (+new Date) + "+placelauncherurl:" + encodeURIComponent(launchUrl));
 				resolve();
