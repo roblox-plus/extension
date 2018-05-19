@@ -5,6 +5,17 @@
 	var contentMap = {};
 	
 	if (ext.isBackground) {
+		chrome.webRequest.onBeforeSendHeaders.addListener(function (data) {
+			for (var n in data.requestHeaders) {
+				if (data.requestHeaders[n].name == "User-Agent") {
+					data.requestHeaders[n].value += " Roblox/Plus";
+					break;
+				}
+			}
+
+			return { requestHeaders: data.requestHeaders };
+		}, { urls: ["https://assetgame.roblox.com/asset/?id=*&contentCheck=RPlus"], types: ["xmlhttprequest"] }, ["blocking", "requestHeaders"]);
+
 		chrome.webRequest.onBeforeRedirect.addListener(function (details) {
 			var id = Number((details.url.match(/id=(\d+)/i) || ["", 0])[1]);
 			contentMap[id] = details.redirectUrl;
