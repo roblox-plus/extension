@@ -106,6 +106,11 @@ fixCB(({
 					for (var CN = 0; CN < Math.min(2, n.buttons.length) ; CN++) {
 						var button = n.buttons[CN];
 						if (li[CN + 2] && type(button) == "object") {
+							// I'm too lazy to actually migrate the data so for now no one will be able to use the word Develop.
+							// sorry, not sorry
+							if (button.text === "Develop") {
+								button.text = "Create";
+							}
 							$(li[CN + 2]).text(button.text).attr("href", button.href);
 						}
 					}

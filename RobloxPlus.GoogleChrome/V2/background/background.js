@@ -33,7 +33,7 @@ foreach({
 		"sideOpen": false,
 		"counterCommas": 100000000,
 		"buttons": [
-			{ text: "Develop", href: "/develop" },
+			{ text: "Create", href: "/develop" },
 			{ text: "Trade", href: "/my/money.aspx#/#TradeItems_tab" }
 		]
 	},

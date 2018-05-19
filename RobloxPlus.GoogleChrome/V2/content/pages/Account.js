@@ -313,13 +313,13 @@ RPlus.Pages.Account = function () {
 				"type": typeof (""),
 				"get": function (callBack) {
 					storage.get("navigation", function (navigation) {
-						callBack(navigation && navigation.buttons && navigation.buttons[0] ? navigation.buttons[0].text : "Develop");
+						callBack(navigation && navigation.buttons && navigation.buttons[0] ? navigation.buttons[0].text : "Create");
 					});
 				},
 				"set": function (val) {
 					storage.get("navigation", function (navigation) {
 						navigation = navigation || {};
-						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
+						navigation.buttons = navigation.buttons || [{ "text": "Create", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
 						navigation.buttons[0].text = val;
 						storage.set("navigation", navigation);
 					});
@@ -336,7 +336,7 @@ RPlus.Pages.Account = function () {
 				"set": function (val) {
 					storage.get("navigation", function (navigation) {
 						navigation = navigation || {};
-						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
+						navigation.buttons = navigation.buttons || [{ "text": "Create", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
 						navigation.buttons[0].href = val;
 						storage.set("navigation", navigation);
 					});
@@ -353,7 +353,7 @@ RPlus.Pages.Account = function () {
 				"set": function (val) {
 					storage.get("navigation", function (navigation) {
 						navigation = navigation || {};
-						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
+						navigation.buttons = navigation.buttons || [{ "text": "Create", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
 						navigation.buttons[1].text = val;
 						storage.set("navigation", navigation);
 					});
@@ -370,7 +370,7 @@ RPlus.Pages.Account = function () {
 				"set": function (val) {
 					storage.get("navigation", function (navigation) {
 						navigation = navigation || {};
-						navigation.buttons = navigation.buttons || [{ "text": "Develop", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
+						navigation.buttons = navigation.buttons || [{ "text": "Create", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
 						navigation.buttons[1].href = val;
 						storage.set("navigation", navigation);
 					});
