@@ -1,21 +1,36 @@
 ﻿/* background/notifiers/catalogNotifier.js [06/03/2017] */
 RPlus.notifiers.catalog = (function () {
 	var lastRegistration = 0;
+	var maxTokenBackoff = 5 * 60 * 1000;
+	var minTokenBackoff = 7500;
+	var tokenBackoff = minTokenBackoff;
+	var tokenExpiration = 30 * 60 * 1000;
 
 	function updateToken() {
-		Roblox.users.getAuthenticatedUser().then(function (user) {
-			chrome.instanceID.getToken({ authorizedEntity: "303497097698", scope: "FCM" }, function (token) {
-				$.post("https://api.roblox.plus/v2/itemnotifier/registertoken", {
-					token: token,
-					robloxUserId: user ? user.id : null
-				}).done(function () {
-					lastRegistration = +new Date;
-				}).fail(function () {
-					setTimeout(updateToken, 15000);
+		storage.get("itemNotifier", function (itemNotifierOn) {
+			if (!itemNotifierOn) {
+				setTimeout(updateToken, minTokenBackoff);
+				return;
+			}
+
+			Roblox.users.getAuthenticatedUser().then(function (user) {
+				chrome.instanceID.getToken({ authorizedEntity: "303497097698", scope: "FCM" }, function (token) {
+					$.post("https://api.roblox.plus/v2/itemnotifier/registertoken", {
+						token: token,
+						robloxUserId: user ? user.id : null
+					}).done(function () {
+						tokenBackoff = minTokenBackoff;
+						lastRegistration = +new Date;
+						setTimeout(updateToken, tokenExpiration);
+					}).fail(function () {
+						tokenBackoff = Math.min(maxTokenBackoff, tokenBackoff * 2);
+						setTimeout(updateToken, tokenBackoff);
+					});
 				});
+			}).catch(function () {
+				tokenBackoff = Math.min(maxTokenBackoff, tokenBackoff * 2);
+				setTimeout(updateToken, tokenBackoff);
 			});
-		}).catch(function () {
-			setTimeout(updateToken, 15000);
 		});
 	}
 
@@ -154,7 +169,6 @@ RPlus.notifiers.catalog = (function () {
 	});
 	
 	function init() {
-		setInterval(updateToken, 30 * 60 * 1000);
 		updateToken();
 	}
 
