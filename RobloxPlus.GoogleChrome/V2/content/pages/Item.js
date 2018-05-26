@@ -44,7 +44,7 @@ RPlus.Pages.Item = function () {
 	}
 
 	if ((item.assetTypeId == 1 || item.assetTypeId == 4) && item.creator.id == 1) {
-		$("#item-details .action-button>button").replaceWith($("<a>").attr({ "class": "btn-primary-lg", "download": item.name, href: "https://assetgame.roblox.com/asset/?id=" + id }).text("Download"));
+		$("#item-details .action-button>button").replaceWith($("<a>").attr({ "class": "btn-primary-lg", "download": item.name, href: "https://assetgame.roblox.com/asset/?id=" + id + "&contentCheck=RPlusDownloader" }).text("Download"));
 	} else if (id == 391072534) {
 		$(".item-type-field-container .field-content").text("Roblox+ Enhancement");
 		var buyButton = $(".PurchaseButton").attr("data-asset-type", "Roblox+ Enhancement");
