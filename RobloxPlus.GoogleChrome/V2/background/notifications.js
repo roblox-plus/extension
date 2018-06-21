@@ -77,6 +77,11 @@
 		id: "clearNotifications",
 		title: "Clear Notifications",
 		contexts: ["browser_action"],
+		setTimeout(function () {
+        if (newState == -1) {
+            $.notification.clear();
+        }
+    }, 10000);
 		onclick: function () {
 			$.notification.clear();
 		}
