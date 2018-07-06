@@ -9,6 +9,10 @@
 	margin: 2px;
 }
 
+#navbar-rplus > a:hover {
+	background-color: transparent;
+}
+
 
 #rplus-quickinfo {
 	width: 370px;
