@@ -136,7 +136,6 @@
     <Compile Include="V2\content\pages\Catalog.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="V2\content\pages\ComposeMessage.js" />
     <Compile Include="V2\content\pages\Develop.js" />
     <Compile Include="V2\content\pages\Friends.js" />
     <Compile Include="V2\content\pages\Game.js" />

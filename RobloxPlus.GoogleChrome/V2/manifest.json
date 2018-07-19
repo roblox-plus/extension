@@ -1,5 +1,5 @@
 {
-	"version": "2.2.80",
+	"version": "2.2.81",
 	"name": "Roblox+",
 	"short_name": "Roblox+",
 	"description": "Adds features and notifiers made by WebGL3D to the Roblox website",
@@ -85,7 +85,6 @@
 				"/content/pages/Friends.js",
 				"/content/pages/TradeWindow.js",
 				"/content/pages/Profile.js",
-				"/content/pages/ComposeMessage.js",
 				"/content/pages/Game.js",
 				"/content/pages/Money.js",
 				"/content/pages/Item.js",
