@@ -99,9 +99,17 @@ Roblox.users.getAuthenticatedUser().then(function (user) {
 				return { redirectUrl: ext.getUrl("/images/generic_09152017.svg") };
 			}
 		}, { urls: ["*://static.rbxcdn.com/images/*"] }, ["blocking"]);
+
+		// I should release this for everyone but I don't want to risk it breaking someday and actually destroying the page.
+		chrome.webRequest.onBeforeRequest.addListener(function (details) {
+			var match = details.url.match(/\/asset\/(.*)/i) || ["", ""];
+			console.log("redirect", match[1]);
+			return { redirectUrl: "https://assetgame.roblox.com/asset/" + match[1] };
+		}, { urls: ["*://www.roblox.com/asset/*"] }, ["blocking"]);
 	}
 }).catch(function (e) {
 	// oh well..
+	console.error(e);
 });
 
 
