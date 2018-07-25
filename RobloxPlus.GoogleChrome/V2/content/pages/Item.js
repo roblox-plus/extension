@@ -117,7 +117,7 @@ RPlus.Pages.Item = function () {
 	}
 
 
-	if (item.creator.id == 1 && item.assetTypeId != 1 && item.assetTypeId != 4) {
+	if ((item.creator.id == 1 && item.assetTypeId != 1 && item.assetTypeId != 4) || Roblox.users.authenticatedUserId === 48103520) {
 		var loaderId = 0;
 		var currentPage = 1;
 		var previousPageCursor = "";
@@ -139,6 +139,7 @@ RPlus.Pages.Item = function () {
 					nextPageCursor = data.nextPageCursor || "";
 					previousPageCursor = data.previousPageCursor || "";
 					data.data.forEach(function (record) {
+						var date = new Date(record.updated);
 						var username = record.owner ? record.owner.username : "[ Deleted ]";
 						var profileUrl = record.owner ? "/users/" + record.owner.userId + "/profile" : "javascript:/* User does not exist */";
 						serialTracker.tab.content.append($("<li class=\"list-item\" data-userasset-id=\"" + record.userAssetId + "\">").append(
@@ -146,7 +147,9 @@ RPlus.Pages.Item = function () {
 							$("<div class=\"resale-info\">").append(
 								$("<a class=\"text-name username\" href=\"" + profileUrl + "\">").text(username),
 								record.serialNumber ? $("<span class=\"separator\">").text("-") : "",
-								record.serialNumber ? $("<span class=\"serial-number\">Serial #" + record.serialNumber + "</span>") : ""
+								record.serialNumber ? $("<span class=\"serial-number\">Serial #" + record.serialNumber + "</span>") : "",
+								$("<br>"),
+								$("<span class=\"text-secondary\">").text("Owner since: " + date.toLocaleDateString() + " " + date.toLocaleTimeString())
 							)
 						));
 					});
@@ -157,6 +160,11 @@ RPlus.Pages.Item = function () {
 						busy = false;
 						serialTracker.loadPage(cursor);
 					}, 2000);
+				});
+			},
+			hideBacons: function () {
+				$(".list-item > a[data-bc='0']").each(function () {
+					$(this).parent().hide();
 				});
 			}
 		};
