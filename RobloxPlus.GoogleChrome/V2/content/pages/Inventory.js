@@ -3,7 +3,7 @@ RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.Inventory = function () {
 	var userId = Roblox.users.getIdFromUrl(location.href) || Roblox.users.authenticatedUserId;
-	var deletable = ["models", "decals", "badges", "audio"];
+	var deletable = ["models", "decals", "badges", "audio", "meshes"];
 
 	setInterval(function () {
 		var sel = url.hash().substring(2).toLowerCase();
