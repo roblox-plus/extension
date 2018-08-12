@@ -81,6 +81,12 @@
 			$.notification.clear();
 		}
 	});
+	
+	setTimeout(function () {
+     		if (newState == -1) {
+        		$.notification.clear();
+        	}
+    	}, 10000);
 })();
 
 
