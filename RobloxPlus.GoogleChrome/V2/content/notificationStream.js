@@ -3,7 +3,7 @@
 */
 var RPlus = RPlus || {};
 RPlus.notificationStream = RPlus.notificationStream || (function () {
-	var customStreamDiv, streamContainer, buttonContainer;
+	var selectedNotificationStream = "";
 
 	function createNotificationImageContainer(src, title, link) {
 		var container = $("<div class=\"notification-image-container\">");
@@ -73,7 +73,7 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		return card.hide();
 	}
 
-	function pushNotification(data) {
+	function pushNotification(customStreamDiv, data) {
 		var notification = createNotificationCard(data);
 		customStreamDiv.prepend(notification);
 		notification.slideDown();
@@ -81,57 +81,47 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 	}
 
 	function toggleStreams() {
-		if ($(this).hasClass("text-link")) {
-			var thisStream = $(this).data("extension-stream");
-			streamContainer.find("ul[data-extension-stream][data-extension-stream != '" + thisStream + "']").fadeOut();
-			streamContainer.find("ul[data-extension-stream][data-extension-stream = '" + thisStream + "']").fadeIn();
-			buttonContainer.find(">span[data-extension-stream]").addClass("text-link");
-			$(this).removeClass("text-link");
-		}
+		selectedNotificationStream = selectedNotificationStream === ext.id ? "roblox" : ext.id;
+		$("ul[data-extension-stream][data-extension-stream != '" + selectedNotificationStream + "']").fadeOut();
+		$("ul[data-extension-stream][data-extension-stream = '" + selectedNotificationStream + "']").fadeIn();
 	}
 
 	function init() {
-		customStreamDiv = $("<ul class=\"rplus-stream-list notification-stream-list\">").attr("data-extension-stream", ext.id).hide();
-		var robloxStreamDiv = $(".notification-stream-list").attr("data-extension-stream", "roblox");
-		var robloxNotificationsButton = $(".notification-stream-header > span").attr("data-extension-stream", "roblox");
-		var customNotificationsButton = $("<span class=\"text-label small text-link\">").attr("data-extension-stream", ext.id).text(ext.manifest.name);
-		streamContainer = robloxStreamDiv.parent();
-		buttonContainer = robloxNotificationsButton.parent();
+		var notificationView = $(".notification-content-view").each(function () {
+			var customStreamDiv = $("<ul class=\"rplus-stream-list notification-stream-list\">").attr("data-extension-stream", ext.id).hide();
+			var robloxStreamDiv = $(this).find(".notification-stream-list").attr("data-extension-stream", "roblox");
+			
+			robloxStreamDiv.after(customStreamDiv);
 
-		buttonContainer.on("click", "span[data-extension-stream]", toggleStreams);
+			$.notification.on("notification", function (notification) {
+				var card = pushNotification(customStreamDiv, notification);
 
-		robloxStreamDiv.after(customStreamDiv);
-		robloxNotificationsButton.after(customNotificationsButton);
+				card.click(function () {
+					notification.click();
+				});
 
-		$.notification.on("notification", function (notification) {
-			var card = pushNotification(notification);
-
-			card.click(function () {
-				notification.click();
-			});
-
-			notification.close(function () {
-				card.slideUp(function () {
-					card.remove();
+				notification.close(function () {
+					card.slideUp(function () {
+						card.remove();
+					});
 				});
 			});
+			
 		});
 
-		$.notification.init();
-
 		ipc.on("rplus:showNotifications", function (data, callBack) {
-			customNotificationsButton.click();
-			if (!streamContainer.is(":visible")) {
+			toggleStreams();
+			if (!notificationView.is(":visible")) {
 				$("#nav-ns-icon")[0].click();
 			}
 		});
+
+		$.notification.init();
 	}
 
 	$(init);
 
-	return {
-		push: pushNotification
-	};
+	return {};
 })();
 
 
