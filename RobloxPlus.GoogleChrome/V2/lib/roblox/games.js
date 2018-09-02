@@ -23,6 +23,43 @@
 		rejectExpiry: 10 * 1000
 	});
 
+	var getVipServers = $.promise.cache(function (resolve, reject, universeId, pageNumber) {
+		pageNumber = pageNumber || 1;
+
+		$.get("https://www.roblox.com/private-server/instance-list-json", { universeId: universeId, page: pageNumber }).done(function (r) {
+			var vipServers = [];
+
+			(r.Instances || []).forEach(function (server) {
+				if (server.PrivateServer.StatusType !== 1) {
+					return;
+				}
+
+				var expirationDate = Number((server.PrivateServer.ExpirationDate.match(/\d+/) || ["0"])[0]);
+				vipServers.push({
+					id: server.PrivateServer.Id,
+					name: server.Name,
+					owner: {
+						id: server.PrivateServer.OwnerUserId
+					},
+					expirationDate: isNaN(expirationDate) || expirationDate <= 0 ? NaN : expirationDate
+				});
+			});
+
+			if (!r.TotalPages || r.TotalPages <= pageNumber) {
+				resolve(vipServers);
+			} else {
+				getVipServers(universeId, pageNumber + 1).then(function (moreVipServers) {
+					resolve(vipServers.concat(moreVipServers));
+				}).catch(reject);
+			}
+		}).fail(function (jxhr, errors) {
+			reject(errors);
+		});
+	}, {
+		resolveExpiry: 15 * 1000,
+		rejectExpiry: 10 * 1000
+	});
+
 	
 	if (ext.isBackground) {
 		$(function () {
@@ -138,6 +175,8 @@
 			rejectExpiry: 500,
 			queued: true
 		}),
+
+		getVipServers: getVipServers,
 
 		getAllRunningServers: $.promise.cache(function (resolve, reject, placeId) {
 			var runningServers = [];
