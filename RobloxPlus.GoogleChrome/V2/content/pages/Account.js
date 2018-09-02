@@ -557,7 +557,6 @@ RPlus.Pages.Account = function () {
 			constantBoolSetting("Avatar filter bar", "On the avatar page a filter bar will be added to only show items that match text you've put in.", true),
 			constantBoolSetting("Roblox+ Notification Center", "In the Roblox notification stream there is also a section for Roblox+ which is a history of all unclosed notifications from the extension per session.", true),
 			constantBoolSetting("Profile sale statistics", "On user profiles sale counters are added for how many clothing, or models they've sold.", true, true),
-			constantBoolSetting("Allow multiple private message sending", "Send the same message to multiple people at the same time by adding more users in the \"to\" bar.", true, true),
 			constantBoolSetting("JSON Pretty Printing", "On JSON pages from Roblox hitting enter will \"pretty-print\" the page.", true, true),
 			{
 				"name": "How Roblox+ should pronounce your name",
