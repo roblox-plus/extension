@@ -106,6 +106,22 @@ Roblox.users.getAuthenticatedUser().then(function (user) {
 			console.log("redirect", match[1]);
 			return { redirectUrl: "https://assetgame.roblox.com/asset/" + match[1] };
 		}, { urls: ["*://www.roblox.com/asset/*"] }, ["blocking"]);
+
+		chrome.webRequest.onHeadersReceived.addListener(function (details) {
+			var id = Roblox.catalog.getIdFromUrl(details.url);
+			if (id > 0) {
+				var redirectLocation = "";
+				details.responseHeaders.forEach(function (header) {
+					if (header.name.toLowerCase() === "location") {
+						redirectLocation = header.value;
+					}
+				});
+
+				if (redirectLocation && redirectLocation.toLowerCase().endsWith("www.roblox.com/catalog/")) {
+					return { cancel: true };
+				}
+			}
+		}, { urls: ["*://www.roblox.com/catalog/*/*"] }, ["blocking", "responseHeaders"]);
 	}
 }).catch(function (e) {
 	// oh well..
