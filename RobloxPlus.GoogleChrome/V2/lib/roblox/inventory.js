@@ -230,24 +230,24 @@ Roblox.inventory = (function () {
 				return;
 			}
 
-			$.get("https://www.roblox.com/users/inventory/list-json", {
-				cursor: cursor || "",
+			$.get("https://badges.roblox.com/v1/users/" + userId + "/badges", {
+				limit: 100,
 				sortOrder: "Desc",
-				itemsPerPage: 100,
-				assetTypeId: 21,
-				userId: userId
-			}).done(function(r) {
+				cursor: cursor || ""
+			}).done(function (r) {
 				var response = {
-					previousPageCursor: r.Data ? r.Data.previousPageCursor : null,
-					nextPageCursor: r.Data ? r.Data.nextPageCursor : null,
+					previousPageCursor: r.previousPageCursor,
+					nextPageCursor: r.nextPageCursor,
 					data: []
 				};
-				(r.Data && r.Data.Items || []).forEach(function(badge) {
+
+				r.data.forEach(function (badge) {
 					response.data.push({
-						id: badge.Item.AssetId,
-						name: badge.Item.Name
+						id: badge.id,
+						name: badge.name
 					});
 				});
+
 				resolve(response);
 			}).fail(function (jxhr, errors) {
 				reject(errors);
