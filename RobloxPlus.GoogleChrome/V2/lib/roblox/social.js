@@ -106,20 +106,17 @@ Roblox.social = (function () {
 				return;
 			}
 
-			$.get("https://www.roblox.com/friends/list", { pageSize: 1000, startIndex: 0, userId: userId }).done(function (r) {
+			$.get("https://friends.roblox.com/v1/users/" + userId + "/friends").done(function (r) {
 				var users = [];
-				r.Friends.forEach(function (user) {
+				r.data.forEach(function (user) {
 					users.push({
-						id: user.Id,
-						username: user.Username
+						id: user.id,
+						username: user.name
 					});
 				});
 				resolve(users);
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
+			}).fail(function (jxhr, errors) {
+				reject(errors);
 			});
 		}, {
 			resolveExpiry: 60 * 1000,
