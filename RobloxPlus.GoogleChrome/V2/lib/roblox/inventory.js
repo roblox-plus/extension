@@ -112,13 +112,12 @@ Roblox.inventory = (function () {
 				return;
 			}
 
-			$.get("https://assetgame.roblox.com/Game/Badge/HasBadge.ashx", { UserID: userId, BadgeID: badgeId }).done(function (r) {
-				resolve(r === "Success");
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
+			$.get("https://badges.roblox.com/v1/users/" + userId + "/badges/awarded-dates", {
+				badgeIds: badgeId
+			}).done(function (r) {
+				resolve(r.data.length > 0);
+			}).fail(function (jxhr, errors) {
+				reject(errors);
 			});
 		}, {
 			rejectExpiry: 5 * 1000,
