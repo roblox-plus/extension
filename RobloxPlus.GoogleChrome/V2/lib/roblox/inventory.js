@@ -82,13 +82,10 @@ Roblox.inventory = (function () {
 				return;
 			}
 
-			$.get("https://api.roblox.com/ownership/hasasset", { userId: userId, assetId: assetId }).done(function (r) {
-				resolve(r);
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
+			$.get("https://inventory.roblox.com/v1/users/" + userId + "/items/Asset/" + assetId).done(function (r) {
+				resolve(r.data.length > 0);
+			}).fail(function (jxhr, errors) {
+				reject(errors);
 			});
 		}, {
 			rejectExpiry: 5 * 1000,
