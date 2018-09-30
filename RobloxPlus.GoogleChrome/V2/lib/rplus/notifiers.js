@@ -5,11 +5,15 @@ RPlus.notifiers = RPlus.notifiers || (function () {
 	var notifierUsers = {};
 	var lastRunDate = {};
 
-	function rerunNotifier(properties, action) {
-		setTimeout(runNotifier, properties.sleep, properties, action);
+	function rerunNotifier(properties, action, runId) {
+		setTimeout(runNotifier, properties.sleep, properties, action, runId);
 	}
 	
-	function runNotifier(properties, action) {
+	function runNotifier(properties, action, runId) {
+		if (properties.runId !== runId) {
+			return;
+		}
+		
 		lastRunDate[properties.notifierId] = new Date();
 
 		Roblox.users.getAuthenticatedUser().then(function (user) {
@@ -17,12 +21,12 @@ RPlus.notifiers = RPlus.notifiers || (function () {
 				if (!isEnabled) {
 					delete notifierUsers[properties.notifierId];
 					delete notifierCaches[properties.notifierId];
-					rerunNotifier(properties, action);
+					rerunNotifier(properties, action, runId);
 					return;
 				}
 				
 				if (!user && properties.requireAuthenticatedUser) {
-					rerunNotifier(properties, action);
+					rerunNotifier(properties, action, runId);
 					return;
 				}
 
@@ -38,17 +42,18 @@ RPlus.notifiers = RPlus.notifiers || (function () {
 				}
 				
 				action(user, notifierCaches[properties.notifierId], rerun).then(function () {
-					rerunNotifier(properties, action);
+					rerunNotifier(properties, action, runId);
 				}).catch(function () {
-					rerunNotifier(properties, action);
+					rerunNotifier(properties, action, runId);
 				});
 			});
 		}).catch(function () {
-			rerunNotifier(properties, action);
+			rerunNotifier(properties, action, runId);
 		});
 	}
 
 	function init(properties, action) {
+		properties.runId = 0;
 		properties.notifierId = ++notifierIdBase;
 
 		if (typeof (properties.sleep) !== "number") {
@@ -64,11 +69,13 @@ RPlus.notifiers = RPlus.notifiers || (function () {
 				callBack(true);
 			};
 		}
+		
+		runNotifier(properties, action, ++properties.runId);
 
-		runNotifier(properties, action);
 		setInterval(function () {
 			if ((+new Date) - lastRunDate[properties.notifierId].getTime() > properties.timeout) {
 				console.log("Notifier timed out!", properties.notifierId, properties.name);
+				runNotifier(properties, action, ++properties.runId);
 			}
 		}, properties.sleep);
 
