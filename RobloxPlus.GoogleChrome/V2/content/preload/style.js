@@ -30,6 +30,7 @@ RPlus.style = RPlus.style || (function () {
 
 	function setTheme(newTheme, save) {
 		var storageTheme = "";
+
 		themes.forEach(function (theme) {
 			if (newTheme && newTheme.type === theme.type) {
 				html.classList.add(theme.className);
@@ -38,6 +39,13 @@ RPlus.style = RPlus.style || (function () {
 				html.classList.remove(theme.className);
 			}
 		});
+
+		if (newTheme && newTheme.type) {
+			document.querySelectorAll(".dark-theme").forEach(function (el) {
+				el.classList.remove("dark-theme");
+			});
+		}
+
 		if (save) {
 			if (storageTheme) {
 				localStorage.setItem(themeStorageName, storageTheme);
