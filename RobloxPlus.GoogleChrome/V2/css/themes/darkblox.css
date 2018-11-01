@@ -600,10 +600,6 @@ html.darkblox-theme,
 
 
 /* Catalog */
-.darkblox-theme #catalog-content {
-	background-color: transparent;
-}
-
 .darkblox-theme #catalog-content .menu-link.small:hover,
 .darkblox-theme #catalog-content .menu-link.small.active {
 	color: #00A2FF;

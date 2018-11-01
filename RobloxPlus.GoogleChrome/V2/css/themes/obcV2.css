@@ -92,6 +92,11 @@
 	background-color: rgba(25, 25, 25, 0.75);
 }
 
+/* Catalog */
+.obc-theme-v2 #catalog-content {
+	background-color: #E3E3E3;
+}
+
 /* Chat */
 @keyframes rplus-obc-blink-dialog {
 	from {

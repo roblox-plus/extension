@@ -510,10 +510,6 @@ input.rplusslider[type='range']::-webkit-slider-thumb{
 }
 
 
-#catalog-content {
-	background-color: #E3E3E3;
-}
-
 /* everything else */
 .create-server-banner-text {
 	white-space: pre-wrap;

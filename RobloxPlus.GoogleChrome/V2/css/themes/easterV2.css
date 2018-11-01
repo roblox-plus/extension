@@ -113,6 +113,11 @@
 	background-image: url(images/themes/easter/EasterIcons.svg);
 }
 
+/* Catalog */
+.easter-theme-v2 #catalog-content {
+	background-color: #E3E3E3;
+}
+
 /* Chat */
 @keyframes rplus-easter-blink-dialog {
 	from {
