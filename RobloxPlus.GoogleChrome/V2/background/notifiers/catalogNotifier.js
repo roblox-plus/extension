@@ -118,27 +118,29 @@ RPlus.notifiers.catalog = (function () {
 					if(!autoTake) {
 						return;
 					}
+					
+					console.log("IT'S FREE!", message.data);
+					Roblox.economy.purchaseProduct(message.data.productId, 0).then(function (receipt) {
+						console.log("Got me a freebie", receipt);
 
-					var asset = message.data;
-					var productId = Number(asset.ProductId);
-					var isFree = (asset.IsFree || "").toString() === "true";
-					console.log("IT'S FREE!", asset);
-					if (isFree && productId) {
-						Roblox.economy.purchaseProduct(productId, 0).then(function (receipt) {
-							console.log("Got me a freebie", receipt);
-							$.notification({
-								title: "Purchased new free item!",
-								context: asset.Name,
-								icon: Roblox.thumbnails.getAssetThumbnailUrl(Number(asset.Id), 4),
-								clickable: true,
-								metadata: {
-									url: asset.Uri
-								}
-							});
-						}).catch(function (e) {
-							console.error("Did a new item really come out? Why did this fail to purchase?", e);
-						});
-					}
+						var notification = {
+							title: "Purchased new free item!",
+							context: message.data.name,
+							clickable: true,
+							metadata: {}
+						};
+
+						if (message.data.itemType === "Asset") {
+							notification.icon = Roblox.thumbnails.getAssetThumbnailUrl(Number(message.data.id), 4);
+							notification.metadata.url = "https://www.roblox.com/catalog/" + message.data.id + "/Roblox-Plus";
+						} else if (message.data.itemType === "Bundle") {
+							notification.metadata.url = "https://www.roblox.com/bundles/" + message.data.id + "/Roblox-Plus";
+						}
+
+						$.notification(notification);
+					}).catch(function (e) {
+						console.error("Did a new item really come out? Why did this fail to purchase?", e);
+					});
 				});
 			} catch (e) {
 				console.error("Failed to parse asset.", message);
