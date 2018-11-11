@@ -90,6 +90,10 @@ html.darkblox-theme,
 	color: #ffffff;
 }
 
+.darkblox-theme .game-name-title:after {
+	background: #303030;
+}
+
 .darkblox-theme .item-card-label,
 .darkblox-theme .game-card-experimental,
 .darkblox-theme .game-card-name-secondary {
