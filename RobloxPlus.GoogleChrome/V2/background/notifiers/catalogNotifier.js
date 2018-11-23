@@ -120,7 +120,7 @@ RPlus.notifiers.catalog = (function () {
 					}
 					
 					console.log("IT'S FREE!", message.data);
-					Roblox.economy.purchaseProduct(message.data.productId, 0).then(function (receipt) {
+					Roblox.economy.purchaseProduct(Number(message.data.productId), 0).then(function (receipt) {
 						console.log("Got me a freebie", receipt);
 
 						var notification = {
