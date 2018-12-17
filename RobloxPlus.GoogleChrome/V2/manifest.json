@@ -86,6 +86,7 @@
 				"/content/pages/TradeWindow.js",
 				"/content/pages/Profile.js",
 				"/content/pages/Game.js",
+				"/content/pages/Games.js",
 				"/content/pages/Money.js",
 				"/content/pages/Item.js",
 				"/content/pages/Account.js",

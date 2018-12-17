@@ -1,0 +1,15 @@
+.rplus-game-card-position {
+	padding: 4px;
+	text-align: right;
+	position: absolute;
+	color: white;
+	font-weight: bold;
+	-webkit-text-stroke-width: 0.5px;
+	-webkit-text-stroke-color: black;
+	width: 100%;
+	display: none;
+}
+
+.game-card-container:hover .rplus-game-card-position {
+	display: block;
+}

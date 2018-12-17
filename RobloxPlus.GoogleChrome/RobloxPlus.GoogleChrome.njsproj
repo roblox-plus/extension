@@ -58,6 +58,7 @@
     <Content Include="V2\css\pages\account.css">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="V2\css\pages\games.css" />
     <Content Include="V2\css\pages\groups.css">
       <SubType>Code</SubType>
     </Content>
@@ -114,6 +115,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="V2\content\content.js" />
+    <Compile Include="V2\content\pages\Games.js" />
     <Compile Include="V2\content\pages\Messages.js">
       <SubType>Code</SubType>
     </Compile>
