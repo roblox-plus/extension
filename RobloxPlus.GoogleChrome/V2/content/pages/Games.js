@@ -2,7 +2,7 @@
 RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.Games = function () {
-	$("body").on("mouseover", "a.game-card-link[href *= 'Position=']", function () {
+	$("body").on("mouseover", ".game-card:not(.sponsored-game) a.game-card-link[href *= 'Position=']", function () {
 		var position = Number(($(this).attr("href").match(/[&\?]Position=(\d+)/i) || ["", NaN])[1]);
 		if (!isNaN(position) && position > 0) {
 			var marker = $(this).find(".game-card-thumb-container > span");
