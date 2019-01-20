@@ -115,24 +115,29 @@ Roblox.users = {
 			resolve(presence);
 		}
 
-		$.post("https://api.roblox.com/users/online-status", { userIds: userIds }).done(function (presences) {
-			presences.UserPresences.forEach(function (report) {
-				presence[report.VisitorId] = {
-					game: report.GameId ? {
-						placeId: report.PlaceId,
-						serverId: report.GameId,
-						name: report.LastLocation
+		// Mappings from location types from Api -> comment types mentioned above
+		var locationTypeTranslations = {
+			3: 3,
+			2: 4,
+			1: 2
+		};
+
+		$.post("https://presence.roblox.com/v1/presence/users", { userIds: userIds }).done(function (presences) {
+			presences.userPresences.forEach(function (report) {
+				presence[report.userId] = {
+					game: report.gameId ? {
+						placeId: report.placeId,
+						serverId: report.gameId,
+						name: report.lastLocation
 					} : null,
-					locationName: report.LastLocation,
-					locationType: report.LocationType
+					locationName: report.lastLocation,
+					locationType: locationTypeTranslations[report.userPresenceType] || 0
 				};
 			});
+
 			resolve(presence);
-		}).fail(function () {
-			reject([{
-				code: 0,
-				message: "HTTP request failed"
-			}]);
+		}).fail(function (jxhr, errors) {
+			reject(errors);
 		});
 	}, {
 		rejectExpiry: 5 * 1000,
