@@ -15,7 +15,7 @@ Roblox.economy = (function () {
 					return;
 				}
 
-				$.get("https://api.roblox.com/currency/balance").done(function (r) {
+				$.get("https://economy.roblox.com/v1/users/" + authenticatedUserId + "/currency").done(function(r) {
 					resolve({
 						robux: r.robux
 					});
