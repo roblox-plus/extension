@@ -18,21 +18,16 @@ Roblox.groups = (function () {
 				return;
 			}
 
-			$.get("https://www.roblox.com/api/groups/" + groupId + "/RoleSets").done(function (r) {
-				var roles = [];
-				r.forEach(function (role) {
-					roles.push({
-						id: role.ID,
-						name: role.Name,
-						rank: role.Rank
-					});
-				});
-				resolve(roles);
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
+			$.get("https://groups.roblox.com/v1/groups/" + groupId + "/roles").done(function (r) {
+				resolve(r.roles.map(function (role) {
+					return {
+						id: role.id,
+						name: role.name,
+						rank: role.rank
+					};
+				}));
+			}).fail(function (jxhr, errors) {
+				reject(errors);
 			});
 		}, {
 			rejectExpiry: 5 * 1000,
@@ -93,26 +88,27 @@ Roblox.groups = (function () {
 				return;
 			}
 
-			this.getGroupRoles(groupId).then(function (roles) {
-				$.get("https://assetgame.roblox.com/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRole&playerid=" + userId + "&groupid=" + groupId).done(function (role) {
-					for (var n = 0; n < roles.length; n++) {
-						if (roles[n].name == role) {
-							resolve(roles[n]);
-							return;
-						}
+			$.get("https://groups.roblox.com/v1/users/" + userId + "/groups/roles").done(function (r) {
+				for (var n = 0; n < r.data.length; n++) {
+					var membership = r.data[n];
+					if (membership.group.id === groupId) {
+						resolve({
+							id: membership.role.id,
+							name: membership.role.name,
+							rank: membership.role.rank
+						});
+						return;
 					}
-					resolve({
-						id: 0,
-						name: "Guest",
-						rank: 0
-					});
-				}).fail(function () {
-					reject([{
-						code: 0,
-						message: "HTTP request failed"
-					}]);
+				}
+
+				resolve({
+					id: 0,
+					name: "Guest",
+					rank: 0
 				});
-			}, reject);
+			}).fail(function (jxhr, errors) {
+				reject(errors);
+			});
 		}, {
 			queued: true,
 			resolveExpiry: 15 * 1000
