@@ -116,6 +116,9 @@
     </Compile>
     <Compile Include="V2\content\content.js" />
     <Compile Include="V2\content\pages\Games.js" />
+    <Compile Include="V2\content\pages\GroupV2.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="V2\content\pages\Messages.js">
       <SubType>Code</SubType>
     </Compile>

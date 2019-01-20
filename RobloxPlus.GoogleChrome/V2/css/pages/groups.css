@@ -9,3 +9,7 @@
 #GroupsPeoplePane_Clan[rplus-update-log] {
 	padding: 20px;
 }
+
+.GroupWall_PostContainer, .wall-comment-body {
+	white-space: pre-wrap;
+}

@@ -24,7 +24,8 @@ RPlus.Pages = RPlus.Pages || {};
 			for (var i = 0; i < patterns.length; i++) {
 				if (patterns[i].test(location.pathname)) {
 					console.log("Page:", pageName);
-					RPlus.Pages[pageName] = RPlus.Pages[pageName]();
+					var patternMatch = location.pathname.match(patterns[i]);
+					RPlus.Pages[pageName] = RPlus.Pages[pageName](patternMatch);
 					RPlus.Pages[pageName].patterns = patterns;
 					break;
 				}

@@ -1,8 +1,8 @@
 ﻿var RPlus = RPlus || {};
 RPlus.Pages = RPlus.Pages || {};
 
-RPlus.Pages.Group = function () {
-	var id = Number(url.param("gid") || url.param("id", $("#ctl00_cphRoblox_AbuseReportButton_ReportAbuseTextHyperLink").attr("href")));
+RPlus.Pages.Group = function (pathMatch) {
+	var id = Number(pathMatch[1]);
 	if (!id) {
 		console.warn("Could not parse group id.");
 		return;
@@ -10,16 +10,8 @@ RPlus.Pages.Group = function () {
 
 	console.log("Group:", id);
 	RPlus.style.loadStylesheet(ext.getUrl("/css/pages/groups.css"));
-
-	var shoutInput = $("#ctl00_cphRoblox_GroupStatusPane_StatusTextBox").attr("placeholder", "Enter group shout").attr("maxlength", "255").removeClass("default").removeAttr("value").removeAttr("onfocus");
-	var shoutChar = function () { $("#ctl00_cphRoblox_GroupStatusPane_StatusSubmitButton").val("Shout (" + (255 - (shoutInput.val() || "").length) + ")"); };
-	shoutInput.keyup(shoutChar).keydown(shoutChar).keypress(shoutChar).change(shoutChar).trigger("change");
-
-	var postInput = $("#ctl00_cphRoblox_GroupWallPane_NewPost").attr("maxlength", "500");
-	var postChar = function () { $("#ctl00_cphRoblox_GroupWallPane_NewPostButton").val("Post (" + (500 - (postInput.val() || "").length) + ")"); };
-	postInput.keyup(postChar).keydown(postChar).keypress(postChar).change(postChar).trigger("change");
-
-	storage.get(["groupShoutNotifierList", "groupShoutNotifier_mode", "groupRoleDisplay"], function (s) {
+	
+	/*storage.get(["groupShoutNotifierList", "groupShoutNotifier_mode", "groupRoleDisplay"], function (s) {
 		s.groupShoutNotifierList = type(s.groupShoutNotifierList) == "object" ? s.groupShoutNotifierList : {};
 		s.wl = s.groupShoutNotifier_mode != "whitelist";
 		$(".GroupControlsBox").append($("<div>").append($("<button class=\"btn-control-medium btn-control" + (s.wl ? "-disabled" : "") + "\">").click(s.wl ? function () { } : function (e) {
@@ -53,10 +45,10 @@ RPlus.Pages.Group = function () {
 				});
 			}, 500);
 		}
-	});
+	});*/
 
 	if (id == 650266) {
-		setInterval(function () {
+		/*setInterval(function () {
 			$(".GroupWall_PostBtns:not([rplus])").attr("rplus", "").each(function () {
 				var el = $(this);
 				var poster = Roblox.users.getIdFromUrl(el.parent().find(".UserLink>a[href*='/users/']").attr("href"));
@@ -71,18 +63,19 @@ RPlus.Pages.Group = function () {
 					}));
 				}
 			}).find(">a[href^='javascript']").removeAttr("style");
-		}, 250);
+		}, 250);*/
 	} else if (id === 2518656) {
-		$("#GroupsPeople_Clan").text("Update Log " + ext.manifest.version);
+		/*$("#GroupsPeople_Clan").text("Update Log " + ext.manifest.version);
 
 		var updateLogText = $("<pre id=\"updateLogText\">").text("Loading update log...");
 		var updateLogPane = $("#GroupsPeoplePane_Clan").attr("rplus-update-log", +new Date);
 		updateLogPane.html(updateLogText);
 
+		RPlus.style.loadStylesheet(ext.getUrl("/css/pages/groups.css"));
 		RPlus.settings.get().then(function (settings) {
 			try {
 				updateLogText.text(atob(settings.updateLogPost)).attr("rplus-linkify-ready", +new Date);
-			} catch(e) {
+			} catch (e) {
 				updateLogText.text("No update log to display right now.");
 			}
 
@@ -111,13 +104,13 @@ RPlus.Pages.Group = function () {
 		}).catch(function (e) {
 			console.error(e);
 			updateLogText.html($("<b>").text("Failed to load update log. :("));
-		});
+		});*/
 	}
 
 	return {};
 };
 
-RPlus.Pages.Group.patterns = [/^\/my\/groups\.aspx/i, /^\/groups\/group\.aspx/i];
+RPlus.Pages.Group.patterns = [/^\/groups\/(\d+)\//];
 
 
 // WebGL3D
