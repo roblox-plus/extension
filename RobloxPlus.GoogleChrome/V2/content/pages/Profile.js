@@ -35,7 +35,7 @@ RPlus.Pages.Profile = function () {
 
 	storage.get(["profileRAP", "tradeTab"], function (vals, rapLabel) {
 		if (vals.profileRAP) {
-			$(".header-details>.details-info").append(rapLabel = $("<li><div class=\"text-label\">RAP</div><a userid=\"" + id + "\" class=\"rplusinventory text-name\" href=\"javascript:/* Roblox+ */;\"><h3>...</h3></a></li>"));
+			$(".header-details>.details-info").append(rapLabel = $("<li><div class=\"text-label font-caption-header\">RAP</div><a userid=\"" + id + "\" class=\"rplusinventory text-name\" href=\"javascript:/* Roblox+ */;\"><h3 class=\"font-caption-body\">...</h3></a></li>"));
 			Roblox.inventory.getCollectibles(id).then(function (inv) {
 				rapLabel.find("h3").text(global.addCommas(inv.combinedValue));
 			}, function () {
