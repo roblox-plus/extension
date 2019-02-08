@@ -123,7 +123,6 @@ fixCB(({
 
 			/* Load once */
 			if ($("#navigation").length && !$("#navigation .rplus-icon").length) {
-				$("#nav-trade").append("<span class=\"notification-blue\" title=\"0\"></span>");
 				$("#navigation .rbx-upgrade-now").before("<li><a href=\"/my/account?tab=rplus\"><span class=\"rplus-icon\"></span><span>Control Panel</span></a></li>");
 				$(".notification-blue:empty,.notification-red:empty").removeClass("hide");
 				$("#nav-message").attr("href", "/my/messages");
