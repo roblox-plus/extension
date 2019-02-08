@@ -2,6 +2,7 @@
 RPlus.style = RPlus.style || (function () {
 	var themeStorageName = "rplusTheme";
 	var overrideTheme = null;
+	var currentTheme = null;
 	var html = document.documentElement;
 	var themes = [
 		{
@@ -28,7 +29,16 @@ RPlus.style = RPlus.style || (function () {
 		themeTypes[theme.type] = theme;
 	});
 
+	function clearRobloxTheme() {
+		if (currentTheme) {
+			document.querySelectorAll(".dark-theme").forEach(function (el) {
+				el.classList.remove("dark-theme");
+			});
+		}
+	}
+
 	function setTheme(newTheme, save) {
+		currentTheme = newTheme;
 		var storageTheme = "";
 
 		themes.forEach(function (theme) {
@@ -41,9 +51,7 @@ RPlus.style = RPlus.style || (function () {
 		});
 
 		if (newTheme && newTheme.type) {
-			document.querySelectorAll(".dark-theme").forEach(function (el) {
-				el.classList.remove("dark-theme");
-			});
+			clearRobloxTheme();
 		}
 
 		if (save) {
@@ -100,12 +108,15 @@ RPlus.style = RPlus.style || (function () {
 		themes.forEach(function (theme) {
 			loadStylesheet(theme.file);
 		});
+
 		if (themeOverride) {
 			overrideTheme = themeOverride;
 			setTheme(themeOverride, false);
 		} else {
 			loadThemeFromStorage();
 		}
+
+		setInterval(clearRobloxTheme, 500);
 	}
 
 	return {
