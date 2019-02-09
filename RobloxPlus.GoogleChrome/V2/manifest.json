@@ -79,7 +79,6 @@
 				"/content/notificationStream.js",
 
 				"/content/pages/Login.js",
-				"/content/pages/Group.js",
 				"/content/pages/GroupV2.js",
 				"/content/pages/Develop.js",
 				"/content/pages/Inventory.js",

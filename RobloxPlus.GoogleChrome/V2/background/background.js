@@ -182,7 +182,7 @@ if (browser.name == "Chrome") {
 				}
 			}).buttonClick(function () {
 				note.close();
-				window.open("https://www.roblox.com/Groups/Group.aspx?gid=2518656&rbxp=48103520");
+				window.open("https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group?rbxp=48103520");
 			});
 		}).catch(function(e) {
 			console.warn("no startup notification", e);
