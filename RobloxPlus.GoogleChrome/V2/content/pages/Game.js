@@ -59,40 +59,55 @@ RPlus.Pages.Game = function () {
 		.append(servers.lastPage));
 
 	$(".rbx-gear-item-delete>.icon-delete").addClass("icon-alert");
-
-	function buildServerListItem(placeId, o) {
-		var ret = $("<li class=\"section-content rbx-game-server-item\">").attr("data-gameid", o.id).prepend($("<div class=\"section-left rbx-game-server-details\">").prepend(
-			"<div class=\"rbx-game-status rbx-game-server-status\">" + o.playerList.length + " of " + o.capacity + " Players Max</div>"
-			+ "<div class=\"rbx-game-server-alert" + (o.isSlow ? "" : " hidden") + "\"><span class=\"icon-remove\"></span>Slow Game</div>"
-		).append(
-			$("<a class=\"btn-full-width btn-control-xs rbx-game-server-join\" data-placeid=\"" + placeId + "\">Join</a>").click(function () {
-				console.log("heyhey");
-				Roblox.games.launch({
-					placeId: placeId,
-					serverId: o.id
-				});
-			})
-			));
-		var playerList = $("<div class=\"section-right rbx-game-server-players\">");
-		o.playerList.forEach(function (player) {
-			playerList.append($("<span class=\"avatar avatar-headshot-sm player-avatar\">").append(
-				$("<a class=\"avatar-card-link\" href=\"/users/" + o.id + "/profile\">").attr({
-					title: player.username,
-					href: Roblox.users.getProfileUrl(player.id)
-				}).append($("<img class=\"avatar-card-image\">").attr("src", Roblox.thumbnails.getUserHeadshotThumbnailUrl(player.id, 0)))
-			));
-		});
-		return ret.append(playerList);
-	}
 	
 	$(".rbx-running-games-refresh").click(function () {
 		servers.curPage.text("1");
 		servers.firstPage.addClass("disabled");
 		servers.prevPage.addClass("disabled");
 	});
-
+	
 	if (placeId === 258257446) {
 		$(".create-server-banner-text").text("Purchasing a VIP server in this place will activate Roblox+ Premium!\nRoblox+ Premium will unlock:\n\tA purchase button on new limited notifications\n\tThe Roblox+ Easter site theme")
+	} else if (placeId === 2117000638) {
+		var audioTag = document.createElement("audio");
+		var jplayer = $(audioTag);
+		var minimumVolume = 0.01;
+
+		audioTag.volume = minimumVolume;
+		audioTag.loop = true;
+
+		var forceLoad = function () {
+			if (!audioTag.paused) {
+				return;
+			}
+			
+			audioTag.play().then(function () {
+
+			}).catch(function (e) {
+				setTimeout(forceLoad, 100);
+			});
+		};
+
+		Roblox.audio.getSoundUrl(255288110).then(function (audioUrl) {
+			audioTag.src = audioUrl;
+			forceLoad();
+		}).catch(function () {
+			console.error("no rockefeller today :(");
+		});
+
+		$("#MultiplayerVisitButton").on("mouseover", function () {
+			jplayer.animate({ volume: 0.05 }, 500);
+		}).on("mouseout", function () {
+			jplayer.animate({ volume: minimumVolume }, 500);
+		});
+
+		$(window).focus(function () {
+			jplayer.animate({ volume: minimumVolume }, 500);
+		}).blur(function () {
+			jplayer.animate({ volume: 0 }, 500);
+		});
+
+		RPlus.style.loadStylesheet(ext.getUrl("/css/easterEggs/rockefellerStreet.css"));
 	}
 
 	$(".voting-panel.body").each(function () {

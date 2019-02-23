@@ -38,6 +38,7 @@
     <Folder Include="V2\content\preload\" />
     <Folder Include="V2\content\pages\" />
     <Folder Include="V2\css\" />
+    <Folder Include="V2\css\easterEggs\" />
     <Folder Include="V2\css\pages\" />
     <Folder Include="V2\css\roblox\" />
     <Folder Include="V2\css\rplus\" />
@@ -54,6 +55,7 @@
   <ItemGroup>
     <Content Include="V2\background\background.html" />
     <Content Include="V2\css\customIcon.css" />
+    <Content Include="V2\css\easterEggs\rockefellerStreet.css" />
     <Content Include="V2\css\icons.css" />
     <Content Include="V2\css\pages\account.css">
       <SubType>Code</SubType>
