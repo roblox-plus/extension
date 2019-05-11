@@ -3,38 +3,46 @@ rplus = window.rplus || {};
 
 
 rplus.ajax = [
-{
-	match: /^\/games\/getgameinstancesjson/i,
-	before: function (d) {
-		$("#rbx-running-games .rbx-game-server-item-container").html("");
+	{
+		match: /^\/games\/getgameinstancesjson/i,
+		before: function (d) {
+			$("#rbx-running-games .rbx-game-server-item-container").html("");
+		}
+	}, {
+		match: /^\/games\/getgameinstancesjson/i,
+		success: function (r) {
+			try {
+				r = JSON.parse(r);
+			} catch (e) {
+				console.warn(e);
+				return;
+			}
+
+			var maxPage = Math.max(1, Math.ceil(r.TotalCollectionSize / 10));
+			console.log("Max games page: " + maxPage);
+
+			$(".rbx-running-games-footer .pager-total>span:last-child").text(maxPage);
+			$(".rbx-running-games-footer .pager-next,.rbx-running-games-footer .last").toggleClass("disabled", (Number($(".rbx-running-games-footer .pager-cur>span").text()) || 1) >= maxPage);
+		}
+	}, {
+		match: /money\.aspx\/getmytransactions/i,
+		success: function (r, d) {
+			try { r = JSON.parse(JSON.parse(r).d); } catch (e) { return; }
+			try { d = JSON.parse(d); } catch (e) { return; }
+			var op = $("#MyTransactions_TransactionTypeSelect>option[value=\"" + d.transactiontype + "\"]");
+			op.text(op.text().replace(/\s*\(?\d*\)?$/, "") + (Number(r.TotalCount) ? " (" + r.TotalCount + ")" : ""));
+		}
+	}, {
+		match: /money\.aspx\/getmyitemtrades/i,
+		success: function (r, d) {
+			try { r = JSON.parse(JSON.parse(r).d); } catch (e) { return; }
+			try { d = JSON.parse(d); } catch (e) { return; }
+			var op = $("#TradeItems_TradeType>option[value=\"" + d.statustype + "\"]");
+			r.totalCount = Number(r.totalCount) || 0;
+			op.text(op.text().replace(/\s*\(?\d*\)?$/, "") + (Number(r.totalCount) ? " (" + r.totalCount + ")" : ""));
+			$("#rplusCancelOutbound").prop("disabled", r.totalCount <= 0).attr("class", r.totalCount ? "btn-small btn-neutral" : "btn-small btn-disabled-neutral")[d.statustype == "outbound" ? "show" : "hide"]();
+		}
 	}
-}, {
-	match: /^\/games\/getgameinstancesjson/i,
-	success: function (r) {
-		try { r = JSON.parse(r); } catch (e) { return; }
-		var maxPage = Math.max(1, Math.ceil(r.TotalCollectionSize / 10));
-		$(".rbx-running-games-footer .pager-total>span:last-child").text(maxPage);
-		$(".rbx-running-games-footer .pager-next,.rbx-running-games-footer .last").toggleClass("disabled", (Number($(".rbx-running-games-footer .pager-cur>span").text()) || 1) >= maxPage);
-	}
-}, {
-	match: /money\.aspx\/getmytransactions/i,
-	success: function (r, d) {
-		try { r = JSON.parse(JSON.parse(r).d); } catch (e) { return; }
-		try { d = JSON.parse(d); } catch (e) { return; }
-		var op = $("#MyTransactions_TransactionTypeSelect>option[value=\"" + d.transactiontype + "\"]");
-		op.text(op.text().replace(/\s*\(?\d*\)?$/, "") + (Number(r.TotalCount) ? " (" + r.TotalCount + ")" : ""));
-	}
-}, {
-	match: /money\.aspx\/getmyitemtrades/i,
-	success: function (r, d) {
-		try { r = JSON.parse(JSON.parse(r).d); } catch (e) { return; }
-		try { d = JSON.parse(d); } catch (e) { return; }
-		var op = $("#TradeItems_TradeType>option[value=\"" + d.statustype + "\"]");
-		r.totalCount = Number(r.totalCount) || 0;
-		op.text(op.text().replace(/\s*\(?\d*\)?$/, "") + (Number(r.totalCount) ? " (" + r.totalCount + ")" : ""));
-		$("#rplusCancelOutbound").prop("disabled", r.totalCount <= 0).attr("class", r.totalCount ? "btn-small btn-neutral" : "btn-small btn-disabled-neutral")[d.statustype == "outbound" ? "show" : "hide"]();
-	}
-}
 ];
 
 rplus.startup = function (x, y) {
