@@ -118,7 +118,12 @@ fixCB(({
 			});
 
 			var total = 0;
-			$("#navigation .notification-blue").each(function (x, el) { total += (x = Number((el = $(this)).attr("title").replace(/,/g, "")) || 0); mainLoop.comma(x, function (t) { el.text(x > 0 ? t : ""); }); });
+			$("#navigation .notification-blue").each(function (x, el) {
+				if ($(this).attr("title")) {
+					total += (x = Number((el = $(this)).attr("title").replace(/,/g, "")) || 0);
+					mainLoop.comma(x, function (t) { el.text(x > 0 ? t : ""); });
+				}
+			});
 			$(".rbx-nav-collapse .notification-red").attr("title", addComma(total)).text(total > 0 ? (total < 100 ? total : (total < 1000 ? "99+" : Math.floor(Math.min(9999, total) / 1000) + "k+")) : "");
 
 			/* Load once */
