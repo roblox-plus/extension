@@ -88,10 +88,10 @@ Roblox.inventory = (function () {
 				reject(errors);
 			});
 		}, {
-			rejectExpiry: 5 * 1000,
-			resolveExpiry: 60 * 1000,
-			queued: true
-		}),
+				rejectExpiry: 5 * 1000,
+				resolveExpiry: 60 * 1000,
+				queued: true
+			}),
 
 		userHasBadge: $.promise.cache(function (resolve, reject, userId, badgeId) {
 			if (typeof (userId) != "number" || userId <= 0) {
@@ -117,10 +117,10 @@ Roblox.inventory = (function () {
 				reject(errors);
 			});
 		}, {
-			rejectExpiry: 5 * 1000,
-			resolveExpiry: 60 * 1000,
-			queued: true
-		}),
+				rejectExpiry: 5 * 1000,
+				resolveExpiry: 60 * 1000,
+				queued: true
+			}),
 
 		getCollectibles: $.promise.cache(function (resolve, reject, userId) {
 			if (typeof (userId) != "number" || userId <= 0) {
@@ -164,10 +164,10 @@ Roblox.inventory = (function () {
 				});
 			});
 		}, {
-			rejectExpiry: 10 * 1000,
-			resolveExpiry: 5 * 60 * 1000,
-			queued: true
-		}),
+				rejectExpiry: 10 * 1000,
+				resolveExpiry: 5 * 60 * 1000,
+				queued: true
+			}),
 
 		delete: $.promise.cache(function (resolve, reject, assetId) {
 			if (typeof (assetId) != "number" || assetId <= 0) {
@@ -184,18 +184,18 @@ Roblox.inventory = (function () {
 				reject([]);
 			});
 		}, {
-			rejectExpiry: 1000,
-			resolveExpiry: 1000
-		}),
+				rejectExpiry: 1000,
+				resolveExpiry: 1000
+			}),
 
 		getAssets: $.promise.cache(function (resolve, reject, userId, assetTypeId) {
 			loadUserAssets(userId, assetTypeId).then(function (assets) {
 				resolve(assets);
 			}, reject);
 		}, {
-			resolveExpiry: 30 * 1000,
-			queued: true
-		}),
+				resolveExpiry: 30 * 1000,
+				queued: true
+			}),
 
 		getAssetOwners: $.promise.cache(function (resolve, reject, assetId, cursor, sortOrder) {
 			if (typeof (assetId) != "number" || assetId <= 0) {
@@ -206,8 +206,46 @@ Roblox.inventory = (function () {
 				return;
 			}
 
-			$.get("https://inventory.roblox.com/v1/assets/" + assetId + "/owners", { cursor: cursor || "", sortOrder: sortOrder || "Asc", limit: 100 }).done(function (data) {
-				resolve(data);
+			$.get("https://inventory.roblox.com/v2/assets/" + assetId + "/owners", { cursor: cursor || "", sortOrder: sortOrder || "Asc", limit: 100 }).done(function (data) {
+				var dcb = -1;
+				var fcb = function () {
+					if (++dcb === data.data.length) {
+						resolve(data);
+					}
+				};
+
+				data.data.forEach(function (record, index) {
+					var translatedRecord = {
+						userAssetId: record.id,
+						serialNumber: record.serialNumber,
+						owner: null,
+						created: record.created,
+						updated: record.updated
+					};
+
+					if (record.owner) {
+						Roblox.users.getByUserId(record.owner.id).then(function (user) {
+							var bc = user.bc;
+							if (bc === "NBC") {
+								bc = "None";
+							}
+
+							translatedRecord.owner = {
+								userId: user.id,
+								username: user.username,
+								buildersClubMembershipType: bc
+							};
+
+							data.data[index] = translatedRecord;
+							fcb();
+						});
+					} else {
+						data.data[index] = translatedRecord;
+						fcb();
+					}
+				});
+
+				fcb();
 			}).fail(function (jxhr, errors) {
 				reject(errors);
 			});
@@ -249,10 +287,10 @@ Roblox.inventory = (function () {
 				reject(errors);
 			});
 		}, {
-			resolveExpiry: 15 * 1000,
-			rejectExpiry: 15 * 1000,
-			queued: true
-		})
+				resolveExpiry: 15 * 1000,
+				rejectExpiry: 15 * 1000,
+				queued: true
+			})
 	};
 })();
 
