@@ -4,11 +4,11 @@
 var Roblox = Roblox || {};
 
 Roblox.inventory = (function () {
-	function loadUserCollectibleAssets(userId, assetTypeId, cursor) {
+	function loadUserCollectibleAssets(userId, cursor) {
 		return new Promise(function (resolve, reject) {
-			$.get("https://inventory.roblox.com/v1/users/" + userId + "/assets/collectibles", { assetType: assetTypeId, cursor: cursor || "", sortOrder: "Asc", limit: 100 }).done(function (r) {
+			$.get("https://inventory.roblox.com/v1/users/" + userId + "/assets/collectibles", { cursor: cursor || "", sortOrder: "Asc", limit: 100 }).done(function (r) {
 				if (r.nextPageCursor) {
-					loadUserCollectibleAssets(userId, assetTypeId, r.nextPageCursor).then(function (extraData) {
+					loadUserCollectibleAssets(userId, r.nextPageCursor).then(function (extraData) {
 						resolve(r.data.concat(extraData));
 					}, reject);
 				} else {
@@ -130,39 +130,29 @@ Roblox.inventory = (function () {
 				}]);
 				return;
 			}
-
-			var rejected = false;
-			var completed = 0;
+			
 			var collectibles = [];
 			var combinedValue = 0;
-
-			Roblox.catalog.collectibleAssetTypeIds.forEach(function (assetTypeId) {
-				loadUserCollectibleAssets(userId, assetTypeId).then(function (data) {
-					data.forEach(function (userAsset) {
-						userAsset.assetTypeId = assetTypeId;
-						combinedValue += userAsset.recentAveragePrice || 0;
-					});
-					collectibles = collectibles.concat(data);
-					if (++completed == Roblox.catalog.collectibleAssetTypeIds.length) {
-						collectibles.sort(function (a, b) {
-							if (a.assetId == b.assetId) {
-								return a.userAssetId - b.userAssetId;
-							}
-							return a.assetId - b.assetId;
-						});
-
-						resolve({
-							combinedValue: combinedValue,
-							collectibles: collectibles
-						});
-					}
-				}, function (err) {
-					if (!rejected) {
-						rejected = true;
-						reject(err);
-					}
+			
+			loadUserCollectibleAssets(userId).then(function (data) {
+				data.forEach(function (userAsset) {
+					combinedValue += userAsset.recentAveragePrice || 0;
 				});
-			});
+				collectibles = collectibles.concat(data);
+
+				collectibles.sort(function (a, b) {
+					if (a.assetId === b.assetId) {
+						return a.userAssetId - b.userAssetId;
+					}
+
+					return a.assetId - b.assetId;
+				});
+
+				resolve({
+					combinedValue: combinedValue,
+					collectibles: collectibles
+				});
+			}).catch(reject);
 		}, {
 				rejectExpiry: 10 * 1000,
 				resolveExpiry: 5 * 60 * 1000,
