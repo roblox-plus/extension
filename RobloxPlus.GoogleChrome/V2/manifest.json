@@ -22,6 +22,7 @@
 				"/content/preload/loadStylesheets.js",
 
 				"/lib/jquery/jquery.js",
+				"/lib/twemoji.min.js",
 				"/lib/global.js",
 				"/lib/jquery/jquery.trigger.js",
 				"/lib/roblox/xsrfHandler.js",

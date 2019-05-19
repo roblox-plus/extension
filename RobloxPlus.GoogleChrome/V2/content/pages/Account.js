@@ -86,6 +86,12 @@ RPlus.Pages.Account = function () {
 					});
 				}
 			},
+			{
+				"name": "Twemojis",
+				"type": typeof (true),
+				"storage": "twemoji",
+				"description": "Twemoji emoji support across the site."
+			},
 			themeSetting
 		],
 		"Sound": [

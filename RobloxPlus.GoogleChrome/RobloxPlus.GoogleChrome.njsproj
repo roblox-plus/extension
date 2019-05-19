@@ -196,6 +196,7 @@
     <Compile Include="V2\lib\rplus\settings.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="V2\lib\twemoji.min.js" />
     <Compile Include="V2\middle.js" />
     <Compile Include="V2\overwrite.js" />
   </ItemGroup>

@@ -7,7 +7,6 @@ fixCB(({
 	"text/html": function (subdomain, upath, list, mainLoop) {
 		if (document.querySelector("#navigation .rplus-icon") || (["help", "corp", "developer", "wiki", "devforum", "blog", "api", "m", "bloxcon", "setup", "content", "polls"]).indexOf(subdomain = subdomain[subdomain.length - 3]) >= 0) { return; }
 		
-
 		function plusSlider(input) {
 			return input.each(function () {
 				var max = Number($(this).attr("max")) || 100;
@@ -217,6 +216,35 @@ fixCB(({
 			} else {
 				setTheme(v);
 			}
+		});
+
+		storage.get("twemoji", function (enabled) {
+			if (!enabled) {
+				return;
+			}
+
+			var emojiSelector = "h2,p,div";
+			var addEmojis = function (element) {
+				setTimeout(function () {
+					twemoji.parse(element);
+				}, 500);
+			};
+
+			$(emojiSelector).each(function () {
+				addEmojis(this);
+			});
+
+			var emojiObserver = new MutationObserver(function (records) {
+				records.forEach(function (record) {
+					record.addedNodes.forEach(function (e) {
+						if ($(e).is(emojiSelector)) {
+							addEmojis(e);
+						}
+					});
+				});
+			});
+
+			emojiObserver.observe(document.body, { childList: true, subtree: true });
 		});
 
 		$("body").on("change", "*[storage]", function (s, v) {
