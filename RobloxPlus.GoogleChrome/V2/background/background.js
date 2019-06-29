@@ -107,6 +107,31 @@ Roblox.users.getAuthenticatedUser().then(function (user) {
 			return { redirectUrl: "https://assetgame.roblox.com/asset/" + match[1] };
 		}, { urls: ["*://www.roblox.com/asset/*"] }, ["blocking"]);
 
+		// Sound is dumb sometimes: net::ERR_CONTENT_DECODING_FAILED
+		chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
+			details.requestHeaders.forEach(function (header) {
+				if (header.name === "Accept-Encoding") {
+					header.value = "gzip, deflate";
+				}
+			});
+
+			return { requestHeaders: details.requestHeaders };
+		}, {
+			urls: [
+				"*://c1.rbxcdn.com/*",
+				"*://c2.rbxcdn.com/*",
+				"*://c3.rbxcdn.com/*",
+				"*://c4.rbxcdn.com/*",
+				"*://c5.rbxcdn.com/*",
+				"*://c6.rbxcdn.com/*",
+				"*://c7.rbxcdn.com/*"
+			] 
+		}, [
+			"blocking",
+			"requestHeaders",
+			"extraHeaders"
+		]);
+
 		chrome.webRequest.onHeadersReceived.addListener(function (details) {
 			var id = Roblox.catalog.getIdFromUrl(details.url);
 			if (id > 0) {
