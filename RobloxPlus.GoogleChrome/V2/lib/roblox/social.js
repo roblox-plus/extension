@@ -46,7 +46,7 @@ Roblox.social = (function () {
 				return;
 			}
 
-			$.post("https://api.roblox.com/user/follow", { followedUserId: userId }).done(function () {
+			$.post("https://friends.roblox.com/v1/users/" + userId + "/follow").done(function () {
 				resolve();
 			}).fail(function () {
 				reject([{
@@ -66,7 +66,7 @@ Roblox.social = (function () {
 				return;
 			}
 
-			$.post("https://api.roblox.com/user/unfollow", { followedUserId: userId }).done(function () {
+			$.post("https://friends.roblox.com/v1/users/" + userId + "/unfollow").done(function () {
 				resolve();
 			}).fail(function () {
 				reject([{
@@ -86,7 +86,7 @@ Roblox.social = (function () {
 				return;
 			}
 
-			$.post("https://www.roblox.com/api/friends/removefriend", { targetUserID: userId }).done(function () {
+			$.post("https://friends.roblox.com/v1/users/" + userId + "/unfriend").done(function () {
 				resolve();
 			}).fail(function () {
 				reject([{
