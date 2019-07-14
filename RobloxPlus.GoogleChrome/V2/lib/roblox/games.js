@@ -4,8 +4,21 @@
 (window.Roblox || (Roblox = {})).games = (function () {
 	var launchFrame = $("<iframe>").hide();
 	var baseLaunchUrl = "https://assetgame.roblox.com/game/PlaceLauncher.ashx?";
-	var authTicketUrl = "https://www.roblox.com/game-auth/getauthticket?" + $.param({ verification: ext.id, _: +new Date });
+	var authTicketUrl = "https://auth.roblox.com/v1/authentication-ticket?" + $.param({ verification: ext.id, _: +new Date });
 	var refererOverrideValue = "https://www.roblox.com/users/48103520/profile?roblox=plus";
+
+	var getAuthTicket = function () {
+		return new Promise(function (resolve, reject) {
+			$.post(authTicketUrl).done(function (r, status, xhr) {
+				resolve(xhr.getResponseHeader("rbx-authentication-ticket"));
+			}).fail(function () {
+				reject([{
+					code: 0,
+					message: "HTTP request failed"
+				}]);
+			});
+		});
+	};
 
 	var getServers = $.promise.cache(function (resolve, reject, placeId, cursor) {
 		$.get("https://www.roblox.com/games/getgameinstancesjson", { placeId: placeId, startindex: (cursor - 1) * 10 }).done(function (r) {
@@ -154,22 +167,11 @@
 				};
 			}
 
-			$.ajax({
-				type: "GET",
-				url: authTicketUrl,
-				headers: {
-					"RBX-For-Gameauth": ext.manifest.name
-				}
-			}).done(function (authTicket) {
+			getAuthTicket().then(function (authTicket) {
 				var launchUrl = baseLaunchUrl + $.param(launchParameters);
 				launchFrame.attr("src", "roblox-player:1+launchmode:play+gameinfo:" + authTicket + "+launchtime:" + (+new Date) + "+placelauncherurl:" + encodeURIComponent(launchUrl));
 				resolve();
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
-			});
+			}).catch(reject);
 		}, {
 			resolveExpiry: 500,
 			rejectExpiry: 500,
