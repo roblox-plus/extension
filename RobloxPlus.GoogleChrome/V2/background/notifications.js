@@ -41,7 +41,6 @@
 		} else if (notification.metadata.speak) {
 			chrome.tts.speak(notification.metadata.speak, {
 				lang: "en-GB",
-				gender: notification.metadata.speachGender || "male",
 				volume: volume,
 				onEvent: function (e) {
 					if (e.type == "start") {

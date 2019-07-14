@@ -201,7 +201,6 @@ if (browser.name == "Chrome") {
 				clickable: true,
 				metadata: {
 					speak: username ? "Hello, " + username : "",
-					speachGender: "male",
 					url: ul.updateLog || "https://www.roblox.com/users/48103520/profile?rbxp=48103520",
 					expiration: 15 * 1000
 				}
