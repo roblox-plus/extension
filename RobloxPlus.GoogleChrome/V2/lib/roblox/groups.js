@@ -58,7 +58,13 @@ Roblox.groups = (function () {
 				return;
 			}
 
-			$.post("https://www.roblox.com/groups/api/change-member-rank?groupId=" + groupId + "&newRoleSetId=" + groupRolesetId + "&targetUserId=" + userId).done(function (r) {
+			$.ajax({
+				type: "PATCH",
+				url: "https://groups.roblox.com/v1/groups/" + groupId + "/users/" + userId,
+				data: {
+					roleId: groupRolesetId
+				}
+			}).done(function () {
 				resolve();
 			}).fail(function () {
 				reject([{
