@@ -23,6 +23,10 @@
 	overflow-x: hidden;
 }
 
+.dark-theme #rplus-quickinfo {
+	background: #1f2123;
+}
+
 #rplus-quickinfo::-webkit-scrollbar {
 	width: 6px;
 }

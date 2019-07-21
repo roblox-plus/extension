@@ -16,9 +16,7 @@ ul.item-cards.rplus > li.list-item.item-card {
 }
 
 ul.item-cards.rplus > li.list-item.item-card > .item-card-container {
-	background-color: #fff;
 	position: relative;
-	box-shadow: 0 1px 4px 0 rgba(25, 25, 25, 0.3);
 	border-radius: 3px;
 	padding: 0 0 5px;
 	width: 126px;
@@ -27,7 +25,6 @@ ul.item-cards.rplus > li.list-item.item-card > .item-card-container {
 
 ul.item-cards.rplus > li.list-item.item-card > .item-card-container > a.item-card-link {
 	display: block;
-	color: rgb(25, 25, 25);
 	font-weight: 300;
 }
 
@@ -37,7 +34,6 @@ ul.item-cards.rplus > li.list-item.item-card > .item-card-container > a.item-car
 	width: 126px;
 	height: 126px;
 	position: relative;
-	border-bottom: 1px solid #E3E3E3;
 }
 
 ul.item-cards.rplus > li.list-item.item-card > .item-card-container > a.item-card-link > .item-card-thumb-container > .item-serial-number {
