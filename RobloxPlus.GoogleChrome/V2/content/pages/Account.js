@@ -343,8 +343,15 @@ RPlus.Pages.Account = function () {
 					storage.get("navigation", function (navigation) {
 						navigation = navigation || {};
 						navigation.buttons = navigation.buttons || [{ "text": "Create", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
-						navigation.buttons[0].href = val;
-						storage.set("navigation", navigation);
+
+						if (val.startsWith("/") || val.startsWith("https://")) {
+							navigation.buttons[0].href = val;
+							storage.set("navigation", navigation);
+						} else {
+							Roblox.ui.feedback("Invalid URL - must start with '/' or 'https://'", Roblox.ui.feedbackTypes.warning, 5 * 1000, false).then(function () {}).catch(function (e) {
+								console.error(e);
+							});
+						}
 					});
 				},
 				"description": "Sets the link for the first overrideable navigation button"
@@ -377,8 +384,15 @@ RPlus.Pages.Account = function () {
 					storage.get("navigation", function (navigation) {
 						navigation = navigation || {};
 						navigation.buttons = navigation.buttons || [{ "text": "Create", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
-						navigation.buttons[1].href = val;
-						storage.set("navigation", navigation);
+
+						if (val.startsWith("/") || val.startsWith("https://")) {
+							navigation.buttons[1].href = val;
+							storage.set("navigation", navigation);
+						} else {
+							Roblox.ui.feedback("Invalid URL - must start with '/' or 'https://'", Roblox.ui.feedbackTypes.warning, 5 * 1000, false).then(function () {}).catch(function (e) {
+								console.error(e);
+							});
+						}
 					});
 				},
 				"description": "Sets the link for the second overrideable navigation button"
