@@ -91,7 +91,7 @@ RPlus.premium = RPlus.premium || (function () {
 				} else {
 					resolve(false);
 				}
-			});
+			}).catch(reject);
 		})
 	};
 })();
