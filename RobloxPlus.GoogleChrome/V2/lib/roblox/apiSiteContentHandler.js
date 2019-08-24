@@ -4,7 +4,7 @@
 (window.Roblox || (Roblox = {})).apiSiteContentHandler = (function () {
 	var validContentMethods = ["POST", "PATCH", "DELETE"];
 	var contentTrigger = $.addTrigger({
-		apiSubdomains: ["inventory", "avatar", "develop", "publish", "abuse", "chat", "groups"]
+		apiSubdomains: ["abtesting", "abuse", "accountsettings", "ads", "assetdelivery", "auth", "avatar", "badges", "billing", "captcha", "catalog", "cdnproviders", "chat", "clientsettings", "contacts", "develop", "discussions", "economy", "followings", "friends", "gameinternationalization", "gamejoin", "gamepersistence", "games", "groups", "inventory", "locale", "metrics", "midas", "notifications", "points", "premiumfeatures", "presence", "publish", "ratings", "surveys", "textfilter", "thumbnails", "translationroles", "translations", "users"]
 	});
 
 	var originalAjax = $.ajax;
