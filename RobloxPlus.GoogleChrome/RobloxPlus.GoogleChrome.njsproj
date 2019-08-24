@@ -82,6 +82,9 @@
     <Content Include="V2\css\themes\obcV2.css">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="V2\images\icon_outline_black.svg" />
+    <Content Include="V2\images\icon_outline_grey.svg" />
+    <Content Include="V2\images\icon_outline_red.svg" />
     <Content Include="V2\images\themes\easter\EasterBackground.png" />
     <Content Include="V2\images\themes\easter\EasterBar.png" />
     <Content Include="V2\images\themes\easter\EasterIcons.svg" />
@@ -91,7 +94,6 @@
     <Content Include="V2\images\icons\icon_256x256.png" />
     <Content Include="V2\images\icons\icon_32x32.png" />
     <Content Include="V2\images\icons\icon_64x64.png" />
-    <Content Include="V2\images\navicon.png" />
     <Content Include="V2\images\notifier.png" />
     <Content Include="V2\manifest.json" />
   </ItemGroup>

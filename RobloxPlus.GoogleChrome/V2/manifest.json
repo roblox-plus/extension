@@ -1,5 +1,5 @@
 {
-	"version": "2.2.89",
+	"version": "2.2.90",
 	"name": "Roblox+",
 	"short_name": "Roblox+",
 	"description": "Adds features and notifiers made by WebGL3D to the Roblox website",
@@ -137,7 +137,6 @@
 		"*.html",
 		"*.js",
 		"jquery.min.map",
-		"/images/navicon.png",
 		"/images/icons/icon_32x32.png",
 		"/images/notifier.png",
 		"*://*.roblox.com/*",

@@ -1,13 +1,20 @@
 /* customIcon.css [4/4/2016] */
 /* Basic Roblox */
-#navigation .rplus-icon{
-	background-image: url(images/navicon.png);
+#navigation .rplus-icon {
+	background-image: url(images/icon_outline_black.svg);
 }
+
+.darkblox-theme #navigation .rplus-icon,
+.dark-theme #navigation .rplus-icon {
+	background-image: url(images/icon_outline_grey.svg);
+}
+
 #navigation li:hover .rplus-icon{
-	background-image: url(images/icons/icon_32x32.png);
+	background-image: url(images/icon_outline_red.svg);
 }
+
 #navigation li>a[href*='rplus']:hover{
-	color: rgb(230, 61, 59);
+	color: rgb(224, 34, 26);
 }
 
 
