@@ -173,7 +173,6 @@
     <Compile Include="V2\lib\roblox\inventory.js" />
     <Compile Include="V2\lib\roblox\navigation.js" />
     <Compile Include="V2\lib\roblox\privateMessages.js" />
-    <Compile Include="V2\lib\roblox\resellers.js" />
     <Compile Include="V2\lib\roblox\Roblox.js" />
     <Compile Include="V2\lib\roblox\social.js" />
     <Compile Include="V2\lib\roblox\thumbnails.js" />
