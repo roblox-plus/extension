@@ -158,19 +158,20 @@ fixCB(({
 							setTimeout(mainLoop, 500);
 							return;
 						}
-						if (user.bc != "NBC") {
-							dummyGoal++;
-							Roblox.trades.getTradesPaged("inbound", 1).then(function (trades) {
-								$("#nav-trade .notification-blue").attr("title", trades.count);
-								upgradeTheDummy();
-							}, upgradeTheDummy);
-						}
+
+						dummyGoal++;
+						Roblox.trades.getTradeCount("Inbound").then(function (count) {
+							$("#nav-trade .notification-blue").attr("title", count);
+							upgradeTheDummy();
+						}, upgradeTheDummy);
+
 						dummyGoal++;
 						Roblox.navigation.getNavigationCounters().then(function (counters) {
 							$("#nav-message .notification-blue").attr("title", counters.unreadMessageCount);
 							$("#nav-friends .notification-blue").attr("title", counters.friendRequestCount);
 							upgradeTheDummy();
 						}, upgradeTheDummy);
+
 						Roblox.economy.getCurrencyBalance().then(function (currency) {
 							var orig = ($("#nav-robux-balance").first().html() || "").split("<br>");
 							mainLoop.comma(currency.robux, function (t) {

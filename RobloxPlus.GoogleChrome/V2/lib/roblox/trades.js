@@ -328,6 +328,21 @@ Roblox.trades = (function () {
 			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 15 * 1000
+		}),
+
+		getTradeCount: $.promise.cache(function (resolve, reject, tradeType) {
+			$.get("https://trades.roblox.com/v1/trades/" + tradeType + "/count").done(function (r) {
+				resolve(r.count);
+			}).fail(function () {
+				reject([{
+					code: 0,
+					message: "HTTP request failed"
+				}]);
+			});
+		}, {
+			queued: true,
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 15 * 1000
 		})
 	};
 })();
