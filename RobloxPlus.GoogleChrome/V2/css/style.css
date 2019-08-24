@@ -438,28 +438,6 @@ input.rplusslider[type='range']::-webkit-slider-thumb{
 	margin-right: 5px;
 }
 
-#owners .avatar[data-bc="1"] {
-	box-shadow: 0 1px 4px 0 rgba(0, 163, 217, .7);
-}
-#owners .avatar[data-bc="1"]:hover {
-	box-shadow: 0 1px 4px 0 rgba(0, 163, 217, 1);
-}
-
-#owners .avatar[data-bc="2"] {
-	box-shadow: 0 1px 4px 0 rgba(229, 133, 18, .7);
-}
-#owners .avatar[data-bc="2"]:hover {
-	box-shadow: 0 1px 4px 0 rgba(229, 133, 18, 1);
-}
-
-#owners .avatar[data-bc="3"] {
-	box-shadow: 0 1px 4px 0 rgba(217, 0, 0, .7);
-}
-#owners .avatar[data-bc="3"]:hover {
-	box-shadow: 0 1px 4px 0 rgba(217, 0, 0, 1);
-}
-
-
 
 /* Messages */
 .roblox-messages-container.rplus>ui-view.tab-content-container{

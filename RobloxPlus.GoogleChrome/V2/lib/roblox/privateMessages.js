@@ -37,13 +37,11 @@ Roblox.privateMessages = (function () {
 						id: msg.Id,
 						sender: {
 							userId: msg.Sender.UserId,
-							username: msg.Sender.UserName,
-							buildersClubMembershipType: msg.Sender.BuildersClubStatus
+							username: msg.Sender.UserName
 						},
 						recipient: {
 							userId: msg.Recipient.UserId,
-							username: msg.Recipient.UserName,
-							buildersClubMembershipType: msg.Recipient.BuildersClubStatus
+							username: msg.Recipient.UserName
 						},
 						subject: msg.Subject,
 						body: msg.Body,

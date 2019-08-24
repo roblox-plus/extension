@@ -143,7 +143,7 @@ RPlus.Pages.Item = function () {
 						var username = record.owner ? record.owner.username : "[ Deleted ]";
 						var profileUrl = record.owner ? "/users/" + record.owner.userId + "/profile" : "javascript:/* User does not exist */";
 						serialTracker.tab.content.append($("<li class=\"list-item\" data-userasset-id=\"" + record.userAssetId + "\">").append(
-							$("<a class=\"avatar avatar-headshot-md list-header\" data-bc=\"" + (record.owner ? record.owner.buildersClubMembershipType : "0") + "\">").attr("href", profileUrl).append($("<img class=\"avatar-card-image\">").attr({ "src": "https://www.roblox.com/headshot-thumbnail/image?userId=" + (record.owner ? record.owner.userId : "0") + "&width=60&height=60&format=png", "alt": username })),
+							$("<a class=\"avatar avatar-headshot-md list-header\">").attr("href", profileUrl).append($("<img class=\"avatar-card-image\">").attr({ "src": "https://www.roblox.com/headshot-thumbnail/image?userId=" + (record.owner ? record.owner.userId : "0") + "&width=60&height=60&format=png", "alt": username })),
 							$("<div class=\"resale-info\">").append(
 								$("<a class=\"text-name username\" href=\"" + profileUrl + "\">").text(username),
 								record.serialNumber ? $("<span class=\"separator\">").text("-") : "",
@@ -160,11 +160,6 @@ RPlus.Pages.Item = function () {
 						busy = false;
 						serialTracker.loadPage(cursor);
 					}, 2000);
-				});
-			},
-			hideBacons: function () {
-				$(".list-item > a[data-bc='0']").each(function () {
-					$(this).parent().hide();
 				});
 			}
 		};

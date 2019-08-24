@@ -215,15 +215,9 @@ Roblox.inventory = (function () {
 
 					if (record.owner) {
 						Roblox.users.getByUserId(record.owner.id).then(function (user) {
-							var bc = user.bc;
-							if (bc === "NBC") {
-								bc = "None";
-							}
-
 							translatedRecord.owner = {
 								userId: user.id,
-								username: user.username,
-								buildersClubMembershipType: bc
+								username: user.username
 							};
 
 							data.data[index] = translatedRecord;
