@@ -2,26 +2,6 @@
 	roblox/content.js [03/18/2017]
 */
 (window.Roblox || (Roblox = {})).content = (function () {
-	var contentMap = {};
-	
-	if (ext.isBackground) {
-		chrome.webRequest.onBeforeSendHeaders.addListener(function (data) {
-			for (var n in data.requestHeaders) {
-				if (data.requestHeaders[n].name == "User-Agent") {
-					data.requestHeaders[n].value += " Roblox/Plus";
-					break;
-				}
-			}
-
-			return { requestHeaders: data.requestHeaders };
-		}, { urls: ["https://assetgame.roblox.com/asset/?id=*&contentCheck=RPlus"], types: ["xmlhttprequest"] }, ["blocking", "requestHeaders"]);
-
-		chrome.webRequest.onBeforeRedirect.addListener(function (details) {
-			var id = Number((details.url.match(/id=(\d+)/i) || ["", 0])[1]);
-			contentMap[id] = details.redirectUrl;
-		}, { urls: ["https://assetgame.roblox.com/asset/?id=*&contentCheck=RPlus"], types: ["xmlhttprequest"] });
-	}
-
 	return {
 		getAssetContentUrl: $.promise.cache(function (resolve, reject, assetId) {
 			if (typeof (assetId) != "number" || assetId <= 0) {
@@ -32,26 +12,53 @@
 				return;
 			}
 
-			if (contentMap.hasOwnProperty(assetId)) {
-				resolve(contentMap[assetId]);
-				return;
-			}
-
-			$.get("https://assetgame.roblox.com/asset/", { id: assetId, contentCheck: "RPlus" }).always(function () {
-				if (contentMap.hasOwnProperty(assetId)) {
-					resolve(contentMap[assetId]);
+			$.ajax({
+				url: "https://assetdelivery.roblox.com/v1/assets/batch",
+				type: "POST",
+				data: [
+					{
+						"assetId": assetId,
+						"requestId": "Roblox+"
+					}
+				],
+				headers: {
+					"Roblox-Browser-Asset-Request": "Roblox+"
+				}
+			}).done(function (r) {
+				var location = r.length > 0 && r[0].location;
+				if (location) {
+					resolve(location);
 				} else {
 					reject([{
 						code: 0,
 						message: "Lookup failed"
 					}]);
 				}
+			}).fail(function (e) {
+				reject([{
+					code: 0,
+					message: "HTTP request failed"
+				}]);
 			});
 		}, {
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 10 * 1000,
 			queued: true
 		}),
+
+		getAssetContents: $.promise.cache(function (resolve, reject, assetId) {
+			Roblox.content.getAssetContentUrl(assetId).then(function (contentUrl) {
+				$.get(contentUrl).done(function (r) {
+					resolve(r);
+				}).fail(function () {
+					reject([{
+						code: 0,
+						message: "HTTP request failed"
+					}]);
+				});
+			}).catch(reject);
+		}),
+
 		getDependentAssets: $.promise.cache(function (resolve, reject, assetId) {
 			if (typeof (assetId) != "number" || assetId <= 0) {
 				reject([{
@@ -61,7 +68,7 @@
 				return;
 			}
 
-			$.get("https://assetgame.roblox.com/asset/", { id: assetId }).done(function (r) {
+			Roblox.content.getAssetContents(assetId).then(function (r) {
 				var assetIds = [];
 				(r.match(/"TextureI?d?".*=\s*\d+/gi) || r.match(/"TextureI?d?".*rbxassetid:\/\/\d+/gi) || []).forEach(function (id) {
 					id = Number(id.match(/(\d+)$/)[1]);
@@ -108,9 +115,7 @@
 				} else {
 					resolve([]);
 				}
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
+			}).catch(reject);
 		})
 	};
 })();

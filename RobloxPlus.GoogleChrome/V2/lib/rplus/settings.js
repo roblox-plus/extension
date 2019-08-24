@@ -34,18 +34,13 @@ RPlus.settings = RPlus.settings || (function () {
 
 	return {
 		get: $.promise.cache(function (resolve, reject) {
-			$.get("https://assetgame.roblox.com/asset/?id=311113112").done(function (r) {
+			Roblox.content.getAssetContents(311113112).then(function (r) {
 				try {
 					resolve(JSON.parse(decodeURIComponent(r.substring(7, r.length - 9))));
 				} catch (e) {
 					reject(e);
 				}
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
-			});
+			}).catch(reject);
 		}, {
 			resolveExpiry: 30 * 1000,
 			rejectExpiry: 10 * 1000,

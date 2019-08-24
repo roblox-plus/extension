@@ -44,16 +44,6 @@ foreach({
 	}
 });
 
-
-/* hueee no image or ticket stealing */
-chrome.webRequest.onBeforeRequest.addListener(function (details) {
-	var path = url.path(details.url);
-	if (path.match(/^\/asset\/?$/) && !details.url.match(/id=\d+&contentCheck=RPlusDownloader$/)) {
-		return { cancel: true };
-	}
-}, { urls: ["*://*.roblox.com/asset/*"], types: ["sub_frame", "main_frame"] }, ["blocking"]);
-
-
 /* Comment Timer */
 commentTimer = type(storage.get("commentTimer")) == "object" ? storage.get("commentTimer") : {};
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
