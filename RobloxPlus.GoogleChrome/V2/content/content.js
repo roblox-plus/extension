@@ -127,7 +127,7 @@ fixCB(({
 
 			/* Load once */
 			if ($("#navigation").length && !$("#navigation .rplus-icon").length) {
-				$("#navigation .rbx-upgrade-now").before("<li><a href=\"/my/account?tab=rplus\"><span class=\"rplus-icon\"></span><span>Control Panel</span></a></li>");
+				$("#navigation .rbx-upgrade-now").before("<li><a href=\"/my/account?tab=rplus\" class=\"text-nav\"><span class=\"rplus-icon\"></span><span>Control Panel</span></a></li>");
 				$(".notification-blue:empty,.notification-red:empty").removeClass("hide");
 				$("#nav-message").attr("href", "/my/messages");
 				var robux = Number($("#nav-robux-balance").html().split("<br>")[0].replace(/\D+/g, ""));
