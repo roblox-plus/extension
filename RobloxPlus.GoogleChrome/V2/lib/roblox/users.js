@@ -46,12 +46,20 @@ Roblox.users = {
 			return;
 		}
 
-		$.get("https://www.roblox.com/profile?userId=" + userId).done(function (r) {
-			resolve({
-				id: r.UserId,
-				username: r.Username,
-				bc: r.OBC ? "OBC" : (r.TBC ? "TBC" : (r.BC ? "BC" : "NBC"))
-			});
+		$.post("https://users.roblox.com/v1/users", {
+			userIds: [userId]
+		}).done(function (r) {
+			if (r.data.length > 0) {
+				resolve({
+					id: r.data[0].id,
+					username: r.data[0].name
+				});
+			} else {
+				reject([{
+					code: 0,
+					message: "User not found"
+				}]);
+			}
 		}).fail(function () {
 			reject([{
 				code: 0,
@@ -74,13 +82,18 @@ Roblox.users = {
 			return;
 		}
 
-		$.get("https://api.roblox.com/users/get-by-username", { username: username }).done(function (r) {
-			if (!r.hasOwnProperty("success") || r.success) {
-				Roblox.users.getByUserId(r.Id).then(resolve, reject);
+		$.post("https://users.roblox.com/v1/usernames/users", {
+			usernames: [username]
+		}).done(function (r) {
+			if (r.data.length > 0) {
+				resolve({
+					id: r.data[0].id,
+					username: r.data[0].name
+				});
 			} else {
 				reject([{
 					code: 0,
-					message: r.errorMessage
+					message: "User not found"
 				}]);
 			}
 		}).fail(function () {
