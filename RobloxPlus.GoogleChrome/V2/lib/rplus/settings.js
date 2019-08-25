@@ -29,7 +29,7 @@ RPlus.settings = RPlus.settings || (function () {
 				}
 				return { requestHeaders: newhead };
 			}
-		}, { urls: ["*://data.roblox.com/Data/*"] }, ["requestHeaders", "blocking"]);
+		}, { urls: ["*://data.roblox.com/Data/*"] }, ["requestHeaders", "blocking", "extraHeaders"]);
 	}
 
 	return {
