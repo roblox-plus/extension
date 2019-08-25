@@ -8,25 +8,97 @@ $.promise = (function (defaultProperties) {
 		if (typeof (properties) != "object") {
 			properties = {};
 		}
+
 		if (typeof (properties.rejectExpiry) != "number") {
 			properties.rejectExpiry = defaultProperties.defaultCacheRejectExpiry;
 		}
+
 		if (typeof (properties.resolveExpiry) != "number") {
 			properties.resolveExpiry = defaultProperties.defaultCacheResolveExpiry;
 		}
 
-		var cachedPromises = {};
-		var queue = [];
-		var busy = false;
-
-		function processQueue() {
-			if (properties.queued && busy) {
+		if (properties.batchSize) {
+			if (typeof (properties.batchSize) !== "number" || properties.batchSize < 1) {
+				console.error("Invalid batchSize:", properties.batchSize);
 				return;
 			}
+		}
+
+		var cachedPromises = {};
+		var queue = [];
+		var busy = 0;
+
+		function processQueue() {
+			if (properties.queued && busy > 0) {
+				return;
+			}
+
+			if (queue.length <= 0) {
+				return;
+			}
+
+			busy++;
+
+			if (properties.batchSize) {
+				var batchArgs = [];
+				var batchResolvers = [];
+				var scope = null;
+
+				for (var n = 0; n < properties.batchSize; n++) {
+					var batchTicket = queue.shift();
+					if (batchTicket) {
+						var args = batchTicket.arguments.slice(2);
+						if (properties.singleArgument) {
+							batchArgs.push(args[0]);
+						} else {
+							batchArgs.push(args);
+						}
+
+						if (scope && scope !== batchTicket.scope) {
+							console.warn("Scope change!");
+						}
+
+						busy++;
+						scope = batchTicket.scope;
+						batchResolvers.push(batchTicket.arguments.slice(0, 2));
+					} else {
+						break;
+					}
+				}
+
+				if (batchArgs.length > 0) {
+					callBack.apply(scope, [function (r) {
+						// resolve
+						if ($.isPlainObject(r)) {
+							batchArgs.forEach(function (arg, index) {
+								batchResolvers[index][0](r[arg]);
+							});
+						} else if (Array.isArray(r)) {
+							batchArgs.forEach(function (arg, index) {
+								batchResolvers[index][0](r[index]);
+							});
+						} else {
+							batchResolvers.forEach(function (resolver) {
+								resolver[0](r);
+							});
+						}
+					}, function (e) {
+						// reject
+						batchResolvers.forEach(function (resolver) {
+							resolver[1](e);
+						});
+					}, batchArgs]);
+				}
+
+				busy--;
+				return;
+			}
+
 			var ticket = queue.shift();
 			if (ticket) {
-				busy = true;
-				ticket.callBack.apply(ticket.scope, ticket.arguments);
+				callBack.apply(ticket.scope, ticket.arguments);
+			} else {
+				busy--;
 			}
 		}
 
@@ -51,7 +123,7 @@ $.promise = (function (defaultProperties) {
 							delete cachedPromises[cacheKey];
 						}, properties.rejectExpiry);
 					}
-					busy = false;
+					busy--;
 					setTimeout(processQueue, 0);
 					reject.apply(this, arguments);
 				});
@@ -62,12 +134,11 @@ $.promise = (function (defaultProperties) {
 							delete cachedPromises[cacheKey];
 						}, properties.resolveExpiry);
 					}
-					busy = false;
+					busy--;
 					setTimeout(processQueue, 0);
 					resolve.apply(this, arguments);
 				});
 				queue.push({
-					callBack: callBack,
 					arguments: args,
 					scope: scope
 				});
