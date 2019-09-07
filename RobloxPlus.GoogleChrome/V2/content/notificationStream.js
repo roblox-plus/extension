@@ -20,7 +20,7 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 	}
 
 	function createNotificationContentContainer(title, context, message) {
-		var container = $("<div class=\"notificaiton-item-content\">");
+		var container = $("<div class=\"notification-item-content\">");
 		var innerContainer = $("<div class=\"notification-data-container\">");
 
 		var titleContainer = $("<div class=\"small notification-display-text\">").text(title);
