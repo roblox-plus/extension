@@ -115,8 +115,8 @@
 
 		{
 			"js": [
-				"/js/output/settings/about.js",
-				"/js/output/settings/settings.js"
+				"/js/react/output/settings/about.js",
+				"/js/react/output/settings/settings.js"
 			],
 			"matches": [
 				"*://*.roblox.com/my/account"

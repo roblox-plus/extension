@@ -244,4 +244,4 @@ ModelManifest.xml
 # Custom Ignore
 *.zip
 package-lock.json
-extension/js/output/
+extension/js/react/output/
