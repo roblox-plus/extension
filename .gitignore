@@ -242,7 +242,4 @@ ModelManifest.xml
 .fake/
 
 # Custom Ignore
-/Chrome/
-/RobloxPlus.GoogleChrome/V2/ROBLOX+.zip
-/RobloxPlus.GoogleChrome/V3/
-/Thumbnails
+*.zip
