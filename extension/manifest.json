@@ -4,6 +4,8 @@
 	"short_name": "Roblox+",
 	"description": "Adds features and notifiers made by WebGL3D to the Roblox website",
 
+	"minimum_chrome_version": "74.0.0",
+
 	"icons": {
 		"128": "/images/icons/icon_128x128.png",
 		"16": "/images/icons/icon_16x16.png",
@@ -32,6 +34,9 @@
 				"/lib/jquery/jquery.cache.js",
 				"/lib/jquery/jquery.promise.js",
 				"/lib/jquery/jquery.notifications.js",
+
+				"/js/vendors/react.production.min.js",
+				"/js/vendors/react-dom.production.min.js",
 
 				"/lib/roblox/Roblox.js",
 				"/lib/roblox/thumbnails.js",
@@ -105,6 +110,17 @@
 				"content/json.js"
 			],
 			"matches": [ "*://*.roblox.com/*" ],
+			"run_at": "document_end"
+		},
+
+		{
+			"js": [
+				"/js/output/settings/about.js",
+				"/js/output/settings/settings.js"
+			],
+			"matches": [
+				"*://*.roblox.com/my/account"
+			],
 			"run_at": "document_end"
 		}
 	],

@@ -1,0 +1,12 @@
+{
+	"name": "roblox-plus-chrome",
+	"version": "2.0.0",
+	"scripts": {
+		"build": "./node_modules/.bin/babel extension/js/pages --out-dir extension/js/output"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.0.0",
+		"@babel/core": "^7.0.0",
+		"@babel/preset-react": "^7.0.0"
+	}
+}
