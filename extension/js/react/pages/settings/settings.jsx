@@ -1,7 +1,19 @@
 class Settings extends React.Component {
 	render() {
+		let tabs = [{
+			label: "About",
+			class: About
+		}]
+
 		return (
-			<About />
+			<div class="section">
+				<div class="container-header">
+					<h1>Roblox+ Settings</h1>
+				</div>
+				<div>
+					<VerticalTabs tabs={tabs} />
+				</div>
+			</div>
 		);
 	}
 }

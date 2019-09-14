@@ -115,8 +115,21 @@
 
 		{
 			"js": [
-				"/js/react/output/settings/about.js",
-				"/js/react/output/settings/settings.js"
+				"/js/output/react/components/vertical-tabs.js"
+			],
+			"matches": [
+				"*://*.roblox.com/*"
+			],
+			"run_at": "document_start"
+		},
+
+		{
+			"js": [
+				"/js/output/react/pages/settings/about.js",
+				"/js/output/react/pages/settings/settings.js"
+			],
+			"css": [
+				"/css/output/pages/settings.css"
 			],
 			"matches": [
 				"*://*.roblox.com/my/account"

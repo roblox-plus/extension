@@ -3,8 +3,25 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "build",
-			"problemMatcher": ["$eslint-stylish"]
+			"script": "react",
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "npm",
+			"script": "scss",
+			"problemMatcher": [
+				"$node-sass"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		},
 		{
 			"type": "npm",
