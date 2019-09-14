@@ -1,10 +1,27 @@
+$page-width: 970px;
+$tabs-width: 160px;
+$tab-content-padding: 12px;
+$section-content-padding: 15px;
+
 .rbx-tabs-vertical .rbx-tab-content {
-	max-width: calc(970px - 160px);
-	padding-left: 12px;
+	max-width: calc(#{$page-width} - #{$tabs-width});
+	padding-left: $tab-content-padding;
 
 	.rplus-premium-section {
 		pre {
 			white-space: pre-wrap;
+		}
+	}
+
+	.rplus-update-log-section {
+		textarea {
+			width: calc(#{$page-width} - #{$tabs-width} - #{$tab-content-padding} - #{$section-content-padding} - #{$section-content-padding});
+			height: 450px;
+			resize: none;
+		}
+
+		&.form-group {
+			-webkit-user-select: none;
 		}
 	}
 }

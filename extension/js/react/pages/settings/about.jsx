@@ -4,25 +4,33 @@ class About extends React.Component {
 
 		let about = this;
 		this.state = {
+			authenticatedUser: null,
+
 			isPremium: false,
 			premiumExpiration: null,
 			premium: (<span class="spinner spinner-default"></span>),
 
-			updateLog: (<span class="spinner spinner-default"></span>)
+			updateLog: (<span class="spinner spinner-default"></span>),
+			updateLogDraft: "",
+			updateLogPost: "",
+			updateLogSaveStatus: ""
 		};
 
 		RPlus.settings.get().then((settings) => about.globalSettingsLoaded(settings)).catch((e) => about.globalSettingsLoadFailure(e));
 		Roblox.users.getAuthenticatedUser().then((user) => about.authenticatedUserLoaded(user)).catch((e) => about.authenticatedUserLoadFailure(e));
 	}
 
-	authenticatedUserLoaded(user) {
+	authenticatedUserLoaded(authenticatedUser) {
 		let premiumLoaded = this.premiumLoaded.bind(this);
 		let premiumLoadFailure = this.premiumLoadFailure.bind(this);
 
-		if (user) {
-			console.log("Load premium for", user);
-			RPlus.premium.getPremium(user.id).then(premiumLoaded).catch(premiumLoadFailure);
+		if (authenticatedUser) {
+			RPlus.premium.getPremium(authenticatedUser.id).then(premiumLoaded).catch(premiumLoadFailure);
 		}
+
+		this.setState({
+			authenticatedUser: authenticatedUser
+		});
 	}
 
 	authenticatedUserLoadFailure(e) {
@@ -32,7 +40,6 @@ class About extends React.Component {
 	}
 
 	premiumLoaded(premium) {
-		console.log(premium);
 		let hubLink = (
 			<a class="text-link"
 				target="_blank"
@@ -85,14 +92,75 @@ class About extends React.Component {
 		});
 	}
 
-	globalSettingsLoaded(settings) {
+	setUpdateLogDraft(event) {
+		this.setState({
+			updateLogDraft: event.target.value
+		});
+	}
+
+	viewUpdateLog(settings, event) {
+		let about = this;
+
+		if (event.target.tagName !== "TEXTAREA") {
+			this.globalSettingsLoaded(settings);
+
+			if (this.state.updateLogDraft !== this.state.updateLogPost) {
+				let post = btoa(this.state.updateLogDraft);
+				RPlus.settings.set({
+					updateLogPost: post
+				}).then(function() {
+					about.setState({
+						updateLogPost: atob(post),
+						updateLogSaveStatus: "Saved: " + (new Date ().toLocaleString())
+					});
+				}).catch(function(e) {
+					console.error(e);
+	
+					about.setState({
+						updateLogSaveStatus: "Failed to save update log."
+					});
+				});
+			}
+		}
+	}
+
+	editUpdateLog(settings) {
+		if (!this.state.authenticatedUser || this.state.authenticatedUser.id !== 48103520) {
+			return;
+		}
+
 		this.setState({
 			updateLog: (
-				<div class="section-content">
-					<pre>{atob(settings.updateLogPost)}</pre>
+				<div class="section-content rplus-update-log-section form-group form-has-feedback"
+						onDoubleClick={this.viewUpdateLog.bind(this, settings)}>
+					<textarea onChange={this.setUpdateLogDraft.bind(this)}
+								defaultValue={this.state.updateLogDraft}></textarea>
+					<p class="form-control-label">{this.state.updateLogSaveStatus}</p>
 				</div>
 			)
 		});
+	}
+
+	globalSettingsLoaded(settings) {
+		let decodedPost = atob(settings.updateLogPost);
+		let newState = {
+			updateLog: (
+				<div class="section-content"
+						onDoubleClick={this.editUpdateLog.bind(this, settings)}>
+					<pre>{this.state.updateLogPost || decodedPost}</pre>
+				</div>
+			)
+		};
+
+		if (!this.state.updateLogDraft) {
+			newState.updateLogDraft = decodedPost;
+		}
+
+		if (!this.state.updateLogPost) {
+			newState.updateLogPost = decodedPost;
+		}
+
+		this.setState(newState);
 	}
 
 	globalSettingsLoadFailure(e) {

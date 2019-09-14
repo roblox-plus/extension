@@ -23,10 +23,10 @@ class VerticalTabs extends React.Component {
 			let tabContent = React.createElement(tab.class, tab.props || {});
 
 			tabListItems.push(
-				<li className={"rbx-tab" + (tab === activeTab ? " active" : "")}>
-					<a class="rbx-tab-heading"
-						onClick={ verticalTabs.selectTab.bind(verticalTabs, tab) }>
-						<span class="text-lead">{ tab.label }</span>
+				<li className={"menu-option" + (tab === activeTab ? " active" : "")}
+					onClick={ verticalTabs.selectTab.bind(verticalTabs, tab) }>
+					<a class="rbx-tab-heading">
+						<span class="font-caption-header">{ tab.label }</span>
 					</a>
 				</li>
 			);
@@ -40,7 +40,7 @@ class VerticalTabs extends React.Component {
 
 		return (
 			<div class="rbx-tabs-vertical">
-				<ul class="nav nav-tabs nav-stacked rbx-tabs-vertical">
+				<ul class="menu-vertical">
 					{ tabListItems }
 				</ul>
 				<div class="tab-content rbx-tab-content">

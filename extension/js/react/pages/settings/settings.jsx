@@ -1,9 +1,27 @@
 class Settings extends React.Component {
 	render() {
-		let tabs = [{
-			label: "About",
-			class: About
-		}]
+		let tabs = [
+			{
+				label: "About",
+				class: About
+			},
+			{
+				label: "Appearance",
+				class: AppearanceSettings
+			},
+			{
+				label: "Navigation",
+				class: NavigationSettings
+			},
+			{
+				label: "Notifications",
+				class: NotificationSettings
+			},
+			{
+				label: "Other",
+				class: OtherSettings
+			}
+		];
 
 		return (
 			<div class="section">
@@ -18,11 +36,11 @@ class Settings extends React.Component {
 	}
 }
 
-storage.get("settings-page-v2-enabled", function(enabled) {
+storage.get("settings-page-v2-enabled", function (enabled) {
 	if (!enabled) {
 		return;
 	}
-	
+
 	var container = $("<div id=\"rplus-settings\">");
 	$("#user-account").hide().after(container);
 	ReactDOM.render(<Settings />, container[0]);
