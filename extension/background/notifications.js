@@ -37,6 +37,8 @@
 				player.play(volume).stop(function () {
 					delete audioPlayers[notification.tag];
 				});
+			}).catch(function(e) {
+				console.error("Failed to play audio", notification.metadata.robloxSound, e);
 			});
 		} else if (notification.metadata.speak) {
 			chrome.tts.speak(notification.metadata.speak, {

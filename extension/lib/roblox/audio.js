@@ -32,16 +32,19 @@
 					return;
 				} else {
 					$(".icon-play" + searchAttr).addClass("icon-audio").removeClass("icon-play");
-					Roblox.audio.getSoundPlayer(id, function (player) {
-						soundMap[id] = player.play(function () {
+					Roblox.audio.getSoundPlayer(id).then(function (player) {
+						soundMap[id] = player;
+						player.play(function () {
 							$("span" + searchAttr).addClass("icon-pause").removeClass("icon-play icon-audio");
 						}).stop(function () {
 							$("span" + searchAttr).addClass("icon-play").removeClass("icon-pause icon-audio");
-						}).fail(function () {
+						}).error(function () {
 							$("span" + searchAttr).addClass("icon-brokenpage").removeClass("icon-play icon-audio icon-pause");
-						}).on("ready", function () {
-							this.play(volume);
 						});
+						player.play(volume);
+					}).catch(function(e) {
+						console.error(e);
+						$("span" + searchAttr).addClass("icon-brokenpage").removeClass("icon-play icon-audio icon-pause");
 					});
 				}
 			}).on("click", ".icon-pause[" + attrName + "]", function () {
@@ -56,7 +59,7 @@
 	return {
 		getSoundUrl: getSoundUrl,
 
-		getSoundPlayer: function (assetId, callBack) {
+		getSoundPlayer: function (assetId) {
 			return new Promise(function(resolve, reject){
 				getSoundUrl(assetId).then(function (url) {
 					resolve(soundService(url));

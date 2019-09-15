@@ -13,7 +13,7 @@ foreach({
 	},
 	"notificationVolume": .5,
 	"notifierSounds": {
-		items: 205318910,
+		item: 205318910,
 		tradeInbound: 0,
 		tradeOutbound: 0,
 		tradeCompleted: 0,
