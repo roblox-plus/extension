@@ -3,6 +3,7 @@ class NotificationSettings extends React.Component {
 		super(props);
 
 		this.state = {
+			friendNotifierEnabled: false,
 			groupShoutNotifierEnabled: false,
 			groupShoutWhitelistEnabled: false,
 			whitelistedGroups: "",
@@ -169,12 +170,36 @@ class NotificationSettings extends React.Component {
 					callBack(enabled);
 				});
 				break;
+			case "friendNotifier":
+				storage.get(settingName, function (friendNotifier) {
+					friendNotifier = friendNotifier || {};
+					friendNotifier.on = friendNotifier.on || false;
+
+					notificationSettings.setState({
+						friendNotifierEnabled: friendNotifier.on
+					});
+
+					callBack(friendNotifier.on);
+				});
+				break;
+			case "friendNotifier.online":
+			case "friendNotifier.game":
+			case "friendNotifier.offline":
+				let innerSettingName = settingName.split(".")[1];
+				storage.get("friendNotifier", function (friendNotifier) {
+					friendNotifier = friendNotifier || {};
+					console.log(innerSettingName, friendNotifier);
+					callBack(friendNotifier[innerSettingName] || false);
+				});
+				break;
 			default:
 				storage.get(settingName, callBack);
 		}
 	}
 
 	setPillValue(settingName, value) {
+		let notificationSettings = this;
+
 		switch (settingName) {
 			case "groupShoutNotifier_mode":
 				storage.set(settingName, value ? "whitelist" : "all");
@@ -188,6 +213,28 @@ class NotificationSettings extends React.Component {
 					groupShoutNotifierEnabled: value
 				});
 				storage.set(settingName, value);
+				break;
+			case "friendNotifier":
+				storage.get(settingName, function (friendNotifier) {
+					friendNotifier = friendNotifier || {};
+					friendNotifier.on = value;
+
+					notificationSettings.setState({
+						friendNotifierEnabled: value
+					});
+
+					storage.set(settingName, friendNotifier);
+				});
+				break;
+			case "friendNotifier.online":
+			case "friendNotifier.offline":
+			case "friendNotifier.game":
+				let innerSettingName = settingName.split(".")[1];
+				storage.get("friendNotifier", function (friendNotifier) {
+					friendNotifier = friendNotifier || {};
+					friendNotifier[innerSettingName] = value;
+					storage.set("friendNotifier", friendNotifier);
+				});
 				break;
 			default:
 				storage.set(settingName, value);
@@ -330,6 +377,28 @@ class NotificationSettings extends React.Component {
 						<h3>Friends</h3>
 					</div>
 					<div class="section-content">
+						<span class="text-lead">Notifications about your friends statuses</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "friendNotifier")}
+							onToggle={this.setPillValue.bind(this, "friendNotifier")} />
+						<div class="rbx-divider"></div>
+						<span class="text-description">On/off switch for all the options for friends below.</span>
+						<a class="icon-Musical" onClick={this.promptChangeNotifierSound.bind(this, "friend")}></a>
+					</div>
+					<div class="section-content">
+						<span class="text-lead">Notify when your friends come online</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "friendNotifier.online")}
+							onToggle={this.setPillValue.bind(this, "friendNotifier.online")}
+							disabled={!this.state.friendNotifierEnabled} />
+						<div class="rbx-divider"></div>
+						<span class="text-lead">Notify when your friends go offline</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "friendNotifier.offline")}
+							onToggle={this.setPillValue.bind(this, "friendNotifier.offline")}
+							disabled={!this.state.friendNotifierEnabled} />
+						<div class="rbx-divider"></div>
+						<span class="text-lead">Notify when your friends join a game</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "friendNotifier.game")}
+							onToggle={this.setPillValue.bind(this, "friendNotifier.game")}
+							disabled={!this.state.friendNotifierEnabled} />
 					</div>
 				</div>
 				<div class="section">
