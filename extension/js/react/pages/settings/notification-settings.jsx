@@ -3,9 +3,7 @@ class NotificationSettings extends React.Component {
 		super(props);
 
 		this.state = {
-			friendNotifierEnabled: false,
-			groupShoutNotifierEnabled: false,
-			groupShoutWhitelistEnabled: false,
+			pills: {},
 			whitelistedGroups: "",
 			groupError: "",
 			showAddGroup: false
@@ -147,97 +145,95 @@ class NotificationSettings extends React.Component {
 	getPillValue(settingName, callBack) {
 		let notificationSettings = this;
 
+		let embeddedSetting = settingName.split(".");
+		if (embeddedSetting.length === 2) {
+			storage.get(embeddedSetting[0], function (embeddedObject) {
+				embeddedObject = embeddedObject || {};
+				
+				var value = embeddedObject[embeddedSetting[1]] || false;
+				var pillOverride = {};
+				pillOverride[settingName] = value;
+
+				notificationSettings.setState({
+					pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
+				});
+
+				callBack(value);
+			});
+			return;
+		}
+
 		switch (settingName) {
 			case "groupShoutNotifier_mode":
 				storage.get(settingName, function (value) {
 					let enabled = value === "whitelist";
 
+					var pillOverride = {};
+					pillOverride.groupShoutWhitelistEnabled = enabled;
+
 					notificationSettings.setState({
-						groupShoutWhitelistEnabled: enabled
+						pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
 					});
 
 					callBack(enabled);
-				});
-				break;
-			case "groupShoutNotifier":
-				storage.get(settingName, function (enabled) {
-					enabled = !!enabled;
-
-					notificationSettings.setState({
-						groupShoutNotifierEnabled: enabled
-					});
-
-					callBack(enabled);
-				});
-				break;
-			case "friendNotifier":
-				storage.get(settingName, function (friendNotifier) {
-					friendNotifier = friendNotifier || {};
-					friendNotifier.on = friendNotifier.on || false;
-
-					notificationSettings.setState({
-						friendNotifierEnabled: friendNotifier.on
-					});
-
-					callBack(friendNotifier.on);
-				});
-				break;
-			case "friendNotifier.online":
-			case "friendNotifier.game":
-			case "friendNotifier.offline":
-				let innerSettingName = settingName.split(".")[1];
-				storage.get("friendNotifier", function (friendNotifier) {
-					friendNotifier = friendNotifier || {};
-					console.log(innerSettingName, friendNotifier);
-					callBack(friendNotifier[innerSettingName] || false);
 				});
 				break;
 			default:
-				storage.get(settingName, callBack);
+				storage.get(settingName, function(value) {
+					var pillOverride = {};
+					pillOverride[settingName] = !!value;
+					
+					notificationSettings.setState({
+						pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
+					});
+
+					callBack(!!value);
+				});
 		}
 	}
 
 	setPillValue(settingName, value) {
 		let notificationSettings = this;
 
+		let embeddedSetting = settingName.split(".");
+		if (embeddedSetting.length === 2) {
+			storage.get(embeddedSetting[0], function (embeddedObject) {
+				embeddedObject = embeddedObject || {};
+				embeddedObject[embeddedSetting[1]] = value;
+
+				var pillOverride = {};
+				pillOverride[settingName] = value;
+
+				notificationSettings.setState({
+					pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
+				});
+
+				storage.set(embeddedSetting[0], embeddedObject);
+			});
+			return;
+		}
+
 		switch (settingName) {
 			case "groupShoutNotifier_mode":
 				storage.set(settingName, value ? "whitelist" : "all");
-				this.setState({
-					groupShoutWhitelistEnabled: value
+				
+				var pillOverride = {};
+				pillOverride.groupShoutWhitelistEnabled = value;
+
+				notificationSettings.setState({
+					pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
 				});
 
-				break;
-			case "groupShoutNotifier":
-				this.setState({
-					groupShoutNotifierEnabled: value
-				});
-				storage.set(settingName, value);
-				break;
-			case "friendNotifier":
-				storage.get(settingName, function (friendNotifier) {
-					friendNotifier = friendNotifier || {};
-					friendNotifier.on = value;
-
-					notificationSettings.setState({
-						friendNotifierEnabled: value
-					});
-
-					storage.set(settingName, friendNotifier);
-				});
-				break;
-			case "friendNotifier.online":
-			case "friendNotifier.offline":
-			case "friendNotifier.game":
-				let innerSettingName = settingName.split(".")[1];
-				storage.get("friendNotifier", function (friendNotifier) {
-					friendNotifier = friendNotifier || {};
-					friendNotifier[innerSettingName] = value;
-					storage.set("friendNotifier", friendNotifier);
-				});
 				break;
 			default:
-				storage.set(settingName, value);
+				storage.set(settingName, value, function() {
+					var pillOverride = {};
+					pillOverride[settingName] = value;
+
+					notificationSettings.setState({
+						pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
+					});
+				});
 		}
 	}
 
@@ -378,8 +374,8 @@ class NotificationSettings extends React.Component {
 					</div>
 					<div class="section-content">
 						<span class="text-lead">Notifications about your friends statuses</span>
-						<PillToggle getValue={this.getPillValue.bind(this, "friendNotifier")}
-							onToggle={this.setPillValue.bind(this, "friendNotifier")} />
+						<PillToggle getValue={this.getPillValue.bind(this, "friendNotifier.on")}
+							onToggle={this.setPillValue.bind(this, "friendNotifier.on")} />
 						<div class="rbx-divider"></div>
 						<span class="text-description">On/off switch for all the options for friends below.</span>
 						<a class="icon-Musical" onClick={this.promptChangeNotifierSound.bind(this, "friend")}></a>
@@ -388,17 +384,17 @@ class NotificationSettings extends React.Component {
 						<span class="text-lead">Notify when your friends come online</span>
 						<PillToggle getValue={this.getPillValue.bind(this, "friendNotifier.online")}
 							onToggle={this.setPillValue.bind(this, "friendNotifier.online")}
-							disabled={!this.state.friendNotifierEnabled} />
+							disabled={!this.state.pills["friendNotifier.on"]} />
 						<div class="rbx-divider"></div>
 						<span class="text-lead">Notify when your friends go offline</span>
 						<PillToggle getValue={this.getPillValue.bind(this, "friendNotifier.offline")}
 							onToggle={this.setPillValue.bind(this, "friendNotifier.offline")}
-							disabled={!this.state.friendNotifierEnabled} />
+							disabled={!this.state.pills["friendNotifier.on"]} />
 						<div class="rbx-divider"></div>
 						<span class="text-lead">Notify when your friends join a game</span>
 						<PillToggle getValue={this.getPillValue.bind(this, "friendNotifier.game")}
 							onToggle={this.setPillValue.bind(this, "friendNotifier.game")}
-							disabled={!this.state.friendNotifierEnabled} />
+							disabled={!this.state.pills["friendNotifier.on"]} />
 					</div>
 				</div>
 				<div class="section">
@@ -417,15 +413,15 @@ class NotificationSettings extends React.Component {
 						<span class="text-lead">Only notify for selected groups</span>
 						<PillToggle getValue={this.getPillValue.bind(this, "groupShoutNotifier_mode")}
 							onToggle={this.setPillValue.bind(this, "groupShoutNotifier_mode")}
-							disabled={!this.state.groupShoutNotifierEnabled} />
+							disabled={!this.state.pills.groupShoutNotifier} />
 						<div class="rbx-divider"></div>
 						<span class="text-description">When turned on only groups on this list will be notified for.</span>
-						<a class={"icon-plus" + (this.state.groupShoutWhitelistEnabled && this.state.groupShoutNotifierEnabled ? "" : " hidden")} onClick={this.toggleAddWhitelistedGroup.bind(this)}></a>
+						<a class={"icon-plus" + (this.state.pills.groupShoutWhitelistEnabled && this.state.pills.groupShoutNotifier ? "" : " hidden")} onClick={this.toggleAddWhitelistedGroup.bind(this)}></a>
 						<div class={"form-group form-has-feedback" + (this.state.groupError ? " form-has-error" : "") + (this.state.showAddGroup ? "" : " hidden")}>
 							<input class="form-control input-field" placeholder="https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group" id="rplus-groupshout-notifier-input" onKeyUp={this.tryAddGroup.bind(this)} />
 							<span class="form-control-label">{this.state.groupError}</span>
 						</div>
-						<div class={this.state.groupShoutWhitelistEnabled && this.state.groupShoutNotifierEnabled ? "" : "hidden"}>
+						<div class={this.state.pills.groupShoutWhitelistEnabled && this.state.pills.groupShoutNotifier ? "" : "hidden"}>
 							{this.state.whitelistedGroups}
 						</div>
 					</div>
@@ -441,6 +437,22 @@ class NotificationSettings extends React.Component {
 						<div class="rbx-divider"></div>
 						<span class="text-description">Notifications when you get a trade, send one, or a trade closes.</span>
 						<a class="icon-Musical" onClick={this.promptChangeNotifierSound.bind(this, "tradeInbound")}></a>
+					</div>
+				</div>
+				<div class="section">
+					<div class="container-header">
+						<h3>Extension</h3>
+					</div>
+					<div class="section-content">
+						<span class="text-lead">Notifications when Roblox+ starts or updates</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "startupNotification.on")}
+							onToggle={this.setPillValue.bind(this, "startupNotification.on")} />
+						<div class={this.state.pills["startupNotification.on"] ? "" : "hidden"}>
+							<div class="rbx-divider"></div>
+							<span class="text-lead">Only notify me when I first visit the website</span>
+							<PillToggle getValue={this.getPillValue.bind(this, "startupNotification.visit")}
+								onToggle={this.setPillValue.bind(this, "startupNotification.visit")} />
+						</div>
 					</div>
 				</div>
 			</div>
