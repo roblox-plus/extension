@@ -41,7 +41,7 @@ storage.get("settings-page-v2-enabled", function (enabled) {
 		return;
 	}
 
-	var container = $("<div id=\"rplus-settings\">");
+	var container = $("<div id=\"rplus-settings\" class=\"page-content\">");
 	$("#user-account").hide().after(container);
 	ReactDOM.render(<Settings />, container[0]);
 });

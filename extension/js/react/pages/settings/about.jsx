@@ -108,14 +108,14 @@ class About extends React.Component {
 				let post = btoa(this.state.updateLogDraft);
 				RPlus.settings.set({
 					updateLogPost: post
-				}).then(function() {
+				}).then(function () {
 					about.setState({
 						updateLogPost: atob(post),
-						updateLogSaveStatus: "Saved: " + (new Date ().toLocaleString())
+						updateLogSaveStatus: "Saved: " + (new Date().toLocaleString())
 					});
-				}).catch(function(e) {
+				}).catch(function (e) {
 					console.error(e);
-	
+
 					about.setState({
 						updateLogSaveStatus: "Failed to save update log."
 					});
@@ -132,9 +132,9 @@ class About extends React.Component {
 		this.setState({
 			updateLog: (
 				<div class="section-content rplus-update-log-section form-group form-has-feedback"
-						onDoubleClick={this.viewUpdateLog.bind(this, settings)}>
+					onDoubleClick={this.viewUpdateLog.bind(this, settings)}>
 					<textarea onChange={this.setUpdateLogDraft.bind(this)}
-								defaultValue={this.state.updateLogDraft}></textarea>
+						defaultValue={this.state.updateLogDraft}></textarea>
 					<p class="form-control-label">{this.state.updateLogSaveStatus}</p>
 				</div>
 			)
@@ -145,9 +145,10 @@ class About extends React.Component {
 		let decodedPost = atob(settings.updateLogPost);
 		let newState = {
 			updateLog: (
-				<div class="section-content"
-						onDoubleClick={this.editUpdateLog.bind(this, settings)}>
+				<div class="section-content form-has-feedback"
+					onDoubleClick={this.editUpdateLog.bind(this, settings)}>
 					<pre>{this.state.updateLogPost || decodedPost}</pre>
+					<p class="form-control-label">Version {ext.manifest.version}</p>
 				</div>
 			)
 		};
@@ -171,6 +172,14 @@ class About extends React.Component {
 		});
 	}
 
+	reloadExtension() {
+		ext.reload(function () {
+			setTimeout(function () {
+				window.location.reload(true);
+			}, 1500);
+		});
+	}
+
 	render() {
 		return (
 			<div>
@@ -185,6 +194,17 @@ class About extends React.Component {
 						<h3>Update Log</h3>
 					</div>
 					{this.state.updateLog}
+				</div>
+				<div class="section">
+					<div class="container-header">
+						<h3>Disaster Recovery</h3>
+					</div>
+					<div class="section-content">
+						<span class="text-description">Click button to "turn off and back on again".</span>
+						<button class="btn-control-sm acct-settings-btn"
+							type="button"
+							onClick={this.reloadExtension}>Reload</button>
+					</div>
 				</div>
 			</div>
 		);
