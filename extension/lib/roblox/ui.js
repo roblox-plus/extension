@@ -142,7 +142,7 @@ Roblox.ui = (function () {
 
 			if (typeof (details.bodyText) == "string") {
 				modalBody.text(details.bodyText);
-			} else if (typeof (details.bodyHtml) == "string") {
+			} else if (typeof (details.bodyHtml) == "string" || (details.bodyHtml instanceof jQuery)) {
 				modalBody.html(details.bodyHtml);
 			}
 

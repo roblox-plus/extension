@@ -17,8 +17,8 @@
 			var attrName = "data-" + dataName;
 
 			$("body").on("click", ".icon-play[" + attrName + "]", function () {
-				var id = $(this).data(dataName);
-				var volume = $(this).data("volume");
+				var id = Number($(this).attr(attrName));
+				var volume = Number($(this).attr("data-volume"));
 				var player = soundMap[id];
 				var searchAttr = "[" + attrName + "='" + id + "']";
 
@@ -48,7 +48,7 @@
 					});
 				}
 			}).on("click", ".icon-pause[" + attrName + "]", function () {
-				var player = soundMap[$(this).data(dataName)];
+				var player = soundMap[$(this).attr(attrName)];
 				if (player) {
 					player.pause();
 				}
