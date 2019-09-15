@@ -3,25 +3,28 @@ $tabs-width: 160px;
 $tab-content-padding: 12px;
 $section-content-padding: 15px;
 
-.rbx-tabs-vertical .rbx-tab-content {
-	max-width: calc(#{$page-width} - #{$tabs-width});
-	padding-left: $tab-content-padding;
+#rplus-settings {
+	.rbx-tabs-vertical .rbx-tab-content {
+		width: 100%;
+		max-width: calc(#{$page-width} - #{$tabs-width});
+		padding-left: $tab-content-padding;
 
-	.rplus-premium-section {
-		pre {
-			white-space: pre-wrap;
-		}
-	}
-
-	.rplus-update-log-section {
-		textarea {
-			width: calc(#{$page-width} - #{$tabs-width} - #{$tab-content-padding} - #{$section-content-padding} - #{$section-content-padding});
-			height: 450px;
-			resize: none;
+		.rplus-premium-section {
+			pre {
+				white-space: pre-wrap;
+			}
 		}
 
-		&.form-group {
-			-webkit-user-select: none;
+		.rplus-update-log-section {
+			textarea {
+				width: calc(#{$page-width} - #{$tabs-width} - #{$tab-content-padding} - #{$section-content-padding} - #{$section-content-padding});
+				height: 450px;
+				resize: none;
+			}
+
+			&.form-group {
+				-webkit-user-select: none;
+			}
 		}
 	}
 }

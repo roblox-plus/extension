@@ -115,7 +115,8 @@
 
 		{
 			"js": [
-				"/js/output/react/components/vertical-tabs.js"
+				"/js/output/react/components/vertical-tabs.js",
+				"/js/output/react/components/pill-toggle.js"
 			],
 			"matches": [
 				"*://*.roblox.com/*"

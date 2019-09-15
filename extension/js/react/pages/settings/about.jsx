@@ -176,7 +176,7 @@ class About extends React.Component {
 		ext.reload(function () {
 			setTimeout(function () {
 				window.location.reload(true);
-			}, 1500);
+			}, 1000);
 		});
 	}
 
