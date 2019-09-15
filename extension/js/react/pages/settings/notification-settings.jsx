@@ -1,13 +1,10 @@
-class NotificationSettings extends React.Component {
+class NotificationSettings extends SettingsTab {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			pills: {},
-			whitelistedGroups: "",
-			groupError: "",
-			showAddGroup: false
-		};
+		this.state.whitelistedGroups = "";
+		this.state.groupError = "";
+		this.state.showAddGroup = false;
 
 		this.reloadWhitelistedGroups();
 	}
@@ -140,101 +137,6 @@ class NotificationSettings extends React.Component {
 				// The user cancelled.
 			});
 		});
-	}
-
-	getPillValue(settingName, callBack) {
-		let notificationSettings = this;
-
-		let embeddedSetting = settingName.split(".");
-		if (embeddedSetting.length === 2) {
-			storage.get(embeddedSetting[0], function (embeddedObject) {
-				embeddedObject = embeddedObject || {};
-				
-				var value = embeddedObject[embeddedSetting[1]] || false;
-				var pillOverride = {};
-				pillOverride[settingName] = value;
-
-				notificationSettings.setState({
-					pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
-				});
-
-				callBack(value);
-			});
-			return;
-		}
-
-		switch (settingName) {
-			case "groupShoutNotifier_mode":
-				storage.get(settingName, function (value) {
-					let enabled = value === "whitelist";
-
-					var pillOverride = {};
-					pillOverride.groupShoutWhitelistEnabled = enabled;
-
-					notificationSettings.setState({
-						pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
-					});
-
-					callBack(enabled);
-				});
-				break;
-			default:
-				storage.get(settingName, function(value) {
-					var pillOverride = {};
-					pillOverride[settingName] = !!value;
-					
-					notificationSettings.setState({
-						pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
-					});
-
-					callBack(!!value);
-				});
-		}
-	}
-
-	setPillValue(settingName, value) {
-		let notificationSettings = this;
-
-		let embeddedSetting = settingName.split(".");
-		if (embeddedSetting.length === 2) {
-			storage.get(embeddedSetting[0], function (embeddedObject) {
-				embeddedObject = embeddedObject || {};
-				embeddedObject[embeddedSetting[1]] = value;
-
-				var pillOverride = {};
-				pillOverride[settingName] = value;
-
-				notificationSettings.setState({
-					pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
-				});
-
-				storage.set(embeddedSetting[0], embeddedObject);
-			});
-			return;
-		}
-
-		switch (settingName) {
-			case "groupShoutNotifier_mode":
-				storage.set(settingName, value ? "whitelist" : "all");
-				
-				var pillOverride = {};
-				pillOverride.groupShoutWhitelistEnabled = value;
-
-				notificationSettings.setState({
-					pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
-				});
-
-				break;
-			default:
-				storage.set(settingName, value, function() {
-					var pillOverride = {};
-					pillOverride[settingName] = value;
-
-					notificationSettings.setState({
-						pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
-					});
-				});
-		}
 	}
 
 	toggleAddWhitelistedGroup() {
