@@ -19,6 +19,10 @@ class PillToggle extends React.Component {
 	}
 
 	toggle() {
+		if (this.props.disabled) {
+			return;
+		}
+		
 		var on = !this.state.on;
 
 		this.setState({
@@ -30,7 +34,7 @@ class PillToggle extends React.Component {
 
 	render() {
 		return (
-			<span class={"btn-toggle receiver-destination-type-toggle" + (this.state.on ? " on" : "")}
+			<span class={"btn-toggle receiver-destination-type-toggle" + (this.state.on ? " on" : "") + (this.props.disabled ? " disabled" : "")}
 				onClick={this.toggle.bind(this)}>
 				<span class="toggle-flip"></span>
 				<span class="toggle-on"></span>

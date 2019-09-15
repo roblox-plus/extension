@@ -29,10 +29,19 @@ $section-content-padding: 15px;
 
 		.rbx-divider {
 			margin-top: 12px;
+			margin-bottom: 4px;
 		}
 
-		a.icon-Musical {
+		a.icon-Musical,
+		a.icon-plus,
+		a.icon-alert {
 			float: right;
+			-webkit-user-select: none;
+		}
+
+		#rplus-groupshout-notifier-input,
+		.rplus-groupshout-whitelist {
+			margin-top: 12px;
 		}
 	}
 }
