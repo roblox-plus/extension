@@ -164,7 +164,6 @@
 		"*://*.rbxcdn.com/*",
 		"*://*.roblox.plus/*"
 	],
-	"optional_permissions": [ "<all_urls>" ],
 	"web_accessible_resources": [
 		"*.css",
 		"*.svg",
