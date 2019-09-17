@@ -44,6 +44,14 @@ $section-content-padding: 15px;
 			margin-top: 12px;
 		}
 
+		.rplus-feature-list {
+			.text-date-hint {
+				span {
+					vertical-align: middle;
+				}
+			}
+		}
+
 		.select-group.rbx-select-group {
 			max-width: 250px;
 			float: right;

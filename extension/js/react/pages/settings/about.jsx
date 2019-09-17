@@ -13,11 +13,39 @@ class About extends React.Component {
 			updateLog: (<span class="spinner spinner-default"></span>),
 			updateLogDraft: "",
 			updateLogPost: "",
-			updateLogSaveStatus: ""
+			updateLogSaveStatus: "",
+
+			featureList: [
+				this.getFeatureRow("Game server pager", "On the game details page the load more servers button is turned into a pager with options to skip to the first or last page of servers."),
+				this.getFeatureRow("Texture download", "A download option is added to Roblox created images."),
+				this.getFeatureRow("Asset contents", "On item details pages a tab is added to view content the asset depends on."),
+				this.getFeatureRow("Asset owners list", "A list of owners is added as a tab on item details pages depending on the asset type and creator."),
+				this.getFeatureRow("Delete from inventory page", "Delete buttons are added to the inventory page for some asset types."),
+				this.getFeatureRow("Avatar filter bar", "A text box is added to the avatar page to filter visible items down to items that match the text."),
+				this.getFeatureRow("Roblox+ notification stream", "Clicking the extension browser icon while on a Roblox page will take over the notification stream with notifications from Roblox+."),
+				this.getFeatureRow("Comment timer", "A timer is added to the asset comment button for how long until you can post another comment.", true),
+				this.getFeatureRow("Trade and transaction counters", "Counters are added to the drop downs of the trades and transactions selections on the Money page.", true),
+				this.getFeatureRow("Cancel all outbound trades button", "A button is added to the outbound trades tab on the Money page to cancel all outbound trades.", true),
+				this.getFeatureRow("Unfollow all users button on Friends page", "A button is added to your friends page to unfollow all users you are not friends with.", true),
+				this.getFeatureRow("Follow all friends button on Friends page", "A button is added to your friends page to follow all users you are friends with.", true),
+				this.getFeatureRow("Profile sale statistics", "Buttons are added to the profile page to calculate sales of clothing with user stats.", true),
+				this.getFeatureRow("JSON pretty printing", "This feature is really on its way out soon. You may never read this text because I'm planning to delete this feature. On a JSON API response when viewing it in a browser tab if you press enter it will format the JSON. It really only ended up here to make my debugging easier but it's been separated out of this extension.", true),
+				this.getFeatureRow("Badge counter", "On the profile page you can calculate how many game badges a user has earned overall.", true),
+			]
 		};
 
 		RPlus.settings.get().then((settings) => about.globalSettingsLoaded(settings)).catch((e) => about.globalSettingsLoadFailure(e));
 		Roblox.users.getAuthenticatedUser().then((user) => about.authenticatedUserLoaded(user)).catch((e) => about.authenticatedUserLoadFailure(e));
+	}
+
+	getFeatureRow(name, description, deprecated) {
+		return (
+			<tr>
+				<td><span class={"icon-warning" + (deprecated ? "" : " hidden")}></span></td>
+				<td class="text-lead">{name}</td>
+				<td class="text-description">{description}</td>
+			</tr>
+		);
 	}
 
 	authenticatedUserLoaded(authenticatedUser) {
@@ -204,6 +232,21 @@ class About extends React.Component {
 						<button class="btn-control-sm acct-settings-btn"
 							type="button"
 							onClick={this.reloadExtension}>Reload</button>
+					</div>
+				</div>
+				<div class="section rplus-feature-list">
+					<div class="container-header">
+						<h3>Feature List</h3>
+					</div>
+					<div class="section-content">
+						<span class="text-description">Features listed are not configurable but are specified for transparency sake about what this extension is responsible for.</span>
+						<table class="table table-striped">
+							<tbody>
+								{this.state.featureList}
+							</tbody>
+						</table>
+						<div class="rbx-divider"></div>
+						<p class="text-date-hint"><span class="icon-warning"></span> <span>Deprecated - These features are no longer supported. If they stop working they may not be fixed.</span></p>
 					</div>
 				</div>
 			</div>
