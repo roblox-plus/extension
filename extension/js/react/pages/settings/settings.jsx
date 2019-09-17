@@ -36,14 +36,10 @@ class Settings extends React.Component {
 	}
 }
 
-storage.get("settings-page-v2-enabled", function (enabled) {
-	if (!enabled) {
-		return;
-	}
-
+if (location.search.includes("rplus")) {
 	var container = $("<div id=\"rplus-settings\" class=\"page-content\">");
 	$("#user-account").hide().after(container);
 	ReactDOM.render(<Settings />, container[0]);
-});
+}
 
 // WebGL3D

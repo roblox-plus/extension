@@ -177,6 +177,7 @@ class About extends React.Component {
 					onDoubleClick={this.editUpdateLog.bind(this, settings)}>
 					<pre>{this.state.updateLogPost || decodedPost}</pre>
 					<p class="form-control-label">Version {ext.manifest.version}</p>
+					<p class="form-control-label">Group: <a class="text-link" href={Roblox.groups.getGroupUrl(2518656, "Roblox+ Fan Group")}>Roblox+ Fan Group</a></p>
 				</div>
 			)
 		};
