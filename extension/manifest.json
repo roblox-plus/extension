@@ -137,7 +137,7 @@
 				"/css/output/pages/settings.css"
 			],
 			"matches": [
-				"*://*.roblox.com/my/account"
+				"*://*.roblox.com/my/account*"
 			],
 			"run_at": "document_end"
 		}

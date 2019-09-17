@@ -38,8 +38,13 @@ class Settings extends React.Component {
 
 if (location.search.includes("rplus")) {
 	var container = $("<div id=\"rplus-settings\" class=\"page-content\">");
-	$("#user-account").hide().after(container);
+	var userAccount = $("#user-account").hide().after(container);
+	console.log("Render Settings in #user-account (" + userAccount.length + ")");
 	ReactDOM.render(<Settings />, container[0]);
+} else {
+	var li = $("<li class=\"menu-option\">");
+	var a = $("<a class=\"rbx-tab-heading\">").append($("<span class=\"font-caption-header\">").text(ext.manifest.name)).attr("href", ext.manifest.homepage_url);
+	$("#vertical-menu").append(li.append(a));
 }
 
 // WebGL3D
