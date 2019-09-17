@@ -28,7 +28,7 @@ $section-content-padding: 15px;
 		}
 
 		.rbx-divider {
-			margin-top: 12px;
+			margin-top: 11px;
 			margin-bottom: 4px;
 		}
 
@@ -49,6 +49,19 @@ $section-content-padding: 15px;
 				span {
 					vertical-align: middle;
 				}
+			}
+		}
+
+		.rplus-privacy-policy {
+			ul {
+				padding-left: 30px;
+			}
+
+			ul, li {
+				list-style: circle;
+				border: none;
+				width: auto;
+				float: none;
 			}
 		}
 
