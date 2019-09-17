@@ -2,7 +2,7 @@ class Settings extends React.Component {
 	render() {
 		let tabs = [
 			{
-				label: "General",
+				label: "About",
 				class: About
 			},
 			{
