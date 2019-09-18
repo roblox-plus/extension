@@ -22,9 +22,19 @@ RPlus.style = RPlus.style || (function () {
 		});
 	}
 
+	function syncNavigationTheme() {
+		if (window.$) {
+			if ($("#BodyWrapper").length > 0) {
+				var hasDarkTheme = $("#header").hasClass("dark-theme");
+				document.body.classList.toggle("dark-theme", hasDarkTheme);
+				document.body.classList.toggle("rplus-dark-theme", hasDarkTheme);
+			}
+		}
+	}
+
 	function togglePremiumClass(isPremium) {
 		document.documentElement.classList.toggle("rplus-premium-subscriber", !!isPremium);
-		console.log(document.documentElement.classList, isPremium);
+		syncNavigationTheme();
 	}
 
 	function syncPremiumClass() {

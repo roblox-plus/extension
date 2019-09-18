@@ -1,0 +1,115 @@
+// https://www.roblox.com/reference/styleguide#themes
+$Flint: #393B3D;
+$Obsidian: #18191B;
+
+$primary-text-color: #fff;
+$text-label-color: #bdbebe;
+$text-link-color: #fff;
+$tab-text-color: #bdbebe;
+$tab-text-active-color: #fff;
+
+.rplus-premium-subscriber {
+	background-color: inherit;
+
+	body.dark-theme.rplus-dark-theme {
+		#BodyWrapper,
+		#Body,
+		.tab-content, 
+		.tab-container+div>div {
+			background: transparent;
+		}
+
+		/* Global rules */
+		#BodyWrapper {
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6 {
+				color: $primary-text-color;
+	
+				a {
+					color: $primary-text-color;
+				}
+			}
+	
+			.form-label {
+				color: $text-label-color;
+			}
+	
+			a:link, a:visited, a:active {
+				color: $text-link-color;
+			}
+	
+			.btn-control, 
+			.btn-control:active,
+			.btn-control:link,
+			.btn-control:visited, 
+			.btn-control:hover {
+				color: $Obsidian;
+			}
+	
+			.tab-container>div {
+				background-color: $Flint;
+				color: $tab-text-color;
+	
+				&:hover,
+				&.tab-active {
+					color: $tab-text-active-color
+				}
+			}
+		}
+
+		/* Group pages */
+		#AuditPage {
+			h1 a {
+				color: $primary-text-color;
+
+				&:hover {
+					color: $primary-text-color;
+				}
+			}
+
+			.AuditLogContainer tr.header td {
+				background-color: $Flint;
+			}
+		}
+
+		/* Develop page */
+		#MyCreationsTab,
+		#DevelopTabs,
+		#GroupCreationsTab,
+		#LibraryTab {
+			.widget-name {
+				background-color: $Flint;
+			}
+
+			.gear-button-wrapper {
+				background-color: transparent !important;
+				border-color: transparent !important;
+			}
+
+			table.section-header label.checkbox-label {
+				color: $text-label-color;
+			}
+
+			.item-table .totals-label span {
+				color: $primary-text-color;
+			}
+
+			#build-dropdown-menu a {
+				color: $Obsidian;
+			}
+
+			td.menu-area a {
+				background-color: $Flint;
+				color: $tab-text-color !important;
+				
+				&.tab-item-selected {
+					color: $tab-text-active-color !important;
+				}
+			}
+		}
+	}
+}
