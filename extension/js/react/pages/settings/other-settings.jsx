@@ -4,7 +4,6 @@ class OtherSettings extends SettingsTab {
 	}
 
 	render() {
-		// TODO: Remove groups page feature (doesn't work)
 		return (
 			<div>
 				<div class="section">
@@ -17,16 +16,6 @@ class OtherSettings extends SettingsTab {
 							onToggle={this.setPillValue.bind(this, "profileRAP")} />
 						<div class="rbx-divider"></div>
 						<span class="text-description">Calculates total user value in items and displays it as profile header stat.</span>
-					</div>
-				</div>
-				<div class="section">
-					<div class="container-header">
-						<h3>Groups Page</h3>
-					</div>
-					<div class="section-content">
-						<span class="text-lead">Display member role on group wall posts.</span>
-						<PillToggle getValue={this.getPillValue.bind(this, "groupRoleDisplay")}
-							onToggle={this.setPillValue.bind(this, "groupRoleDisplay")} />
 					</div>
 				</div>
 				<div class="section">
