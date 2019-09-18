@@ -69,29 +69,6 @@ RPlus.premium = RPlus.premium || (function () {
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 10 * 1000,
 			queued: true
-		}),
-		
-		isThemeUnlocked: $.promise.cache(function (resolve, reject, userId, themeType) {
-			if (themeType === "obc") {
-				resolve(true);
-				return;
-			} else if (typeof(themeType) !== "string" || themeType === "") {
-				resolve(false);
-				return;
-			}
-
-			this.isPremium(userId).then(function (premium) {
-				if (premium) {
-					resolve(true);
-					return;
-				}
-
-				if (themeType === "easter") {
-					Roblox.inventory.userHasBadge(userId, 375602203).then(resolve).catch(reject);
-				} else {
-					resolve(false);
-				}
-			}).catch(reject);
 		})
 	};
 })();

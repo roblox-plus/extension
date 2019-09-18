@@ -127,7 +127,6 @@
 			"js": [
 				"/js/output/react/pages/settings/settings-tab.js",
 				"/js/output/react/pages/settings/about.js",
-				"/js/output/react/pages/settings/appearance-settings.js",
 				"/js/output/react/pages/settings/navigation-settings.js",
 				"/js/output/react/pages/settings/notification-settings.js",
 				"/js/output/react/pages/settings/other-settings.js",

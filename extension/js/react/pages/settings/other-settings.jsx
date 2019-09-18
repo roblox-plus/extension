@@ -4,6 +4,7 @@ class OtherSettings extends SettingsTab {
 	}
 
 	render() {
+		// TODO: Remove groups page feature (doesn't work)
 		return (
 			<div>
 				<div class="section">
@@ -72,6 +73,16 @@ class OtherSettings extends SettingsTab {
 							onToggle={this.setPillValue.bind(this, "quickSell")} />
 						<div class="rbx-divider"></div>
 						<span class="text-description">Note: When putting on sale it will put for sale at the lowest price possible.</span>
+					</div>
+				</div>
+				<div class="section">
+					<div class="container-header">
+						<h3>Twemojis</h3>
+					</div>
+					<div class="section-content">
+						<span class="text-description">Replace emojis on the website with twemojis.</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "twemoji")}
+							onToggle={this.setPillValue.bind(this, "twemoji")} />
 					</div>
 				</div>
 			</div>

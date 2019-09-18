@@ -196,29 +196,6 @@ fixCB(({
 		mainLoop();
 		window.comma = mainLoop.comma;
 
-		storage.get("siteTheme", function (v) {
-			function setTheme(t) {
-				localStorage.setItem("rplusTheme", t);
-				RPlus.style.loadThemeFromStorage();
-			}
-
-			if (typeof(v) !== "string" || !RPlus.style.themeTypes.hasOwnProperty(v)) {
-				setTheme("");
-			} else if (Roblox.users.authenticatedUserId > 0) {
-				RPlus.premium.isThemeUnlocked(Roblox.users.authenticatedUserId, v).then(function (unlocked) {
-					if (unlocked) {
-						setTheme(v);
-					} else {
-						setTheme("");
-					}
-				}).catch(function () {
-					setTheme(v);
-				});
-			} else {
-				setTheme(v);
-			}
-		});
-
 		storage.get("twemoji", function (enabled) {
 			if (!enabled) {
 				return;

@@ -1,71 +1,5 @@
 ﻿var RPlus = RPlus || {};
 RPlus.style = RPlus.style || (function () {
-	var themeStorageName = "rplusTheme";
-	var overrideTheme = null;
-	var currentTheme = null;
-	var html = document.documentElement;
-	var themes = [
-		{
-			type: "obc",
-			name: "OBC",
-			className: "obc-theme-v2",
-			file: "/css/themes/obcV2.css"
-		}, {
-			type: "easter",
-			name: "Easter",
-			className: "easter-theme-v2",
-			file: "/css/themes/easterV2.css"
-		}, {
-			type: "darkblox",
-			name: "Darkblox [Experimental]",
-			className: "darkblox-theme",
-			file: "/css/themes/darkblox.css"
-		}];
-	var themeTypes = {};
-
-
-	themes.forEach(function (theme) {
-		theme.file = chrome.extension.getURL(theme.file);
-		themeTypes[theme.type] = theme;
-	});
-
-	function clearRobloxTheme() {
-		if (currentTheme) {
-			document.querySelectorAll(".dark-theme").forEach(function (el) {
-				el.classList.remove("dark-theme");
-			});
-		}
-	}
-
-	function setTheme(newTheme, save) {
-		currentTheme = newTheme;
-		var storageTheme = "";
-
-		themes.forEach(function (theme) {
-			if (newTheme && newTheme.type === theme.type) {
-				html.classList.add(theme.className);
-				storageTheme = theme.type;
-			} else {
-				html.classList.remove(theme.className);
-			}
-		});
-
-		if (newTheme && newTheme.type) {
-			clearRobloxTheme();
-		}
-
-		if (save) {
-			if (storageTheme) {
-				localStorage.setItem(themeStorageName, storageTheme);
-			} else {
-				localStorage.removeItem(themeStorageName);
-			}
-			if (window.storage) {
-				storage.set("siteTheme", storageTheme);
-			}
-		}
-	}
-
 	function loadStylesheet(stylesheetLocation) {
 		fetch(stylesheetLocation).then(function (response) {
 			response.text().then(function (originalCss) {
@@ -88,64 +22,8 @@ RPlus.style = RPlus.style || (function () {
 		});
 	}
 
-	function loadThemeFromStorage() {
-		var theme = localStorage.getItem(themeStorageName);
-		if (theme) {
-			if (theme === "obc-theme") {
-				theme = "obc";
-			} else if (theme === "easter-theme") {
-				theme = "easter";
-			}
-			if (typeof(theme) !== "string" || !themeTypes.hasOwnProperty(theme)) {
-				localStorage.removeItem(themeStorageName);
-				return;
-			}
-		}
-		setTheme(RPlus.style.themeTypes[theme], true);
-	}
-
-	function init(themeOverride) {
-		themes.forEach(function (theme) {
-			loadStylesheet(theme.file);
-		});
-
-		if (themeOverride) {
-			overrideTheme = themeOverride;
-			setTheme(themeOverride, false);
-		} else {
-			loadThemeFromStorage();
-		}
-
-		setInterval(clearRobloxTheme, 500);
-	}
-
 	return {
-		themeTypes: themeTypes,
-		getActivatedThemes: function () {
-			var selected = [];
-			themes.forEach(function (theme) {
-				if (html.classList.contains(theme.className)) {
-					selected.push(theme);
-				}
-			});
-			return selected;
-		},
-		setTheme: function (theme) {
-			if (!overrideTheme) {
-				setTheme(theme, true);
-			}
-		},
-		overrideTheme: function (theme) {
-			overrideTheme = theme;
-			setTheme(theme, false);
-		},
-		loadThemeFromStorage: function() {
-			if (!overrideTheme) {
-				loadThemeFromStorage();
-			}
-		},
-		loadStylesheet: loadStylesheet,
-		init: init
+		loadStylesheet: loadStylesheet
 	};
 })();
 

@@ -6,10 +6,6 @@ class Settings extends React.Component {
 				class: About
 			},
 			{
-				label: "Appearance",
-				class: AppearanceSettings
-			},
-			{
 				label: "Navigation",
 				class: NavigationSettings
 			},

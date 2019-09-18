@@ -4,7 +4,6 @@
 	background-image: url(images/icon_outline_black.svg);
 }
 
-.darkblox-theme #navigation .rplus-icon,
 #navigation.dark-theme .rplus-icon,
 .dark-theme #navigation .rplus-icon {
 	background-image: url(images/icon_outline_grey.svg);

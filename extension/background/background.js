@@ -48,7 +48,7 @@ foreach({
 commentTimer = type(storage.get("commentTimer")) == "object" ? storage.get("commentTimer") : {};
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
 	commentTimer.last = getMil();
-	Roblox.catalog.getAssetInfo(Number(details.requestBody.formData.assetId[0])).then(function(asset) {
+	Roblox.catalog.getAssetInfo(Number(details.requestBody.formData.assetId[0])).then(function (asset) {
 		Roblox.users.getCurrentUserId().then(function (uid) {
 			if (uid > 0 && uid != asset.creator.id) {
 				commentTimer[uid] = commentTimer[uid] || {};
@@ -115,7 +115,7 @@ Roblox.users.getAuthenticatedUser().then(function (user) {
 				"*://c5.rbxcdn.com/*",
 				"*://c6.rbxcdn.com/*",
 				"*://c7.rbxcdn.com/*"
-			] 
+			]
 		}, [
 			"blocking",
 			"requestHeaders",
@@ -156,6 +156,30 @@ if (browser.name == "Chrome") {
 	}, 60 * 1000);
 }
 
+
+/* Migrate users to Roblox dark theme */
+storage.get("siteTheme", function (value) {
+	if (value === "darkblox") {
+		Roblox.users.getAuthenticatedUser().then(function (authenticatedUser) {
+			if (!authenticatedUser) {
+				console.warn("Will migrate out of darkblox theme when user logs in.");
+				return;
+			}
+
+			$.ajax({
+				type: "PATCH",
+				url: "https://accountsettings.roblox.com/v1/themes/User/" + authenticatedUser.id,
+				data: {
+					"themeType": "Dark"
+				}
+			}).done(function () {
+				storage.remove("siteTheme");
+			}).fail(function () {
+				console.error("Failed to migrate out of ")
+			});
+		});
+	}
+});
 
 
 /* Startup Notification */
@@ -198,7 +222,7 @@ if (browser.name == "Chrome") {
 				note.close();
 				window.open("https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group?rbxp=48103520");
 			});
-		}).catch(function(e) {
+		}).catch(function (e) {
 			console.warn("no startup notification", e);
 		});
 	});

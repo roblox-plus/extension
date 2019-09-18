@@ -67,7 +67,7 @@ RPlus.Pages.Game = function () {
 	});
 	
 	if (placeId === 258257446) {
-		$(".create-server-banner-text").text("Purchasing a VIP server in this place will activate Roblox+ Premium!\nRoblox+ Premium will unlock:\n\tA purchase button on new limited notifications\n\tThe Roblox+ Easter site theme")
+		$(".create-server-banner-text").text("Purchasing a VIP server in this place will activate Roblox+ Premium!\nRoblox+ currently only expands the Roblox dark theme onto pages unsupported by Roblox.\n\tThere are plans to expand Roblox+ Premium in the future, but not in the short term.");
 	} else if (placeId === 2117000638) {
 		var audioTag = document.createElement("audio");
 		var jplayer = $(audioTag);
