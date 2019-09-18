@@ -59,6 +59,23 @@ $tab-text-active-color: #fff;
 					color: $tab-text-active-color
 				}
 			}
+
+			.verticaltab {
+				background-color: $Flint;
+				color: $tab-text-color;
+
+				&.selected {
+					color: $tab-text-active-color
+				}
+			}
+
+			.table-header th {
+				background-color: $Flint;
+			}
+
+			.accord-header {
+				background: $Flint;
+			}
 		}
 
 		/* Group pages */
@@ -76,11 +93,22 @@ $tab-text-active-color: #fff;
 			}
 		}
 
+		#update-distribution-form,
+		#payout-form {
+			color: $Obsidian;			
+		}
+
+		#GroupTitle {
+			a {
+				color: $text-link-color !important;
+				font-style: inherit !important;
+			}
+		}
+
 		/* Develop page */
 		#MyCreationsTab,
 		#DevelopTabs,
-		#GroupCreationsTab,
-		#LibraryTab {
+		#GroupCreationsTab {
 			.widget-name {
 				background-color: $Flint;
 			}
@@ -109,6 +137,47 @@ $tab-text-active-color: #fff;
 				&.tab-item-selected {
 					color: $tab-text-active-color !important;
 				}
+			}
+		}
+
+		#LibraryTab {
+			.CatalogItemOuter {
+				.CatalogItemInner,
+				.SmallCatalogItemView {
+					background: transparent;
+				}
+
+				.NotAPrice,
+				.HoverInfo {
+					color: $primary-text-color;
+				}
+
+				.CatalogItemInfoLabel {
+					color: $text-label-color;
+				}
+
+				&:hover {
+					.CatalogItemInner,
+					.SmallCatalogItemView {
+						background: $Flint;
+					}
+				}
+			}
+		}
+
+		/* Game Configuration */
+		#universe-configure {
+			.missing-start-place {
+				background-color: $Flint;
+			}
+		}
+
+		/* Money */
+		.MyMoneyPage {
+			#Summary_tab .RobuxColumn, 
+			#Summary_tab .TicketsColumn,
+			.StandardPanelContainer .StandardPanelWhite {
+				background: transparent;
 			}
 		}
 	}
