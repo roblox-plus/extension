@@ -32,6 +32,8 @@ RPlus.Pages = RPlus.Pages || {};
 			}
 		}
 	}
+	
+	RPlus.style.syncPremiumClass();
 })();
 
 

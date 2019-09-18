@@ -22,8 +22,34 @@ RPlus.style = RPlus.style || (function () {
 		});
 	}
 
+	function togglePremiumClass(isPremium) {
+		document.documentElement.classList.toggle("rplus-premium-subscriber", !!isPremium);
+		console.log(document.documentElement.classList, isPremium);
+	}
+
+	function syncPremiumClass() {
+		if (Roblox.users.authenticatedUserId) {
+			RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(function (premiumSubscriber) {
+				togglePremiumClass(premiumSubscriber);
+
+				if (premiumSubscriber) {
+					localStorage.setItem("isRPlusPremium", premiumSubscriber.toString());
+				} else {
+					localStorage.removeItem("isRPlusPremium");
+				}
+			}).catch(console.error);
+		}
+	}
+
+	function init() {
+		togglePremiumClass(localStorage.getItem("isRPlusPremium"));
+	}
+
 	return {
-		loadStylesheet: loadStylesheet
+		loadStylesheet: loadStylesheet,
+		init: init,
+		togglePremiumClass: togglePremiumClass,
+		syncPremiumClass: syncPremiumClass
 	};
 })();
 
