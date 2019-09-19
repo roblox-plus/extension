@@ -1,4 +1,5 @@
 // https://www.roblox.com/reference/styleguide#themes
+$Slate: #232527;
 $Flint: #393B3D;
 $Obsidian: #18191B;
 
@@ -20,6 +21,7 @@ $tab-text-active-color: #fff;
 		}
 
 		/* Global rules */
+		form#upload-form[action^="/build/"],
 		#BodyWrapper {
 			h1,
 			h2,
@@ -50,13 +52,28 @@ $tab-text-active-color: #fff;
 				color: $Obsidian;
 			}
 	
+			.SquareTabGray,
 			.tab-container>div {
 				background-color: $Flint;
 				color: $tab-text-color;
+
+				a {
+					color: $tab-text-color;
+
+					&:hover {
+						background-color: transparent;
+						color: $tab-text-active-color
+					}
+				}
 	
 				&:hover,
-				&.tab-active {
-					color: $tab-text-active-color
+				&.tab-active,
+				&.selected {
+					color: $tab-text-active-color;
+
+					a {
+						color: $tab-text-active-color;
+					}
 				}
 			}
 
@@ -64,8 +81,17 @@ $tab-text-active-color: #fff;
 				background-color: $Flint;
 				color: $tab-text-color;
 
+				a {
+					color: $tab-text-color;
+				}
+
+				&:hover,
 				&.selected {
-					color: $tab-text-active-color
+					color: $tab-text-active-color;
+
+					a { 
+						color: $tab-text-active-color;
+					}
 				}
 			}
 
@@ -95,7 +121,7 @@ $tab-text-active-color: #fff;
 
 		#update-distribution-form,
 		#payout-form {
-			color: $Obsidian;			
+			color: $Obsidian;
 		}
 
 		#GroupTitle {
@@ -163,6 +189,33 @@ $tab-text-active-color: #fff;
 					}
 				}
 			}
+
+			div#catalog div#dropdown {
+				ul li a {
+					color: $tab-text-color;
+
+					&.selectedAssetTypeFilter,
+					&:hover {
+						background: $Flint;
+						color: $tab-text-active-color;
+					}
+				}
+
+				ul#dropdownUl {
+					background: $Flint;
+				}
+			}
+
+			#catalog .loading {
+				background-color: $Slate;
+			}
+		}
+
+		form#upload-form[action^="/build/"] {
+			.status-error,
+			.status-confirm {
+				color: $Obsidian;
+			}
 		}
 
 		/* Game Configuration */
@@ -178,6 +231,24 @@ $tab-text-active-color: #fff;
 			#Summary_tab .TicketsColumn,
 			.StandardPanelContainer .StandardPanelWhite {
 				background: transparent;
+			}
+
+			.loading {
+				background: $Slate url(https://static.rbxcdn.com/images/ProgressIndicator4.gif) no-repeat center !important;
+			}
+		}
+
+		/* VIP Server Configuration */
+		#configure-form {
+			#whitelist.disabled {
+				background: $Flint;
+			}
+		}
+
+		/* Builders Club */
+		#BCPageContainer {
+			.product-summary .product-description {
+				color: $text-label-color;
 			}
 		}
 	}

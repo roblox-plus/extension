@@ -24,6 +24,15 @@
 				"/content/preload/loadStylesheets.js",
 
 				"/lib/jquery/jquery.js",
+				"/content/preload/styleAfterJquery.js"
+			],
+			"matches": [ "*://*.roblox.com/*" ],
+			"all_frames": true,
+			"run_at": "document_start"
+		},
+
+		{
+			"js": [
 				"/lib/twemoji.min.js",
 				"/lib/global.js",
 				"/lib/jquery/jquery.trigger.js",

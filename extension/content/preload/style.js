@@ -24,8 +24,8 @@ RPlus.style = RPlus.style || (function () {
 
 	function syncNavigationTheme() {
 		if (window.$) {
-			if ($("#BodyWrapper").length > 0) {
-				var hasDarkTheme = $("#header").hasClass("dark-theme");
+			if ($("#BodyWrapper,form[action^='/build/']").length > 0) {
+				var hasDarkTheme = window.parent && window.parent !== window ? window.parent.document.body.classList.contains("dark-theme") : $("#header").hasClass("dark-theme");
 				document.body.classList.toggle("dark-theme", hasDarkTheme);
 				document.body.classList.toggle("rplus-dark-theme", hasDarkTheme);
 			}
@@ -38,7 +38,7 @@ RPlus.style = RPlus.style || (function () {
 	}
 
 	function syncPremiumClass() {
-		if (Roblox.users.authenticatedUserId) {
+		if (window.Roblox && window.Roblox.users && Roblox.users.authenticatedUserId) {
 			RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(function (premiumSubscriber) {
 				togglePremiumClass(premiumSubscriber);
 
@@ -48,11 +48,14 @@ RPlus.style = RPlus.style || (function () {
 					localStorage.removeItem("isRPlusPremium");
 				}
 			}).catch(console.error);
+		} else {
+			syncNavigationTheme();
 		}
 	}
 
 	function init() {
 		togglePremiumClass(localStorage.getItem("isRPlusPremium"));
+		syncPremiumClass();
 	}
 
 	return {

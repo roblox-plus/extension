@@ -1,0 +1,1 @@
+$(RPlus.style.syncPremiumClass);
