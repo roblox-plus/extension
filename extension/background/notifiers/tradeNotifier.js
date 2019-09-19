@@ -2,6 +2,7 @@
 RPlus.notifiers.trade = (function () {
 	var headers = {
 		"Pending approval from you": "inbound", // This is here because the way I check if it should have a notification uses a different field than the one it displays with
+		"Pending approval from ": "outbound",
 		"Inbound": "inbound",
 		"Completed": "completed",
 		"Declined": "declined",
@@ -9,7 +10,8 @@ RPlus.notifiers.trade = (function () {
 		"Outbound": "outbound"
 	};
 	var outboundTrades = {};
-	
+	var previousOn = {};
+
 	ipc.on("RPlus.notifiers.trade:outboundTrades", function (data, callBack) {
 		var uaidList = [];
 		for (var n in outboundTrades) {
@@ -28,7 +30,13 @@ RPlus.notifiers.trade = (function () {
 	}, function (user, cache, rerun) {
 		return new Promise(function (resolve, reject) {
 			var tradeCheckerEnabled = storage.get("tradeChecker");
+			var tradeNotifierEnabled = storage.get("tradeNotifier");
 			var outbound = {};
+
+			rerun = previousOn.tradeNotifierEnabled && tradeNotifierEnabled;
+
+			previousOn.tradeChecker = tradeCheckerEnabled;
+			previousOn.tradeNotifierEnabled = tradeNotifierEnabled;
 
 			var mcb = 1;
 			var dcb = 0;
@@ -56,7 +64,11 @@ RPlus.notifiers.trade = (function () {
 										trade.authenticatedUserOffer.userAssets.concat(trade.tradePartnerOffer.userAssets).forEach(function (userAsset) {
 											outbound[trade.id].push(userAsset.userAssetId);
 										});
+
+										fcb();
+										return;
 									}
+
 									if (!rerun || !tradeMoved || !headers.hasOwnProperty(trade.status)) {
 										console.log(trade.status);
 										fcb();

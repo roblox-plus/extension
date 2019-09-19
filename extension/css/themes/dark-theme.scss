@@ -102,6 +102,11 @@ $tab-text-active-color: #fff;
 			.accord-header {
 				background: $Flint;
 			}
+
+			.status-error,
+			.status-confirm {
+				color: $Obsidian;
+			}
 		}
 
 		/* Group pages */
@@ -208,13 +213,6 @@ $tab-text-active-color: #fff;
 
 			#catalog .loading {
 				background-color: $Slate;
-			}
-		}
-
-		form#upload-form[action^="/build/"] {
-			.status-error,
-			.status-confirm {
-				color: $Obsidian;
 			}
 		}
 
