@@ -15,7 +15,7 @@ RPlus.notifiers.groupShout = (function () {
 				var cacheTimestamp = cache.timestamp || 0;
 
 				$._(r).find(".feeds>.list-item").each(function () {
-					var group = $(this).find(".list-content>a[href*='gid=']");
+					var group = $(this).find(".list-content>a[href*='/groups/']");
 					if (group.length) {
 						var shout = $(this).find(".feedtext.linkify").text();
 						shout = shout.substring(1, shout.length - 1);
@@ -30,7 +30,7 @@ RPlus.notifiers.groupShout = (function () {
 						groups[groupId] = true;
 
 						if (!rerun
-							|| (storage.get("groupShoutNotifier_mode") === "whitelist" && !whitelist.hasOwnProperty(id))) {
+							|| (storage.get("groupShoutNotifier_mode") === "whitelist" && !whitelist.hasOwnProperty(groupId))) {
 							return;
 						}
 
