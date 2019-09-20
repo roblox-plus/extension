@@ -144,7 +144,7 @@ RPlus.Pages.Item = function () {
 					previousPageCursor = data.previousPageCursor || "";
 					data.data.forEach(function (record) {
 						var date = new Date(record.updated);
-						var username = record.owner ? record.owner.username : "[ Deleted ]";
+						var username = record.owner ? record.owner.username : "[ Owner has their inventory hidden ]";
 						var profileUrl = record.owner ? "/users/" + record.owner.userId + "/profile" : "javascript:/* User does not exist */";
 						serialTracker.tab.content.append($("<li class=\"list-item\" data-userasset-id=\"" + record.userAssetId + "\">").append(
 							$("<a class=\"avatar avatar-headshot-md list-header\">").attr("href", profileUrl).append($("<img class=\"avatar-card-image\">").attr({ "src": "https://www.roblox.com/headshot-thumbnail/image?userId=" + (record.owner ? record.owner.userId : "0") + "&width=60&height=60&format=png", "alt": username })),
