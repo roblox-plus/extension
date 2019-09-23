@@ -1,5 +1,8 @@
 ﻿var RPlus = RPlus || {};
 RPlus.style = RPlus.style || (function () {
+	var premiumSubscriberClass = "rplus-premium-subscriber";
+	var darkThemeClass = "dark-theme";
+
 	function loadStylesheet(stylesheetLocation) {
 		fetch(stylesheetLocation).then(function (response) {
 			response.text().then(function (originalCss) {
@@ -24,16 +27,20 @@ RPlus.style = RPlus.style || (function () {
 
 	function syncNavigationTheme() {
 		if (window.$) {
+			if (!document.documentElement.classList.contains(premiumSubscriberClass)) {
+				return;
+			}
+
 			if ($("#BodyWrapper,form[action^='/build/']").length > 0) {
-				var hasDarkTheme = window.parent && window.parent !== window ? window.parent.document.body.classList.contains("dark-theme") : $("#header").hasClass("dark-theme");
-				document.body.classList.toggle("dark-theme", hasDarkTheme);
+				var hasDarkTheme = window.parent && window.parent !== window ? window.parent.document.body.classList.contains(darkThemeClass) : $("#header").hasClass(darkThemeClass);
+				document.body.classList.toggle(darkThemeClass, hasDarkTheme);
 				document.body.classList.toggle("rplus-dark-theme", hasDarkTheme);
 			}
 		}
 	}
 
 	function togglePremiumClass(isPremium) {
-		document.documentElement.classList.toggle("rplus-premium-subscriber", !!isPremium);
+		document.documentElement.classList.toggle(premiumSubscriberClass, !!isPremium);
 		syncNavigationTheme();
 	}
 
