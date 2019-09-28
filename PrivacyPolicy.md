@@ -46,16 +46,16 @@ There are other requests being intercepted (like knowing when you visit Roblox f
 ## Permissions
 The extension [manifest](https://github.com/Roblox-Plus/Chrome/blob/master/extension/manifest.json) has the following permissions listed
 * `gcm` (Google cloud messaging)
-.* Used to send notifications for the catalog notifier.
+	* Used to send notifications for the catalog notifier.
 * `contextMenus`
-** Used to add context menu items when right clicking on Roblox users. Mainly, to be able to open a trade window without going to their profile.
+	* Used to add context menu items when right clicking on Roblox users. Mainly, to be able to open a trade window without going to their profile.
 * `webRequest` (and `webRequestBlocking`)
--* See [Web Request Interception](#web-request-interception)
+	* See [Web Request Interception](#web-request-interception)
 * `tts` (text to speach)
-⋅* Used in some notifications that do not have specific sounds associated with them. 
+	* Used in some notifications that do not have specific sounds associated with them. 
 * `notifications`
-** Used to be able to display all notifications.
+	* Used to be able to display all notifications.
 * `*://*.roblox.com/*`
 * `*://*.rbxcdn.com/*`
 * `*://*.roblox.plus/*`
-** See [Website Access](#website-access)
+	* See [Website Access](#website-access)
