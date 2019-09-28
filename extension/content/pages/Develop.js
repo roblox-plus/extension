@@ -25,17 +25,7 @@ RPlus.Pages.Develop = function () {
 					}
 					Roblox.catalog.getAssetInfo(assetId).then(function (asset) {
 						var onsale = asset.isFree || asset.robuxPrice;
-						row.find(".details-table tbody").append(Roblox.users.authenticatedUserId === 2533795 || Roblox.users.authenticatedUserId === 77907390 ? $("<tr>").append($("<button style=\"font-size: 11px;\">Clear Description</button>").click(function () {
-							var button = $(this).text("...");
-							Roblox.catalog.configureAsset(asset.id, {
-								description: ""
-							}).then(function () {
-								button.text("Cleared Description");
-							}).catch(function (e) {
-								console.error(e);
-								button.text("Failed to clear");
-							});
-						})) : "").find(">tr:first-child").prepend($("<td class=\"activate-cell\">").append($("<a class=\"place-" + (onsale ? "" : "in") + "active\" href=\"javascript:/* Change Status */\">").text((onsale ? "On" : "Off") + "sale").click(function () {
+						row.find(".details-table tbody>tr:first-child").prepend($("<td class=\"activate-cell\">").append($("<a class=\"place-" + (onsale ? "" : "in") + "active\" href=\"javascript:/* Change Status */\">").text((onsale ? "On" : "Off") + "sale").click(function () {
 							var button = $(this);
 							var x = (onsale = !onsale);
 							Roblox.catalog.configureAsset(asset.id, (v === 2 || v === 11 || v === 12) ? { robux: x ? 1 : 0 } : { free: x }).then(function () {
