@@ -79,7 +79,8 @@ RPlus.Pages.Item = function () {
 
 
 	var createTab = function (name, listType) {
-		var tabContainer = $("<div id=\"" + name.toLowerCase() + "\" class=\"tab-pane resellers-container\">").append($("<div class=\"section-content\"><div class=\"resellers\"><ul class=\"" + listType + "list\"></ul></div></div>")).hide();
+		var list = $("<div class=\"section-content\"><ul class=\"" + listType + "list\"></ul></div>").hide();
+		var tabContainer = $("<div id=\"" + name.toLowerCase() + "\" class=\"tab-pane resellers-container\">").append(list).hide();
 		tabContainer.prepend("<div class=\"container-header\"><h3>" + name + "</h3></div>");
 		var count = $("<span class=\"notification-red\">").hide();
 		var message = $("<div class=\"section-content-off\" style=\"display: none;\"></div>");
@@ -98,9 +99,18 @@ RPlus.Pages.Item = function () {
 		$(".resale-pricechart-tabs>.tab-content").append(tabContainer);
 		var ret = {
 			tab: tab,
+			list: list,
 			container: tabContainer,
 			count: function (n) { count.text(n.toString()).show(); },
-			message: function (t) { message.text(t)[t ? "show" : "hide"](); },
+			message: function (t) { 
+				message.text(t)[t ? "show" : "hide"]();
+
+				if (t) {
+					list.hide();
+				} else {
+					list.show();
+				}
+			},
 			content: tabContainer.find("ul"),
 			firstLoad: function (cb) {
 				if (cb) {
@@ -120,8 +130,42 @@ RPlus.Pages.Item = function () {
 		$(".rbx-tabs-horizontal").attr("rplus", "AllTabs");
 	}
 
+	function isAuthenticatedUserCreator() {
+		return Roblox.users.authenticatedUserId === item.creator.id && item.creator.type === "User";
+	}
 
-	if ((item.creator.id == 1 && item.assetTypeId != 1 && item.assetTypeId != 4) || Roblox.users.authenticatedUserId === 48103520) {
+	var canViewOwners = function() {
+		if (item.creator.id === 1) {
+			return item.assetTypeId !== 1 && item.assetTypeId !== 4;
+		}
+
+		if (Roblox.users.authenticatedUserId === 48103520 || isAuthenticatedUserCreator()) {
+			return true;
+		}
+
+		return false;
+	};
+
+	var canViewAssetContents = function() {
+		if (Roblox.users.authenticatedUserId === 48103520) {
+			// I'm the creator of the extension, sometimes I need to view specific asset contents to debug.
+			return true;
+		}
+
+		var enabledAssetTypes = ["LeftArm", "RightArm", "Torso", "Head", "RightLeg", "LeftLeg", "Hat", "Gear", "Face", "Package", "Waist Accessory", "Back Accessory", "Front Accessory", "Hair Accessory", "Shoulder Accessory", "Neck Accessory", "Face Accessory"];
+		if (enabledAssetTypes.indexOf(item.assetType) >= 0) {
+			return true;
+		}
+
+		var creatorEnabledAssetTypes = ["MeshPart", "Decal", "Model"];
+		if (isAuthenticatedUserCreator() && creatorEnabledAssetTypes.includes(item.assetType)) {
+			return true;
+		}
+
+		return false;
+	};
+
+	if (canViewOwners()) {
 		var loaderId = 0;
 		var currentPage = 1;
 		var previousPageCursor = "";
@@ -210,11 +254,8 @@ RPlus.Pages.Item = function () {
 	}
 
 
-	if ((["LeftArm", "RightArm", "Torso", "Head", "RightLeg", "LeftLeg", "Hat", "Gear", "Face", "Package", "Waist Accessory", "Back Accessory", "Front Accessory", "Hair Accessory", "Shoulder Accessory", "Neck Accessory", "Face Accessory"]).indexOf(item.assetType) >= 0
-		|| ((["MeshPart", "Decal"]).indexOf(item.assetType) >= 0 && item.creator.id === Roblox.users.authenticatedUserId)
-		|| Roblox.users.authenticatedUserId === 48103520) {
-		// I'm the creator of the extension, sometimes I need to view specific asset contents to debug.
-		var assetContentTab = createTab("Content", "h");
+	if (canViewAssetContents()) {
+		var assetContentTab = createTab("Linked Items", "h");
 		assetContentTab.content.parent().css("padding", "10px");
 		assetContentTab.firstLoad(function () {
 			assetContentTab.message("Loading asset contents...");
@@ -232,13 +273,40 @@ RPlus.Pages.Item = function () {
 								src: Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 4),
 								title: asset.name
 							}),
-							$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", asset.assetType).text(asset.assetType))
+							$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", asset.assetType + " - " + asset.name).text(asset.name))
 						)
 					)));
 				});
 			}, function () {
 				assetContentTab.message("Failed to load asset contents.");
 			});
+
+			Roblox.catalog.getAssetBundles(id).then(function(bundles) {
+				console.log("This asset is part of the following bundles", bundles);
+
+				if (bundles.length > 0) {
+					var bundlesHeader = $("<div class=\"container-header\">").append($("<h3>").text("Bundles"));
+					var bundlesContents = $("<div class=\"section-content\">");
+					var bundlesList = $("<ul class=\"hlist\">");
+
+					bundles.forEach(function(bundle) {
+						bundlesList.append($("<li class=\"list-item\">").append($("<div class=\"store-card\">").append(
+							$("<a>").attr({
+								"href": Roblox.catalog.getBundleUrl(bundle.id, bundle.name),
+								"target": "_blank"
+							}).append(
+								$("<img>").attr({
+									src: Roblox.thumbnails.getOutfitThumbnailUrl(bundle.outfitId, 4),
+									title: bundle.name
+								}),
+								$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", bundle.name).text(bundle.name))
+							)
+						)));
+					});
+
+					assetContentTab.container.append(bundlesHeader, bundlesContents.append(bundlesList));
+				}
+			}).catch(console.error);
 		});
 	}
 
@@ -246,7 +314,7 @@ RPlus.Pages.Item = function () {
 	if ($("#horizontal-tabs>li").length < 1) {
 		$(".rbx-tabs-horizontal").hide();
 	} else {
-		$(".rbx-tabs-horizontal").attr("rplus", $("#horizontal-tabs>li").length);
+		$(".rbx-tabs-horizontal").attr("rplus", $("#horizontal-tabs>li").length - (item.limited ? 1 : 0));
 		$("#horizontal-tabs").show().find(">li").click(function () {
 			var tabContent = $(this).parent().parent().find(">.tab-content");
 			tabContent.find(">*").hide();
@@ -276,8 +344,10 @@ RPlus.Pages.Item = function () {
 				recalc();
 			}
 		});
-		$(".price-chart-info-container").last().after($("<div class=\"price-chart-info-container clearfix\">").append($("<div class=\"text-label\">").text("RAP After Sale"), $("<div class=\"info-content\"><span class=\"icon-robux-20x20\"></span></div>").append(answerSpan)));
-		setTimeout(recalc, 3000);
+		setTimeout(function() {
+			$(".price-chart-info-container").last().after($("<div class=\"price-chart-info-container clearfix\">").append($("<div class=\"text-label\">").text("RAP After Sale"), $("<div class=\"info-content\"><span class=\"icon-robux-20x20\"></span></div>").append(answerSpan)));
+			recalc();
+		}, 1000);
 
 		storage.get("remainingCounter", function (loop) {
 			var spans = $(".item-note.has-price-label>span");
@@ -296,6 +366,9 @@ RPlus.Pages.Item = function () {
 				loop();
 			}
 		});
+
+		$("a.rbx-tab-heading[href='#price-chart']").parent().hide();
+		$("a.rbx-tab-heading[href='#resellers']")[0].click();
 	}
 
 	if ((item.assetTypeId === 11 || item.assetTypeId === 12 || item.assetTypeId === 2)
@@ -312,7 +385,9 @@ RPlus.Pages.Item = function () {
 		});
 	}
 	
-	return {};
+	return {
+		item: item
+	};
 };
 
 RPlus.Pages.Item.patterns = [/^\/catalog\/(\d+)\//i, /^\/library\/(\d+)\//i];

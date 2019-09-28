@@ -74,6 +74,15 @@ Roblox.catalog = (function () {
 			return "https://www.roblox.com/catalog/" + assetId + "/" + assetName;
 		},
 
+		getBundleUrl: function(bundleId, bundleName) {
+			if (typeof (bundleName) != "string" || !bundleName) {
+				bundleName = "redirect";
+			} else {
+				bundleName = bundleName.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "") || "redirect";
+			}
+			return "https://www.roblox.com/bundles/" + bundleId + "/" + bundleName;
+		},
+
 		calculateAveragePriceAfterSale: function (currentAveragePrice, priceToSellFor) {
 			if (typeof (currentAveragePrice) != "number" || typeof (priceToSellFor) != "number" || priceToSellFor <= 0) {
 				return 0;
@@ -86,6 +95,31 @@ Roblox.catalog = (function () {
 			}
 			return (currentAveragePrice > priceToSellFor ? Math.floor : Math.ceil)((currentAveragePrice * .9) + (priceToSellFor * .1));
 		},
+
+		getAssetBundles: $.promise.cache(function (resolve, reject, assetId) {
+			$.get("https://catalog.roblox.com/v1/assets/" + assetId + "/bundles").done(function(r) {
+				resolve(r.data.map(function(bundle) {
+					var outfitId = NaN;
+					bundle.items.forEach(function(item) {
+						if (item.type === "UserOutfit") {
+							outfitId = item.id;
+						}
+					});
+					
+					return {
+						id: bundle.id,
+						name: bundle.name,
+						outfitId: outfitId
+					};
+				}));
+			}).fail(function(jxhr, errors) {
+				reject(errors);
+			});
+		}, {
+			queued: true,
+			resolveExpiry: 5 * 60 * 1000,
+			rejectExpiry: 5 * 1000
+		}),
 
 		getAssetInfo: $.promise.cache(function (resolve, reject, assetId) {
 			if (typeof (assetId) != "number" || assetId <= 0) {

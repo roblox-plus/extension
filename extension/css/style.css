@@ -438,6 +438,10 @@ input.rplusslider[type='range']::-webkit-slider-thumb{
 	margin-right: 5px;
 }
 
+.resellers-container .store-card {
+	overflow: hidden;
+}
+
 
 /* Messages */
 .roblox-messages-container.rplus>ui-view.tab-content-container{
