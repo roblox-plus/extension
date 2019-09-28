@@ -23,7 +23,7 @@
 				"/content/preload/style.js",
 				"/content/preload/loadStylesheets.js",
 
-				"/lib/jquery/jquery.js",
+				"/js/vendors/jquery-3.4.1.min.js",
 				"/content/preload/styleAfterJquery.js"
 			],
 			"matches": [ "*://*.roblox.com/*" ],
