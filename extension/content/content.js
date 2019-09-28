@@ -123,7 +123,7 @@ fixCB(({
 					mainLoop.comma(x, function (t) { el.text(x > 0 ? t : ""); });
 				}
 			});
-			$(".rbx-nav-collapse .notification-red").attr("title", addComma(total)).text(total > 0 ? (total < 100 ? total : (total < 1000 ? "99+" : Math.floor(Math.min(9999, total) / 1000) + "k+")) : "");
+			$(".rbx-nav-collapse .notification-red").attr("title", addComma(total)).text(total > 0 ? (total < 100 ? total : (total < 1000 ? "99+" : Math.floor(Math.min(9999, total) / 1000) + "K+")) : "");
 
 			/* Load once */
 			if ($("#navigation").length && !$("#navigation .rplus-icon").length) {
@@ -176,7 +176,7 @@ fixCB(({
 							var orig = ($("#nav-robux-balance").first().html() || "").split("<br>");
 							mainLoop.comma(currency.robux, function (t) {
 								$("#nav-robux-amount").text(t);
-								$("#nav-robux-balance").html(addComma(currency.robux) + " ROBUX" + (orig.length > 1 ? "<br>$" + (currency.robux * .0025).toFixed(2) : ""));
+								$("#nav-robux-balance").html(addComma(currency.robux) + " Robux" + (orig.length > 1 ? "<br>$" + (currency.robux * .0025).toFixed(2) : ""));
 							});
 							upgradeTheDummy();
 						}, upgradeTheDummy);
@@ -190,7 +190,7 @@ fixCB(({
 			if (!isCB(cb)) { return "0"; }
 			storage.get("navigation", function (x) {
 				x = Math.max(1000, Number(x && x.counterCommas) || 100000000);
-				cb(n < x ? addComma(n) : Math.floor(n / (n < 1000000 ? 1000 : 1000000)) + (n >= 1000000 ? "m+" : "k+"));
+				cb(n < x ? addComma(n) : Math.floor(n / (n < 1000000 ? 1000 : 1000000)) + (n >= 1000000 ? "M+" : "K+"));
 			});
 		};
 		mainLoop();
