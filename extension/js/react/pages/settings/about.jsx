@@ -29,7 +29,6 @@ class About extends React.Component {
 				this.getFeatureRow("Unfollow all users button on Friends page", "A button is added to your friends page to unfollow all users you are not friends with.", true),
 				this.getFeatureRow("Follow all friends button on Friends page", "A button is added to your friends page to follow all users you are friends with.", true),
 				this.getFeatureRow("Profile sale statistics", "Buttons are added to the profile page to calculate sales of clothing with user stats.", true),
-				this.getFeatureRow("JSON pretty printing", "This feature is really on its way out soon. You may never read this text because I'm planning to delete this feature. On a JSON API response when viewing it in a browser tab if you press enter it will format the JSON. It really only ended up here to make my debugging easier but it's been separated out of this extension.", true),
 				this.getFeatureRow("Badge counter", "On the profile page you can calculate how many game badges a user has earned overall.", true),
 			]
 		};

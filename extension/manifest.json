@@ -115,14 +115,6 @@
 
 		{
 			"js": [
-				"content/json.js"
-			],
-			"matches": [ "*://*.roblox.com/*" ],
-			"run_at": "document_end"
-		},
-
-		{
-			"js": [
 				"/js/output/react/components/vertical-tabs.js",
 				"/js/output/react/components/pill-toggle.js"
 			],
