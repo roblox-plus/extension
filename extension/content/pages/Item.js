@@ -154,13 +154,21 @@ RPlus.Pages.Item = function () {
 		return false;
 	};
 
-	var canViewSales = function() {
-		if (item.creator.id === 1) {
+	var canViewSales = function(callBack) {
+		if (item.assetTypeId === 1 || item.assetTypeId === 4) {
 			// TODO: Make more accurate of asset types that can be sold.
-			return item.assetTypeId !== 1 && item.assetTypeId !== 4;
+			callBack(false);
+			return;
 		}
 
-		return Roblox.users.authenticatedUserId === 48103520 || canAuthenticatedUserEdit();
+		if (item.creator.id === 1 || canAuthenticatedUserEdit()) {
+			callBack(true);
+			return;
+		}
+
+		RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(callBack).catch(function(e) {
+			callBack(false);
+		});
 	};
 
 	var canViewAssetContents = function() {
@@ -403,17 +411,23 @@ RPlus.Pages.Item = function () {
 	}
 
 	storage.get("itemSalesCounter", function(itemSalesCounterEnabled) {
-		if (!canViewSales() || !itemSalesCounterEnabled) {
+		if (!itemSalesCounterEnabled) {
 			return;
 		}
 
-		Roblox.catalog.getAssetSalesCount(item.id).then(function(sales) {
-			var container = $("<div class=\"item-field-container\">");
-			var label = $("<div class=\"text-label field-label text-overflow\">").text("Sales");
-			var count = $("<span>").text(global.addCommas(sales));
-
-			$(".item-type-field-container").after(container.append(label, count));
-		}).catch(console.error);
+		canViewSales(function(canView) {
+			if (!canView) {
+				return;
+			}
+	
+			Roblox.catalog.getAssetSalesCount(item.id).then(function(sales) {
+				var container = $("<div class=\"item-field-container\">");
+				var label = $("<div class=\"text-label field-label text-overflow\">").text("Sales");
+				var count = $("<span>").text(global.addCommas(sales));
+	
+				$(".item-type-field-container").after(container.append(label, count));
+			}).catch(console.error);
+		});
 	});
 	
 	return {
