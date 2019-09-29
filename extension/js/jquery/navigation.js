@@ -137,8 +137,9 @@ RPlus.navigation = RPlus.navigation || (function () {
 	};
 
 	let setSideNavigationOpen = function (open) {
-		if (isSideOpen() !== open) {
-			$(".rbx-nav-collapse")[0].click();
+		var button = $(".rbx-nav-collapse")[0];
+		if (isSideOpen() !== open && button) {
+			button.click();
 		}
 	};
 
