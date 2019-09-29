@@ -96,7 +96,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 	};
 
 	let setBubbleCount = function (bubble, count) {
-		if (getBubbleCount(bubble) === count) {
+		if (getBubbleCount(bubble) === count && bubble.attr("count")) {
 			return;
 		}
 
@@ -170,11 +170,79 @@ RPlus.navigation = RPlus.navigation || (function () {
 
 	$(function(){
 		// Sync counters with settings
-		RPlus.navigation.setRobux(RPlus.navigation.getRobux());
-		RPlus.navigation.setTradeCount(RPlus.navigation.getTradeCount());
-		RPlus.navigation.setMessagesCount(RPlus.navigation.getMessagesCount());
-		RPlus.navigation.setFriendRequestCount(RPlus.navigation.getFriendRequestCount());
-		
+		let updateLoop = function() {
+			getNavigationSettings(function(navigationSettings) {
+				let loops = 0;
+				let maxLoops = 1;
+				let tryLoop = function() {
+					if (++loops === maxLoops) {
+						setTimeout(updateLoop, 250);
+					}
+				};
+
+				// Navigation buttons
+				for (var CN = 0; CN < Math.min(2, navigationSettings.buttons.length) ; CN++) {
+					let button = navigationSettings.buttons[CN];
+					if (type(button) === "object") {
+						RPlus.navigation.setButtonTextAndLink(CN + 2, button.text, button.href);
+					}
+				}
+
+				// Navigation counters
+				if (navigationSettings.liveNavigationCounters) {
+					Roblox.users.getAuthenticatedUser().then(function (user) {
+						if (!user) {
+							tryLoop();
+							return;
+						}
+
+						maxLoops++;
+						Roblox.trades.getTradeCount("Inbound").then(function (count) {
+							RPlus.navigation.setTradeCount(count);
+							tryLoop();
+						}).catch(tryLoop);
+
+						maxLoops++;
+						Roblox.navigation.getNavigationCounters().then(function (counters) {
+							RPlus.navigation.setMessagesCount(counters.unreadMessageCount);
+							RPlus.navigation.setFriendRequestCount(counters.friendRequestCount);
+							tryLoop();
+						}).catch(tryLoop);
+
+						Roblox.economy.getCurrencyBalance().then(function (currency) {
+							RPlus.navigation.setRobux(currency.robux);
+							tryLoop();
+						}).catch(tryLoop);
+					}).catch(tryLoop);
+				} else {
+					// If Roblox updates the counters, re-update them to set the suffix according to R+ settings.
+					// Check for zeros to see if Roblox has loaded any counters at all.
+					// Race condition valid if we update the counters while Roblox is still loading them.
+					let robux = RPlus.navigation.getRobux();
+					if (robux > 0) {
+						RPlus.navigation.setRobux(robux);
+					}
+
+					let tradeCount = RPlus.navigation.getTradeCount();
+					if (tradeCount > 0) {
+						RPlus.navigation.setTradeCount(tradeCount);
+					}
+
+					let messageCount = RPlus.navigation.getMessagesCount();
+					if (messageCount > 0) {
+						RPlus.navigation.setMessagesCount(messageCount);
+					}
+
+					let friendRequestCount = RPlus.navigation.getFriendRequestCount();
+					if (friendRequestCount > 0) {
+						RPlus.navigation.setFriendRequestCount(friendRequestCount);
+					}
+					
+					tryLoop();
+				}
+			});
+		};
+
 		RPlus.navigation.getNavigationSettings(function(navigationSettings) {
 			if (navigationSettings.sideOpen) {
 				RPlus.navigation.setSideNavigationOpen(true);
@@ -189,6 +257,8 @@ RPlus.navigation = RPlus.navigation || (function () {
 		// Allow messages button in navigation bar to refresh the page while on the messages page
 		// TODO: Investigate what's overriding this (it doesn't work)
 		$("#nav-message").attr("href", "/my/messages");
+
+		updateLoop();
 	});
 
 	return {

@@ -4,7 +4,7 @@
 	My messages will always be open for all, if you can't PM me check your settings.
 */
 fixCB(({
-	"text/html": function (subdomain, upath, list, mainLoop) {
+	"text/html": function (subdomain, upath, list) {
 		if (document.querySelector("#navigation .rplus-icon") || (["help", "corp", "developer", "wiki", "devforum", "blog", "api", "m", "bloxcon", "setup", "content", "polls"]).indexOf(subdomain = subdomain[subdomain.length - 3]) >= 0) { return; }
 		
 		function plusSlider(input) {
@@ -86,57 +86,6 @@ fixCB(({
 			});
 			return button;
 		};
-		
-		mainLoop = function () {
-			RPlus.navigation.getNavigationSettings(function(navigationSettings) {
-				for (var CN = 0; CN < Math.min(2, navigationSettings.buttons.length) ; CN++) {
-					let button = navigationSettings.buttons[CN];
-					if (type(button) === "object") {
-						RPlus.navigation.setButtonTextAndLink(CN + 2, button.text, button.href);
-					}
-				}
-				
-				// they're not really dummies, but ya know I need something to know when to set the timeout for mainLoop
-				var dummyCounter = 0;
-				var dummyGoal = 1;
-				function upgradeTheDummy() {
-					if (++dummyCounter == dummyGoal) {
-						setTimeout(mainLoop, 500);
-					}
-				}
-
-				if (navigationSettings.liveNavigationCounters) {
-					Roblox.users.getAuthenticatedUser().then(function (user) {
-						if (!user) {
-							setTimeout(mainLoop, 500);
-							return;
-						}
-
-						dummyGoal++;
-						Roblox.trades.getTradeCount("Inbound").then(function (count) {
-							RPlus.navigation.setTradeCount(count);
-							upgradeTheDummy();
-						}, upgradeTheDummy);
-
-						dummyGoal++;
-						Roblox.navigation.getNavigationCounters().then(function (counters) {
-							RPlus.navigation.setMessagesCount(counters.unreadMessageCount);
-							RPlus.navigation.setFriendRequestCount(counters.friendRequestCount);
-							upgradeTheDummy();
-						}, upgradeTheDummy);
-
-						Roblox.economy.getCurrencyBalance().then(function (currency) {
-							RPlus.navigation.setRobux(currency.robux);
-							upgradeTheDummy();
-						}, upgradeTheDummy);
-					}, upgradeTheDummy);
-				} else {
-					upgradeTheDummy();
-				}
-			});
-		};
-		
-		mainLoop();
 
 		storage.get("twemoji", function (enabled) {
 			if (!enabled) {
