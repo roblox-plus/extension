@@ -111,7 +111,7 @@ class NavigationSettings extends SettingsTab {
 						<span class="text-lead">Counter rounding.</span>
 						<div class="select-group rbx-select-group">
 							<select class="input-field select-option rbx-select"
-								defaultValue={this.state.counterRoundAt}
+								value={this.state.counterRoundAt}
 								onChange={this.updateCounterRoundAt.bind(this)}>
 								<option value="1000">1,000</option>
 								<option value="10000">10,000</option>

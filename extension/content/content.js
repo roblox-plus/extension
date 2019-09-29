@@ -115,7 +115,6 @@ fixCB(({
 					mainLoop.comma(x, function (t) { el.text(x > 0 ? t : ""); });
 				}
 			});
-			$(".rbx-nav-collapse .notification-red").attr("title", addComma(total)).text(total > 0 ? (total < 100 ? total : (total < 1000 ? "99+" : Math.floor(Math.min(9999, total) / 1000) + "K+")) : "");
 
 			/* Load once */
 			if ($("#navigation").length && !$("#navigation .rplus-icon").length) {
@@ -123,6 +122,7 @@ fixCB(({
 				$(".notification-blue:empty,.notification-red:empty").removeClass("hide");
 				$("#nav-message").attr("href", "/my/messages");
 				RPlus.navigation.setRobux(RPlus.navigation.getRobux());
+				RPlus.navigation.setTradeCount(RPlus.navigation.getTradeCount());
 				
 				RPlus.navigation.getNavigationSettings(function(navigationSettings) {
 					if (navigationSettings.sideOpen) {
@@ -149,7 +149,7 @@ fixCB(({
 
 						dummyGoal++;
 						Roblox.trades.getTradeCount("Inbound").then(function (count) {
-							$("#nav-trade .notification-blue").attr("title", count);
+							RPlus.navigation.setTradeCount(count);
 							upgradeTheDummy();
 						}, upgradeTheDummy);
 
@@ -178,7 +178,6 @@ fixCB(({
 			});
 		};
 		mainLoop();
-		window.comma = mainLoop.comma;
 
 		storage.get("twemoji", function (enabled) {
 			if (!enabled) {

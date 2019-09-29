@@ -88,6 +88,21 @@ RPlus.navigation = RPlus.navigation || (function () {
 		return Number(robuxText);
 	};
 
+	let getTradeCount = function() {
+		var tradeNotificationBubble = $("#nav-trade .notification-blue");
+		var tradeCountText = tradeNotificationBubble.attr("title") || tradeNotificationBubble.text();
+		return Number(tradeCountText.replace(/\D+/g, "")) || 0;
+	};
+
+	let setTradeCount = function(tradeCount) {
+		abbreviateNumber(tradeCount, function(abbreviatedTradeCount) {
+			$("#nav-trade .notification-blue").attr({
+				title: global.addCommas(tradeCount),
+				tradeCount: tradeCount
+			}).text(abbreviatedTradeCount);
+		});
+	};
+
 	let isSideOpen = function() {
 		return $("#navigation").is(":visible") && $("#navigation").width() > 0;
 	};
@@ -126,6 +141,8 @@ RPlus.navigation = RPlus.navigation || (function () {
 	return {
 		getRobux: getRobux,
 		setRobux: setRobux,
+		getTradeCount: getTradeCount,
+		setTradeCount: setTradeCount,
 		isSideOpen: isSideOpen,
 		setSideNavigationOpen: setSideNavigationOpen,
 		setButtonTextAndLink: setButtonTextAndLink,
