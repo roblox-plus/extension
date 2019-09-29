@@ -318,6 +318,56 @@ class About extends React.Component {
 							<span>There is one exception to this... your user Id. When you use the Roblox Catalog Notifier your user Id is paired with your cloud messaging token from the extension to the Roblox+ servers to send you notifications based on whether or not you have Roblox+ Premium. See above section on website access for slightly more information on this. This is the only Roblox account information that is sent to a non-Roblox server.</span>
 						</p>
 						<div class="rbx-divider"></div>
+						<h4>Permissions</h4>
+						<p class="text-description">
+							<span>The extension manifest has the following permissions listed:</span>
+							<br />
+							<ul>
+								<li>
+									<span>gcm (Google cloud messaging)</span>
+									<ul>
+										<li>Used to send notifications for the catalog notifier.</li>
+									</ul>
+								</li>
+								<li>
+									<span>contextMenus</span>
+									<ul>
+										<li>Used to add context menu items when right clicking on Roblox users. Mainly, to be able to open a trade window without going to their profile.</li>
+									</ul>
+								</li>
+								<li>
+									<span>webRequest (and webRequestBlocking)</span>
+									<ul>
+										<li>See Web Request Interception</li>
+									</ul>
+								</li>
+								<li>
+									<span>tts (text to speach)</span>
+									<ul>
+										<li>Used in some notifications that do not have specific sounds associated with them.</li>
+									</ul>
+								</li>
+								<li>
+									<span>notifications</span>
+									<ul>
+										<li>Used to be able to display all notifications.</li>
+									</ul>
+								</li>
+								<li>
+									<span>*://*.roblox.com/*</span>
+								</li>
+								<li>
+									<span>*://*.rbxcdn.com/*</span>
+								</li>
+								<li>
+									<span>*://*.roblox.plus/*</span>
+									<ul>
+										<li>See Website Access</li>
+									</ul>
+								</li>
+							</ul>
+						</p>
+						<div class="rbx-divider"></div>
 						<h4>Web Request Interception</h4>
 						<p class="text-description">
 							<span>Some requests to roblox.com are intercepted!</span>
