@@ -69,6 +69,7 @@
 				"/lib/rplus/RobloxPlus.js",
 				"/lib/rplus/settings.js",
 				"/lib/rplus/copiedAssets.js",
+				"/js/rplus/sponsoredItems.js",
 				"/lib/rplus/premium.js"
 			],
 			"css": [
@@ -138,6 +139,19 @@
 			],
 			"matches": [
 				"*://*.roblox.com/my/account*"
+			],
+			"run_at": "document_end"
+		},
+		
+		{
+			"js": [
+				"/js/output/react/pages/catalog/featuredItems.js"
+			],
+			"css": [
+				"/css/output/pages/catalog.css"
+			],
+			"matches": [
+				"*://*.roblox.com/catalog/*"
 			],
 			"run_at": "document_end"
 		}

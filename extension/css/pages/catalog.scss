@@ -1,0 +1,9 @@
+.splash {
+	#rplus-featured-items {
+		margin-left: 6px;
+		
+		.item-card:nth-child(-n+5) {
+			display: inline-block;
+		}
+	}
+}
