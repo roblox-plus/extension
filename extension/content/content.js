@@ -106,32 +106,7 @@ fixCB(({
 						RPlus.navigation.setButtonTextAndLink(CN + 2, button.text, button.href);
 					}
 				}
-			});
-
-			var total = 0;
-			$("#navigation .notification-blue").each(function (x, el) {
-				if ($(this).attr("title")) {
-					total += (x = Number((el = $(this)).attr("title").replace(/,/g, "")) || 0);
-					mainLoop.comma(x, function (t) { el.text(x > 0 ? t : ""); });
-				}
-			});
-
-			/* Load once */
-			if ($("#navigation").length && !$("#navigation .rplus-icon").length) {
-				$("#navigation .rbx-upgrade-now").before("<li><a href=\"/my/account?tab=rplus\" class=\"text-nav\"><span class=\"rplus-icon\"></span><span>Control Panel</span></a></li>");
-				$(".notification-blue:empty,.notification-red:empty").removeClass("hide");
-				$("#nav-message").attr("href", "/my/messages");
-				RPlus.navigation.setRobux(RPlus.navigation.getRobux());
-				RPlus.navigation.setTradeCount(RPlus.navigation.getTradeCount());
 				
-				RPlus.navigation.getNavigationSettings(function(navigationSettings) {
-					if (navigationSettings.sideOpen) {
-						RPlus.navigation.setSideNavigationOpen(true);
-					}
-				});
-			}
-
-			storage.get("navcounter", function (x) {
 				// they're not really dummies, but ya know I need something to know when to set the timeout for mainLoop
 				var dummyCounter = 0;
 				var dummyGoal = 1;
@@ -140,7 +115,8 @@ fixCB(({
 						setTimeout(mainLoop, 500);
 					}
 				}
-				if (x) {
+
+				if (navigationSettings.liveNavigationCounters) {
 					Roblox.users.getAuthenticatedUser().then(function (user) {
 						if (!user) {
 							setTimeout(mainLoop, 500);
@@ -155,8 +131,8 @@ fixCB(({
 
 						dummyGoal++;
 						Roblox.navigation.getNavigationCounters().then(function (counters) {
-							$("#nav-message .notification-blue").attr("title", counters.unreadMessageCount);
-							$("#nav-friends .notification-blue").attr("title", counters.friendRequestCount);
+							RPlus.navigation.setMessagesCount(counters.unreadMessageCount);
+							RPlus.navigation.setFriendRequestCount(counters.friendRequestCount);
 							upgradeTheDummy();
 						}, upgradeTheDummy);
 
@@ -170,13 +146,7 @@ fixCB(({
 				}
 			});
 		};
-		mainLoop.comma = function (n, cb) {
-			if (!isCB(cb)) { return "0"; }
-			storage.get("navigation", function (x) {
-				x = Math.max(1000, Number(x && x.counterCommas) || 100000000);
-				cb(n < x ? addComma(n) : Math.floor(n / (n < 1000000 ? 1000 : 1000000)) + (n >= 1000000 ? "M+" : "K+"));
-			});
-		};
+		
 		mainLoop();
 
 		storage.get("twemoji", function (enabled) {

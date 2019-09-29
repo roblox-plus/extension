@@ -11,16 +11,18 @@ RPlus.navigation = RPlus.navigation || (function () {
 	suffixes[trillion] = "T";
 
 	let getNavigationSettings = function (callBack) {
-		storage.get("navigation", function (navigationSettings) {
-			if (navigationSettings && typeof (navigationSettings) === "object") {
-				callBack(navigationSettings);
-			} else {
-				callBack({});
+		storage.get(["navigation", "navcounter"], function (settings) {
+			if (!settings.navigation || typeof(settings.navigation) !== "object") {
+				settings.navigation = {};
 			}
+
+			settings.navigation.liveNavigationCounters = !!settings.navcounter;
+
+			callBack(settings.navigation);
 		});
 	};
 
-	let getDivider = function(number) {
+	let getDivider = function (number) {
 		if (number >= trillion) {
 			return trillion;
 		} else if (number >= billion) {
@@ -67,7 +69,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 			robux = 0;
 		}
 
-		abbreviateNumber(robux, function(abbreviatedRobux) {
+		abbreviateNumber(robux, function (abbreviatedRobux) {
 			$("#nav-robux-balance").attr({
 				title: global.addCommas(robux),
 				robux: robux
@@ -76,7 +78,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 		});
 	};
 
-	let getRobux = function() {
+	let getRobux = function () {
 		var balanceTag = $("#nav-robux-balance");
 		var robuxAttr = Number(balanceTag.attr("robux"));
 
@@ -88,32 +90,59 @@ RPlus.navigation = RPlus.navigation || (function () {
 		return Number(robuxText);
 	};
 
-	let getTradeCount = function() {
-		var tradeNotificationBubble = $("#nav-trade .notification-blue");
-		var tradeCountText = tradeNotificationBubble.attr("title") || tradeNotificationBubble.text();
+	let getBubbleCount = function (bubble) {
+		var tradeCountText = bubble.attr("title") || bubble.text();
 		return Number(tradeCountText.replace(/\D+/g, "")) || 0;
 	};
 
-	let setTradeCount = function(tradeCount) {
-		abbreviateNumber(tradeCount, function(abbreviatedTradeCount) {
-			$("#nav-trade .notification-blue").attr({
-				title: global.addCommas(tradeCount),
-				tradeCount: tradeCount
-			}).text(abbreviatedTradeCount);
+	let setBubbleCount = function (bubble, count) {
+		if (getBubbleCount(bubble) === count) {
+			return;
+		}
+
+		abbreviateNumber(count, function (abbreviatedCount) {
+			bubble.attr({
+				title: global.addCommas(count),
+				count: count
+			}).text(count > 0 ? abbreviatedCount : "").removeClass("hide");
 		});
 	};
 
-	let isSideOpen = function() {
+	let getTradeCount = function () {
+		return getBubbleCount($("#nav-trade .notification-blue"));
+	};
+
+	let setTradeCount = function (tradeCount) {
+		setBubbleCount($("#nav-trade .notification-blue"), tradeCount);
+	};
+
+	let getMessagesCount = function () {
+		return getBubbleCount($("#nav-message .notification-blue"));
+	};
+
+	let setMessagesCount = function (messageCount) {
+		setBubbleCount($("#nav-message .notification-blue"), messageCount);
+	};
+
+	let getFriendRequestCount = function () {
+		return getBubbleCount($("#nav-friends .notification-blue"));
+	};
+
+	let setFriendRequestCount = function (friendRequestCount) {
+		setBubbleCount($("#nav-friends .notification-blue"), friendRequestCount);
+	};
+
+	let isSideOpen = function () {
 		return $("#navigation").is(":visible") && $("#navigation").width() > 0;
 	};
 
-	let setSideNavigationOpen = function(open) {
+	let setSideNavigationOpen = function (open) {
 		if (isSideOpen() !== open) {
 			$(".rbx-nav-collapse")[0].click();
 		}
 	};
 
-	let getButtonTextAndLink = function(buttonIndex) {
+	let getButtonTextAndLink = function (buttonIndex) {
 		var button = $("ul.nav.rbx-navbar").first().find(">li>a")[buttonIndex];
 		if (button) {
 			return {
@@ -123,7 +152,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 		}
 	};
 
-	let setButtonTextAndLink = function(buttonIndex, text, link) {
+	let setButtonTextAndLink = function (buttonIndex, text, link) {
 		var buttonTextAndLink = getButtonTextAndLink(buttonIndex);
 		if (!buttonTextAndLink || (buttonTextAndLink.text === text && buttonTextAndLink.href === link)) {
 			return;
@@ -138,15 +167,48 @@ RPlus.navigation = RPlus.navigation || (function () {
 		});
 	};
 
+	$(function(){
+		// Sync counters with settings
+		RPlus.navigation.setRobux(RPlus.navigation.getRobux());
+		RPlus.navigation.setTradeCount(RPlus.navigation.getTradeCount());
+		RPlus.navigation.setMessagesCount(RPlus.navigation.getMessagesCount());
+		RPlus.navigation.setFriendRequestCount(RPlus.navigation.getFriendRequestCount());
+		
+		RPlus.navigation.getNavigationSettings(function(navigationSettings) {
+			if (navigationSettings.sideOpen) {
+				RPlus.navigation.setSideNavigationOpen(true);
+			}
+		});
+
+		// Control Panel link
+		if ($("#navigation").length && !$("#navigation .rplus-icon").length) {
+			$("#navigation .rbx-upgrade-now").before("<li><a href=\"/my/account?tab=rplus\" class=\"text-nav\"><span class=\"rplus-icon\"></span><span>Control Panel</span></a></li>");
+		}
+
+		// Allow messages button in navigation bar to refresh the page while on the messages page
+		// TODO: Investigate what's overriding this (it doesn't work)
+		$("#nav-message").attr("href", "/my/messages");
+	});
+
 	return {
 		getRobux: getRobux,
 		setRobux: setRobux,
+
 		getTradeCount: getTradeCount,
 		setTradeCount: setTradeCount,
+
+		getMessagesCount: getMessagesCount,
+		setMessagesCount: setMessagesCount,
+
+		getFriendRequestCount: getFriendRequestCount,
+		setFriendRequestCount: setFriendRequestCount,
+
 		isSideOpen: isSideOpen,
 		setSideNavigationOpen: setSideNavigationOpen,
+
 		setButtonTextAndLink: setButtonTextAndLink,
 		getButtonTextAndLink: getButtonTextAndLink,
+
 		getNavigationSettings: getNavigationSettings
 	};
 })();
