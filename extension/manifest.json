@@ -70,7 +70,9 @@
 				"/lib/rplus/settings.js",
 				"/lib/rplus/copiedAssets.js",
 				"/js/rplus/sponsoredItems.js",
-				"/lib/rplus/premium.js"
+				"/lib/rplus/premium.js",
+
+				"/js/jquery/navigation.js"
 			],
 			"css": [
 				"/css/icons.css",

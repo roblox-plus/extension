@@ -205,7 +205,7 @@ RPlus.settings.get().then(function (settings) {
 	
 	var container = $("<div id=\"rplus-featured-items\">");
 	var results = $(".catalog-results").prepend(container);
-	console.log("Render Roblox+ featured items before .catalog-results (" + results.length + ")");
+	console.log("Render Roblox+ featured items in .catalog-results (" + results.length + ")");
 	ReactDOM.render(<FeaturedCatalogItems />, container[0]);
 }).catch(console.error);
 

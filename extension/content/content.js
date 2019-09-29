@@ -130,12 +130,8 @@ fixCB(({
 				$("#navigation .rbx-upgrade-now").before("<li><a href=\"/my/account?tab=rplus\" class=\"text-nav\"><span class=\"rplus-icon\"></span><span>Control Panel</span></a></li>");
 				$(".notification-blue:empty,.notification-red:empty").removeClass("hide");
 				$("#nav-message").attr("href", "/my/messages");
-				var robux = Number($("#nav-robux-balance").html().split("<br>")[0].replace(/\D+/g, ""));
-				if (robux) {
-					mainLoop.comma(robux, function (t) {
-						$("#nav-robux-amount").text(t);
-					});
-				}
+				RPlus.navigation.setRobux(RPlus.navigation.getRobux());
+				
 				storage.get("navigation", function (v) {
 					if (v.sideOpen && !$("#navigation.nav-show").length) {
 						$(".rbx-nav-collapse")[0].click();
@@ -173,11 +169,7 @@ fixCB(({
 						}, upgradeTheDummy);
 
 						Roblox.economy.getCurrencyBalance().then(function (currency) {
-							var orig = ($("#nav-robux-balance").first().html() || "").split("<br>");
-							mainLoop.comma(currency.robux, function (t) {
-								$("#nav-robux-amount").text(t);
-								$("#nav-robux-balance").html(addComma(currency.robux) + " Robux" + (orig.length > 1 ? "<br>$" + (currency.robux * .0025).toFixed(2) : ""));
-							});
+							RPlus.navigation.setRobux(currency.robux);
 							upgradeTheDummy();
 						}, upgradeTheDummy);
 					}, upgradeTheDummy);
