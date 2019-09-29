@@ -1,9 +1,11 @@
 RPlus.navigation = RPlus.navigation || (function () {
+	let devexRate = 0.0035;
 	let thousand = 1000;
 	let million = 1000000;
 	let billion = 1000000000;
 	let trillion = 1000000000000;
 	let suffixes = {};
+	let bubbleAbbreviations = {};
 
 	suffixes[thousand] = "K";
 	suffixes[million] = "M";
@@ -12,7 +14,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 
 	let getNavigationSettings = function (callBack) {
 		storage.get(["navigation", "navcounter"], function (settings) {
-			if (!settings.navigation || typeof(settings.navigation) !== "object") {
+			if (!settings.navigation || typeof (settings.navigation) !== "object") {
 				settings.navigation = {};
 			}
 
@@ -64,23 +66,53 @@ RPlus.navigation = RPlus.navigation || (function () {
 		});
 	};
 
-	let setRobux = function (robux) {
-		if (isNaN(robux) || robux < 0) {
-			robux = 0;
+	let shouldUpdateByAbbreviation = function (key, callBack) {
+		getNavigationSettings(function (navigationSettings) {
+			var roundAt = Math.max(thousand, Number(navigationSettings.counterCommas) || thousand);
+			var requiresAbbreviationUpdate = bubbleAbbreviations[key] !== roundAt;
+			bubbleAbbreviations[key] = roundAt;
+
+			callBack(requiresAbbreviationUpdate);
+		});
+	};
+
+	let hasDevexRate = function () {
+		return $("#rplus-devex-rate").length > 0;
+	};
+
+	let requiresUpdate = function (key, element, currentCount, newCount, callBack) {
+		if (currentCount !== newCount) {
+			callBack(true);
+			return;
 		}
 
-		abbreviateNumber(robux, function (abbreviatedRobux) {
-			$("#nav-robux-balance").attr({
-				title: global.addCommas(robux),
-				robux: robux
-			}).text(abbreviateNumberAt(robux, billion) + " Robux");
-			$("#nav-robux-amount").text(abbreviatedRobux);
+		if (!element.attr("count")) {
+			callBack(true);
+			return;
+		}
+
+		shouldUpdateByAbbreviation(key, function (requiresAbbreviationUpdate) {
+			if (requiresAbbreviationUpdate) {
+				callBack(true);
+				return;
+			}
+
+			getNavigationSettings(function (navigationSettings) {
+				if (key === "robux") {
+					if ((hasDevexRate() && !navigationSettings.showDevexRate) || (navigationSettings.showDevexRate && !hasDevexRate())) {
+						callBack(true);
+						return;
+					}
+				}
+
+				callBack(false);
+			});
 		});
 	};
 
 	let getRobux = function () {
 		var balanceTag = $("#nav-robux-balance");
-		var robuxAttr = Number(balanceTag.attr("robux"));
+		var robuxAttr = Number(balanceTag.attr("count"));
 
 		if (!isNaN(robuxAttr)) {
 			return robuxAttr;
@@ -90,21 +122,52 @@ RPlus.navigation = RPlus.navigation || (function () {
 		return Number(robuxText);
 	};
 
+	let setRobux = function (robux) {
+		if (isNaN(robux) || robux < 0) {
+			robux = 0;
+		}
+
+		var robuxBalance = $("#nav-robux-balance");
+		requiresUpdate("robux", robuxBalance, getRobux(), robux, function (requiresUpdate) {
+			if (!requiresUpdate) {
+				return;
+			}
+
+			getNavigationSettings(function (navigationSettings) {
+				abbreviateNumber(robux, function (abbreviatedRobux) {
+					var robuxSpan = $("<span>").text(abbreviateNumberAt(robux, billion) + " Robux");
+					robuxBalance.attr({
+						title: global.addCommas(robux),
+						count: robux
+					}).html(robuxSpan);
+
+					if (navigationSettings.showDevexRate) {
+						robuxSpan.after($("<br>"), $("<span class=\"text-secondary\" id=\"rplus-devex-rate\">").text("USD $" + global.addCommas((robux * devexRate).toFixed(2))));
+					}
+
+					$("#nav-robux-amount").text(abbreviatedRobux);
+				});
+			});
+		});
+	};
+
 	let getBubbleCount = function (bubble) {
 		var tradeCountText = bubble.attr("title") || bubble.text();
 		return Number(tradeCountText.replace(/\D+/g, "")) || 0;
 	};
 
-	let setBubbleCount = function (bubble, count) {
-		if (getBubbleCount(bubble) === count && bubble.attr("count")) {
-			return;
-		}
+	let setBubbleCount = function (bubbleKey, bubble, count) {
+		requiresUpdate(bubbleKey, bubble, getBubbleCount(bubble), count, function (requiresUpdate) {
+			if (!requiresUpdate) {
+				return;
+			}
 
-		abbreviateNumber(count, function (abbreviatedCount) {
-			bubble.attr({
-				title: global.addCommas(count),
-				count: count
-			}).text(count > 0 ? abbreviatedCount : "").removeClass("hide");
+			abbreviateNumber(count, function (abbreviatedCount) {
+				bubble.attr({
+					title: global.addCommas(count),
+					count: count
+				}).text(count > 0 ? abbreviatedCount : "").removeClass("hide");
+			});
 		});
 	};
 
@@ -113,7 +176,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 	};
 
 	let setTradeCount = function (tradeCount) {
-		setBubbleCount($("#nav-trade .notification-blue"), tradeCount);
+		setBubbleCount("trade", $("#nav-trade .notification-blue"), tradeCount);
 	};
 
 	let getMessagesCount = function () {
@@ -121,7 +184,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 	};
 
 	let setMessagesCount = function (messageCount) {
-		setBubbleCount($("#nav-message .notification-blue"), messageCount);
+		setBubbleCount("messages", $("#nav-message .notification-blue"), messageCount);
 	};
 
 	let getFriendRequestCount = function () {
@@ -129,7 +192,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 	};
 
 	let setFriendRequestCount = function (friendRequestCount) {
-		setBubbleCount($("#nav-friends .notification-blue"), friendRequestCount);
+		setBubbleCount("friends", $("#nav-friends .notification-blue"), friendRequestCount);
 	};
 
 	let isSideOpen = function () {
@@ -168,20 +231,20 @@ RPlus.navigation = RPlus.navigation || (function () {
 		});
 	};
 
-	$(function(){
+	$(function () {
 		// Sync counters with settings
-		let updateLoop = function() {
-			getNavigationSettings(function(navigationSettings) {
+		let updateLoop = function () {
+			getNavigationSettings(function (navigationSettings) {
 				let loops = 0;
 				let maxLoops = 1;
-				let tryLoop = function() {
+				let tryLoop = function () {
 					if (++loops === maxLoops) {
 						setTimeout(updateLoop, 250);
 					}
 				};
 
 				// Navigation buttons
-				for (var CN = 0; CN < Math.min(2, navigationSettings.buttons.length) ; CN++) {
+				for (var CN = 0; CN < Math.min(2, navigationSettings.buttons.length); CN++) {
 					let button = navigationSettings.buttons[CN];
 					if (type(button) === "object") {
 						RPlus.navigation.setButtonTextAndLink(CN + 2, button.text, button.href);
@@ -237,13 +300,13 @@ RPlus.navigation = RPlus.navigation || (function () {
 					if (friendRequestCount > 0) {
 						RPlus.navigation.setFriendRequestCount(friendRequestCount);
 					}
-					
+
 					tryLoop();
 				}
 			});
 		};
 
-		RPlus.navigation.getNavigationSettings(function(navigationSettings) {
+		RPlus.navigation.getNavigationSettings(function (navigationSettings) {
 			if (navigationSettings.sideOpen) {
 				RPlus.navigation.setSideNavigationOpen(true);
 			}
@@ -264,6 +327,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 	return {
 		getRobux: getRobux,
 		setRobux: setRobux,
+		hasDevexRate: hasDevexRate,
 
 		getTradeCount: getTradeCount,
 		setTradeCount: setTradeCount,

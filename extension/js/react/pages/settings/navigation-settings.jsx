@@ -101,6 +101,10 @@ class NavigationSettings extends SettingsTab {
 						<span class="text-lead">Side navigation bar always open.</span>
 						<PillToggle getValue={this.getPillValue.bind(this, "navigation.sideOpen")}
 							onToggle={this.setPillValue.bind(this, "navigation.sideOpen")} />
+						<div class="rbx-divider"></div>
+						<span class="text-lead">DevEx rates on Robux.</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "navigation.showDevexRate")}
+							onToggle={this.setPillValue.bind(this, "navigation.showDevexRate")} />
 					</div>
 				</div>
 				<div class="section">
