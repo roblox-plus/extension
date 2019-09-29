@@ -79,7 +79,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 	let getRobux = function() {
 		var balanceTag = $("#nav-robux-balance");
 		var robuxAttr = Number(balanceTag.attr("robux"));
-		
+
 		if (!isNaN(robuxAttr)) {
 			return robuxAttr;
 		}
@@ -88,8 +88,48 @@ RPlus.navigation = RPlus.navigation || (function () {
 		return Number(robuxText);
 	};
 
+	let isSideOpen = function() {
+		return $("#navigation").is(":visible") && $("#navigation").width() > 0;
+	};
+
+	let setSideNavigationOpen = function(open) {
+		if (isSideOpen() !== open) {
+			$(".rbx-nav-collapse")[0].click();
+		}
+	};
+
+	let getButtonTextAndLink = function(buttonIndex) {
+		var button = $("ul.nav.rbx-navbar").first().find(">li>a")[buttonIndex];
+		if (button) {
+			return {
+				text: $(button).text(),
+				href: $(button).attr("href")
+			};
+		}
+	};
+
+	let setButtonTextAndLink = function(buttonIndex, text, link) {
+		var buttonTextAndLink = getButtonTextAndLink(buttonIndex);
+		if (!buttonTextAndLink || (buttonTextAndLink.text === text && buttonTextAndLink.href === link)) {
+			return;
+		}
+
+		$("ul.nav.rbx-navbar").each(function () {
+			var li = $(this).find(">li>a");
+			var button = li[buttonIndex];
+			if (button) {
+				$(button).text(text).attr("href", link);
+			}
+		});
+	};
+
 	return {
 		getRobux: getRobux,
-		setRobux: setRobux
+		setRobux: setRobux,
+		isSideOpen: isSideOpen,
+		setSideNavigationOpen: setSideNavigationOpen,
+		setButtonTextAndLink: setButtonTextAndLink,
+		getButtonTextAndLink: getButtonTextAndLink,
+		getNavigationSettings: getNavigationSettings
 	};
 })();

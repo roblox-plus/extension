@@ -99,21 +99,13 @@ fixCB(({
 				}
 			});
 
-			storage.get("navigation", function (n) {
-				$("ul.nav.rbx-navbar").each(function () {
-					var li = $(this).find(">li>a");
-					for (var CN = 0; CN < Math.min(2, n.buttons.length) ; CN++) {
-						var button = n.buttons[CN];
-						if (li[CN + 2] && type(button) == "object") {
-							// I'm too lazy to actually migrate the data so for now no one will be able to use the word Develop.
-							// sorry, not sorry
-							if (button.text === "Develop") {
-								button.text = "Create";
-							}
-							$(li[CN + 2]).text(button.text).attr("href", button.href);
-						}
+			RPlus.navigation.getNavigationSettings(function(navigationSettings) {
+				for (var CN = 0; CN < Math.min(2, navigationSettings.buttons.length) ; CN++) {
+					let button = navigationSettings.buttons[CN];
+					if (type(button) === "object") {
+						RPlus.navigation.setButtonTextAndLink(CN + 2, button.text, button.href);
 					}
-				});
+				}
 			});
 
 			var total = 0;
@@ -132,9 +124,9 @@ fixCB(({
 				$("#nav-message").attr("href", "/my/messages");
 				RPlus.navigation.setRobux(RPlus.navigation.getRobux());
 				
-				storage.get("navigation", function (v) {
-					if (v.sideOpen && !$("#navigation.nav-show").length) {
-						$(".rbx-nav-collapse")[0].click();
+				RPlus.navigation.getNavigationSettings(function(navigationSettings) {
+					if (navigationSettings.sideOpen) {
+						RPlus.navigation.setSideNavigationOpen(true);
 					}
 				});
 			}
