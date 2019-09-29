@@ -1,9 +1,23 @@
 .splash {
 	#rplus-featured-items {
 		margin-left: 6px;
-		
-		.item-card:nth-child(-n+5) {
+
+		.item-card {
 			display: inline-block;
+
+			&:nth-child(n+6) {
+				display: none;
+			}
+		}
+	}
+}
+
+:not(.splash) {
+	#rplus-featured-items {
+		margin-left: 6px;
+
+		.item-card:nth-child(n+7) {
+			display: none;
 		}
 	}
 }

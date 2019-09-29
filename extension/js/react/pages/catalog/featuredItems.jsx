@@ -15,7 +15,8 @@ class FeaturedCatalogItems extends React.Component {
 
 		this.backgroundState = {
 			loadId: 0,
-			query: null
+			query: null,
+			pageNumber: null
 		};
 
 		this.state = {
@@ -28,9 +29,15 @@ class FeaturedCatalogItems extends React.Component {
 		}, 100);
 	}
 
+	getPageNumber() {
+		return Number(($(".pager span[ng-bind*='CurrentPage']").text().match(/(\d+)$/) || ["", ""])[1]);
+	}
+
 	checkPageQuery() {
-		if (location.search !== this.backgroundState.query) {
+		let pageNumber = this.getPageNumber();
+		if (location.search !== this.backgroundState.query || pageNumber !== this.backgroundState.pageNumber) {
 			this.backgroundState.query = location.search;
+			this.backgroundState.pageNumber = pageNumber;
 			this.loadSponsoredItems();
 		}
 	}
@@ -41,6 +48,13 @@ class FeaturedCatalogItems extends React.Component {
 
 		this.getSponsoredItems().then(function (sponsoredItems) {
 			if (id !== featuredCatalogItems.backgroundState.loadId) {
+				return;
+			}
+
+			if (sponsoredItems.length === 0) {
+				featuredCatalogItems.setState({
+					sponsoredItems: []
+				});
 				return;
 			}
 
@@ -79,7 +93,7 @@ class FeaturedCatalogItems extends React.Component {
 			}
 		}
 
-		let pageNumber = Number(($(".pager span[ng-bind*='CurrentPage']").text().match(/(\d+)$/) || ["", ""])[1]);
+		let pageNumber = this.getPageNumber();
 		if (isNaN(pageNumber) || pageNumber === 0 || pageNumber === 1) {
 			return true;
 		}
@@ -97,8 +111,9 @@ class FeaturedCatalogItems extends React.Component {
 			}
 
 			let category = Number((location.search.match(/category=(\d+)/i) || ["", ""])[1]);
-			RPlus.sponsoredItems.getSponsoredItems(category).then(function(items) {
-				console.log("Sponsored items for category", category, items);
+			let subcategory = Number((location.search.match(/subcategory=(\d+)/i) || ["", ""])[1]);
+			RPlus.sponsoredItems.getSponsoredItems(category, subcategory).then(function(items) {
+				console.log("Sponsored items for category", category, subcategory, items);
 				resolve(items.sort(() => Math.random() - 0.5));
 			}).catch(reject);
 		});

@@ -1,7 +1,7 @@
 (window.RPlus || (RPlus = {})).sponsoredItems = (function () {
 	return {
-		getSponsoredItems: $.promise.cache(function (resolve, reject, category) {
-			console.log("Load sponsored items for category:", category);
+		getSponsoredItems: $.promise.cache(function (resolve, reject, category, subcategory) {
+			console.log("Load sponsored items for category:", category, "(subcategory " + subcategory + ")");
 
 			RPlus.settings.get().then(function (settings) {
 				if (!settings.sponsoredCatalogItemsEnabled) {
@@ -10,7 +10,8 @@
 				}
 				
 				$.get("https://api.roblox.plus/v1/catalog/sponsored-items", {
-					category: category
+					category: category,
+					subcategory: subcategory
 				}).done(function(r) {
 					resolve(r.data);
 				}).fail(function() {
