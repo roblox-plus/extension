@@ -50,6 +50,10 @@ class OtherSettings extends SettingsTab {
 						<span class="text-lead">Live number remaining counter for limiteds.</span>
 						<PillToggle getValue={this.getPillValue.bind(this, "remainingCounter")}
 							onToggle={this.setPillValue.bind(this, "remainingCounter")} />
+						<div class="rbx-divider"></div>
+						<span class="text-lead">Sales counter on created items.</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "itemSalesCounter")}
+							onToggle={this.setPillValue.bind(this, "itemSalesCounter")} />
 					</div>
 				</div>
 				<div class="section">

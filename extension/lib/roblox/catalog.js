@@ -204,6 +204,16 @@ Roblox.catalog = (function () {
 			rejectExpiry: 5 * 1000
 		}),
 
+		getAssetSalesCount: $.promise.cache(function (resolve, reject, assetId) {
+			Roblox.catalog.getAssetInfo(assetId).then(function(asset) {
+				resolve(asset.sales);
+			}).catch(reject);
+		}, {
+			queued: true,
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 5 * 1000
+		}),
+
 		configureAsset: $.promise.cache(function (resolve, reject, assetId, configuration) {
 			if (typeof (assetId) != "number" || assetId <= 0) {
 				reject([{

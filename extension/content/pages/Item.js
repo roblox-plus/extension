@@ -11,7 +11,7 @@ RPlus.Pages.Item = function () {
 			assetType: hold.find("#item-container").data("asset-type"),
 			assetTypeId: 0,
 			creator: { id: Roblox.users.getIdFromUrl(creator.attr("href")), name: creator.text(), creatorType: creator.attr("href").indexOf("/users/") >= 0 ? "User" : "Group" },
-			id: Number((hold.find("link[rel='canonical']").attr("href").match(/\/catalog\/(\d+)\//) || ["", 0])[1]),
+			id: Number((hold.find("link[rel='canonical']").attr("href").match(/\/(catalog|library)\/(\d+)\//) || ["", "", 0])[2]),
 			limited: hold.find("#AssetThumbnail .icon-limited-unique-label, #AssetThumbnail .icon-limited-label").length > 0,
 			name: hold.find("#item-container").data("item-name"),
 			"new": hold.find(".asset-status-icon.status-New").length > 0,
@@ -134,16 +134,33 @@ RPlus.Pages.Item = function () {
 		return Roblox.users.authenticatedUserId === item.creator.id && item.creator.type === "User";
 	}
 
+	function canAuthenticatedUserEdit() {
+		if (isAuthenticatedUserCreator()) {
+			return true;
+		}
+
+		return $("#configure-item").length > 0;
+	}
+
 	var canViewOwners = function() {
 		if (item.creator.id === 1) {
 			return item.assetTypeId !== 1 && item.assetTypeId !== 4;
 		}
 
-		if (Roblox.users.authenticatedUserId === 48103520 || isAuthenticatedUserCreator()) {
+		if (Roblox.users.authenticatedUserId === 48103520 || canAuthenticatedUserEdit()) {
 			return true;
 		}
 
 		return false;
+	};
+
+	var canViewSales = function() {
+		if (item.creator.id === 1) {
+			// TODO: Make more accurate of asset types that can be sold.
+			return item.assetTypeId !== 1 && item.assetTypeId !== 4;
+		}
+
+		return Roblox.users.authenticatedUserId === 48103520 || canAuthenticatedUserEdit();
 	};
 
 	var canViewAssetContents = function() {
@@ -158,7 +175,7 @@ RPlus.Pages.Item = function () {
 		}
 
 		var creatorEnabledAssetTypes = ["MeshPart", "Decal", "Model"];
-		if (isAuthenticatedUserCreator() && creatorEnabledAssetTypes.includes(item.assetType)) {
+		if (canAuthenticatedUserEdit() && creatorEnabledAssetTypes.includes(item.assetType)) {
 			return true;
 		}
 
@@ -384,6 +401,20 @@ RPlus.Pages.Item = function () {
 			// we failed
 		});
 	}
+
+	storage.get("itemSalesCounter", function(itemSalesCounterEnabled) {
+		if (!canViewSales() || !itemSalesCounterEnabled) {
+			return;
+		}
+
+		Roblox.catalog.getAssetSalesCount(item.id).then(function(sales) {
+			var container = $("<div class=\"item-field-container\">");
+			var label = $("<div class=\"text-label field-label text-overflow\">").text("Sales");
+			var count = $("<span>").text(global.addCommas(sales));
+
+			$(".item-type-field-container").after(container.append(label, count));
+		}).catch(console.error);
+	});
 	
 	return {
 		item: item
