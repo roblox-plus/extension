@@ -118,7 +118,8 @@ RPlus.navigation = RPlus.navigation || (function () {
 			return robuxAttr;
 		}
 
-		var robuxText = balanceTag.text().replace(/\D+/g, "");
+		var robuxMatch = (balanceTag.text().match(/([\d,]+)/) || ["", ""])[1];
+		var robuxText = robuxMatch.replace(/\D+/g, "");
 		return Number(robuxText);
 	};
 
