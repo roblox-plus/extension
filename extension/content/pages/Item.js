@@ -216,7 +216,11 @@ RPlus.Pages.Item = function () {
 						var username = record.owner ? record.owner.username : "[ Owner has their inventory hidden ]";
 						var profileUrl = record.owner ? "/users/" + record.owner.userId + "/profile" : "javascript:/* User does not exist */";
 						serialTracker.tab.content.append($("<li class=\"list-item\" data-userasset-id=\"" + record.userAssetId + "\">").append(
-							$("<a class=\"avatar avatar-headshot-md list-header\">").attr("href", profileUrl).append($("<img class=\"avatar-card-image\">").attr({ "src": "https://www.roblox.com/headshot-thumbnail/image?userId=" + (record.owner ? record.owner.userId : "0") + "&width=60&height=60&format=png", "alt": username })),
+							$("<a class=\"avatar avatar-headshot-md list-header\">").attr("href", profileUrl).append($("<img class=\"avatar-card-image\">").attr({ 
+								"src": Roblox.thumbnails.getUserHeadshotThumbnailUrl((record.owner && record.owner.userId) || 0, 4),
+								"alt": username,
+								"onerror": "this.onerror=null;this.src='" + Roblox.thumbnails.getUserHeadshotThumbnailUrl(0, 4) + "';"
+							})),
 							$("<div class=\"resale-info\">").append(
 								$("<a class=\"text-name username\" href=\"" + profileUrl + "\">").text(username),
 								record.serialNumber ? $("<span class=\"separator\">").text("-") : "",
