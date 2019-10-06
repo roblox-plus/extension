@@ -200,7 +200,7 @@ class FeaturedCatalogItems extends React.Component {
 			<div className={this.state.sponsoredItems.length > 0 ? "results-container" : "hidden"}>
 				<div class="section">
 					<div class="container-header">
-						<h5>Sponsored by Roblox+</h5>
+						<h3>Sponsored by Roblox+</h3>
 					</div>
 					<div>
 						<ul class="item-cards-stackable">
