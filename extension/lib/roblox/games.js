@@ -73,7 +73,12 @@
 		rejectExpiry: 10 * 1000
 	});
 
-	
+	var trackJoinedServer = function(serverId) {
+		Roblox.games.trackJoinedServer(serverId).then(function() {
+			// server tracked, nothing to do.
+		}).catch(console.error);
+	};
+
 	if (ext.isBackground) {
 		$(function () {
 			$("body").append(launchFrame);
@@ -103,6 +108,40 @@
 		}, { urls: [authTicketUrl], types: ["xmlhttprequest"] }, ["blocking", "requestHeaders", "extraHeaders"]);
 	} else {
 		$("<a href=\"javascript:Roblox=window.Roblox||{};(Roblox.VideoPreRollDFP||Roblox.VideoPreRoll||{}).showVideoPreRoll=false;\">")[0].click();
+
+		setInterval(function(){
+			var gameServerSrc = $("#gamelaunch").attr("src"); 
+			if (gameServerSrc) {
+				var gameServerIdMatch = decodeURIComponent(gameServerSrc).match(/accessCode=([\w\-]+)/i) || [""];
+				var gameServerId = gameServerIdMatch[1];
+				if (gameServerId) {
+					trackJoinedServer(gameServerId);
+				}
+			}
+
+			storage.get("gameServerTracker", function(gameServerTrackerSettings) {
+				if (gameServerTrackerSettings && gameServerTrackerSettings.on) {
+					$(".rbx-game-status").each(function() {
+						var gameServerId = $(this).closest("li[data-gameinstance-id]").attr("data-gameinstance-id") || $(this).closest("li[data-gameid]").attr("data-gameid");
+						if (gameServerId) {
+							var playedLabel = $(this).find(".rplus-gameserver-played");
+							if (playedLabel.length <= 0) {
+								playedLabel = $("<span class=\"text-secondary rplus-gameserver-played\">").text("Played").hide();
+								$(this).append($("<br>"), playedLabel);
+							}
+
+							Roblox.games.hasJoinedServer(gameServerId).then(function(played) {
+								if (played) {
+									playedLabel.show();
+								} else {
+									playedLabel.hide();
+								}
+							}).catch(console.error);
+						}
+					});
+				}
+			});
+		}, 250);
 	}
 
 
@@ -160,6 +199,10 @@
 					return;
 				}
 
+				if (launchArguments.serverId) {
+					trackJoinedServer(launchArguments.serverId);
+				}
+
 				launchParameters = {
 					request: launchArguments.serverId ? "RequestGameJob" : "RequestGame",
 					gameId: launchArguments.serverId || "",
@@ -179,6 +222,23 @@
 		}),
 
 		getVipServers: getVipServers,
+
+		hasJoinedServer: $.promise.cache(function(resolve, reject, gameServerId) {
+			var cache = RPlus.notifiers.gameServerTracker.getCache();
+			resolve(cache.hasOwnProperty(gameServerId));
+		}, {
+			rejectExpiry: 5 * 1000,
+			resolveExpiry: 250
+		}),
+
+		trackJoinedServer: $.promise.cache(function(resolve, reject, gameServerId) {
+			var cache = RPlus.notifiers.gameServerTracker.getCache();
+			cache[gameServerId] = +new Date;
+			resolve();
+		}, {
+			rejectExpiry: 5 * 1000,
+			resolveExpiry: 30 * 1000
+		}),
 
 		getAllRunningServers: $.promise.cache(function (resolve, reject, placeId) {
 			var runningServers = [];

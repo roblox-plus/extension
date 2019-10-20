@@ -20,6 +20,18 @@ class OtherSettings extends SettingsTab {
 				</div>
 				<div class="section">
 					<div class="container-header">
+						<h3>Game Details Page</h3>
+					</div>
+					<div class="section-content">
+						<span class="text-lead">Track of joined servers.</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "gameServerTracker.on")}
+							onToggle={this.setPillValue.bind(this, "gameServerTracker.on")} />
+						<div class="rbx-divider"></div>
+						<span class="text-description">Keeps track of which game servers you've joined and which ones you haven't.</span>
+					</div>
+				</div>
+				<div class="section">
+					<div class="container-header">
 						<h3>Trades</h3>
 					</div>
 					<div class="section-content">
