@@ -1,7 +1,6 @@
 // overwrite.js [4/11/16]
 rplus = window.rplus || {};
 
-
 rplus.ajax = [
 	{
 		match: /^\/games\/getgameinstancesjson/i,
@@ -61,6 +60,7 @@ rplus.startup("$", function () {
 			}
 		}
 	});
+
 	$(document).ajaxSuccess(function (e, xhr, dat) {
 		for (var n in rplus.ajax) {
 			if (dat.url.match(rplus.ajax[n].match) && rplus.ajax[n].success) {

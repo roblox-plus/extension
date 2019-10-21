@@ -15,11 +15,15 @@ RPlus.Pages.Game = function () {
 	}
 	console.log("Game creator id", gameCreatorId);
 
-	var servers = {
+	var servers;
+	servers = {
 		anchor: $("<a>"),
 		page: function () { return Number(servers.curPage.text()) || 1; },
 		maxPage: $("<span>1</span>"),
 		curPage: $("<span>1</span>"),
+		getMaxPage: function() {
+			return Number(servers.maxPage.text()) || 1;
+		},
 		firstPage: $("<li class=\"first disabled\">").append("<a><span class=\"icon-first-page\"></span></a>").click(function () {
 			if (!$(this).hasClass("disabled")) {
 				servers.fetch(1);
@@ -27,12 +31,13 @@ RPlus.Pages.Game = function () {
 		}),
 		lastPage: $("<li class=\"last disabled\">").append("<a><span class=\"icon-last-page\"></span></a>").click(function () {
 			if (!$(this).hasClass("disabled")) {
-				servers.fetch(Number(servers.maxPage.text()) || 1);
+				servers.fetch(servers.getMaxPage());
 			}
 		}),
 		prevPage: $("<li class=\"pager-prev disabled\">").append("<a><span class=\"icon-left\"></span></a>").click(function () {
 			if (!$(this).hasClass("disabled")) {
-				servers.fetch(Math.max(1, servers.page() - 1));
+				var newPage = Math.min(servers.getMaxPage(), Math.max(1, servers.page() - 1));
+				servers.fetch(newPage);
 			}
 		}),
 		nextPage: $("<li class=\"pager-next disabled\">").append("<a><span class=\"icon-right\"></span></a>").click(function () {
@@ -44,6 +49,7 @@ RPlus.Pages.Game = function () {
 			if (type(p) == "number") {
 				servers.curPage.text(p.toString());
 			}
+
 			servers.firstPage.toggleClass("disabled", servers.page() <= 1);
 			servers.prevPage.toggleClass("disabled", servers.page() <= 1);
 			servers.anchor.attr("href", "javascript:Roblox.RunningGameInstances.fetchServers(" + placeId + "," + ((servers.page() - 1) * 10) + ");")[0].click();
@@ -118,6 +124,33 @@ RPlus.Pages.Game = function () {
 			$(this).attr("title", p + "% of voters recommend this game");
 		}
 	});
+
+	setInterval(function() {
+		Roblox.games.isGameServerTrackingEnabled().then(function(gameServerTrackingEnabled) {
+			if (!gameServerTrackingEnabled) {
+				return;
+			}
+			
+			$(".rbx-game-status").each(function() {
+				var gameServerId = $(this).closest("li[data-gameinstance-id]").attr("data-gameinstance-id") || $(this).closest("li[data-gameid]").attr("data-gameid");
+				if (gameServerId) {
+					var playedLabel = $(this).find(".rplus-gameserver-played");
+					if (playedLabel.length <= 0) {
+						playedLabel = $("<span class=\"text-secondary rplus-gameserver-played\">").text("Played").hide();
+						$(this).append($("<br>"), playedLabel);
+					}
+
+					Roblox.games.hasJoinedServer(gameServerId).then(function(played) {
+						if (played) {
+							playedLabel.show();
+						} else {
+							playedLabel.hide();
+						}
+					}).catch(console.error);
+				}
+			});
+		}).catch(console.error);
+	}, 250);
 
 	return {};
 };

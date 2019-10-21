@@ -25,9 +25,10 @@ class OtherSettings extends SettingsTab {
 					<div class="section-content">
 						<span class="text-lead">Track of joined servers.</span>
 						<PillToggle getValue={this.getPillValue.bind(this, "gameServerTracker.on")}
-							onToggle={this.setPillValue.bind(this, "gameServerTracker.on")} />
+							onToggle={this.setPillValue.bind(this, "gameServerTracker.on")}
+							disabled={!this.state.isPremium} />
 						<div class="rbx-divider"></div>
-						<span class="text-description">Keeps track of which game servers you've joined and which ones you haven't.</span>
+						<span class="text-description">Keeps track of which game servers you've joined and which ones you haven't. This feature is for Roblox+ Premium users only.</span>
 					</div>
 				</div>
 				<div class="section">

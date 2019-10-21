@@ -109,7 +109,7 @@
 	} else {
 		$("<a href=\"javascript:Roblox=window.Roblox||{};(Roblox.VideoPreRollDFP||Roblox.VideoPreRoll||{}).showVideoPreRoll=false;\">")[0].click();
 
-		setInterval(function(){
+		setInterval(function() {
 			var gameServerSrc = $("#gamelaunch").attr("src"); 
 			if (gameServerSrc) {
 				var gameServerIdMatch = decodeURIComponent(gameServerSrc).match(/accessCode=([\w\-]+)/i) || [""];
@@ -118,30 +118,7 @@
 					trackJoinedServer(gameServerId);
 				}
 			}
-
-			storage.get("gameServerTracker", function(gameServerTrackerSettings) {
-				if (gameServerTrackerSettings && gameServerTrackerSettings.on) {
-					$(".rbx-game-status").each(function() {
-						var gameServerId = $(this).closest("li[data-gameinstance-id]").attr("data-gameinstance-id") || $(this).closest("li[data-gameid]").attr("data-gameid");
-						if (gameServerId) {
-							var playedLabel = $(this).find(".rplus-gameserver-played");
-							if (playedLabel.length <= 0) {
-								playedLabel = $("<span class=\"text-secondary rplus-gameserver-played\">").text("Played").hide();
-								$(this).append($("<br>"), playedLabel);
-							}
-
-							Roblox.games.hasJoinedServer(gameServerId).then(function(played) {
-								if (played) {
-									playedLabel.show();
-								} else {
-									playedLabel.hide();
-								}
-							}).catch(console.error);
-						}
-					});
-				}
-			});
-		}, 250);
+		}, 1000);
 	}
 
 
@@ -223,6 +200,20 @@
 
 		getVipServers: getVipServers,
 
+		isGameServerTrackingEnabled: function() {
+			return new Promise(function(resolve, reject) {
+				storage.get("gameServerTracker", function(gameServerTrackerSettings) {
+					if (gameServerTrackerSettings && gameServerTrackerSettings.on) {
+						Roblox.users.getCurrentUserId().then(function(authenticatedUserId) {
+							RPlus.premium.isPremium(authenticatedUserId).then(resolve).catch(reject);
+						}).catch(reject);
+					} else {
+						resolve(false);
+					}
+				});
+			});
+		},
+
 		hasJoinedServer: $.promise.cache(function(resolve, reject, gameServerId) {
 			var cache = RPlus.notifiers.gameServerTracker.getCache();
 			resolve(cache.hasOwnProperty(gameServerId));
@@ -243,12 +234,24 @@
 		getAllRunningServers: $.promise.cache(function (resolve, reject, placeId) {
 			var runningServers = [];
 			var serverMap = {};
+			var serversData = {
+				PlaceId: placeId,
+				ShowShutdownAllButton: false,
+				TotalCollectionSize: 0,
+				Collection: []
+			};
+
 			function getRunningServers(cursor) {
 				getServers(placeId, cursor).then(function (data) {
+					if (data.ShowShutdownAllButton) {
+						serversData.ShowShutdownAllButton = data.ShowShutdownAllButton;
+					}
+
 					data.data.forEach(function (server) {
 						if (serverMap.hasOwnProperty(server.Guid)) {
 							return;
 						}
+
 						var players = [];
 						server.CurrentPlayers.forEach(function (player) {
 							players.push({
@@ -256,6 +259,9 @@
 								username: player.Username
 							});
 						});
+
+						serversData.Collection.push(server);
+
 						runningServers.push(serverMap[server.Guid] = {
 							id: server.Guid,
 							capacity: server.Capacity,
@@ -265,10 +271,19 @@
 							playerList: players
 						});
 					});
+
 					if (data.nextPageCursor) {
 						getRunningServers(data.nextPageCursor);
 					} else {
-						resolve(runningServers);
+						serversData.TotalCollectionSize = serversData.Collection.length;
+						serversData.Collection = serversData.Collection.sort(function(a, b) {
+							return a.CurrentPlayers.length - b.CurrentPlayers.length;
+						});
+
+						resolve({
+							servers: runningServers,
+							data: serversData
+						});
 					}
 				}, reject);
 			}
