@@ -52,9 +52,13 @@ Roblox.economy = (function () {
 					return;
 				}
 
-				$.post("https://www.roblox.com/API/Item.ashx?rqtype=purchase&expectedSellerID=" + product.creator.agentId + "&productID=" + product.id + "&expectedCurrency=1&expectedPrice=" + expectedPrice).done(function (receipt) {
+				$.post("https://economy.roblox.com/v1/purchases/products/" + product.id, {
+					expectedCurrency: 1,
+					expectedPrice: expectedPrice,
+					expectedSellerId: product.creator.agentId
+				}).done(function (receipt) {
 					console.log("Product purchased\n\tReceipt:", receipt);
-					if (receipt.TransactionVerb !== "bought") {
+					if (receipt.transactionVerb !== "bought") {
 						reject([{
 							code: 1,
 							message: receipt.title
