@@ -138,47 +138,64 @@ RPlus.Pages.Game = function () {
 		var playButton = $("<button type=\"button\" class=\"btn-secondary-md\">").text("Play");
 		var searchingLabel = $("<div class=\"text-secondary\">").text("Searching...").hide();
 
+		var cachedGameServers = null;
+		var joinNewGameServer = function(gameServers) {
+			var nextServer;
+			nextServer = function() {
+				var server = gameServers.data.Collection.shift();
+				if (!server) {
+					searchingLabel.text("No more servers.");
+					return;
+				}
+
+				if (server.CurrentPlayers.length >= server.Capacity) {
+					nextServer();
+					return;
+				}
+
+				Roblox.games.hasJoinedServer(server.Guid).then(function(hasJoined) {
+					if (hasJoined) {
+						nextServer();
+					} else {
+						playButton.prop("disabled", false);
+						searchingLabel.hide();
+
+						var launchParameters = {
+							placeId: gameServers.data.PlaceId,
+							serverId: server.Guid
+						};
+
+						console.log("Found server!", server, launchParameters);
+						Roblox.games.launch(launchParameters).then(console.log).catch(console.error);
+					}
+				}).catch(console.error);
+			};
+
+			nextServer();
+		};
+
 		playButton.click(function() {
 			playButton.prop("disabled", true);
 			searchingLabel.show();
 
+			var hasCachedServers = !!cachedGameServers;
+			if (hasCachedServers) {
+				joinNewGameServer(cachedGameServers);
+			}
+
 			Roblox.games.getAllRunningServers(placeId).then(function(gameServers) {
-				var nextServer;
-				nextServer = function() {
-					var server = gameServers.data.Collection.shift();
-					if (!server) {
-						searchingLabel.text("No more servers.");
-						return;
-					}
+				cachedGameServers = gameServers;
 
-					if (server.CurrentPlayers.length >= server.Capacity) {
-						nextServer();
-						return;
-					}
-
-					Roblox.games.hasJoinedServer(server.Guid).then(function(hasJoined) {
-						if (hasJoined) {
-							nextServer();
-						} else {
-							playButton.prop("disabled", false);
-							searchingLabel.hide();
-
-							var launchParameters = {
-								placeId: gameServers.data.PlaceId,
-								serverId: server.Guid
-							};
-
-							console.log("Found server!", server, launchParameters);
-							Roblox.games.launch(launchParameters).then(console.log).catch(console.error);
-						}
-					}).catch(console.error);
-				};
-
-				nextServer();
+				if (!hasCachedServers) {
+					joinNewGameServer(gameServers);
+				}
 			}).catch(function(e) {
 				console.error(e);
-				playButton.prop("disabled", false);
-				searchingLabel.hide();
+
+				if (!hasCachedServers) {
+					playButton.prop("disabled", false);
+					searchingLabel.hide();
+				}
 			});
 		});
 
