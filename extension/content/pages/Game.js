@@ -125,6 +125,66 @@ RPlus.Pages.Game = function () {
 		}
 	});
 
+	Roblox.games.isGameServerTrackingEnabled().then(function(gameServerTrackingEnabled) {
+		if (!gameServerTrackingEnabled) {
+			return;
+		}
+
+		var section = $("<div class=\"section\">");
+		var sectionContent = $("<div class=\"section-content\">");
+		var label = $("<span class=\"text-lead\">").text("Join a server you haven't yet.");
+
+		var playDiv = $("<div class=\"rplus-new-server\">");
+		var playButton = $("<button type=\"button\" class=\"btn-secondary-md\">").text("Play");
+		var searchingLabel = $("<div class=\"text-secondary\">").text("Searching...").hide();
+
+		playButton.click(function() {
+			playButton.prop("disabled", true);
+			searchingLabel.show();
+
+			Roblox.games.getAllRunningServers(placeId).then(function(gameServers) {
+				var nextServer;
+				nextServer = function() {
+					var server = gameServers.data.Collection.shift();
+					if (!server) {
+						searchingLabel.text("No more servers.");
+						return;
+					}
+
+					if (server.CurrentPlayers.length >= server.Capacity) {
+						nextServer();
+						return;
+					}
+
+					Roblox.games.hasJoinedServer(server.Guid).then(function(hasJoined) {
+						if (hasJoined) {
+							nextServer();
+						} else {
+							playButton.prop("disabled", false);
+							searchingLabel.hide();
+
+							var launchParameters = {
+								placeId: gameServers.data.PlaceId,
+								serverId: server.Guid
+							};
+
+							console.log("Found server!", server, launchParameters);
+							Roblox.games.launch(launchParameters).then(console.log).catch(console.error);
+						}
+					}).catch(console.error);
+				};
+
+				nextServer();
+			}).catch(function(e) {
+				console.error(e);
+				playButton.prop("disabled", false);
+				searchingLabel.hide();
+			});
+		});
+
+		$("#rbx-running-games>.container-header").after(section.append(sectionContent.append(label, playDiv.append(playButton, searchingLabel))));
+	}).catch(console.error);
+
 	setInterval(function() {
 		Roblox.games.isGameServerTrackingEnabled().then(function(gameServerTrackingEnabled) {
 			if (!gameServerTrackingEnabled) {

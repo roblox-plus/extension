@@ -132,6 +132,18 @@ input.rplusslider[type='range']::-webkit-slider-thumb{
 	margin: 0px auto;
 }
 
+.rplus-new-server {
+	float: right;
+}
+
+.rplus-new-server .btn-secondary-md {
+	min-width: 100px;
+}
+
+.rplus-new-server .text-secondary {
+	text-align: center;
+}
+
 
 
 /* Audio */

@@ -289,7 +289,7 @@
 			}
 			getRunningServers(1);
 		}, {
-			resolveExpiry: 20 * 1000,
+			resolveExpiry: 60 * 1000,
 			rejectExpiry: 5 * 1000
 		})
 	};
