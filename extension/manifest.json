@@ -71,6 +71,7 @@
 				"/lib/rplus/copiedAssets.js",
 				"/js/rplus/sponsoredItems.js",
 				"/lib/rplus/premium.js",
+				"/js/rplus/bucketedSales.js",
 
 				"/js/jquery/navigation.js"
 			],
