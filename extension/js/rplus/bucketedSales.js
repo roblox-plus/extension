@@ -76,27 +76,11 @@ RPlus.bucketedSales = (function(){
 		return sales;
 	};
 
-	var loadSalesInRange = function(assetId, assetSalesBucket, oldestDate, upToDate) {
+	var loadSalesInRange = function(assetId, oldestDate, upToDate) {
 		return new Promise(function(resolve, reject) {
-			var days = Math.floor((upToDate.getTime() - oldestDate.getTime()) / (24 * 60 * 60 * 1000));
-			var upToDateKey = getDateKey(upToDate);
 			var loadAfter = roundDownDate(oldestDate);
 			var result = {};
 	
-			for (let day = 0; day < days; day++) {
-				let date = addDays(oldestDate, day);
-				let dateKey = getDateKey(date);
-				let sales = assetSalesBucket.sales[dateKey];
-
-				if (sales) {
-					loadAfter = roundDownDate(addDays(date, 1));
-					result[dateKey] = sales;
-				} else {
-					result[dateKey] = createEmptySalesArray();
-				}
-			}
-
-			console.log(`Load remaining sales after ${loadAfter}`);
 			loadSalesUntilDate(assetId, loadAfter, null).then(function(sales) {
 				console.log(sales);
 
@@ -104,17 +88,11 @@ RPlus.bucketedSales = (function(){
 					var dateKey = getDateKey(saleDate);
 					var saleArray = result[dateKey];
 					if (!saleArray) {
-						console.warn(`Missing saleArray: ${dateKey} (${assetId})`);
 						saleArray = createEmptySalesArray();
 						result[dateKey] = saleArray;
 					}
 
 					saleArray[saleDate.getHours()]++;
-
-					if (dateKey !== upToDateKey) {
-						// Don't save sales for the current day. It's not finished.
-						assetSalesBucket.sales[dateKey] = saleArray;
-					}
 				});
 
 				resolve(result);
@@ -124,27 +102,10 @@ RPlus.bucketedSales = (function(){
 
 	return {
 		getBucketedAssetSales: $.promise.cache(function (resolve, reject, assetId, days) {
-			storage.get("bucketedAssetSales", function(buckets) {
-				buckets = buckets || {};
+			var currentDate = new Date();
+			var oldestDate = roundDownDate(addDays(currentDate, -days));
 
-				var currentDate = new Date();
-				var oldestDate = roundDownDate(addDays(currentDate, -days));
-				var assetSalesBucket = buckets[assetId] || {
-					sales: {}
-				};
-
-				loadSalesInRange(assetId, assetSalesBucket, oldestDate, currentDate).then(function(result) {
-					if (Object.keys(assetSalesBucket.sales).length > 0) {
-						buckets[assetId] = assetSalesBucket;
-
-						storage.set("bucketedAssetSales", buckets, function() {
-							resolve(result);
-						});
-					} else {
-						resolve(result);
-					}
-				}).catch(reject);
-			});
+			loadSalesInRange(assetId, oldestDate, currentDate).then(resolve).catch(reject);
 		}, {
 			queued: true
 		})
