@@ -80,7 +80,14 @@ RPlus.bucketedSales = (function(){
 		return new Promise(function(resolve, reject) {
 			var loadAfter = roundDownDate(oldestDate);
 			var result = {};
+			var days = Math.floor((upToDate.getTime() - oldestDate.getTime()) / (24 * 60 * 60 * 1000));
 	
+			for (let day = 0; day < days; day++) {
+				let date = addDays(oldestDate, day);
+				let dateKey = getDateKey(date);
+				result[dateKey] = createEmptySalesArray();
+			}
+
 			loadSalesUntilDate(assetId, loadAfter, null).then(function(sales) {
 				console.log(sales);
 
@@ -107,7 +114,9 @@ RPlus.bucketedSales = (function(){
 
 			loadSalesInRange(assetId, oldestDate, currentDate).then(resolve).catch(reject);
 		}, {
-			queued: true
+			queued: true,
+			resolveExpiry: 5 * 60 * 1000,
+			rejectExpiry: 30 * 1000
 		})
 	};
 })();
