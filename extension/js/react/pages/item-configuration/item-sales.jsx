@@ -2,10 +2,16 @@ class ItemSales extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.modes = {
+			hourly: "hourly",
+			daily: "daily"
+		};
+
 		this.state = {
 			dayOptions: [7, 30, 90, 180],
 			startDate: new Date(),
-			chartData: null
+			chartData: null,
+			mode: this.modes.hourly
 		};
 
 		this.chartDataBase = {
@@ -73,19 +79,32 @@ class ItemSales extends React.Component {
 		return filteredData;
 	}
 
-	setChartDataForDays(days) {
+	setChartDataForDays(days, mode) {
 		var translatedSalesData = [];
 
 		for (let date in this.salesData) {
-			this.salesData[date].forEach(function(hourlySales, i) {
-				var hourlyDate = new Date(date);
-				hourlyDate.setHours(i, 0, 0, 0);
+			switch (mode) {
+				case this.modes.daily:
+					translatedSalesData.push({
+						date: new Date(new Date(date).setHours(0, 0, 0, 0)),
+						value: this.addSales(this.salesData[date])
+					});
 
-				translatedSalesData.push({
-					date: hourlyDate,
-					value: hourlySales
-				});
-			});
+					break;
+				case this.modes.hourly:
+				default:
+					this.salesData[date].forEach(function(hourlySales, i) {
+						let hourlyDate = new Date(date);
+						hourlyDate.setHours(i, 0, 0, 0);
+		
+						translatedSalesData.push({
+							date: hourlyDate,
+							value: hourlySales
+						});
+					});
+
+					break;
+			}
 		}
 
 		var maxDate = this.state.startDate;
@@ -102,15 +121,20 @@ class ItemSales extends React.Component {
 
 		this.setState({
 			days: days,
+			mode: mode,
 			chartData: chartData
 		});
+	}
+
+	setMode(event) {
+		this.setChartDataForDays(this.state.days, event.target.value);
 	}
 
 	salesDataLoaded(days, salesData) {
 		console.log(salesData);
 
 		this.salesData = salesData;
-		this.setChartDataForDays(days);
+		this.setChartDataForDays(days, this.state.mode);
 	}
 
 	salesDataLoadFailure(e) {
@@ -122,7 +146,7 @@ class ItemSales extends React.Component {
 
 	getChartElement() {
 		if (this.state.chartDataError) {
-			return (<div>Sales data failed to load.</div>);
+			return (<div class="message-banner">Sales data failed to load.</div>);
 		}
 
 		if (this.state.chartData) {
@@ -130,7 +154,7 @@ class ItemSales extends React.Component {
 			return (<HighchartsReact options={this.state.chartData} />);
 		}
 
-		return (<div>Sales data loading...</div>);
+		return (<span class="spinner spinner-default"></span>);
 	}
 
 	render() {
@@ -138,7 +162,20 @@ class ItemSales extends React.Component {
 			<div>
 				<h3>Sales</h3>
 				<div class="section-content">
-					{this.getChartElement()}
+					<div class="item-sales-controls">
+						<div class="select-group rbx-select-group item-sales-mode">
+							<select class="input-field select-option rbx-select"
+								value={this.state.mode}
+								onChange={this.setMode.bind(this)}>
+								<option value={this.modes.hourly}>Hourly</option>
+								<option value={this.modes.daily}>Daily</option>
+							</select>
+							<span class="icon-arrow icon-down-16x16"></span>
+						</div>
+					</div>
+					<div class="item-sales-chart">
+						{this.getChartElement()}
+					</div>
 				</div>
 			</div>
 		);
@@ -146,29 +183,31 @@ class ItemSales extends React.Component {
 }
 
 Roblox.users.getAuthenticatedUser().then(function(user) {
-	if (user.id !== 48103520) {
-		// Feature not enabled yet.
-		return;
-	}
-
-	setInterval(function() {
-		var assetId = Number($("item-configuration").attr("item-id"));
-		if (isNaN(assetId) || assetId <= 0) {
+	RPlus.premium.isPremium(user.id).then(function(premium) {
+		if (!premium) {
+			// TODO: Missed oppurtunity to upsell.
 			return;
 		}
-	
-		var itemSalesTab = $("item-sales");
-		if (itemSalesTab.length > 0){
-			var itemSalesContainer = itemSalesTab.find("#rplus-item-sales");
-			if (itemSalesContainer.length <= 0) {
-				itemSalesContainer = $("<div id=\"rplus-item-sales\">");
-				itemSalesTab.append(itemSalesContainer);
-				
-				console.log("Render ItemSales in #rplus-item-sales");
-				ReactDOM.render(<ItemSales assetId={assetId} />, itemSalesContainer[0]);
+		
+		setInterval(function() {
+			var assetId = Number($("item-configuration").attr("item-id"));
+			if (isNaN(assetId) || assetId <= 0) {
+				return;
 			}
-		}
-	}, 500);
+		
+			var itemSalesTab = $("item-sales");
+			if (itemSalesTab.length > 0){
+				var itemSalesContainer = itemSalesTab.find("#rplus-item-sales");
+				if (itemSalesContainer.length <= 0) {
+					itemSalesContainer = $("<div id=\"rplus-item-sales\">");
+					itemSalesTab.append(itemSalesContainer);
+					
+					console.log("Render ItemSales in #rplus-item-sales");
+					ReactDOM.render(<ItemSales assetId={assetId} />, itemSalesContainer[0]);
+				}
+			}
+		}, 500);
+	}).catch(console.error);
 }).catch(console.error);
 
 // WebGL3D

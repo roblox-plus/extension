@@ -2,6 +2,14 @@ item-configuration {
 	item-sales {
 		#rplus-item-sales {
 			margin-top: 48px;
+
+			.item-sales-controls {
+				height: 48px;
+
+				.select-group.item-sales-mode {
+					float: right;
+				}
+			}
 		}
 	}
 }
