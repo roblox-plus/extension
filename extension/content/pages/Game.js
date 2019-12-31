@@ -94,7 +94,7 @@ RPlus.Pages.Game = function () {
 			});
 		};
 
-		Roblox.audio.getSoundUrl(255288110).then(function (audioUrl) {
+		Roblox.audio.getSoundUrl(2860310547).then(function (audioUrl) {
 			audioTag.src = audioUrl;
 			forceLoad();
 		}).catch(function () {
