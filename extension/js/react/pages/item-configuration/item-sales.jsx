@@ -37,8 +37,7 @@ class ItemSales extends React.Component {
 			}
 		};
 
-		var days = this.state.dayOptions[this.state.dayOptions.length - 1];
-		this.setDays(days);
+		var days = this.state.days = this.state.dayOptions[this.state.dayOptions.length - 1];
 		RPlus.bucketedSales.getBucketedAssetSales(props.assetId, days).then(this.salesDataLoaded.bind(this, days)).catch(this.salesDataLoadFailure.bind(this));
 	}
 
@@ -71,17 +70,14 @@ class ItemSales extends React.Component {
 				&& item.date.getTime() <= maxDate.getTime();
 		});
 
-		console.log(minDate, maxDate, salesData, filteredData);
-
 		return filteredData;
 	}
 
-	salesDataLoaded(days, salesData) {
+	setChartDataForDays(days) {
 		var translatedSalesData = [];
 
-		console.log(salesData, days);
-		for (let date in salesData) {
-			salesData[date].forEach(function(hourlySales, i) {
+		for (let date in this.salesData) {
+			this.salesData[date].forEach(function(hourlySales, i) {
 				var hourlyDate = new Date(date);
 				hourlyDate.setHours(i, 0, 0, 0);
 
@@ -103,10 +99,18 @@ class ItemSales extends React.Component {
 
 		chartData.xAxis.min = minDate.getTime();
 		chartData.xAxis.max = maxDate.getTime();
-		
+
 		this.setState({
+			days: days,
 			chartData: chartData
 		});
+	}
+
+	salesDataLoaded(days, salesData) {
+		console.log(salesData);
+
+		this.salesData = salesData;
+		this.setChartDataForDays(days);
 	}
 
 	salesDataLoadFailure(e) {
