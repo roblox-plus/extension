@@ -39,7 +39,7 @@ class VerticalTabs extends React.Component {
 		});
 
 		return (
-			<div class="rbx-tabs-vertical">
+			<div class="menu-vertical-container">
 				<ul class="menu-vertical">
 					{ tabListItems }
 				</ul>
