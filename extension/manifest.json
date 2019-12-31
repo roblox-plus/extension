@@ -171,6 +171,7 @@
 				"/css/output/pages/item-configuration.css"
 			],
 			"matches": [
+				"*://*.roblox.com/catalog/configure*",
 				"*://*.roblox.com/library/configure*"
 			],
 			"run_at": "document_end"

@@ -40,6 +40,9 @@ class ItemSales extends React.Component {
 					text: ""
 				},
 				"min": 0
+			},
+			time: {
+				useUTC: false
 			}
 		};
 
@@ -166,7 +169,8 @@ class ItemSales extends React.Component {
 						<div class="select-group rbx-select-group item-sales-mode">
 							<select class="input-field select-option rbx-select"
 								value={this.state.mode}
-								onChange={this.setMode.bind(this)}>
+								onChange={this.setMode.bind(this)}
+								disabled={!this.state.chartData}>
 								<option value={this.modes.hourly}>Hourly</option>
 								<option value={this.modes.daily}>Daily</option>
 							</select>
