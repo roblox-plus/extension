@@ -20,6 +20,11 @@ Roblox.groups = (function () {
 				return aspxMatch;
 			}
 
+			let configureGroupMatch = url.toLowerCase().includes("groups/configure") ? Number((url.match(/id=(\d+)/i) || ["", 0])[1]) : NaN;
+			if (!isNaN(configureGroupMatch) && configureGroupMatch > 0) {
+				return configureGroupMatch;
+			}
+
 			return NaN;
 		},
 

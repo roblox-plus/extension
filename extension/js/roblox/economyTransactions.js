@@ -314,7 +314,7 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 		});
 	};
 
-	var purgeTransactions = function() {
+	const purgeTransactions = function() {
 		var p = new Promise(function(resolve, reject) {
 			var purgeDate = getPurgeDate();
 			getTransactionsDatabase().then(function(transactionsDatabase) {
@@ -343,6 +343,16 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 		}).catch(function(e) {
 			console.error("economy transactions purge failure:", e);
 		});
+	};
+
+	const startDateFilter = function(startDateTime) {
+		return function(row) {
+			 if (startDateTime) { 
+				 return row.created >= startDateTime;
+			 }
+
+			 return true; 
+		};
 	};
 
 	setInterval(purgeTransactions, 60 * 60 * 1000); // Purge old transactions once per hour.
@@ -395,13 +405,7 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 				transactionsDatabase.economyTransactions.query("itemId")
 					.only(itemId)
 					.filter("itemType", itemType)
-					.filter(function(row) {
-						 if (startDateTime) { 
-							 return row.created >= startDateTime;
-						 }
-
-						 return true; 
-					})
+					.filter(startDateFilter(startDateTime))
 					.execute()
 					.then(resolve).catch(reject);
 			}).catch(reject);
@@ -410,11 +414,12 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 			resolveExpiry: 10 * 1000
 		}),
 
-		getUserTransactions: $.promise.cache(function(resolve, reject, userId) {
+		getUserTransactions: $.promise.cache(function(resolve, reject, userId, startDateTime) {
 			getTransactionsDatabase().then(function(transactionsDatabase) {
 				transactionsDatabase.economyTransactions.query("sellerId")
 					.only(userId)
 					.filter("sellerType", "User")
+					.filter(startDateFilter(startDateTime))
 					.execute()
 					.then(resolve).catch(reject);
 			}).catch(reject);
@@ -423,11 +428,12 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 			resolveExpiry: 10 * 1000
 		}),
 
-		getGroupTransactions: $.promise.cache(function(resolve, reject, groupId) {
+		getGroupTransactions: $.promise.cache(function(resolve, reject, groupId, startDateTime) {
 			getTransactionsDatabase().then(function(transactionsDatabase) {
 				transactionsDatabase.economyTransactions.query("sellerId")
 					.only(groupId)
 					.filter("sellerType", "Group")
+					.filter(startDateFilter(startDateTime))
 					.execute()
 					.then(resolve).catch(reject);
 			}).catch(reject);

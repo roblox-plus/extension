@@ -166,6 +166,24 @@ RPlus.bucketedSales = (function () {
 		}
 	};
 
+	const getTransactionsBySeller = function (sellerType, sellerId, oldestDate) {
+		return new Promise(function(resolve, reject) {
+			switch (sellerType) {
+				case "User":
+					Roblox.economyTransactions.getUserTransactions(sellerId, oldestDate.getTime()).then(resolve).catch(reject);
+					break;
+				case "Group":
+					Roblox.economyTransactions.getGroupTransactions(sellerId, oldestDate.getTime()).then(resolve).catch(reject);
+					break;
+				default:
+					reject("Unsupported sllerType: " + sellerType);
+					return;
+			}
+
+			tryScanCreator({ type: sellerType, id: sellerId });
+		});
+	};
+
 	return {
 		getItemScanStatus: $.promise.cache(function (resolve, reject, itemType, itemId) {
 			getCreatorByItem(itemType, itemId).then(function(creator) {
@@ -202,6 +220,24 @@ RPlus.bucketedSales = (function () {
 			getTransactionsByItem(itemType, itemId, function (transactions) {
 				resolve(translateTransactionsToRevenue(transactions, oldestDate, currentDate));
 			}, oldestDate, reject);
+		}),
+
+		getBucketedSellerSales: $.promise.cache(function (resolve, reject, sellerType, sellerId, days) {
+			var currentDate = new Date();
+			var oldestDate = roundDownDate(addDays(currentDate, -days));
+
+			getTransactionsBySeller(sellerType, sellerId, oldestDate).then(function (transactions) {
+				resolve(translateTransactionsToSales(transactions, oldestDate, currentDate));
+			}).catch(reject);
+		}),
+
+		getBucketedSellerRevenue: $.promise.cache(function (resolve, reject, sellerType, sellerId, days) {
+			var currentDate = new Date();
+			var oldestDate = roundDownDate(addDays(currentDate, -days));
+
+			getTransactionsBySeller(sellerType, sellerId, oldestDate).then(function (transactions) {
+				resolve(translateTransactionsToRevenue(transactions, oldestDate, currentDate));
+			}).catch(reject);
 		})
 	};
 })();

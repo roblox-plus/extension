@@ -167,16 +167,31 @@
 		
 		{
 			"js": [
-				"/js/output/react/pages/item-configuration/bucketed-sales-chart.js",
+				"/js/output/react/components/bucketed-sales-chart.js",
 				"/js/output/react/pages/item-configuration/item-sales.js"
 			],
 			"css": [
-				"/css/output/pages/item-configuration.css"
+				"/css/output/pages/item-configuration.css",
+				"/css/output/components/bucketed-sales-chart.css"
 			],
 			"matches": [
 				"*://*.roblox.com/catalog/configure*",
 				"*://*.roblox.com/library/configure*",
 				"*://*.roblox.com/game-pass/configure*"
+			],
+			"run_at": "document_end"
+		},
+		
+		{
+			"js": [
+				"/js/output/react/components/bucketed-sales-chart.js",
+				"/js/output/react/pages/configure-group/revenue.js"
+			],
+			"css": [
+				"/css/output/components/bucketed-sales-chart.css"
+			],
+			"matches": [
+				"*://*.roblox.com/groups/configure*"
 			],
 			"run_at": "document_end"
 		},

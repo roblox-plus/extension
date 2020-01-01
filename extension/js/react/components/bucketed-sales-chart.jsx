@@ -176,7 +176,6 @@ class BucketedSalesChart extends React.Component {
 		}
 
 		if (this.state.chartData) {
-			console.log(this.state);
 			return (<HighchartsReact options={this.state.chartData} />);
 		}
 
