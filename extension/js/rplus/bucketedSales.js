@@ -238,6 +238,88 @@ RPlus.bucketedSales = (function () {
 			getTransactionsBySeller(sellerType, sellerId, oldestDate).then(function (transactions) {
 				resolve(translateTransactionsToRevenue(transactions, oldestDate, currentDate));
 			}).catch(reject);
+		}),
+
+		getBucketedGroupSalesByGame: $.promise.cache(function (resolve, reject, groupId, days) {
+			var currentDate = new Date();
+			var oldestDate = roundDownDate(addDays(currentDate, -days));
+
+			getTransactionsBySeller("Group", groupId, oldestDate).then(function (transactions) {
+				var filteredTransactions = {};
+				var result = {};
+
+				transactions.forEach(function(transaction) {
+					if (!transaction.gameId) {
+						return;
+					}
+
+					if (!filteredTransactions[transaction.gameId]) {
+						filteredTransactions[transaction.gameId] = [];
+					}
+
+					filteredTransactions[transaction.gameId].push(transaction);
+				});
+
+				for (let gameId in filteredTransactions) {
+					result[gameId] = translateTransactionsToSales(filteredTransactions[gameId], oldestDate, currentDate);
+				}
+
+				// Add missing games that haven't made any money recently (better user experience).
+				Roblox.games.getGroupGames(groupId).then(function(games) {
+					games.forEach(function(game) {
+						if (!result[game.id]) {
+							result[game.id] = createResultBuckets(oldestDate, currentDate);
+						}
+					});
+
+					resolve(result);
+				}).catch(function(err) {
+					// Nice to have. Not critical.
+					console.error(err);
+					resolve(result);
+				});
+			}).catch(reject);
+		}),
+
+		getBucketedGroupRevenueByGame: $.promise.cache(function (resolve, reject, groupId, days) {
+			var currentDate = new Date();
+			var oldestDate = roundDownDate(addDays(currentDate, -days));
+
+			getTransactionsBySeller("Group", groupId, oldestDate).then(function (transactions) {
+				var filteredTransactions = {};
+				var result = {};
+
+				transactions.forEach(function(transaction) {
+					if (!transaction.gameId) {
+						return;
+					}
+
+					if (!filteredTransactions[transaction.gameId]) {
+						filteredTransactions[transaction.gameId] = [];
+					}
+
+					filteredTransactions[transaction.gameId].push(transaction);
+				});
+
+				for (let gameId in filteredTransactions) {
+					result[gameId] = translateTransactionsToRevenue(filteredTransactions[gameId], oldestDate, currentDate);
+				}
+
+				// Add missing games that haven't made any money recently (better user experience).
+				Roblox.games.getGroupGames(groupId).then(function(games) {
+					games.forEach(function(game) {
+						if (!result[game.id]) {
+							result[game.id] = createResultBuckets(oldestDate, currentDate);
+						}
+					});
+
+					resolve(result);
+				}).catch(function(err) {
+					// Nice to have. Not critical.
+					console.error(err);
+					resolve(result);
+				});
+			}).catch(reject);
 		})
 	};
 })();

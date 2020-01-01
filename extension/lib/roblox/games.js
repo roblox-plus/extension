@@ -198,6 +198,27 @@
 			queued: true
 		}),
 
+		getGroupGames: $.promise.cache(function(resolve, reject, groupId) {
+			$.get(`https://games.roblox.com/v2/groups/${groupId}/games`, {
+				limit: 100,
+				sortOrder: "Asc",
+				accessFilter: "Public"
+			}).done(function(games) {
+				resolve(games.data.map(function(game) {
+					return {
+						id: game.id,
+						name: game.name
+					};
+				}));
+			}).fail(function(jxhr, errors) {
+				reject(errors);
+			});
+		}, {
+			resolveExpiry: 60 * 1000,
+			rejectExpiry: 5 * 1000,
+			queued: true
+		}),
+
 		getVipServers: getVipServers,
 
 		isGameServerTrackingEnabled: function() {

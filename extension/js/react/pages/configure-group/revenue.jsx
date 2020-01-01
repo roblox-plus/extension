@@ -1,6 +1,16 @@
 class GroupRevenue extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			games: []
+		};
+
+		Roblox.games.getGroupGames(this.props.groupId).then((games) => {
+			this.setState({
+				games: games
+			});
+		}).catch(console.error);
 	}
 
 	loadSalesData(days) { 
@@ -13,8 +23,49 @@ class GroupRevenue extends React.Component {
 		return RPlus.bucketedSales.getBucketedSellerRevenue("Group", this.props.groupId, days);
 	}
 
+	loadSalesDataByGame(days) {
+		console.log("Load game sales data", this.props.groupId);
+		return RPlus.bucketedSales.getBucketedGroupSalesByGame(this.props.groupId, days);
+	}
+
+	loadRevenueDataByGame(days) {
+		console.log("Load game revenue data", this.props.groupId);
+		return RPlus.bucketedSales.getBucketedGroupRevenueByGame(this.props.groupId, days);
+	}
+
 	getItemScanStatus() {
 		return Roblox.economyTransactions.getGroupScanStatus(this.props.groupId);
+	}
+
+	translateGroupGameSeries(salesData, mode, translateBucket) {
+		return new Promise((resolve, reject) => {
+			var result = [];
+
+			this.state.games.forEach(function(game) {
+				var transactions = salesData[game.id];
+				if (transactions) {
+					result.push({
+						name: game.name,
+						data: translateBucket(transactions, mode)
+					});
+				}
+			});
+
+			resolve(result);
+		});
+	}
+
+	getGameCharts() {
+		if (this.state.games.length > 0) {
+			return (
+				<div>
+					<BucketedSalesChart loadSalesData={this.loadSalesDataByGame.bind(this)} getScanStatus={this.getItemScanStatus.bind(this)} seriesTranslator={this.translateGroupGameSeries.bind(this)} legend={true} name="Sales by game" />
+					<BucketedSalesChart loadSalesData={this.loadRevenueDataByGame.bind(this)} getScanStatus={this.getItemScanStatus.bind(this)} seriesTranslator={this.translateGroupGameSeries.bind(this)} legend={true} name="Revenue by game" />
+				</div>
+			);
+		}
+
+		return "";
 	}
 
 	render() {
@@ -22,6 +73,7 @@ class GroupRevenue extends React.Component {
 			<div>
 				<BucketedSalesChart loadSalesData={this.loadSalesData.bind(this)} getScanStatus={this.getItemScanStatus.bind(this)} name="Sales" />
 				<BucketedSalesChart loadSalesData={this.loadRevenueData.bind(this)} getScanStatus={this.getItemScanStatus.bind(this)} name="Revenue" />
+				{this.getGameCharts()}
 			</div>
 		);
 	}

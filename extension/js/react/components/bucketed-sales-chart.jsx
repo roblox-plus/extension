@@ -26,7 +26,13 @@ class BucketedSalesChart extends React.Component {
 				text: ""
 			},
 			legend: {
-				enabled: false
+				enabled: this.props.legend || false,
+				useHTML: this.props.legend || false,
+				labelFormatter: function() {
+					var span = $("<span class=\"text-lead\">").text(this.name);
+					console.log(span[0].outerHTML);
+					return span[0].outerHTML;
+				}
 			},
 			xAxis: {
 				"type": "datetime",
@@ -86,21 +92,21 @@ class BucketedSalesChart extends React.Component {
 		return filteredData;
 	}
 
-	setChartDataForDays(days, mode) {
+	translateBucket(salesData, mode) {
 		var translatedSalesData = [];
 
-		for (let date in this.salesData) {
+		for (let date in salesData) {
 			switch (mode) {
 				case this.modes.daily:
 					translatedSalesData.push({
 						date: new Date(new Date(date).setHours(0, 0, 0, 0)),
-						value: this.addSales(this.salesData[date])
+						value: this.addSales(salesData[date])
 					});
 
 					break;
 				case this.modes.hourly:
 				default:
-					this.salesData[date].forEach(function(hourlySales, i) {
+					salesData[date].forEach(function(hourlySales, i) {
 						let hourlyDate = new Date(date);
 						hourlyDate.setHours(i, 0, 0, 0);
 		
@@ -114,23 +120,48 @@ class BucketedSalesChart extends React.Component {
 			}
 		}
 
+		return translatedSalesData;
+	}
+
+	setChartDataForDays(days, mode) {
 		var maxDate = this.state.startDate;
 		var minDate = this.getDateMinusDays(maxDate, days);
 
-		var chartData = Object.assign({
-			series: [
-				Highcharts.toHighchartsSeries(this.props.name, this.filterItems(minDate, maxDate, translatedSalesData))
-			]
-		}, this.chartDataBase);
-
-		chartData.xAxis.min = minDate.getTime();
-		chartData.xAxis.max = maxDate.getTime();
-
-		this.setState({
-			days: days,
-			mode: mode,
-			chartData: chartData
-		});
+		if (this.props.seriesTranslator) {
+			this.props.seriesTranslator(this.salesData, mode, this.translateBucket.bind(this)).then((translatedSalesDatas) => {
+				var chartData = Object.assign({
+					series: translatedSalesDatas.map((data) => {
+						return Highcharts.toHighchartsSeries(data.name, this.filterItems(minDate, maxDate, data.data));
+					})
+				}, this.chartDataBase);
+		
+				chartData.xAxis.min = minDate.getTime();
+				chartData.xAxis.max = maxDate.getTime();
+		
+				this.setState({
+					days: days,
+					mode: mode,
+					chartData: chartData
+				});
+			}).catch(console.error);
+		} else {
+			var translatedSalesData = this.translateBucket(this.salesData, mode);
+	
+			var chartData = Object.assign({
+				series: [
+					Highcharts.toHighchartsSeries(this.props.name, this.filterItems(minDate, maxDate, translatedSalesData))
+				]
+			}, this.chartDataBase);
+	
+			chartData.xAxis.min = minDate.getTime();
+			chartData.xAxis.max = maxDate.getTime();
+	
+			this.setState({
+				days: days,
+				mode: mode,
+				chartData: chartData
+			});
+		}
 	}
 
 	setMode(event) {
