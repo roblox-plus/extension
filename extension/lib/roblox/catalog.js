@@ -203,6 +203,39 @@ Roblox.catalog = (function () {
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 5 * 1000
 		}),
+		
+		getGamePassInfo: $.promise.cache(function (resolve, reject, gamePassId) {
+			if (typeof (gamePassId) != "number" || gamePassId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid gamePassId"
+				}]);
+				return;
+			}
+
+			$.get("https://api.roblox.com/marketplace/game-pass-product-info", { gamePassId: gamePassId }).done(function (r) {
+				resolve({
+					id: gamePassId,
+					name: r.Name,
+					description: r.Description,
+					creator: {
+						id: r.Creator.CreatorTargetId,
+						name: r.Creator.Name,
+						type: r.Creator.CreatorType,
+						agentId: r.Creator.Id
+					},
+					robuxPrice: Number(r.PriceInRobux) || 0,
+					isForSale: r.IsForSale,
+					isFree: r.IsPublicDomain
+				});
+			}).fail(function (jxhr, errors) {
+				reject(errors);
+			});
+		}, {
+			queued: true,
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 5 * 1000
+		}),
 
 		getAssetSalesCount: $.promise.cache(function (resolve, reject, assetId) {
 			Roblox.catalog.getAssetInfo(assetId).then(function(asset) {

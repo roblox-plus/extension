@@ -4,11 +4,11 @@ class ItemSales extends React.Component {
 	}
 
 	loadSalesData(days) { 
-		return RPlus.bucketedSales.getBucketedAssetSales(this.props.assetId, days);
+		return RPlus.bucketedSales.getBucketedItemSales("Asset", this.props.assetId, days);
 	}
 
 	loadRevenueData(days) {
-		return RPlus.bucketedSales.getBucketedAssetRevenue(this.props.assetId, days);
+		return RPlus.bucketedSales.getBucketedItemRevenue("Asset", this.props.assetId, days);
 	}
 
 	render() {

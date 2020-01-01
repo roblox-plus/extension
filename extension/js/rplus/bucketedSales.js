@@ -108,27 +108,50 @@ RPlus.bucketedSales = (function(){
 		});
 	};
 
+	const getGamePassTransactions = function(gamePassId, oldestDate) {
+		return new Promise(function(resolve, reject) {
+			Roblox.catalog.getGamePassInfo(gamePassId).then(function(gamePass) {
+				tryScanCreator(asset.creator);
+				Roblox.economyTransactions.getItemTransactions("GamePass", gamePassId, oldestDate.getTime()).then(resolve).catch(reject);
+			}).catch(reject);
+		});
+	};
+
+	const getTransactionsByItem = function(itemType, itemId, transactionsLoaded, oldestDate, reject) {
+		switch (itemType) {
+			case "Asset":
+				getAssetTransactions(itemId, oldestDate).then(transactionsLoaded).catch(reject);
+				return;
+			case "GamePass":
+				getGamePassTransactions(itemId, oldestDate).then(transactionsLoaded).catch(reject);
+				return;
+			default:
+				reject("Unsupported itemType: " + itemType);
+				return;
+		}
+	};
+
 	return {
-		getBucketedAssetSales: $.promise.cache(function (resolve, reject, assetId, days) {
+		getBucketedItemSales: $.promise.cache(function (resolve, reject, itemType, itemId, days) {
 			var currentDate = new Date();
 			var oldestDate = roundDownDate(addDays(currentDate, -days));
 
-			getAssetTransactions(assetId, oldestDate).then(function(transactions) {
+			getTransactionsByItem(itemType, itemId, function(transactions) {
 				resolve(translateTransactionsToSales(transactions, oldestDate, currentDate));
-			}).catch(reject);
+			}, oldestDate, reject);
 		}, {
 			queued: true,
 			resolveExpiry: 5 * 60 * 1000,
 			rejectExpiry: 30 * 1000
 		}),
 
-		getBucketedAssetRevenue: $.promise.cache(function (resolve, reject, assetId, days) {
+		getBucketedItemRevenue: $.promise.cache(function (resolve, reject, itemType, itemId, days) {
 			var currentDate = new Date();
 			var oldestDate = roundDownDate(addDays(currentDate, -days));
 
-			getAssetTransactions(assetId, oldestDate).then(function(transactions) {
+			getTransactionsByItem(itemType, itemId, function(transactions) {
 				resolve(translateTransactionsToRevenue(transactions, oldestDate, currentDate));
-			}).catch(reject);
+			}, oldestDate, reject);
 		})
 	};
 })();
