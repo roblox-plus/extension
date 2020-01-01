@@ -167,6 +167,7 @@
 		
 		{
 			"js": [
+				"/js/output/react/pages/item-configuration/bucketed-sales-chart.js",
 				"/js/output/react/pages/item-configuration/item-sales.js"
 			],
 			"css": [
