@@ -332,11 +332,18 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 			resolveExpiry: 500
 		}),
 
-		getItemTransactions: $.promise.cache(function (resolve, reject, itemType, itemId) {
+		getItemTransactions: $.promise.cache(function (resolve, reject, itemType, itemId, startDateTime) {
 			getTransactionsDatabase().then(function(transactionsDatabase) {
 				transactionsDatabase.economyTransactions.query("itemId")
 					.only(itemId)
 					.filter("itemType", itemType)
+					.filter(function(row) {
+						 if (startDateTime) { 
+							 return row.created >= startDateTime;
+						 }
+
+						 return true; 
+					})
 					.execute()
 					.then(resolve).catch(reject);
 			}).catch(reject);
