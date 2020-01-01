@@ -175,7 +175,8 @@
 			],
 			"matches": [
 				"*://*.roblox.com/catalog/configure*",
-				"*://*.roblox.com/library/configure*"
+				"*://*.roblox.com/library/configure*",
+				"*://*.roblox.com/game-pass/configure*"
 			],
 			"run_at": "document_end"
 		},

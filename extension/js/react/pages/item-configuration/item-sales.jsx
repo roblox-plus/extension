@@ -1,14 +1,26 @@
 class ItemSales extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.itemType = this.getItemType();
+	}
+
+	getItemType() {
+		if (location.pathname.toLowerCase().startsWith("/game-pass/configure")) {
+			return "GamePass";
+		}
+
+		return "Asset";
 	}
 
 	loadSalesData(days) { 
-		return RPlus.bucketedSales.getBucketedItemSales("Asset", this.props.assetId, days);
+		console.log("Load sales data", this.itemType, this.props.itemId);
+		return RPlus.bucketedSales.getBucketedItemSales(this.itemType, this.props.itemId, days);
 	}
 
 	loadRevenueData(days) {
-		return RPlus.bucketedSales.getBucketedItemRevenue("Asset", this.props.assetId, days);
+		console.log("Load revenue data", this.itemType, this.props.itemId);
+		return RPlus.bucketedSales.getBucketedItemRevenue(this.itemType, this.props.itemId, days);
 	}
 
 	render() {
@@ -29,8 +41,8 @@ Roblox.users.getAuthenticatedUser().then(function(user) {
 		}
 		
 		setInterval(function() {
-			var assetId = Number($("item-configuration").attr("item-id"));
-			if (isNaN(assetId) || assetId <= 0) {
+			var itemId = Number($("item-configuration").attr("item-id"));
+			if (isNaN(itemId) || itemId <= 0) {
 				return;
 			}
 		
@@ -42,7 +54,7 @@ Roblox.users.getAuthenticatedUser().then(function(user) {
 					itemSalesTab.append(itemSalesContainer);
 					
 					console.log("Render ItemSales in #rplus-item-sales");
-					ReactDOM.render(<ItemSales assetId={assetId} />, itemSalesContainer[0]);
+					ReactDOM.render(<ItemSales itemId={itemId} />, itemSalesContainer[0]);
 				}
 			}
 		}, 500);

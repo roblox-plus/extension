@@ -111,7 +111,7 @@ RPlus.bucketedSales = (function(){
 	const getGamePassTransactions = function(gamePassId, oldestDate) {
 		return new Promise(function(resolve, reject) {
 			Roblox.catalog.getGamePassInfo(gamePassId).then(function(gamePass) {
-				tryScanCreator(asset.creator);
+				tryScanCreator(gamePass.creator);
 				Roblox.economyTransactions.getItemTransactions("GamePass", gamePassId, oldestDate.getTime()).then(resolve).catch(reject);
 			}).catch(reject);
 		});
