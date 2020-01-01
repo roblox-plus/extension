@@ -48,6 +48,10 @@ class BucketedSalesChart extends React.Component {
 
 		var days = this.state.days = this.state.dayOptions[this.state.dayOptions.length - 1];
 		props.loadSalesData(days).then(this.salesDataLoaded.bind(this, days)).catch(this.salesDataLoadFailure.bind(this));
+		
+		setInterval(() => {
+			props.getScanStatus().then(this.loadStatusSuccess.bind(this)).catch(this.loadStatusFailure.bind(this));
+		}, 500);
 	}
 
 	addSales(sales) {
@@ -147,6 +151,25 @@ class BucketedSalesChart extends React.Component {
 		});
 	}
 
+	loadStatusSuccess(status) {
+		if (status) {
+			var cursor = status.cursor || "loading";
+			this.setState({
+				loadStatus: (<span class="text-secondary">Data is actively being scanned... {`(transactions: ${status.count}, cursor: ${cursor.substring(0, 20)})`}</span>)
+			});
+		} else {
+			this.setState({
+				loadStatus: ""
+			});
+		}
+	}
+
+	loadStatusFailure() {
+		this.setState({
+			loadStatus: ""
+		});
+	}
+
 	getChartElement() {
 		if (this.state.chartDataError) {
 			return (<div class="message-banner">{this.props.name} data failed to load.</div>);
@@ -180,6 +203,7 @@ class BucketedSalesChart extends React.Component {
 					<div class="item-sales-chart">
 						{this.getChartElement()}
 					</div>
+					{this.state.loadStatus}
 				</div>
 			</div>
 		);

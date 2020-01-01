@@ -1,6 +1,8 @@
 var RPlus = RPlus || {};
-RPlus.bucketedSales = (function(){
-	const addDays = function(date, days) {
+RPlus.bucketedSales = (function () {
+	var knownCreators = {};
+
+	const addDays = function (date, days) {
 		if (days === 0) {
 			return date;
 		}
@@ -9,16 +11,16 @@ RPlus.bucketedSales = (function(){
 		return new Date(copyDate.setDate(copyDate.getDate() + days));
 	};
 
-	const roundDownDate = function(date) {
+	const roundDownDate = function (date) {
 		var copyDate = new Date(date);
 		return new Date(copyDate.setHours(0, 0, 0, 0));
 	};
 
-	const getDateKey = function(date) {
+	const getDateKey = function (date) {
 		return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 	};
 
-	const createEmptySalesArray = function() {
+	const createEmptySalesArray = function () {
 		var sales = [];
 		for (var h = 0; h < 24; h++) {
 			sales.push(0);
@@ -27,7 +29,7 @@ RPlus.bucketedSales = (function(){
 		return sales;
 	};
 
-	const createResultBuckets = function(oldestDate, upToDate) {
+	const createResultBuckets = function (oldestDate, upToDate) {
 		var result = {};
 		var days = Math.floor((upToDate.getTime() - oldestDate.getTime()) / (24 * 60 * 60 * 1000));
 
@@ -40,10 +42,10 @@ RPlus.bucketedSales = (function(){
 		return result;
 	}
 
-	const translateTransactionsToSales = function(transactions, oldestDate, upToDate) {
+	const translateTransactionsToSales = function (transactions, oldestDate, upToDate) {
 		var result = createResultBuckets(oldestDate, upToDate);
 
-		transactions.forEach(function(transaction) {
+		transactions.forEach(function (transaction) {
 			var saleDate = new Date(transaction.created);
 			var dateKey = getDateKey(saleDate);
 			var saleArray = result[dateKey];
@@ -59,10 +61,10 @@ RPlus.bucketedSales = (function(){
 		return result;
 	};
 
-	const translateTransactionsToRevenue = function(transactions, oldestDate, upToDate) {
+	const translateTransactionsToRevenue = function (transactions, oldestDate, upToDate) {
 		var result = createResultBuckets(oldestDate, upToDate);
 
-		transactions.forEach(function(transaction) {
+		transactions.forEach(function (transaction) {
 			var saleDate = new Date(transaction.created);
 			var dateKey = getDateKey(saleDate);
 			var saleArray = result[dateKey];
@@ -78,19 +80,19 @@ RPlus.bucketedSales = (function(){
 		return result;
 	};
 
-	const tryScanCreator = function(creator) {
+	const tryScanCreator = function (creator) {
 		switch (creator.type) {
 			case "User":
 				console.log("Kicking off user transaction scan...", creator.id);
 
-				Roblox.economyTransactions.scanUserTransactions(creator.id).then(function(userTransactionCount) {
+				Roblox.economyTransactions.scanUserTransactions(creator.id).then(function (userTransactionCount) {
 					console.log(`Scanned all user (${creator.id}) transactions (count: ${userTransactionCount})`);
 				}).catch(console.error);
 				break;
 			case "Group":
 				console.log("Kicking off group transaction scan...", creator.id);
 
-				Roblox.economyTransactions.scanGroupTransactions(creator.id).then(function(groupTransactionCount) {
+				Roblox.economyTransactions.scanGroupTransactions(creator.id).then(function (groupTransactionCount) {
 					console.log(`Scanned all group (${creator.id}) transactions (count: ${groupTransactionCount})`);
 				}).catch(console.error);
 				break;
@@ -99,25 +101,58 @@ RPlus.bucketedSales = (function(){
 		}
 	};
 
-	const getAssetTransactions = function(assetId, oldestDate) {
-		return new Promise(function(resolve, reject) {
-			Roblox.catalog.getAssetInfo(assetId).then(function(asset) {
-				tryScanCreator(asset.creator);
+	const getCreatorByItem = function (itemType, itemId) {
+		return new Promise(function (resolve, reject) {
+			var cacheKey = `${itemType}:${itemId}`;
+			if (knownCreators[cacheKey]) {
+				resolve(Object.assign({}, knownCreators[cacheKey]));
+				return;
+			}
+
+			var gotCreator = function(creator) {
+				knownCreators[cacheKey] = creator;
+				resolve(Object.assign({}, creator));
+			};
+
+			switch (itemType) {
+				case "Asset":
+					Roblox.catalog.getAssetInfo(itemId).then(function (asset) {
+						gotCreator(asset.creator);
+					}).catch(reject);
+					
+					return;
+				case "GamePass":
+					Roblox.catalog.getGamePassInfo(itemId).then(function (gamePass) {
+						gotCreator(gamePass.creator);
+					}).catch(reject);
+					
+					return;
+				default:
+					reject("Unsupported itemType: " + itemType);
+					return;
+			}
+		});
+	};
+
+	const getAssetTransactions = function (assetId, oldestDate) {
+		return new Promise(function (resolve, reject) {
+			getCreatorByItem("Asset", assetId).then(function(creator) {
+				tryScanCreator(creator);
 				Roblox.economyTransactions.getItemTransactions("Asset", assetId, oldestDate.getTime()).then(resolve).catch(reject);
 			}).catch(reject);
 		});
 	};
 
-	const getGamePassTransactions = function(gamePassId, oldestDate) {
-		return new Promise(function(resolve, reject) {
-			Roblox.catalog.getGamePassInfo(gamePassId).then(function(gamePass) {
-				tryScanCreator(gamePass.creator);
+	const getGamePassTransactions = function (gamePassId, oldestDate) {
+		return new Promise(function (resolve, reject) {
+			getCreatorByItem("GamePass", gamePassId).then(function(creator) {
+				tryScanCreator(creator);
 				Roblox.economyTransactions.getItemTransactions("GamePass", gamePassId, oldestDate.getTime()).then(resolve).catch(reject);
 			}).catch(reject);
 		});
 	};
 
-	const getTransactionsByItem = function(itemType, itemId, transactionsLoaded, oldestDate, reject) {
+	const getTransactionsByItem = function (itemType, itemId, transactionsLoaded, oldestDate, reject) {
 		switch (itemType) {
 			case "Asset":
 				getAssetTransactions(itemId, oldestDate).then(transactionsLoaded).catch(reject);
@@ -132,24 +167,39 @@ RPlus.bucketedSales = (function(){
 	};
 
 	return {
+		getItemScanStatus: $.promise.cache(function (resolve, reject, itemType, itemId) {
+			getCreatorByItem(itemType, itemId).then(function(creator) {
+				switch (creator.type) {
+					case "User":
+						Roblox.economyTransactions.getUserScanStatus(creator.id).then(resolve).catch(reject);
+						return;
+					case "Group":
+						Roblox.economyTransactions.getGroupScanStatus(creator.id).then(resolve).catch(reject);
+						return;
+					default:
+						reject("Unsupported creator type: " + creator.type);
+						return;
+				}
+			}).catch(reject);
+		}, {
+			rejectExpiry: 100,
+			resolveExpiry: 100
+		}),
+
 		getBucketedItemSales: $.promise.cache(function (resolve, reject, itemType, itemId, days) {
 			var currentDate = new Date();
 			var oldestDate = roundDownDate(addDays(currentDate, -days));
 
-			getTransactionsByItem(itemType, itemId, function(transactions) {
+			getTransactionsByItem(itemType, itemId, function (transactions) {
 				resolve(translateTransactionsToSales(transactions, oldestDate, currentDate));
 			}, oldestDate, reject);
-		}, {
-			queued: true,
-			resolveExpiry: 5 * 60 * 1000,
-			rejectExpiry: 30 * 1000
 		}),
 
 		getBucketedItemRevenue: $.promise.cache(function (resolve, reject, itemType, itemId, days) {
 			var currentDate = new Date();
 			var oldestDate = roundDownDate(addDays(currentDate, -days));
 
-			getTransactionsByItem(itemType, itemId, function(transactions) {
+			getTransactionsByItem(itemType, itemId, function (transactions) {
 				resolve(translateTransactionsToRevenue(transactions, oldestDate, currentDate));
 			}, oldestDate, reject);
 		})

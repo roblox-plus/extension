@@ -23,11 +23,15 @@ class ItemSales extends React.Component {
 		return RPlus.bucketedSales.getBucketedItemRevenue(this.itemType, this.props.itemId, days);
 	}
 
+	getItemScanStatus() {
+		return RPlus.bucketedSales.getItemScanStatus(this.itemType, this.props.itemId);
+	}
+
 	render() {
 		return (
 			<div>
-				<BucketedSalesChart loadSalesData={this.loadSalesData.bind(this)} name="Sales" />
-				<BucketedSalesChart loadSalesData={this.loadRevenueData.bind(this)} name="Revenue" />
+				<BucketedSalesChart loadSalesData={this.loadSalesData.bind(this)} getScanStatus={this.getItemScanStatus.bind(this)} name="Sales" />
+				<BucketedSalesChart loadSalesData={this.loadRevenueData.bind(this)} getScanStatus={this.getItemScanStatus.bind(this)} name="Revenue" />
 			</div>
 		);
 	}

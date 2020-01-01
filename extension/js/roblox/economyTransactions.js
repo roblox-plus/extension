@@ -13,7 +13,9 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 				version: 1,
 				schema: {
 					economyTransactions: {
-						key: { keyPath: "id" },
+						key: {
+							keyPath: ["itemId", "buyerId", "created"]
+						},
 						indexes: {
 							gameId: {},
 							itemId: {},
@@ -66,10 +68,6 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 			id: userId,
 			type: "User"
 		};
-	};
-
-	const buildTransactionKey = function(transaction) {
-		return `${transaction.itemType}:${transaction.itemId}:${transaction.buyerType}:${transaction.buyerId}:${transaction.created}`;
 	};
 
 	const getMarketplaceFee = function(itemType, itemId) {
@@ -172,11 +170,7 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 				} else {
 					transactions.push(mainTransaction);
 				}
-		
-				transactions.forEach(function(transaction) {
-					transaction.id = buildTransactionKey(transaction);
-				});
-		
+
 				resolve(transactions);
 			};
 
