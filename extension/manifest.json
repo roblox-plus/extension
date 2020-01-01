@@ -1,5 +1,5 @@
 {
-	"version": "2.2.94",
+	"version": "2.2.95",
 	"name": "Roblox+",
 	"short_name": "Roblox+",
 	"description": "Adds features and notifiers made by WebGL3D to the Roblox website",
@@ -67,6 +67,7 @@
 				"/lib/roblox/privateMessages.js",
 				"/lib/roblox/develop.js",
 				"/lib/roblox/economy.js",
+				"/js/roblox/economyTransactions.js",
 				"/lib/roblox/navigation.js",
 				"/lib/roblox/ui.js",
 				"/lib/preroblox.js",
