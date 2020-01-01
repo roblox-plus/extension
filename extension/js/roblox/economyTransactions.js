@@ -1,6 +1,8 @@
 var Roblox = Roblox || {};
 Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 	var scanStatuses = {};
+	var transactionsMaxAge = 220; // 7 monthsish (measured in days)
+	var scanPurgeOffset = 5; // How many days to scan up to before the purge date.
 
 	const getTransactionsDatabase = (function() {
 		var transactionsDatabase;
@@ -14,13 +16,15 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 				schema: {
 					economyTransactions: {
 						key: {
-							keyPath: ["itemId", "buyerId", "created"]
+							// TODO: Use keyPath: ["created", "buyerId", "itemId"]
+							// First: Figure out how to delete rows with a multi-primary key.
+							keyPath: "id"
 						},
 						indexes: {
 							gameId: {},
 							itemId: {},
-							buyerId: {},
-							sellerId: {}
+							sellerId: {},
+							created: {}
 						}
 					}
 				}
@@ -68,6 +72,22 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 			id: userId,
 			type: "User"
 		};
+	};
+
+	const buildTransactionKey = function(transaction) {
+		// Not using auto-increment because this is used to PUT (we don't know whether or not the transaction is already logged).
+		var buyerId = transaction.buyerId.toString();
+		return Number(transaction.created.toString().substring(2) + buyerId.substring(buyerId.length - 4));
+	};
+
+	const getPurgeDate = function() {
+		var date = new Date();
+		return new Date(date.setDate(date.getDate() - transactionsMaxAge));
+	};
+
+	const getMaxScanDate = function() {
+		var date = new Date();
+		return new Date(date.setDate(date.getDate() - (transactionsMaxAge - scanPurgeOffset)));
 	};
 
 	const getMarketplaceFee = function(itemType, itemId) {
@@ -170,6 +190,10 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 				} else {
 					transactions.push(mainTransaction);
 				}
+		
+				transactions.forEach(function(transaction) {
+					transaction.id = buildTransactionKey(transaction);
+				});
 
 				resolve(transactions);
 			};
@@ -237,8 +261,13 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 		return new Promise(function(resolve, reject) {
 			getTransactionsDatabase().then(function(transactionsDatabase) {
 				loadTransactions(seller, "Sale", cursor).then(function(data) {
-					if (data.data.length > 0) {
-						transactionsDatabase.economyTransactions.update(data.data.map(function(transaction) {
+					var maxSaveDate = getMaxScanDate();
+					var filteredData = data.data.filter(function(transaction) {
+						return transaction.created > maxSaveDate.getTime();
+					});
+
+					if (filteredData.length > 0) {
+						transactionsDatabase.economyTransactions.update(filteredData.map(function(transaction) {
 							return {
 								item: transaction
 							};
@@ -271,6 +300,8 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 					resolve(finalCount);
 				}
 			}).catch(function(err) {
+				console.error(err);
+
 				if (attempts > 12) {
 					delete scanStatuses[scanKey];
 					reject(err);
@@ -282,6 +313,39 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 			});
 		});
 	};
+
+	var purgeTransactions = function() {
+		var p = new Promise(function(resolve, reject) {
+			var purgeDate = getPurgeDate();
+			getTransactionsDatabase().then(function(transactionsDatabase) {
+				transactionsDatabase.economyTransactions.query("created")
+					.range({lte: purgeDate.getTime()})
+					.execute()
+					.then(function(transactions){
+						if (transactions.length <= 0) {
+							resolve();
+							return;
+						}
+
+						var removePromises = transactions.map(function(transaction) {
+							return transactionsDatabase.economyTransactions.remove(transaction.id);
+						});
+
+						Promise.all(removePromises).then(resolve).catch(reject);
+					}).catch(reject);
+			}).catch(reject);
+		});
+
+		p.then(function(a) {
+			if (a) {
+				console.log("Purged economy transactions database", a);
+			}
+		}).catch(function(e) {
+			console.error("economy transactions purge failure:", e);
+		});
+	};
+
+	setInterval(purgeTransactions, 60 * 60 * 1000); // Purge old transactions once per hour.
 
 	return {
 		itemTypes: {
