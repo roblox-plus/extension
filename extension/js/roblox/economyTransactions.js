@@ -355,7 +355,9 @@ Roblox.economyTransactions = Roblox.economyTransactions || (function() {
 		};
 	};
 
-	setInterval(purgeTransactions, 60 * 60 * 1000); // Purge old transactions once per hour.
+	if (ext.isBackground) {
+		setInterval(purgeTransactions, 60 * 60 * 1000); // Purge old transactions once per hour.
+	}
 
 	return {
 		itemTypes: {
