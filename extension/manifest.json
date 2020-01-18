@@ -96,8 +96,8 @@
 				"/content/core/quickInfoBox.js",
 
 				"/middle.js",
-				"/content/content.js",
-				"/content/notificationStream.js",
+				"/js/jquery/content.js",
+				"/js/jquery/notificationStream.js",
 
 				"/content/pages/Login.js",
 				"/content/pages/GroupV2.js",
@@ -114,7 +114,7 @@
 				"/content/pages/Catalog.js",
 				"/content/pages/Messages.js",
 
-				"/content/loadPages.js"
+				"/js/jquery/loadPages.js"
 			],
 			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*" ],
 			"run_at": "document_end"
