@@ -51,7 +51,6 @@
 				"/js/plugins/HighchartsExtensions.js",
 				"/js/output/react/vendors/HighchartsReact.js",
 
-				"/lib/roblox/Roblox.js",
 				"/lib/roblox/thumbnails.js",
 				"/lib/roblox/users.js",
 				"/lib/roblox/catalog.js",
