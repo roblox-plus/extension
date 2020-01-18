@@ -69,11 +69,11 @@
 				"/lib/roblox/ui.js",
 				"/js/archive/preroblox.js",
 
-				"/lib/rplus/RobloxPlus.js",
-				"/lib/rplus/settings.js",
-				"/lib/rplus/copiedAssets.js",
+				"/js/rplus/RobloxPlus.js",
+				"/js/rplus/settings.js",
+				"/js/rplus/copiedAssets.js",
 				"/js/rplus/sponsoredItems.js",
-				"/lib/rplus/premium.js",
+				"/js/rplus/premium.js",
 				"/js/rplus/bucketedSales.js",
 
 				"/js/jquery/navigation.js"
