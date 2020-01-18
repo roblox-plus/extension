@@ -144,7 +144,7 @@ fixCB(({
 		plusSlider($(plusSlider.selector));
 
 		//$(".MediaPlayerIcon[data-mediathumb-url]").each(function () { $(this).replaceWith(soundService.robloxSound.button($(this).attr("data-mediathumb-url"), $(this).prop("tagName"))); });
-		$("head").append($("<script>").attr("src", ext.getUrl("/overwrite.js")));
+		$("head").append($("<script>").attr("src", ext.getUrl("/js/jquery/overwrite.js")));
 	}
 })[document.contentType])(window.location.hostname.split("."), url.send(), []);
 

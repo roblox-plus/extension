@@ -95,7 +95,6 @@
 			"js": [
 				"/js/jquery/quickInfoBox.js",
 
-				"/middle.js",
 				"/js/jquery/content.js",
 				"/js/jquery/notificationStream.js",
 

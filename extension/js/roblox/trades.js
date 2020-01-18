@@ -254,4 +254,16 @@ Roblox.trades = (function () {
 
 Roblox.trades = $.addTrigger($.promise.background("Roblox.trades", Roblox.trades));
 
+Roblox.trades.openSettingBasedTradeWindow = function (userId, counterTradeId) {
+	return new Promise(function (resolve, reject) {
+		storage.get("tradeTab", function (on) {
+			if (on) {
+				Roblox.trades.openTradeTab(userId).then(resolve, reject);
+			} else {
+				Roblox.trades.openTradeWindow(userId).then(resolve, reject);
+			}
+		});
+	});
+};
+
 // WebGL3D
