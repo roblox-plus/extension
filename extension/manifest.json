@@ -93,26 +93,26 @@
 
 		{
 			"js": [
-				"/content/core/quickInfoBox.js",
+				"/js/jquery/quickInfoBox.js",
 
 				"/middle.js",
 				"/js/jquery/content.js",
 				"/js/jquery/notificationStream.js",
 
-				"/content/pages/Login.js",
-				"/content/pages/GroupV2.js",
-				"/content/pages/Develop.js",
-				"/content/pages/Inventory.js",
-				"/content/pages/Friends.js",
-				"/content/pages/TradeWindow.js",
-				"/content/pages/Profile.js",
-				"/content/pages/Game.js",
-				"/content/pages/Games.js",
-				"/content/pages/Money.js",
-				"/content/pages/Item.js",
-				"/content/pages/Avatar.js",
-				"/content/pages/Catalog.js",
-				"/content/pages/Messages.js",
+				"/js/jquery/Login.js",
+				"/js/jquery/GroupV2.js",
+				"/js/jquery/Develop.js",
+				"/js/jquery/Inventory.js",
+				"/js/jquery/Friends.js",
+				"/js/jquery/TradeWindow.js",
+				"/js/jquery/Profile.js",
+				"/js/jquery/Game.js",
+				"/js/jquery/Games.js",
+				"/js/jquery/Money.js",
+				"/js/jquery/Item.js",
+				"/js/jquery/Avatar.js",
+				"/js/jquery/Catalog.js",
+				"/js/jquery/Messages.js",
 
 				"/js/jquery/loadPages.js"
 			],
