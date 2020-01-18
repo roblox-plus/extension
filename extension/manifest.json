@@ -20,11 +20,11 @@
 	"content_scripts": [
 		{
 			"js": [
-				"/content/preload/style.js",
-				"/content/preload/loadStylesheets.js",
+				"/js/jquery/style.js",
+				"/js/jquery/loadStylesheets.js",
 
 				"/js/vendors/jquery-3.4.1.min.js",
-				"/content/preload/styleAfterJquery.js"
+				"/js/jquery/styleAfterJquery.js"
 			],
 			"matches": [ "*://*.roblox.com/*" ],
 			"all_frames": true,
