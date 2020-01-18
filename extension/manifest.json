@@ -33,7 +33,7 @@
 
 		{
 			"js": [
-				"/lib/twemoji.min.js",
+				"/js/vendors/twemoji.min.js",
 				"/js/archive/global.js",
 				"/js/plugins/jquery.trigger.js",
 				"/lib/roblox/xsrfHandler.js",
