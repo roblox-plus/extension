@@ -30,11 +30,7 @@ Roblox.thumbnails = (function(){
 		sizes: sizes,
 		
 		getUserHeadshotThumbnailUrl: urlBuilder("headshot-thumbnail/image", "userId"),
-		getUserBustThumbnailUrl: urlBuilder("bust-thumbnail/image", "userId"),
-		getUserAvatarThumbnailUrl: urlBuilder("avatar-thumbnail/image", "userId"),
-		
 		getAssetThumbnailUrl: urlBuilder("asset-thumbnail/image", "assetId"),
-		
 		getOutfitThumbnailUrl: urlBuilder("outfit-thumbnail/image", "userOutfitId")
 	};
 })();
