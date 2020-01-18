@@ -35,14 +35,14 @@
 			"js": [
 				"/lib/twemoji.min.js",
 				"/lib/global.js",
-				"/lib/jquery/jquery.trigger.js",
+				"/js/plugins/jquery.trigger.js",
 				"/lib/roblox/xsrfHandler.js",
 				"/lib/roblox/apiSiteContentHandler.js",
 				"/lib/prefunc.js",
 				"/lib/prext.js",
-				"/lib/jquery/jquery.cache.js",
-				"/lib/jquery/jquery.promise.js",
-				"/lib/jquery/jquery.notifications.js",
+				"/js/plugins/jquery.cache.js",
+				"/js/plugins/jquery.promise.js",
+				"/js/plugins/jquery.notifications.js",
 
 				"/js/vendors/react.production.min.js",
 				"/js/vendors/react-dom.production.min.js",
