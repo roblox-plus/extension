@@ -20,108 +20,7 @@ Roblox.inventory = (function () {
 		});
 	}
 
-	function loadUserAssets(userId, assetTypeId, cursor, assetMap) {
-		assetMap = assetMap || {};
-		return new Promise(function (resolve, reject) {
-			$.get("https://www.roblox.com/users/inventory/list-json", {
-				assetTypeId: assetTypeId,
-				itemsPerPage: 100,
-				cursor: cursor || "",
-				userId: userId
-			}).done(function (data) {
-				var assets = [];
-				data.Data.Items.forEach(function (asset) {
-					if (!assetMap.hasOwnProperty(asset.Item.AssetId) && !asset.UserItem.IsRentalExpired) {
-						assetMap[asset.Item.AssetId] = asset;
-						assets.push({
-							id: asset.Item.AssetId,
-							name: asset.Item.Name
-						});
-					}
-				});
-				if (data.Data.nextPageCursor) {
-					loadUserAssets(userId, assetTypeId, data.Data.nextPageCursor, assetMap).then(function (moreAssets) {
-						resolve(assets.concat(moreAssets));
-					}, reject);
-				} else {
-					resolve(assets);
-				}
-			}).fail(function (xhr) {
-				try {
-					var data = JSON.parse(xhr.responseText);
-					reject([
-						{
-							code: 0,
-							message: data.Data || data.error || ""
-						}
-					]);
-				} catch (e) {
-					reject([{
-						code: 0,
-						message: "HTTP request failed"
-					}]);
-				}
-			});
-		});
-	}
-
 	return {
-		userHasAsset: $.promise.cache(function (resolve, reject, userId, assetId) {
-			if (typeof (userId) != "number" || userId <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid userId"
-				}]);
-				return;
-			}
-			if (typeof (assetId) != "number" || assetId <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid assetId"
-				}]);
-				return;
-			}
-
-			$.get("https://inventory.roblox.com/v1/users/" + userId + "/items/Asset/" + assetId).done(function (r) {
-				resolve(r.data.length > 0);
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
-		}, {
-				rejectExpiry: 5 * 1000,
-				resolveExpiry: 60 * 1000,
-				queued: true
-			}),
-
-		userHasBadge: $.promise.cache(function (resolve, reject, userId, badgeId) {
-			if (typeof (userId) != "number" || userId <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid userId"
-				}]);
-				return;
-			}
-			if (typeof (badgeId) != "number" || badgeId <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid badgeId"
-				}]);
-				return;
-			}
-
-			$.get("https://badges.roblox.com/v1/users/" + userId + "/badges/awarded-dates", {
-				badgeIds: badgeId
-			}).done(function (r) {
-				resolve(r.data.length > 0);
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
-		}, {
-				rejectExpiry: 5 * 1000,
-				resolveExpiry: 60 * 1000,
-				queued: true
-			}),
-
 		getCollectibles: $.promise.cache(function (resolve, reject, userId) {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
@@ -176,15 +75,6 @@ Roblox.inventory = (function () {
 		}, {
 				rejectExpiry: 1000,
 				resolveExpiry: 1000
-			}),
-
-		getAssets: $.promise.cache(function (resolve, reject, userId, assetTypeId) {
-			loadUserAssets(userId, assetTypeId).then(function (assets) {
-				resolve(assets);
-			}, reject);
-		}, {
-				resolveExpiry: 30 * 1000,
-				queued: true
 			}),
 
 		getAssetOwners: $.promise.cache(function (resolve, reject, assetId, cursor, sortOrder) {
