@@ -21,3 +21,11 @@
 		}
 	}
 }
+
+.catalog-results {
+	.item-card {
+		&.creator-blocked {
+			display: none;
+		}
+	}
+}

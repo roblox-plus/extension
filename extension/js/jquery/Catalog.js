@@ -2,36 +2,32 @@
 RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.Catalog = function () {
-	function scanPage() {
-		var assetIds = [];
-		$(".CatalogItemOuter:not([data-asset-id]").each(function () {
-			var assetId = $(this).find(".roblox-item-image").data("item-id");
-			$(this).attr("data-asset-id", assetId);
-			var creatorAnchor = $(this).find(".CatalogHoverContent>div").first().find("a");
-			if (creatorAnchor.text() !== "ROBLOX") {
-				assetIds.push(assetId);
-			}
-		});
-		if (assetIds.length > 0) {
-			RPlus.copiedAssets.getOriginalAssetIds(assetIds).then(function (originals) {
-				for (var n in originals) {
-					if (originals.hasOwnProperty(n) && Number(n) !== Number(originals[n]) && typeof(originals[n]) === "number") {
-						console.log("Copier!\n\tAsset: " + n + "\n\tOriginal: " + originals[n]);
-						$(".CatalogItemOuter[data-asset-id='" + n + "'] .item-image-wrapper > a").attr({
-							"href": Roblox.catalog.getAssetUrl(Number(originals[n]))
-						});
-					}
-				}
-				setTimeout(scanPage, 500);
-			}).catch(function (e) {
-				setTimeout(scanPage, 500);
-			});
-		} else {
-			setTimeout(scanPage, 500);
+	storage.get("catalog", function (catalogSettings) {
+		if (!catalogSettings || !catalogSettings.hideBlockedSellers) {
+			return;
 		}
-	}
 
-	scanPage();
+		var creatorObserver = new MutationObserver(function (records) {
+			records.forEach(function (record) {
+				record.addedNodes.forEach(function (e) {
+					var creatorLabel = $(e);
+					var creatorUrl = creatorLabel.attr("href");
+					if (creatorLabel.hasClass("creator-name") && creatorUrl.includes("/users/")) {
+						var creatorId = Roblox.users.getIdFromUrl(creatorUrl);
+						Roblox.social.isBlocked(creatorId).then(function(blocked) {
+							if (blocked) {
+								var itemCard = creatorLabel.closest(".item-card");
+								console.log(creatorLabel.text(), "is blocked - hiding item", itemCard);
+								itemCard.addClass("creator-blocked");
+							}
+						}).catch(console.error);
+					}
+				});
+			});
+		});
+
+		creatorObserver.observe(document.body, { childList: true, subtree: true });
+	});
 
 	return {};
 };
