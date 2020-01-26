@@ -97,6 +97,47 @@ Roblox.social = (function () {
 		}, {
 			queued: true
 		}),
+		isFollowing: $.promise.cache(function (resolve, reject, userId, followingUserId) {
+			// is userId following followingUserId
+			if (typeof (userId) != "number" || userId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid userId"
+				}]);
+				return;
+			}
+
+			if (typeof (followingUserId) != "number" || followingUserId <= 0) {
+				reject([{
+					code: 0,
+					message: "Invalid followingUserId"
+				}]);
+				return;
+			}
+
+			$.get("https://api.roblox.com/user/following-exists", {
+				userId: followingUserId,
+				followerUserId: userId,
+			}).done(function(data) {
+				if (data.success) {
+					resolve(data.isFollowing);
+				} else {
+					reject([{
+						code: 0,
+						message: "Unknown error checking follow status"
+					}]);
+				}
+			}).fail(function() {
+				reject([{
+					code: 0,
+					message: "HTTP request failed"
+				}]);
+			});
+		}, {
+			queued: true,
+			resolveExpiry: 60 * 1000,
+			rejectExpiry: 15 * 1000
+		}),
 		getFriends: $.promise.cache(function (resolve, reject, userId) {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{

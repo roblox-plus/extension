@@ -34,21 +34,8 @@ RPlus.notifiers.catalog = (function () {
 		});
 	}
 
-	function processNotification(notification) {
-		var assetId = NaN;
-
-		var metadata = {};
-
-		if (notification.url) {
-			metadata.url = notification.url;
-			assetId = Roblox.catalog.getIdFromUrl(notification.url) || NaN;
-			if (!isNaN(assetId)) {
-				var notifierSounds = storage.get("notifierSounds") || {};
-				metadata.robloxSound = (notification.title || "").toLowerCase().includes("it's free")
-					? 130771265
-					: Number(notifierSounds.item) || 205318910;
-			}
-		}
+	function showNotification(notification, metadata, assetId) {
+		console.log("showNotification", notification, metadata, assetId);
 
 		$.notification({
 			title: notification.title || "Roblox+ Catalog Notifier",
@@ -93,6 +80,57 @@ RPlus.notifiers.catalog = (function () {
 				}).catch(purchaseFailed);
 			}
 		});
+	}
+
+	function processNotification(notification) {
+		var assetId = NaN;
+
+		var metadata = {};
+
+		if (notification.url) {
+			metadata.url = notification.url;
+			assetId = Roblox.catalog.getIdFromUrl(notification.url) || NaN;
+			if (!isNaN(assetId)) {
+				var notifierSounds = storage.get("notifierSounds") || {};
+				metadata.robloxSound = (notification.title || "").toLowerCase().includes("it's free")
+					? 130771265
+					: Number(notifierSounds.item) || 205318910;
+			}
+		}
+
+		var creatorName = notification.items && notification.items.Creator;
+		if (creatorName) {
+			Roblox.users.getAuthenticatedUser().then(function(user) {
+				if (!user) {
+					console.log("Skipping notification because user is not logged in", notification);
+					return;
+				}
+
+				Roblox.users.getUserIdByUsername(creatorName).then(function(creatorId) {
+					if (!creatorId) {
+						console.warn("Skipping notification because could not map creatorName -> creatorId", notification, creatorName, creatorId);
+						return;
+					}
+
+					Roblox.social.isFollowing(user.id, creatorId).then(function(following) {
+						if (!following) {
+							console.log("Skipping notification because user does not follow creator", notification);
+							return;
+						}
+
+						showNotification(notification, metadata, assetId);
+					}).catch(function(err) {
+						console.error("Skipping notification for failure to check following creator", creatorName, notification, err);
+					});
+				}).catch(function(err) {
+					console.error("Skipping notification for failure to map creatorName -> creatorId", creatorName, notification, err);
+				});
+			}).catch(function(err) {
+				console.error("Skipping notification because could not check user is not logged in", notification, err);
+			});
+		} else {
+			showNotification(notification, metadata, assetId);
+		}
 	}
 
 	function processMessage(message) {
