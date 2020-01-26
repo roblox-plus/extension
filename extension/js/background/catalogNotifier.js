@@ -106,9 +106,19 @@ RPlus.notifiers.catalog = (function () {
 					return;
 				}
 
+				if (creatorName === user.username) {
+					showNotification(notification, metadata, assetId);
+					return;
+				}
+
 				Roblox.users.getUserIdByUsername(creatorName).then(function(creatorId) {
 					if (!creatorId) {
 						console.warn("Skipping notification because could not map creatorName -> creatorId", notification, creatorName, creatorId);
+						return;
+					}
+
+					if (creatorId === user.id) {
+						showNotification(notification, metadata, assetId);
 						return;
 					}
 
