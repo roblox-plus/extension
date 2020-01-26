@@ -266,7 +266,11 @@ class NotificationSettings extends SettingsTab {
 						<PillToggle getValue={this.getPillValue.bind(this, "itemNotifier")}
 							onToggle={this.setPillValue.bind(this, "itemNotifier")} />
 						<div class="rbx-divider"></div>
-						<span class="text-description">Notifications when a Roblox created item comes out or gets updated.</span>
+						<span class="text-description">
+							- Notifications when a <a href="https://www.roblox.com/catalog/?Category=1&CreatorID=1&SortType=3&IncludeNotForSale" class="text-link">Roblox created item</a> comes out or gets updated.
+							<br/>
+							- Notifications for <a href="https://www.roblox.com/catalog/?Category=13" class="text-link">community creations</a> from creators you follow.
+						</span>
 						<a class="icon-Musical" onClick={this.promptChangeNotifierSound.bind(this, "item")}></a>
 					</div>
 				</div>

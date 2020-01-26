@@ -202,7 +202,7 @@ RPlus.notifiers.catalog = (function () {
 	ipc.on("catalogNotifier:testBuyButton", function () {
 		processMessage({
 			data: {
-				notification: {
+				notification: JSON.stringify({
 					title: "New Limited",
 					message: "Noob Assist: S'mores Snacker",
 					items: {
@@ -212,7 +212,7 @@ RPlus.notifiers.catalog = (function () {
 					buttons: ["Buy for R$75"],
 					icon: "https://www.roblox.com/asset-thumbnail/image?width=110&height=110&assetId=904518348",
 					url: "https://www.roblox.com/catalog/904518348/Noob-Assist-Smores-Snacker"
-				}
+				})
 			},
 			from: "/topics/catalog-notifier-premium"
 		});
