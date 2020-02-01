@@ -215,22 +215,24 @@ RPlus.notifiers.catalog = (function () {
 	chrome.instanceID.onTokenRefresh.addListener(updateToken);
 
 	ipc.on("catalogNotifier:testBuyButton", function () {
-		processMessage({
-			data: {
-				notification: JSON.stringify({
-					title: "New Limited",
-					message: "Noob Assist: S'mores Snacker",
-					items: {
-						"Price": "R$75",
-						"Sales": "5000/10000"
-					},
-					buttons: ["Buy for R$75"],
-					icon: "https://www.roblox.com/asset-thumbnail/image?width=110&height=110&assetId=904518348",
-					url: "https://www.roblox.com/catalog/904518348/Noob-Assist-Smores-Snacker"
-				})
-			},
-			from: "/topics/catalog-notifier-premium"
-		});
+		Roblox.thumbnails.getAssetThumbnailUrl(904518348, 150, 150).then(function(assetThumbnailUrl) {
+			processMessage({
+				data: {
+					notification: JSON.stringify({
+						title: "New Limited",
+						message: "Noob Assist: S'mores Snacker",
+						items: {
+							"Price": "R$75",
+							"Sales": "5000/10000"
+						},
+						buttons: ["Buy for R$75"],
+						icon: assetThumbnailUrl,
+						url: "https://www.roblox.com/catalog/904518348/Noob-Assist-Smores-Snacker"
+					})
+				},
+				from: "/topics/catalog-notifier-premium"
+			});
+		}).catch(console.error.bind(console, "testBuyButton"));
 	});
 	
 	function init() {
