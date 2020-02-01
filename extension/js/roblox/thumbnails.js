@@ -131,13 +131,64 @@ Roblox.thumbnails = (function () {
 		};
 	}
 
+	/* https://thumbnails.roblox.com/docs/json/v1
+	"Roblox.Thumbnails.Apis.Models.ThumbnailBatchRequest": {
+		"type": "object",
+		"properties": {
+			"requestId": {
+				"description": "The request id. (Generated client side, used to represent the items in the request)",
+				"type": "string"
+			},
+			"targetId": {
+				"format": "int64",
+				"description": "The thumbnail target id",
+				"type": "integer"
+			},
+			"type": {
+				"description": "The type of the thumbnails",
+				"enum": [
+					"Avatar",
+					"AvatarHeadShot",
+					"GameIcon",
+					"BadgeIcon",
+					"GameThumbnail",
+					"GamePass",
+					"Asset",
+					"BundleThumbnail",
+					"Outfit",
+					"GroupIcon"
+				],
+				"type": "string"
+			},
+			"size": {
+				"description": "The thumbnail size",
+				"type": "string"
+			}
+		}
+	},
+	*/
+
 	return {
 		sizes: sizes,
+		states: thumbnailStates,
 
-		getUserHeadshotThumbnailUrl: urlBuilder("headshot-thumbnail/image", "userId"),
 		getAssetThumbnailUrl: urlBuilder("asset-thumbnail/image", "assetId"),
 
 		getThumbnailForState: getThumbnailForState,
+
+		getUserHeadshotThumbnail: $.promise.cache(function (resolve, reject, userId, width, height) {
+			getThumbnail("AvatarHeadShot", userId, `${width}x${height}`).then(resolve).catch(reject);
+		}, {
+			rejectExpiry: 15 * 1000,
+			resolveExpiry: 15 * 60 * 1000
+		}),
+
+		getAssetThumbnail: $.promise.cache(function (resolve, reject, assetId, width, height) {
+			getThumbnail("Asset", assetId, `${width}x${height}`).then(resolve).catch(reject);
+		}, {
+			rejectExpiry: 15 * 1000,
+			resolveExpiry: 15 * 60 * 1000
+		}),
 
 		getBundleThumbnail: $.promise.cache(function (resolve, reject, bundleId, width, height) {
 			getThumbnail("BundleThumbnail", bundleId, `${width}x${height}`).then(resolve).catch(reject);

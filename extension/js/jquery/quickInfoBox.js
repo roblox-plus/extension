@@ -133,11 +133,20 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			containers.user.find(">.avatar-card-container").removeClass("disabled");
 			containers.user.find(">ul.item-cards").html("");
 
+			var avatarCardImage = containers.user.find(".avatar-card-image");
 			containers.user.find(".avatar-card-link").attr("href", Roblox.users.getProfileUrl(user.id));
-			containers.user.find(".avatar-card-image").attr("src", Roblox.thumbnails.getUserHeadshotThumbnailUrl(user.id, 4));
+			avatarCardImage.attr("src", Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Pending));
 			containers.user.find(".avatar-name").text(user.username);
 			containers.user.find(".avatar-card-label").text("");
 			containers.user.find(".avatar-card-btns").slideUp();
+
+			Roblox.thumbnails.getUserHeadshotThumbnail(user.id, 150, 150).then((thumbnail) => {
+				if (expectedProcessingId !== processingId) {
+					return;
+				}
+				
+				avatarCardImage.attr("src", thumbnail.imageUrl);
+			}).catch(console.error.bind(console, "processUserDisplay", user));
 
 			Roblox.users.getAuthenticatedUser().then(function (authenticatedUser) {
 				var premiumViewers = [48103520, 44052422, 19483499];

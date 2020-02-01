@@ -215,12 +215,18 @@ RPlus.Pages.Item = function () {
 						var date = new Date(record.updated);
 						var username = record.owner ? record.owner.username : "[ Owner has their inventory hidden ]";
 						var profileUrl = record.owner ? "/users/" + record.owner.userId + "/profile" : "javascript:/* User does not exist */";
+						var thumbnailImage = $("<img class=\"avatar-card-image\">").attr({ 
+							"src": Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Pending),
+							"alt": username,
+							"onerror": "this.onerror=null;this.src='" + Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Error) + "';"
+						});
+
+						Roblox.thumbnails.getUserHeadshotThumbnail((record.owner && record.owner.userId) || 0, 150, 150).then((thumbnail) => {
+							thumbnailImage.attr("src", thumbnail.imageUrl)
+						}).catch(console.error.bind(console, "serialTracker", record));
+
 						serialTracker.tab.content.append($("<li class=\"list-item\" data-userasset-id=\"" + record.userAssetId + "\">").append(
-							$("<a class=\"avatar avatar-headshot-md list-header\">").attr("href", profileUrl).append($("<img class=\"avatar-card-image\">").attr({ 
-								"src": Roblox.thumbnails.getUserHeadshotThumbnailUrl((record.owner && record.owner.userId) || 0, 4),
-								"alt": username,
-								"onerror": "this.onerror=null;this.src='" + Roblox.thumbnails.getUserHeadshotThumbnailUrl(0, 4) + "';"
-							})),
+							$("<a class=\"avatar avatar-headshot-md list-header\">").attr("href", profileUrl).append(thumbnailImage),
 							$("<div class=\"resale-info\">").append(
 								$("<a class=\"text-name username\" href=\"" + profileUrl + "\">").text(username),
 								record.serialNumber ? $("<span class=\"separator\">").text("-") : "",

@@ -1,18 +1,20 @@
 ﻿/* background/notifiers/friendNotifier.js [06/04/2017] */
 RPlus.notifiers.friends = (function () {
 	function clicknote(friend, header) {
-		return $.notification({
-			tag: "friend" + friend.id,
-			title: header,
-			icon: Roblox.thumbnails.getUserHeadshotThumbnailUrl(friend.id, 4),
-			clickable: true,
-			metadata: {
-				robloxSound: Number((storage.get("notifierSounds") || {}).friend) || 0,
-				url: Roblox.users.getProfileUrl(friend.id)
-			}
-		}).click(function () {
-			this.close();
-		});
+		Roblox.thumbnails.getUserHeadshotThumbnail(friend.id, 150, 150).then((thumbnail) => {
+			$.notification({
+				tag: "friend" + friend.id,
+				title: header,
+				icon: thumbnail.imageUrl,
+				clickable: true,
+				metadata: {
+					robloxSound: Number((storage.get("notifierSounds") || {}).friend) || 0,
+					url: Roblox.users.getProfileUrl(friend.id)
+				}
+			}).click(function () {
+				this.close();
+			});
+		}).catch(console.error.bind(console, "Roblox.notifiers.friends"));
 	};
 
 	function getFriendsWithPresence(userId) {
@@ -66,24 +68,26 @@ RPlus.notifiers.friends = (function () {
 						} else if (fn.offline && (old.isOnline != friend.isOnline) && !friend.isOnline) {
 							clicknote(friend, friend.username + " is now offline");
 						} else if (fn.game && friend.game && (!old.game || old.game.serverId !== friend.game.serverId)) {
-							$.notification({
-								tag: "friend" + friend.id,
-								title: friend.username + " joined a game",
-								context: friend.game.name,
-								icon: Roblox.thumbnails.getUserHeadshotThumbnailUrl(friend.id, 4),
-								buttons: ["Follow"],
-								clickable: true,
-								metadata: {
-									robloxSound: Number((storage.get("notifierSounds") || {}).friend) || 0,
-									url: Roblox.users.getProfileUrl(friend.id)
-								}
-							}).click(function () {
-								this.close();
-							}).buttonClick(function () {
-								Roblox.games.launch({
-									followUserId: friend.id
+							Roblox.thumbnails.getUserHeadshotThumbnail(friend.id, 150, 150).then((thumbnail) => {
+								$.notification({
+									tag: "friend" + friend.id,
+									title: friend.username + " joined a game",
+									context: friend.game.name,
+									icon: thumbnail.imageUrl,
+									buttons: ["Follow"],
+									clickable: true,
+									metadata: {
+										robloxSound: Number((storage.get("notifierSounds") || {}).friend) || 0,
+										url: Roblox.users.getProfileUrl(friend.id)
+									}
+								}).click(function () {
+									this.close();
+								}).buttonClick(function () {
+									Roblox.games.launch({
+										followUserId: friend.id
+									});
 								});
-							});
+							}).catch(console.error.bind(console, "Roblox.notifiers.friends"));
 						}
 					}
 
