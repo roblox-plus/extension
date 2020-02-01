@@ -217,9 +217,17 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 						});
 						var cardThumb = $("<div class=\"item-card-thumb-container\">");
 						var thumbImage = $("<img class=\"item-card-thumb\">").attr({
-							"src": Roblox.thumbnails.getAssetThumbnailUrl(collectible.assetId, 4)
+							"src": Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Pending)
 						});
 						var assetName = $("<div class=\"text-overflow item-card-name\">").text(collectible.name);
+
+						Roblox.thumbnails.getAssetThumbnailUrl(collectible.assetId, 420, 420).then(function(assetThumbnailUrl) {
+							if (expectedProcessingId !== processingId) {
+								return;
+							}
+
+							thumbImage.attr("src", assetThumbnailUrl);
+						}).catch(console.error.bind(console, "quickInfoBox.getCollectibles", user, collectible));
 
 						collectibleCounts[collectible.assetId] = {
 							count: 1,

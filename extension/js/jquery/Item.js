@@ -299,15 +299,21 @@ RPlus.Pages.Item = function () {
 				assetContentTab.count(assets.length);
 				assetContentTab.message(assets.length ? "" : "This asset has no dependent content.");
 				assets.forEach(function (asset) {
+					var thumbnailImage = $("<img>").attr({
+						src: Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Pending),
+						title: asset.name
+					});
+
+					Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 420, 420).then(function(assetThumbnailUrl) {
+						thumbnailImage.attr("src", assetThumbnailUrl);
+					}).catch(console.error.bind(console, asset));
+
 					assetContentTab.content.append($("<li class=\"list-item\">").append($("<div class=\"store-card\">").append(
 						$("<a>").attr({
 							"href": Roblox.catalog.getAssetUrl(asset.id, asset.name),
 							"target": "_blank"
 						}).append(
-							$("<img>").attr({
-								src: Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 4),
-								title: asset.name
-							}),
+							thumbnailImage,
 							$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", asset.assetType + " - " + asset.name).text(asset.name))
 						)
 					)));
@@ -325,20 +331,24 @@ RPlus.Pages.Item = function () {
 					var bundlesList = $("<ul class=\"hlist\">");
 
 					bundles.forEach(function(bundle) {
-						Roblox.thumbnails.getBundleThumbnail(bundle.id, 420, 420).then(function(thumbnail) {
-							bundlesList.append($("<li class=\"list-item\">").append($("<div class=\"store-card\">").append(
-								$("<a>").attr({
-									"href": Roblox.catalog.getBundleUrl(bundle.id, bundle.name),
-									"target": "_blank"
-								}).append(
-									$("<img>").attr({
-										src: thumbnail.imageUrl,
-										title: bundle.name
-									}),
-									$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", bundle.name).text(bundle.name))
-								)
-							)));
+						var thumbnailImage = $("<img>").attr({
+							src: Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Pending),
+							title: bundle.name
+						});
+
+						Roblox.thumbnails.getBundleThumbnail(bundle.id, 420, 420).then(function(bundleThumbnail) {
+							thumbnailImage.attr("src", bundleThumbnail.imageUrl);
 						}).catch(console.error.bind(console, bundle));
+						
+						bundlesList.append($("<li class=\"list-item\">").append($("<div class=\"store-card\">").append(
+							$("<a>").attr({
+								"href": Roblox.catalog.getBundleUrl(bundle.id, bundle.name),
+								"target": "_blank"
+							}).append(
+								thumbnailImage,
+								$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", bundle.name).text(bundle.name))
+							)
+						)));
 					});
 
 					assetContentTab.container.append(bundlesHeader, bundlesContents.append(bundlesList));

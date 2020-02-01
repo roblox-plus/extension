@@ -124,26 +124,28 @@ class FeaturedCatalogItems extends React.Component {
 			switch (item.type) {
 				case "Asset":
 					Roblox.catalog.getAssetInfo(item.id).then(function (asset) {
-						var creatorUrl = Roblox.users.getProfileUrl(asset.creator.id);
-						if (asset.creator.type === "Group") {
-							creatorUrl = Roblox.groups.getGroupUrl(asset.creator.id, asset.creator.name);
-						}
-
-						resolve({
-							id: asset.id,
-							name: asset.name,
-							url: Roblox.catalog.getAssetUrl(asset.id, asset.name),
-
-							price: asset.isForSale ? asset.robuxPrice : null,
-							isFree: asset.isFree,
-
-							creator: {
-								name: asset.creator.name,
-								url: creatorUrl
-							},
-
-							thumbnailUrl: Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 4)
-						});
+						Roblox.thumbnails.getAssetThumbnailUrl(asset.id, 420, 420).then(function(assetThumbnailUrl) {
+							var creatorUrl = Roblox.users.getProfileUrl(asset.creator.id);
+							if (asset.creator.type === "Group") {
+								creatorUrl = Roblox.groups.getGroupUrl(asset.creator.id, asset.creator.name);
+							}
+	
+							resolve({
+								id: asset.id,
+								name: asset.name,
+								url: Roblox.catalog.getAssetUrl(asset.id, asset.name),
+	
+								price: asset.isForSale ? asset.robuxPrice : null,
+								isFree: asset.isFree,
+	
+								creator: {
+									name: asset.creator.name,
+									url: creatorUrl
+								},
+	
+								thumbnailUrl: assetThumbnailUrl
+							});
+						}).catch(reject);
 					}).catch(reject);
 
 					break;

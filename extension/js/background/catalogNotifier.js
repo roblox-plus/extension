@@ -179,13 +179,28 @@ RPlus.notifiers.catalog = (function () {
 						};
 
 						if (message.data.itemType === "Asset") {
-							notification.icon = Roblox.thumbnails.getAssetThumbnailUrl(Number(message.data.id), 4);
 							notification.metadata.url = "https://www.roblox.com/catalog/" + message.data.id + "/Roblox-Plus";
+
+							Roblox.thumbnails.getAssetThumbnail(message.data.id, 150, 150).then(function(assetThumbnail) {
+								notification.icon = assetThumbnail.imageUrl;
+								$.notification(notification);
+							}).catch(function(err) {
+								console.error(message, err);
+								$.notification(notification);
+							});
 						} else if (message.data.itemType === "Bundle") {
 							notification.metadata.url = "https://www.roblox.com/bundles/" + message.data.id + "/Roblox-Plus";
-						}
 
-						$.notification(notification);
+							Roblox.thumbnails.getBundleThumbnail(message.data.id, 150, 150).then(function(bundleThumbnail) {
+								notification.icon = bundleThumbnail.imageUrl;
+								$.notification(notification);
+							}).catch(function(err) {
+								console.error(message, err);
+								$.notification(notification);
+							});
+						} else {
+							$.notification(notification);
+						}
 					}).catch(function (e) {
 						console.error("Did a new item really come out? Why did this fail to purchase?", e);
 					});

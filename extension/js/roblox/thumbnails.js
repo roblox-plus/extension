@@ -172,16 +172,7 @@ Roblox.thumbnails = (function () {
 		sizes: sizes,
 		states: thumbnailStates,
 
-		getAssetThumbnailUrl: urlBuilder("asset-thumbnail/image", "assetId"),
-
 		getThumbnailForState: getThumbnailForState,
-
-		getUserHeadshotThumbnail: $.promise.cache(function (resolve, reject, userId, width, height) {
-			getThumbnail("AvatarHeadShot", userId, `${width}x${height}`).then(resolve).catch(reject);
-		}, {
-			rejectExpiry: 15 * 1000,
-			resolveExpiry: 15 * 60 * 1000
-		}),
 
 		getAssetThumbnail: $.promise.cache(function (resolve, reject, assetId, width, height) {
 			getThumbnail("Asset", assetId, `${width}x${height}`).then(resolve).catch(reject);
@@ -190,8 +181,48 @@ Roblox.thumbnails = (function () {
 			resolveExpiry: 15 * 60 * 1000
 		}),
 
+		getAssetThumbnailUrl: $.promise.cache(function (resolve, reject, assetId, width, height) {
+			Roblox.thumbnails.getAssetThumbnail(assetId, width, height).then(function(thumbnail) {
+				resolve(thumbnail.imageUrl);
+			}).catch(function() {
+				resolve(getThumbnailForState(thumbnailStates.Error));
+			});
+		}, {
+			rejectExpiry: 15 * 1000,
+			resolveExpiry: 15 * 60 * 1000
+		}),
+
+		getUserHeadshotThumbnail: $.promise.cache(function (resolve, reject, userId, width, height) {
+			getThumbnail("AvatarHeadShot", userId, `${width}x${height}`).then(resolve).catch(reject);
+		}, {
+			rejectExpiry: 15 * 1000,
+			resolveExpiry: 15 * 60 * 1000
+		}),
+
+		getUserHeadshotThumbnailUrl: $.promise.cache(function (resolve, reject, userId, width, height) {
+			Roblox.thumbnails.getUserHeadshotThumbnail(userId, width, height).then(function(thumbnail) {
+				resolve(thumbnail.imageUrl);
+			}).catch(function() {
+				resolve(getThumbnailForState(thumbnailStates.Error));
+			});
+		}, {
+			rejectExpiry: 15 * 1000,
+			resolveExpiry: 15 * 60 * 1000
+		}),
+
 		getBundleThumbnail: $.promise.cache(function (resolve, reject, bundleId, width, height) {
 			getThumbnail("BundleThumbnail", bundleId, `${width}x${height}`).then(resolve).catch(reject);
+		}, {
+			rejectExpiry: 15 * 1000,
+			resolveExpiry: 15 * 60 * 1000
+		}),
+
+		getBundleThumbnailUrl: $.promise.cache(function (resolve, reject, bundleId, width, height) {
+			Roblox.thumbnails.getBundleThumbnail(bundleId, width, height).then(function(thumbnail) {
+				resolve(thumbnail.imageUrl);
+			}).catch(function() {
+				resolve(getThumbnailForState(thumbnailStates.Error));
+			});
 		}, {
 			rejectExpiry: 15 * 1000,
 			resolveExpiry: 15 * 60 * 1000
