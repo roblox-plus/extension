@@ -319,18 +319,20 @@ RPlus.Pages.Item = function () {
 					var bundlesList = $("<ul class=\"hlist\">");
 
 					bundles.forEach(function(bundle) {
-						bundlesList.append($("<li class=\"list-item\">").append($("<div class=\"store-card\">").append(
-							$("<a>").attr({
-								"href": Roblox.catalog.getBundleUrl(bundle.id, bundle.name),
-								"target": "_blank"
-							}).append(
-								$("<img>").attr({
-									src: Roblox.thumbnails.getOutfitThumbnailUrl(bundle.outfitId, 4),
-									title: bundle.name
-								}),
-								$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", bundle.name).text(bundle.name))
-							)
-						)));
+						Roblox.thumbnails.getBundleThumbnail(bundle.id, 420, 420).then(function(thumbnail) {
+							bundlesList.append($("<li class=\"list-item\">").append($("<div class=\"store-card\">").append(
+								$("<a>").attr({
+									"href": Roblox.catalog.getBundleUrl(bundle.id, bundle.name),
+									"target": "_blank"
+								}).append(
+									$("<img>").attr({
+										src: thumbnail.imageUrl,
+										title: bundle.name
+									}),
+									$("<div class=\"store-card-caption\">").append($("<div class=\"text-overflow store-card-name\">").attr("title", bundle.name).text(bundle.name))
+								)
+							)));
+						}).catch(console.error.bind(console, bundle));
 					});
 
 					assetContentTab.container.append(bundlesHeader, bundlesContents.append(bundlesList));

@@ -53,6 +53,7 @@ class BatchItemProcessor {
 		let defaultSettings = {
 			batchSize: 100,
 			maxAttempts: 5,
+			retryCooldownInMilliseconds: 500,
 			deduplicateItems: true
 		};
 
@@ -93,14 +94,19 @@ class BatchItemProcessor {
 			}
 
 			this.queue.push(batchProcessorItem);
-			console.log("Add item to queue", item, this.queue.length);
 			this.process();
 		});
 	}
 
+	retry(item) {
+		setTimeout(() => {
+			this.queue.push(item);
+			this.process();
+		}, this.settings.retryCooldownInMilliseconds);
+	}
+
 	process() {
 		if (this.running || this.queue.length <= 0) {
-			console.log("Doing nothing", this.running, this.queue.length);
 			return;
 		}
 
@@ -108,7 +114,6 @@ class BatchItemProcessor {
 		let batch = this.queue.splice(0, this.settings.batchSize);
 		let processItems = [];
 
-		console.log("Processing...", batch.length, this.queue.length, this.settings.batchSize);
 		batch.forEach((item) => {
 			item.incrementAttempts();
 			processItems.push(item.item);
@@ -121,7 +126,7 @@ class BatchItemProcessor {
 				if (processedItem && processedItem.success) {
 					item.resolve(processedItem.value);
 				} else if (item.attempts < this.settings.maxAttempts) {
-					this.queue.push(item);
+					this.retry(item);
 				} else {
 					item.reject({
 						code: BatchItemProcessor.failureCodes.maxAttempts
@@ -136,7 +141,7 @@ class BatchItemProcessor {
 
 			batch.forEach((item) => {
 				if (item.attempts < this.settings.maxAttempts) {
-					this.queue.push(item);
+					this.retry(item);
 				} else {
 					item.reject({
 						code: BatchItemProcessor.failureCodes.maxAttempts
