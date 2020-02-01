@@ -1,11 +1,11 @@
 ﻿/* background/notifiers/friendNotifier.js [06/04/2017] */
 RPlus.notifiers.friends = (function () {
 	function clicknote(friend, header) {
-		Roblox.thumbnails.getUserHeadshotThumbnail(friend.id, 150, 150).then((thumbnail) => {
+		Roblox.thumbnails.getUserHeadshotThumbnailUrl(friend.id, 150, 150).then((headshotThumbnailUrl) => {
 			$.notification({
 				tag: "friend" + friend.id,
 				title: header,
-				icon: thumbnail.imageUrl,
+				icon: headshotThumbnailUrl,
 				clickable: true,
 				metadata: {
 					robloxSound: Number((storage.get("notifierSounds") || {}).friend) || 0,
@@ -68,12 +68,12 @@ RPlus.notifiers.friends = (function () {
 						} else if (fn.offline && (old.isOnline != friend.isOnline) && !friend.isOnline) {
 							clicknote(friend, friend.username + " is now offline");
 						} else if (fn.game && friend.game && (!old.game || old.game.serverId !== friend.game.serverId)) {
-							Roblox.thumbnails.getUserHeadshotThumbnail(friend.id, 150, 150).then((thumbnail) => {
+							Roblox.thumbnails.getUserHeadshotThumbnailUrl(friend.id, 150, 150).then((headshotThumbnailUrl) => {
 								$.notification({
 									tag: "friend" + friend.id,
 									title: friend.username + " joined a game",
 									context: friend.game.name,
-									icon: thumbnail.imageUrl,
+									icon: headshotThumbnailUrl,
 									buttons: ["Follow"],
 									clickable: true,
 									metadata: {

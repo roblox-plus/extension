@@ -140,12 +140,12 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			containers.user.find(".avatar-card-label").text("");
 			containers.user.find(".avatar-card-btns").slideUp();
 
-			Roblox.thumbnails.getUserHeadshotThumbnail(user.id, 150, 150).then((thumbnail) => {
+			Roblox.thumbnails.getUserHeadshotThumbnailUrl(user.id, 150, 150).then((headshotThumbnailUrl) => {
 				if (expectedProcessingId !== processingId) {
 					return;
 				}
 				
-				avatarCardImage.attr("src", thumbnail.imageUrl);
+				avatarCardImage.attr("src", headshotThumbnailUrl);
 			}).catch(console.error.bind(console, "processUserDisplay", user));
 
 			Roblox.users.getAuthenticatedUser().then(function (authenticatedUser) {

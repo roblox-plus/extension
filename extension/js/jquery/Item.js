@@ -221,8 +221,8 @@ RPlus.Pages.Item = function () {
 							"onerror": "this.onerror=null;this.src='" + Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Error) + "';"
 						});
 
-						Roblox.thumbnails.getUserHeadshotThumbnail((record.owner && record.owner.userId) || 0, 150, 150).then((thumbnail) => {
-							thumbnailImage.attr("src", thumbnail.imageUrl)
+						Roblox.thumbnails.getUserHeadshotThumbnailUrl((record.owner && record.owner.userId) || 0, 150, 150).then((headshotThumbnailUrl) => {
+							thumbnailImage.attr("src", headshotThumbnailUrl)
 						}).catch(console.error.bind(console, "serialTracker", record));
 
 						serialTracker.tab.content.append($("<li class=\"list-item\" data-userasset-id=\"" + record.userAssetId + "\">").append(
@@ -336,8 +336,8 @@ RPlus.Pages.Item = function () {
 							title: bundle.name
 						});
 
-						Roblox.thumbnails.getBundleThumbnail(bundle.id, 420, 420).then(function(bundleThumbnail) {
-							thumbnailImage.attr("src", bundleThumbnail.imageUrl);
+						Roblox.thumbnails.getBundleThumbnailUrl(bundle.id, 420, 420).then(function(bundleThumbnailUrl) {
+							thumbnailImage.attr("src", bundleThumbnailUrl);
 						}).catch(console.error.bind(console, bundle));
 						
 						bundlesList.append($("<li class=\"list-item\">").append($("<div class=\"store-card\">").append(

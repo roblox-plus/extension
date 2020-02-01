@@ -181,8 +181,8 @@ RPlus.notifiers.catalog = (function () {
 						if (message.data.itemType === "Asset") {
 							notification.metadata.url = "https://www.roblox.com/catalog/" + message.data.id + "/Roblox-Plus";
 
-							Roblox.thumbnails.getAssetThumbnail(message.data.id, 150, 150).then(function(assetThumbnail) {
-								notification.icon = assetThumbnail.imageUrl;
+							Roblox.thumbnails.getAssetThumbnailUrl(message.data.id, 150, 150).then(function(assetThumbnailUrl) {
+								notification.icon = assetThumbnailUrl;
 								$.notification(notification);
 							}).catch(function(err) {
 								console.error(message, err);
@@ -191,8 +191,8 @@ RPlus.notifiers.catalog = (function () {
 						} else if (message.data.itemType === "Bundle") {
 							notification.metadata.url = "https://www.roblox.com/bundles/" + message.data.id + "/Roblox-Plus";
 
-							Roblox.thumbnails.getBundleThumbnail(message.data.id, 150, 150).then(function(bundleThumbnail) {
-								notification.icon = bundleThumbnail.imageUrl;
+							Roblox.thumbnails.getBundleThumbnailUrl(message.data.id, 150, 150).then(function(bundleThumbnailUrl) {
+								notification.icon = bundleThumbnailUrl;
 								$.notification(notification);
 							}).catch(function(err) {
 								console.error(message, err);

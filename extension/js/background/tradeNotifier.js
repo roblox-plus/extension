@@ -76,11 +76,11 @@ RPlus.notifiers.trade = (function () {
 									}
 
 									var title = "Trade " + headers[trade.status];
-									Roblox.thumbnails.getUserHeadshotThumbnail(trade.tradePartnerOffer.user.id, 150, 150).then((thumbnail) => {
+									Roblox.thumbnails.getUserHeadshotThumbnailUrl(trade.tradePartnerOffer.user.id, 150, 150).then((headshotThumbnailUrl) => {
 										$.notification({
 											tag: "trade" + trade.id,
 											title: title,
-											icon: thumbnail.imageUrl,
+											icon: headshotThumbnailUrl,
 											items: {
 												"Partner": trade.tradePartnerOffer.user.username,
 												"Your RAP": addComma(trade.authenticatedUserOffer.assetValue) + (trade.authenticatedUserOffer.robux ? " +R$" + addComma(trade.authenticatedUserOffer.robux) : ""),

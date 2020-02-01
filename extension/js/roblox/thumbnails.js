@@ -4,19 +4,6 @@
 var Roblox = Roblox || {};
 
 Roblox.thumbnails = (function () {
-	var sizes = [
-		{ x: 48, y: 48 },
-		{ x: 60, y: 62 },
-		{ x: 75, y: 75 },
-		{ x: 100, y: 100 },
-		{ x: 110, y: 110 },
-		{ x: 160, y: 100 },
-		{ x: 250, y: 250 },
-		{ x: 352, y: 352 },
-		{ x: 420, y: 230 },
-		{ x: 420, y: 420 }
-	];
-
 	let thumbnailCache = new TimedCache(15 * 60 * 1000);
 
 	let thumbnailStates = {
@@ -122,15 +109,6 @@ Roblox.thumbnails = (function () {
 		});
 	};
 
-	function urlBuilder(path, param, x, y) {
-		x = x || "width";
-		y = y || "height";
-		return function (id, size) {
-			size = sizes[typeof (size) == "number" ? size : 9];
-			return "https://www.roblox.com/" + path + "?" + param + "=" + id + "&" + x + "=" + size.x + "&" + y + "=" + size.y;
-		};
-	}
-
 	/* https://thumbnails.roblox.com/docs/json/v1
 	"Roblox.Thumbnails.Apis.Models.ThumbnailBatchRequest": {
 		"type": "object",
@@ -169,7 +147,6 @@ Roblox.thumbnails = (function () {
 	*/
 
 	return {
-		sizes: sizes,
 		states: thumbnailStates,
 
 		getThumbnailForState: getThumbnailForState,
