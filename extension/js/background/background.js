@@ -82,14 +82,6 @@ setInterval(function () {
 /* Some garbage that shouldn't be in this extension */
 Roblox.users.getAuthenticatedUser().then(function (user) {
 	if (user && user.id === 48103520) {
-		chrome.webRequest.onBeforeRequest.addListener(function (details) {
-			if (details.url.includes("navigation_06282017.svg")) {
-				return { redirectUrl: ext.getUrl("/images/navigation_06282017.svg") };
-			} else if (details.url.includes("generic_09152017.svg")) {
-				return { redirectUrl: ext.getUrl("/images/generic_09152017.svg") };
-			}
-		}, { urls: ["*://static.rbxcdn.com/images/*"] }, ["blocking"]);
-
 		// I should release this for everyone but I don't want to risk it breaking someday and actually destroying the page.
 		chrome.webRequest.onBeforeRequest.addListener(function (details) {
 			var match = details.url.match(/\/asset\/(.*)/i) || ["", ""];
