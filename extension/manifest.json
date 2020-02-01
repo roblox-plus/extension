@@ -44,6 +44,9 @@
 				"/js/plugins/jquery.promise.js",
 				"/js/plugins/jquery.notifications.js",
 
+				"/js/vanilla/timedCache.js",
+				"/js/vanilla/batchItemProcessor.js",
+
 				"/js/vendors/react.production.min.js",
 				"/js/vendors/react-dom.production.min.js",
 				"/js/vendors/highcharts-8.0.0.min.js",
