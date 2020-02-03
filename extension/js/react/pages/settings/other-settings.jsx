@@ -78,18 +78,6 @@ class OtherSettings extends SettingsTab {
 				</div>
 				<div class="section">
 					<div class="container-header">
-						<h3>Create Page</h3>
-					</div>
-					<div class="section-content">
-						<span class="text-lead">Quick on/off sale buttons on the <a href="/develop">Create</a> page.</span>
-						<PillToggle getValue={this.getPillValue.bind(this, "quickSell")}
-							onToggle={this.setPillValue.bind(this, "quickSell")} />
-						<div class="rbx-divider"></div>
-						<span class="text-description">Note: When putting on sale it will put for sale at the lowest price possible.</span>
-					</div>
-				</div>
-				<div class="section">
-					<div class="container-header">
 						<h3>Twemojis</h3>
 					</div>
 					<div class="section-content">

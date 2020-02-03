@@ -65,7 +65,6 @@
 				"/js/roblox/audio.js",
 				"/js/roblox/trades.js",
 				"/js/roblox/groups.js",
-				"/js/roblox/develop.js",
 				"/js/roblox/economy.js",
 				"/js/roblox/economyTransactions.js",
 				"/js/roblox/navigation.js",
@@ -103,7 +102,6 @@
 
 				"/js/jquery/Login.js",
 				"/js/jquery/GroupV2.js",
-				"/js/jquery/Develop.js",
 				"/js/jquery/Inventory.js",
 				"/js/jquery/Friends.js",
 				"/js/jquery/TradeWindow.js",
