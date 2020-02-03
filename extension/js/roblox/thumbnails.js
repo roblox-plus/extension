@@ -146,7 +146,7 @@ Roblox.thumbnails = (function () {
 	},
 	*/
 
-	return {
+	let thumbnails = {
 		states: thumbnailStates,
 
 		getThumbnailForState: getThumbnailForState,
@@ -205,6 +205,14 @@ Roblox.thumbnails = (function () {
 			resolveExpiry: 15 * 60 * 1000
 		})
 	};
+
+	if (ext.isBackground) {
+		thumbnails.thumbnailCache = thumbnailCache;
+		thumbnails.thumbnailProcessor = batchThumbnailProcessor;
+		thumbnailCache.getThumbnail = getThumbnail;
+	}
+
+	return thumbnails;
 })();
 
 Roblox.thumbnails = $.addTrigger($.promise.background("Roblox.thumbnails", Roblox.thumbnails));
