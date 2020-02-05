@@ -80,7 +80,7 @@ class BatchItemProcessor {
 			let deduplicationKey = null;
 
 			if (this.settings.deduplicateItems) {
-				deduplicationKey = JSON.stringify(item);
+				deduplicationKey = this.createDeduplicationKey(item);
 				batchProcessorItem = this.deduplicationItems[deduplicationKey];
 				if (batchProcessorItem) {
 					batchProcessorItem.promise(resolve, reject);
@@ -90,7 +90,12 @@ class BatchItemProcessor {
 
 			batchProcessorItem = new BatchProcessorItem(item, resolve, reject, this.handleError);
 			if (deduplicationKey) {
+				const deleteDeduplicationItem = () => {
+					delete this.deduplicationItems[deduplicationKey];
+				};
+
 				this.deduplicationItems[deduplicationKey] = batchProcessorItem;
+				batchProcessorItem.promise(deleteDeduplicationItem, deleteDeduplicationItem);
 			}
 
 			this.queue.push(batchProcessorItem);
@@ -166,6 +171,10 @@ class BatchItemProcessor {
 		}
 
 		// Into the void...
+	}
+
+	createDeduplicationKey(item) {
+		return JSON.stringify(item);
 	}
 }
 
