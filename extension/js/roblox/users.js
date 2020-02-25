@@ -28,24 +28,24 @@ Roblox.users = (function () {
 		},
 
 		getCurrentUserId: $.promise.cache(function (resolve, reject) {
-			$.get("https://assetgame.roblox.com/Game/GetCurrentUser.ashx").done(function (r) {
-				resolve(Number(r) || 0);
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
-			});
+			this.getAuthenticatedUser().then((user) => {
+				resolve(user ? user.id : 0);
+			}).catch(reject);
 		}),
 
 		getAuthenticatedUser: $.promise.cache(function (resolve, reject) {
-			this.getCurrentUserId().then(function (authenticatedUserId) {
-				if (authenticatedUserId <= 0) {
+			$.get("https://users.roblox.com/v1/users/authenticated").done((r) => {
+				resolve({
+					id: r.id,
+					username: r.name
+				});
+			}).fail((jxhr, errors) => {
+				if (jxhr.status === 401) {
 					resolve();
-					return;
 				}
-				Roblox.users.getByUserId(authenticatedUserId).then(resolve, reject);
-			}, reject);
+
+				reject(errors);
+			});
 		}),
 
 		getByUserId: $.promise.cache(function (resolve, reject, userId) {
