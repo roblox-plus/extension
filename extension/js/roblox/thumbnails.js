@@ -14,6 +14,12 @@ Roblox.thumbnails = (function () {
 		"Blocked": "Blocked"
 	};
 
+	let thumbnailTypes = {
+		bundle: "bundle",
+		asset: "asset",
+		userHeadshot: "userHeadshot"
+	};
+
 	let thumbnailStateImages = {
 		"Blocked": "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjAiIHk9IjAiIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlPi5zdDJ7ZmlsbDpub25lO3N0cm9rZTojMDAwO3N0cm9rZS13aWR0aDoyO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxMH08L3N0eWxlPjxnIGlkPSJ1bmFwcHJvdmVkXzFfIj48cGF0aCBpZD0iYmdfMl8iIGZpbGw9IiM2NTY2NjgiIGQ9Ik0wIDBoOTB2OTBIMHoiLz48ZyBpZD0idW5hcHByb3ZlZCIgb3BhY2l0eT0iLjMiPjxjaXJjbGUgY2xhc3M9InN0MiIgY3g9IjQ1IiBjeT0iNDguOCIgcj0iMTAiLz48cGF0aCBjbGFzcz0ic3QyIiBkPSJNMzggNDEuN2wxNCAxNC4xTTMyLjUgMjMuNWgtNHY0TTI4LjUgNjIuNXY0aDRNMjguNSAzMS44djZNMjguNSA0MnY2TTI4LjUgNTIuMnY2TTU3LjUgNjYuNWg0di00TTYxLjUgNTguMnYtNk02MS41IDQ4di02TTYxLjUgMzcuOHYtNE0zNi44IDY2LjVoNk00Ny4yIDY2LjVoNk0zNi44IDIzLjVoNk00Ny4yIDIzLjVoNE01MS40IDIzLjZsMy41IDMuNU01Ny45IDMwLjFsMy41IDMuNU01MS4yIDIzLjh2M001OC41IDMzLjhoM001MS4yIDMwLjJ2My42aDMuNiIvPjwvZz48L2c+PC9zdmc+",
 		"InReview": "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjAiIHk9IjAiIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlPi5zdDJ7ZmlsbDpub25lO3N0cm9rZTojMDAwO3N0cm9rZS13aWR0aDoyO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxMH08L3N0eWxlPjxnIGlkPSJyZXZpZXdfcGVuZGluZ18xXyI+PHBhdGggaWQ9ImJnXzFfIiBmaWxsPSIjNjU2NjY4IiBkPSJNMCAwaDkwdjkwSDB6Ii8+PGcgaWQ9InJldmlld19wZW5kaW5nIiBvcGFjaXR5PSIuMyI+PHBhdGggY2xhc3M9InN0MiIgZD0iTTUxLjkgNjEuNUgyOC42di0zOGgzMi41djE4Ii8+PHBhdGggY2xhc3M9InN0MiIgZD0iTTY2LjQgNTIuOXYtNy40SDU1Ljl2Ny40bDIuNiAzLjEtMi42IDN2Ny41aDEwLjVWNTlsLTIuNi0zek00Mi40IDMxLjVoMTMuMk00Mi40IDQxLjVoMTMuMk00Mi40IDUxLjVoOS41TTMzLjkgMzFsMS41IDEuNSAzLTMiLz48cGF0aCBkPSJNNjMuNCA1Mi44aC00LjVsMi4yIDIuNHpNNjEuMSA2MC4ybC0zLjIgMnYyLjNoNi41di0yLjN6Ii8+PHBhdGggY2xhc3M9InN0MiIgZD0iTTMzLjkgMzkuMmg0LjV2NC41aC00LjV6TTMzLjkgNDkuMmg0LjV2NC41aC00LjV6Ii8+PC9nPjwvZz48L3N2Zz4=",
@@ -148,56 +154,124 @@ Roblox.thumbnails = (function () {
 
 	let thumbnails = {
 		states: thumbnailStates,
+		types: thumbnailTypes,
 
 		getThumbnailForState: getThumbnailForState,
 
+		parseSize: function(size) {
+			if (typeof(size) === "string") {
+				let split = size.split("x");
+				let width = Number(split[0]);
+				let height = Number(split[1]);
+
+				if (!isNaN(width) && !isNaN(height)) {
+					return {
+						width: width,
+						height: height
+					};
+				}
+			}
+		},
+
+		getLargestAvailableThumbnailSize: function(thumbnailType) {
+			return new Promise(function(resolve, reject) {
+				switch (thumbnailType) {
+					case thumbnailTypes.bundle:
+					case thumbnailTypes.asset:
+						resolve({
+							width: 420,
+							height: 420
+						});
+						return;
+					case thumbnailTypes.userHeadshot:
+						resolve({
+							width: 150,
+							height: 150
+						});
+						return;
+					default:
+						reject({
+							code: 7,
+							message: `Invalid thumbnailType: ${thumbnailType}`
+						});
+				}
+			});
+		},
+
 		getAssetThumbnail: $.promise.cache(function (resolve, reject, assetId, width, height) {
-			getThumbnail("Asset", assetId, `${width}x${height}`).then(resolve).catch(reject);
+			Roblox.thumbnails.getThumbnail(thumbnailTypes.asset, assetId, width, height).then(resolve).catch(reject);
 		}, {
 			rejectExpiry: 15 * 1000,
 			resolveExpiry: 15 * 60 * 1000
 		}),
 
 		getAssetThumbnailUrl: $.promise.cache(function (resolve, reject, assetId, width, height) {
-			Roblox.thumbnails.getAssetThumbnail(assetId, width, height).then(function(thumbnail) {
-				resolve(thumbnail.imageUrl);
-			}).catch(function() {
-				resolve(getThumbnailForState(thumbnailStates.Error));
-			});
+			Roblox.thumbnails.getThumbnailUrl(thumbnailTypes.asset, assetId, width, height).then(resolve).catch(reject);
 		}, {
 			rejectExpiry: 15 * 1000,
 			resolveExpiry: 15 * 60 * 1000
 		}),
 
 		getUserHeadshotThumbnail: $.promise.cache(function (resolve, reject, userId, width, height) {
-			getThumbnail("AvatarHeadShot", userId, `${width}x${height}`).then(resolve).catch(reject);
+			Roblox.thumbnails.getThumbnail(thumbnailTypes.userHeadshot, userId, width, height).then(resolve).catch(reject);
 		}, {
 			rejectExpiry: 15 * 1000,
 			resolveExpiry: 15 * 60 * 1000
 		}),
 
 		getUserHeadshotThumbnailUrl: $.promise.cache(function (resolve, reject, userId, width, height) {
-			Roblox.thumbnails.getUserHeadshotThumbnail(userId, width, height).then(function(thumbnail) {
-				resolve(thumbnail.imageUrl);
-			}).catch(function() {
-				resolve(getThumbnailForState(thumbnailStates.Error));
-			});
+			Roblox.thumbnails.getThumbnailUrl(thumbnailTypes.userHeadshot, userId, width, height).then(resolve).catch(reject);
 		}, {
 			rejectExpiry: 15 * 1000,
 			resolveExpiry: 15 * 60 * 1000
 		}),
 
 		getBundleThumbnail: $.promise.cache(function (resolve, reject, bundleId, width, height) {
-			getThumbnail("BundleThumbnail", bundleId, `${width}x${height}`).then(resolve).catch(reject);
+			Roblox.thumbnails.getThumbnail(thumbnailTypes.bundle, bundleId, width, height).then(resolve).catch(reject);
 		}, {
 			rejectExpiry: 15 * 1000,
 			resolveExpiry: 15 * 60 * 1000
 		}),
 
 		getBundleThumbnailUrl: $.promise.cache(function (resolve, reject, bundleId, width, height) {
-			Roblox.thumbnails.getBundleThumbnail(bundleId, width, height).then(function(thumbnail) {
+			Roblox.thumbnails.getThumbnailUrl(thumbnailTypes.bundle, bundleId, width, height).then(resolve).catch(reject);
+		}, {
+			rejectExpiry: 15 * 1000,
+			resolveExpiry: 15 * 60 * 1000
+		}),
+
+		getThumbnail: $.promise.cache(function(resolve, reject, thumbnailType, targetId, width, height) {
+			let thumbnailApiType;
+			switch (thumbnailType) {
+				case thumbnailTypes.bundle:
+					thumbnailApiType = "BundleThumbnail";
+					break;
+				case thumbnailTypes.asset:
+					thumbnailApiType = "Asset";
+					break;
+				case thumbnailTypes.userHeadshot:
+					thumbnailApiType = "AvatarHeadShot";
+					break;
+				default:
+					reject([
+						{
+							code: 7,
+							message: `Invalid thumbnailType: ${thumbnailType}`
+						}
+					]);
+					return;
+			}
+
+			getThumbnail(thumbnailApiType, targetId, `${width}x${height}`).then(resolve).catch(reject);
+		}, {
+			rejectExpiry: 15 * 1000,
+			resolveExpiry: 15 * 60 * 1000
+		}),
+
+		getThumbnailUrl: $.promise.cache(function(resolve, reject, thumbnailType, targetId, width, height) {
+			Roblox.thumbnails.getThumbnail(thumbnailType, targetId, width, height).then((thumbnail) => {
 				resolve(thumbnail.imageUrl);
-			}).catch(function() {
+			}).catch(() => {
 				resolve(getThumbnailForState(thumbnailStates.Error));
 			});
 		}, {
