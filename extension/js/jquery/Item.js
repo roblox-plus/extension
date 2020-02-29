@@ -198,100 +198,28 @@ RPlus.Pages.Item = function () {
 		};
 
 		if (canViewOwners()) {
-			var loaderId = 0;
-			var currentPage = 1;
-			var previousPageCursor = "";
-			var nextPageCursor = "";
-			var busy = false;
-
 			serialTracker = {
-				tab: createTab("Owners", "v"),
-				loadPage: function (cursor) {
-					if (busy) {
-						return true;
-					}
-					busy = true;
-					serialTracker.tab.content.html("").append($("<div>").hide());
-					serialTracker.tab.message("Loading...");
-					Roblox.inventory.getAssetOwners(id, cursor, "Asc").then(function (data) {
-						serialTracker.tab.input.attr("placeholder", "Page " + currentPage);
-						serialTracker.tab.message("");
-						nextPageCursor = data.nextPageCursor || "";
-						previousPageCursor = data.previousPageCursor || "";
-						data.data.forEach(function (record) {
-							var date = new Date(record.updated);
-							var username = record.owner ? record.owner.username : "[ Owner has their inventory hidden ]";
-							var profileUrl = record.owner ? "/users/" + record.owner.userId + "/profile" : "javascript:/* User does not exist */";
-							var thumbnailImage = $("<img class=\"avatar-card-image\">").attr({ 
-								"src": Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Pending),
-								"alt": username,
-								"onerror": "this.onerror=null;this.src='" + Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Error) + "';"
-							});
-
-							Roblox.thumbnails.getUserHeadshotThumbnailUrl((record.owner && record.owner.userId) || 0, 150, 150).then((headshotThumbnailUrl) => {
-								thumbnailImage.attr("src", headshotThumbnailUrl)
-							}).catch(console.error.bind(console, "serialTracker", record));
-
-							serialTracker.tab.content.append($("<li class=\"list-item\" data-userasset-id=\"" + record.userAssetId + "\">").append(
-								$("<a class=\"avatar avatar-headshot-md list-header\">").attr("href", profileUrl).append(thumbnailImage),
-								$("<div class=\"resale-info\">").append(
-									$("<a class=\"text-name username\" href=\"" + profileUrl + "\">").text(username),
-									record.serialNumber ? $("<span class=\"separator\">").text("-") : "",
-									record.serialNumber ? $("<span class=\"serial-number\">Serial #" + record.serialNumber + "</span>") : "",
-									$("<br>"),
-									$("<span class=\"text-secondary\">").text("Owner since: " + date.toLocaleDateString() + " " + date.toLocaleTimeString())
-								)
-							));
-						});
-						busy = false;
-					}, function (errors) {
-						serialTracker.tab.message("Failed to load owners, trying again...");
-						setTimeout(function () {
-							busy = false;
-							serialTracker.loadPage(cursor);
-						}, 2000);
-					});
-				}
+				tab: createTab("Owners", "v")
 			};
 
-			function nextPage() {
-				if (nextPageCursor) {
-					if (!serialTracker.loadPage(nextPageCursor)) {
-						currentPage += 1;
-					}
-				}
-			}
-
-			function prevPage() {
-				if (previousPageCursor) {
-					if (!serialTracker.loadPage(previousPageCursor)) {
-						currentPage -= 1;
-					}
-				}
-			}
-
 			$(document).keyup(function (e) {
-				if (e.keyCode == 37 && serialTracker.tab.content.is(":visible")) {
-					prevPage();
-				} else if (e.keyCode == 39 && serialTracker.tab.content.is(":visible")) {
-					nextPage();
+				if (!serialTracker.component || !serialTracker.tab.content.is(":visible")) {
+					return;
+				}
+
+				if (e.keyCode == 37) {
+					serialTracker.component.loadPreviousPage();
+				} else if (e.keyCode == 39) {
+					serialTracker.component.loadNextPage();
 				}
 			});
 
-			serialTracker.tab.container.find(".container-header").append($("<div class=\"pager\">").append(
-				$("<div class=\"pager-prev\"><a><span class=\"icon-left\"></span></a></div>").click(function (e) {
-					e.preventDefault();
-					prevPage();
-				}),
-				serialTracker.tab.input = $("<input class=\"input-field\" placeholder=\"Page 1\" readonly=\"readonly\"/>"),
-				$("<div class=\"pager-next\"><a><span class=\"icon-right\"></span></a></div>").click(function (e) {
-					e.preventDefault();
-					nextPage();
-				})
-			));
-
 			serialTracker.tab.firstLoad(function () {
-				serialTracker.loadPage("");
+				serialTracker.element = React.createElement(ItemOwners, {
+					assetId: item.id
+				});
+
+				serialTracker.component = ReactDOM.render(serialTracker.element, serialTracker.tab.content[0]);
 			});
 		}
 

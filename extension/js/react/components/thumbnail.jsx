@@ -3,7 +3,8 @@ class Thumbnail extends React.Component {
 		super(props);
 
 		this.state = {
-			imageUrl: Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Pending)
+			imageUrl: Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Pending),
+			thumbnailType: props.thumbnailType
 		};
 
 		let size = Roblox.thumbnails.parseSize(props.size);
@@ -40,9 +41,23 @@ class Thumbnail extends React.Component {
 		});
 	}
 
+	getClassName() {
+		let className = "rplus-react-thumbnail";
+
+		switch (this.state.thumbnailType) {
+			case Roblox.thumbnails.types.userHeadshot:
+				className += " avatar";
+				break;
+		}
+
+		return className;
+	}
+
 	render() {
 		return (
-			<img class="rplus-react-thumbnail" src={this.imageUrl}/>
+			<img class={this.getClassName()}
+				src={this.state.imageUrl}
+				onError={this.handleError.bind(this)}/>
 		);
 	}
 }

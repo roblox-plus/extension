@@ -46,6 +46,9 @@
 
 				"/js/vanilla/timedCache.js",
 				"/js/vanilla/batchItemProcessor.js",
+				"/js/vanilla/cursorPagination/cursorPaginationConstants.js",
+				"/js/vanilla/cursorPagination/PaginationCache.js",
+				"/js/vanilla/cursorPagination/CursorPager.js",
 
 				"/js/vendors/react.production.min.js",
 				"/js/vendors/react-dom.production.min.js",
@@ -123,7 +126,8 @@
 		{
 			"js": [
 				"/js/output/react/components/vertical-tabs.js",
-				"/js/output/react/components/pill-toggle.js"
+				"/js/output/react/components/pill-toggle.js",
+				"/js/output/react/components/thumbnail.js"
 			],
 			"matches": [
 				"*://*.roblox.com/*"
@@ -199,6 +203,20 @@
 			],
 			"matches": [
 				"*://*.roblox.com/games/*/*"
+			],
+			"run_at": "document_end"
+		},
+		
+		{
+			"js": [
+				"/js/output/react/pages/item-details/item-owners.js"
+			],
+			"css": [
+				"/css/output/pages/item-details.css"
+			],
+			"matches": [
+				"*://*.roblox.com/catalog/*/*",
+				"*://*.roblox.com/library/*/*"
 			],
 			"run_at": "document_end"
 		}
