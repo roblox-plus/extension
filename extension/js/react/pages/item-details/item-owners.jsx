@@ -46,6 +46,10 @@ class ItemOwners extends React.Component {
 		});
 	}
 
+	loadFirstPage() {
+		this.itemOwnersPager.loadFirstPage().then((data) => this.handlePageLoad(data)).catch((err) => this.handleError(err));
+	}
+
 	loadNextPage() {
 		this.itemOwnersPager.loadNextPage().then((data) => this.handlePageLoad(data)).catch((err) => this.handleError(err));
 	}
@@ -85,9 +89,43 @@ class ItemOwners extends React.Component {
 		return (
 			<span>
 				<span class="separator">-</span>
-				<span class="font-caption-body serial-number">{`Serial ${ownershipRecord.serialNumber}`}</span>
+				<span class="font-caption-body serial-number">{`Serial #${ownershipRecord.serialNumber}`}</span>
 			</span>
 		);
+	}
+
+	renderPager() {
+		if (!this.itemOwnersPager.canLoadNextPage && !this.itemOwnersPager.canLoadPreviousPage) {
+			return "";
+		}
+
+		return (
+			<ul class="pager">
+				<li class={"first" + (this.itemOwnersPager.canLoadPreviousPage ? "" : " disabled")} onClick={this.loadFirstPage.bind(this)}>
+					<a>
+						<span class="icon-first-page"></span>
+					</a>
+				</li>
+				<li class={"pager-prev" + (this.itemOwnersPager.canLoadPreviousPage ? "" : " disabled")} onClick={this.loadPreviousPage.bind(this)}>
+					<a>
+						<span class="icon-left"></span>
+					</a>
+				</li>
+				<li class="pager-count">
+					<span>Page {this.itemOwnersPager.currentPageNumber}</span>
+				</li>
+				<li class={"pager-next" + (this.itemOwnersPager.canLoadNextPage ? "" : " disabled")} onClick={this.loadNextPage.bind(this)}>
+					<a>
+						<span class="icon-right"></span>
+					</a>
+				</li>
+				<li class="last disabled">
+					<a>
+						<span class="icon-last-page"></span>
+					</a>
+				</li>
+			</ul>
+		)
 	}
 
 	renderOwners() {
@@ -142,6 +180,7 @@ class ItemOwners extends React.Component {
 
 		return (
 			<div class="rplus-item-owners">
+				{this.renderPager()}
 				<ul class="vlist">
 					{this.renderOwners()}
 				</ul>

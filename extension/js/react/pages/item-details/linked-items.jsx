@@ -6,9 +6,7 @@ class LinkedItems extends React.Component {
 			loading: 2,
 			assetId: props.assetId,
 			dependentAssets: [],
-			assetBundles: [],
-			dependentAssetsError: false,
-			assetBundlesError: false
+			assetBundles: []
 		};
 	}
 
@@ -24,7 +22,6 @@ class LinkedItems extends React.Component {
 			console.error(err);
 	
 			this.setState({
-				dependentAssetsError: true,
 				loading: --loading
 			});
 		});
@@ -38,7 +35,6 @@ class LinkedItems extends React.Component {
 			console.error(err);
 	
 			this.setState({
-				assetBundlesError: true,
 				loading: --loading
 			});
 		});

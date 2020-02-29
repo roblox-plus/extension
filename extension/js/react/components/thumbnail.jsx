@@ -7,11 +7,14 @@ class Thumbnail extends React.Component {
 			thumbnailType: props.thumbnailType
 		};
 
-		let size = Roblox.thumbnails.parseSize(props.size);
-		this.init(props.thumbnailType, props.thumbnailTargetId, size);
+		this.componentWillReceiveProps(props);
 	}
 
 	init(thumbnailType, thumbnailTargetId, size) {
+		this.setState({
+			imageUrl: Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Pending)
+		});
+
 		if (size) {
 			this.loadThumbnail(thumbnailType, thumbnailTargetId, size.width, size.height);
 		} else {
@@ -21,6 +24,15 @@ class Thumbnail extends React.Component {
 				this.handleError(err);
 			});
 		}
+	}
+
+	componentWillReceiveProps(nextProps) {
+		let size = Roblox.thumbnails.parseSize(nextProps.size);
+		this.init(nextProps.thumbnailType, nextProps.thumbnailTargetId, size);
+
+		this.setState({
+			thumbnailType: nextProps.thumbnailType
+		});
 	}
 
 	loadThumbnail(thumbnailType, thumbnailTargetId, width, height) {
