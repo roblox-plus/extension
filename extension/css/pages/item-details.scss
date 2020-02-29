@@ -16,31 +16,43 @@
 			}
 		}
 	}
-}
 
-.rplus-item-owners {
-	.vlist {
-		.list-item {
-			margin-bottom: 0;
-
-			&:first-child {
-				border-top: none;
-			}
-
-			.list-header {
-				.rplus-react-thumbnail {
-					border-radius: 100%;
-					height: 60px;
-					width: 60px;
+	.rplus-item-owners {
+		.vlist {
+			.list-item {
+				margin-bottom: 0;
+	
+				&:first-child {
+					border-top: none;
+				}
+	
+				.list-header {
+					.rplus-react-thumbnail {
+						border-radius: 100%;
+						height: 60px;
+						width: 60px;
+					}
+				}
+	
+				.rplus-ownership-info {
+					padding-top: 24px;
+				}
+	
+				.separator {
+					padding: 0 5px;
 				}
 			}
+		}
+	}
 
-			.rplus-ownership-info {
-				padding-top: 24px;
-			}
+	.rplus-linked-items {
+		.item-card {
+			height: 185px;
 
-			.separator {
-				padding: 0 5px;
+			.item-card-link {
+				img {
+					width: 100%;
+				}
 			}
 		}
 	}
