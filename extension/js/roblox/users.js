@@ -46,6 +46,9 @@ Roblox.users = (function () {
 
 				reject(errors);
 			});
+		}, {
+			rejectExpiry: 5 * 1000,
+			resolveExpiry: 15 * 1000
 		}),
 
 		getByUserId: $.promise.cache(function (resolve, reject, userId) {
