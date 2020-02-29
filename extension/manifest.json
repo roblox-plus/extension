@@ -209,6 +209,8 @@
 		
 		{
 			"js": [
+				"/js/output/react/pages/item-details/item-details-tabs.js",
+				"/js/output/react/pages/item-details/linked-items.js",
 				"/js/output/react/pages/item-details/item-owners.js"
 			],
 			"css": [
@@ -218,7 +220,7 @@
 				"*://*.roblox.com/catalog/*/*",
 				"*://*.roblox.com/library/*/*"
 			],
-			"run_at": "document_end"
+			"run_at": "document_start"
 		}
 	],
 

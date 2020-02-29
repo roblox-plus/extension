@@ -128,13 +128,15 @@ RPlus.Pages.Item = function () {
 			return ret;
 		};
 
-		if (!$(".rbx-tabs-horizontal").length) {
-			$(".section-content.top-section").after($("<div class=\"rbx-tabs-horizontal resale-pricechart-tabs\">").append(
-				$("<ul id=\"horizontal-tabs\" class=\"nav nav-tabs\" role=\"tablist\">"),
-				$("<div class=\"tab-content rbx-tab-content\">")
-			));
-		} else {
-			$(".rbx-tabs-horizontal").attr("rplus", "AllTabs");
+		if (false) {
+			if (!$(".rbx-tabs-horizontal").length) {
+				$(".section-content.top-section").after($("<div class=\"rbx-tabs-horizontal resale-pricechart-tabs\">").append(
+					$("<ul id=\"horizontal-tabs\" class=\"nav nav-tabs\" role=\"tablist\">"),
+					$("<div class=\"tab-content rbx-tab-content\">")
+				));
+			} else {
+				$(".rbx-tabs-horizontal").attr("rplus", "AllTabs");
+			}
 		}
 
 		function isAuthenticatedUserCreator() {
@@ -197,7 +199,28 @@ RPlus.Pages.Item = function () {
 			return false;
 		};
 
+		let tabTypes = [];
+
 		if (canViewOwners()) {
+			tabTypes.push(ItemDetailsTabs.tabTypes.owners);
+		}
+
+		if (canViewAssetContents()) {
+			tabTypes.push(ItemDetailsTabs.tabTypes.linkedItems);
+		}
+
+		if (tabTypes.length > 0) {
+			let container = $("<div>");
+			let itemDetailsTabs = React.createElement(ItemDetailsTabs, {
+				tabTypes: tabTypes,
+				assetId: item.id
+			});
+
+			$(".section-content.top-section").after(container);
+			ReactDOM.render(itemDetailsTabs, container[0]);
+		}
+
+		if (canViewOwners() && false) {
 			serialTracker = {
 				tab: createTab("Owners", "v")
 			};
@@ -224,7 +247,7 @@ RPlus.Pages.Item = function () {
 		}
 
 
-		if (canViewAssetContents()) {
+		if (canViewAssetContents() && false) {
 			var assetContentTab = createTab("Linked Items", "h");
 			assetContentTab.content.parent().css("padding", "10px");
 			assetContentTab.firstLoad(function () {
@@ -293,20 +316,22 @@ RPlus.Pages.Item = function () {
 		}
 
 
-		if ($("#horizontal-tabs>li").length < 1) {
-			$(".rbx-tabs-horizontal").hide();
-		} else {
-			$(".rbx-tabs-horizontal").attr("rplus", $("#horizontal-tabs>li").length - (item.limited ? 1 : 0));
-			$("#horizontal-tabs").show().find(">li").click(function () {
-				var tabContent = $(this).parent().parent().find(">.tab-content");
-				tabContent.find(">*").hide();
-				var thisTab = $(this).find(">a").attr("href").substr(1);
-				if (thisTab == "resellers" || thisTab == "price-chart") {
-					tabContent.find("#resellers,#price-chart").show();
-				} else {
-					tabContent.find(">*[id='" + thisTab + "']").show();
-				}
-			});
+		if (false) {
+			if ($("#horizontal-tabs>li").length < 1) {
+				$(".rbx-tabs-horizontal").hide();
+			} else {
+				$(".rbx-tabs-horizontal").attr("rplus", $("#horizontal-tabs>li").length - (item.limited ? 1 : 0));
+				$("#horizontal-tabs").show().find(">li").click(function () {
+					var tabContent = $(this).parent().parent().find(">.tab-content");
+					tabContent.find(">*").hide();
+					var thisTab = $(this).find(">a").attr("href").substr(1);
+					if (thisTab == "resellers" || thisTab == "price-chart") {
+						tabContent.find("#resellers,#price-chart").show();
+					} else {
+						tabContent.find(">*[id='" + thisTab + "']").show();
+					}
+				});
+			}
 		}
 
 		if (item.limited) {

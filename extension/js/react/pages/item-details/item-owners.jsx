@@ -10,7 +10,6 @@ class ItemOwners extends React.Component {
 		};
 
 		this.itemOwnersPager = new CursorPager(100, 100, (pagingParameters) => { return this.loadPage(pagingParameters); });
-		this.init();
 	}
 
 	init() {
@@ -78,16 +77,22 @@ class ItemOwners extends React.Component {
 		}, 2000);
 	}
 
-	getSerialNumberText(ownershipRecord) {
-		if (ownershipRecord.serialNumber) {
-			return `Serial ${ownershipRecord.serialNumber}`;
+	getSerialNumber(ownershipRecord) {
+		if (!ownershipRecord.serialNumber) {
+			return "";			
 		}
 
-		return "Serial N/A";
+		return (
+			<span>
+				<span class="separator">-</span>
+				<span class="font-caption-body serial-number">{`Serial ${ownershipRecord.serialNumber}`}</span>
+			</span>
+		);
 	}
 
 	renderOwners() {
 		return this.state.owners.map((ownershipRecord) => {
+			let ownedSince = `${ownershipRecord.updated.toLocaleDateString()} ${ownershipRecord.updated.toLocaleTimeString()}`;
 			if (!ownershipRecord.owner) {
 				return (
 					<li class="list-item">
@@ -95,11 +100,10 @@ class ItemOwners extends React.Component {
 							<Thumbnail thumbnailType={Roblox.thumbnails.types.userHeadshot} thumbnailTargetId={0} />
 						</span>
 						<div class="rplus-ownership-info">
-							<span class="text-lead username">[ Private Inventory ]</span>
-							<span class="separator">-</span>
-							<span class="font-caption-body serial-number">{this.getSerialNumberText(ownershipRecord)}</span>
+							<span class="text-label username">Private Inventory</span>
+							{this.getSerialNumber(ownershipRecord)}
 							<br/>
-							<span class="text-secondary">Owner since: {ownershipRecord.updated.toLocaleDateString()} {ownershipRecord.updated.toLocaleTimeString()}</span>
+							<span class="text-secondary">Owner since: {ownedSince}</span>
 						</div>
 					</li>
 				);
@@ -112,10 +116,9 @@ class ItemOwners extends React.Component {
 					</a>
 					<div class="rplus-ownership-info">
 						<a class="text-name username" href={Roblox.users.getProfileUrl(ownershipRecord.owner.userId)}>{ownershipRecord.owner.username}</a>
-						<span class="separator">-</span>
-						<span class="font-caption-body serial-number">{this.getSerialNumberText(ownershipRecord)}</span>
+						{this.getSerialNumber(ownershipRecord)}
 						<br/>
-						<span class="text-secondary">Owner since: {ownershipRecord.updated.toLocaleDateString()}</span>
+						<span class="text-secondary">Owner since: {ownedSince}</span>
 					</div>
 				</li>
 			);

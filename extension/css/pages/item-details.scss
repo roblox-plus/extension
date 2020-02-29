@@ -1,19 +1,47 @@
-.rplus-item-owners {
-	.list-item {
-		.list-header {
-			.rplus-react-thumbnail {
-				border-radius: 100%;
-				height: 60px;
-				width: 60px;
+.rplus-item-details-tabs {
+	.rbx-tabs-horizontal {
+		margin-bottom: 12px;
+
+		.nav-tabs {
+			&[rplus-tab-count='2']>li {
+				width: 50%;
+			}
+	
+			&[rplus-tab-count='3']>li {
+				width: calc(100% / 3);
+			}
+	
+			&[rplus-tab-count='4']>li {
+				width: 25%;
 			}
 		}
+	}
+}
 
-		.rplus-ownership-info {
-			padding-top: 12px;
-		}
+.rplus-item-owners {
+	.vlist {
+		.list-item {
+			margin-bottom: 0;
 
-		.separator {
-			padding: 0 5px;
+			&:first-child {
+				border-top: none;
+			}
+
+			.list-header {
+				.rplus-react-thumbnail {
+					border-radius: 100%;
+					height: 60px;
+					width: 60px;
+				}
+			}
+
+			.rplus-ownership-info {
+				padding-top: 24px;
+			}
+
+			.separator {
+				padding: 0 5px;
+			}
 		}
 	}
 }
