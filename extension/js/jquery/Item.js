@@ -197,9 +197,6 @@ RPlus.Pages.Item = function () {
 				loop();
 			}
 		});
-
-		$("a.rbx-tab-heading[href='#price-chart']").parent().hide();
-		$("a.rbx-tab-heading[href='#resellers']")[0].click();
 	}
 
 	if ((item.assetTypeId === 11 || item.assetTypeId === 12 || item.assetTypeId === 2)
