@@ -55,8 +55,12 @@
 			height: 185px;
 
 			.item-card-link {
-				img {
-					width: 100%;
+				.item-card-thumb-container {
+					overflow: hidden;
+					
+					img {
+						width: 100%;
+					}
 				}
 			}
 		}
