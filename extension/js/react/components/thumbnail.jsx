@@ -12,6 +12,7 @@ class Thumbnail extends React.Component {
 
 	init(thumbnailType, thumbnailTargetId, size) {
 		this.setState({
+			thumbnailType: thumbnailType,
 			imageUrl: Roblox.thumbnails.getThumbnailForState(Roblox.thumbnails.states.Pending)
 		});
 
@@ -29,10 +30,6 @@ class Thumbnail extends React.Component {
 	componentWillReceiveProps(nextProps) {
 		let size = Roblox.thumbnails.parseSize(nextProps.size);
 		this.init(nextProps.thumbnailType, nextProps.thumbnailTargetId, size);
-
-		this.setState({
-			thumbnailType: nextProps.thumbnailType
-		});
 	}
 
 	loadThumbnail(thumbnailType, thumbnailTargetId, width, height) {
