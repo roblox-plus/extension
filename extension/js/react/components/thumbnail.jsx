@@ -37,10 +37,18 @@ class Thumbnail extends React.Component {
 
 	loadThumbnail(thumbnailType, thumbnailTargetId, width, height) {
 		Roblox.thumbnails.getThumbnail(thumbnailType, thumbnailTargetId, width, height).then((thumbnail) => {
+			if (this.props.thumbnailTargetId !== thumbnailTargetId) {
+				return;
+			}
+
 			this.setState({
 				imageUrl: thumbnail.imageUrl
 			});
 		}).catch((err) => {
+			if (this.props.thumbnailTargetId !== thumbnailTargetId) {
+				return;
+			}
+
 			this.handleError(err);
 		});
 	}
