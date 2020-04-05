@@ -271,19 +271,6 @@ input.rplusslider[type='range']::-webkit-slider-thumb{
 	text-decoration: underline;
 }
 
-
-
-/* Profile */
-.profile-header .header-details .details-info li{
-	width: 25% !important;
-}
-
-.profile-avatar-right .profile-avatar-mask{
-	padding: 20px 18px !important;
-}
-
-
-
 /* Money */
 #RPlusTradeId{
 	position: absolute;
