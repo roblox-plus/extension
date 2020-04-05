@@ -112,7 +112,7 @@ class UserInfoWidgetUserCard extends React.Component {
 
 		return (
 			<div>
-				<div class="avatar-card-label">Collectibles: {this.state.inventoryData.collectibles.length}</div>
+				<div class="avatar-card-label">Collectibles: {global.addCommas(this.state.inventoryData.collectibles.length)}</div>
 				<div class="avatar-card-label">RAP: {global.addCommas(this.state.inventoryData.combinedValue)}</div>
 			</div>
 		);

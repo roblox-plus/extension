@@ -65,7 +65,7 @@ class UserInfoWidgetInventory extends React.Component {
 			let mergedCollectible = {
 				assetId: collectible.assetId,
 				assetName: collectible.name,
-				recentAveragePrice: collectible.recentAveragePrice,
+				recentAveragePrice: collectible.recentAveragePrice || Infinity,
 				serialNumbers: [collectible.serialNumber],
 				assetStock: collectible.assetStock
 			};

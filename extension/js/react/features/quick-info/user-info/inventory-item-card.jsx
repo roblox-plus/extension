@@ -58,7 +58,7 @@ class UserInfoWidgetInventoryItemCard extends React.Component {
 					<div class="item-card-caption">
 						<div class="text-overflow item-card-price">
 							<span class="icon icon-robux-16x16"></span>
-							<span class="text-robux ng-binding">{global.addCommas(this.state.collectible.recentAveragePrice)}</span>
+							<span class="text-robux ng-binding">{(this.state.collectible.recentAveragePrice !== Infinity ? global.addCommas(this.state.collectible.recentAveragePrice) : "Priceless")}</span>
 						</div>
 					</div>
 				</div>

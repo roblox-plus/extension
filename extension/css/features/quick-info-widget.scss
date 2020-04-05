@@ -1,3 +1,17 @@
+#navbar-rplus {	
+	padding: 4px;
+
+	a {
+		width: 28px;
+		height: 28px;
+		margin: 2px;
+
+		&:hover {
+			background-color: transparent;
+		}
+	}
+}
+
 .rplus-quick-info-widget {
 	padding: 0;
 	overflow: hidden;
