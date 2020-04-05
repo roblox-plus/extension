@@ -14,8 +14,8 @@ Roblox.inventory = (function () {
 				} else {
 					resolve(r.data);
 				}
-			}).fail(function (e) {
-				reject(JSON.parse(e.responseText));
+			}).fail(function (jxhr, errors) {
+				reject(errors);
 			});
 		});
 	}
