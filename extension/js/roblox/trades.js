@@ -20,7 +20,7 @@ Roblox.trades = (function () {
 				return;
 			}
 
-			$.post("https://trades.roblox.com/v1/trades/143093067/decline").done(function() {
+			$.post(`https://trades.roblox.com/v1/trades/${tradeId}/decline`).done(function() {
 				resolve();
 			}).fail(function (jxhr, errors) {
 				reject(errors);
