@@ -49,62 +49,69 @@ Roblox.trades = (function () {
 				return;
 			}
 
-			Roblox.users.getCurrentUserId().then(function (authenticatedUserId) {
-				$.post("https://www.roblox.com/Trade/TradeHandler.ashx", { "TradeID": tradeId, cmd: "pull" }).done(function (r) {
-					try {
-						r = JSON.parse(r.data);
-					} catch (e) {
-						reject([{
-							code: 0,
-							message: r.msg || "Failed to parse response JSON."
-						}]);
-						return;
-					}
-					var trade = {
-						id: tradeId,
-						status: r.StatusType == "Open" ? (r.AgentOfferList[0].AgentID == authenticatedUserId ? "Outbound" : "Inbound") : (r.StatusType == "Finished" ? "Completed" : r.StatusType),
-						expiration: new Date(Number((r.Expiration.match(/\d+/) || [0])[0])).getTime(),
+			Roblox.users.getAuthenticatedUser().then(function(authenticatedUser) {
+				if (!authenticatedUser) {
+					reject([{
+						code: 0,
+						message: "Unauthorized"
+					}]);
+					return;
+				}
+
+				$.get("https://trades.roblox.com/v1/trades/" + tradeId).done(function(r) {
+					let trade = {
+						id: r.id,
+						status: r.status == "Open" ? (r.offers[0].user.id === authenticatedUser.id ? "Outbound" : "Inbound") : r.status,
 						offers: [],
 						authenticatedUserOffer: {},
 						tradePartnerOffer: {}
 					};
-					r.AgentOfferList.forEach(function (rawOffer) {
-						Roblox.users.getByUserId(rawOffer.AgentID).then(function (user) {
-							var offer = {
-								user: user,
-								robux: rawOffer.OfferRobux,
-								assetValue: rawOffer.OfferValue - rawOffer.OfferRobux,
-								totalValue: rawOffer.OfferValue,
-								userAssets: []
-							};
-							rawOffer.OfferList.forEach(function (userAsset) {
-								offer.userAssets.push({
-									userAssetId: Number(userAsset.UserAssetID),
-									assetId: Roblox.catalog.getIdFromUrl(userAsset.ItemLink),
-									name: userAsset.Name,
-									serialNumber: Number(userAsset.SerialNumber) || null,
-									assetStock: Number(userAsset.SerialNumberTotal) || null,
-									recentAveragePrice: Number(userAsset.AveragePrice)
-								});
+
+					r.offers.forEach(function(offerData) {
+						let offer = {
+							user: {
+								id: offerData.user.id,
+								username: offerData.user.name
+							},
+							robux: offerData.robux,
+							assetValue: 0,
+							totalValue: offerData.robux,
+							userAssets: []
+						};
+
+						offerData.userAssets.forEach(function(userAsset) {
+							let value = userAsset.recentAveragePrice || 0;
+							if (isNaN(value)) {
+								value = 0;
+							}
+
+							offer.assetValue += value;
+							offer.totalValue += value;
+
+							offer.userAssets.push({
+								userAssetId: userAsset.id,
+								assetId: userAsset.assetId,
+								name: userAsset.name,
+								serialNumber: Number(userAsset.serialNumber) || null,
+								assetStock: Number(userAsset.assetStock) || null,
+								recentAveragePrice: value
 							});
-							if (authenticatedUserId == user.id) {
-								trade.authenticatedUserOffer = offer;
-							} else {
-								trade.tradePartnerOffer = offer;
-							}
-							trade.offers.push(offer);
-							if (trade.offers.length == r.AgentOfferList.length) {
-								resolve(trade);
-							}
-						}, reject);
+						});
+
+						if (offer.user.id === authenticatedUser.id) {
+							trade.authenticatedUserOffer = offer;
+						} else {
+							trade.tradePartnerOffer = offer;
+						}
+
+						trade.offers.push(offer);
 					});
-				}).fail(function () {
-					reject([{
-						code: 0,
-						message: "HTTP request failed"
-					}]);
+
+					resolve(trade);
+				}).catch(function(jxhr, errors) {
+					reject(errors);
 				});
-			}, reject);
+			}).catch(reject);
 		}, {
 			queued: true
 		}),
