@@ -43,13 +43,6 @@ class OtherSettings extends SettingsTab {
 						<h3>Trades</h3>
 					</div>
 					<div class="section-content">
-						<span class="text-lead">Outbound asset checker.</span>
-						<PillToggle getValue={this.getPillValue.bind(this, "tradeChecker")}
-							onToggle={this.setPillValue.bind(this, "tradeChecker")} />
-						<div class="rbx-divider"></div>
-						<span class="text-description">Items currently in an outbound trade will be highlighted in the trade window.</span>
-					</div>
-					<div class="section-content">
 						<span class="text-lead">Open trades in new tab (instead of new window).</span>
 						<PillToggle getValue={this.getPillValue.bind(this, "tradeTab")}
 							onToggle={this.setPillValue.bind(this, "tradeTab")} />

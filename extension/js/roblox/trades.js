@@ -106,14 +106,7 @@ Roblox.trades = (function () {
 			queued: true
 		}),
 
-		getTradesPaged: $.promise.cache(function (resolve, reject, tradeType, pageNumber) {
-			if (typeof (pageNumber) != "number" || pageNumber <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid pageNumber"
-				}]);
-				return;
-			}
+		getTradesPaged: $.promise.cache(function (resolve, reject, tradeType, cursor) {
 			if (typeof (tradeType) != "string" || !tradeTypes.includes(tradeType)) {
 				reject([{
 					code: 0,
@@ -121,39 +114,28 @@ Roblox.trades = (function () {
 				}]);
 				return;
 			}
-			
-			var pageSize = 20;
-			$.ajax({
-				url: "https://www.roblox.com/My/Money.aspx/GetMyItemTrades",
-				type: "POST",
-				data: JSON.stringify({ startindex: pageSize * (pageNumber - 1), statustype: tradeType }),
-				contentType: "application/json"
-			}).done(function (r) {
-				r = JSON.parse(r.d);
-				var tradeCount = Number(r.totalCount) || 0;
-				var data = {
-					count: tradeCount,
-					data: []
-				};
-				r.Data.forEach(function (trade) {
-					trade = JSON.parse(trade);
-					data.data.push({
-						id: Number(trade.TradeSessionID),
-						status: trade.Status,
-						partner: {
-							id: Number(trade.TradePartnerID) || 0,
-							username: trade.TradePartner
-						},
-						expiration: new Date(trade.Expires).getTime(),
-						created: new Date(trade.Date).getTime()
-					});
+
+			$.get("https://trades.roblox.com/v1/trades/" + tradeType, {
+				sortOrder: "Desc",
+				limit: 100,
+				cursor: cursor || ""
+			}).done(function(r) {
+				resolve({
+					nextPageCursor: r.nextPageCursor,
+					data: r.data.map(function(trade) {
+						return {
+							id: trade.id,
+							status: trade.status,
+							partner: {
+								id: trade.user.id,
+								username: trade.user.name
+							},
+							created: new Date(trade.created).getTime()
+						};
+					})
 				});
-				resolve(data);
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
+			}).catch(function(jxhr, errors) { 
+				reject(errors);
 			});
 		}, {
 			queued: true,
