@@ -20,20 +20,10 @@ Roblox.trades = (function () {
 				return;
 			}
 
-			$.post("https://www.roblox.com/Trade/TradeHandler.ashx", { cmd: "decline", TradeID: tradeId }).done(function (r) {
-				if (r.success) {
-					resolve();
-				} else {
-					reject([{
-						code: 0,
-						message: r.msg
-					}]);
-				}
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
+			$.post("https://trades.roblox.com/v1/trades/143093067/decline").done(function() {
+				resolve();
+			}).fail(function (jxhr, errors) {
+				reject(errors);
 			});
 		}, {
 			resolveExpiry: 5 * 60 * 1000,
