@@ -27,8 +27,6 @@ class About extends React.Component {
 				this.getFeatureRow("Avatar filter bar", "A text box is added to the avatar page to filter visible items down to items that match the text."),
 				this.getFeatureRow("Roblox+ notification stream", "Clicking the extension browser icon while on a Roblox page will take over the notification stream with notifications from Roblox+."),
 				this.getFeatureRow("Comment timer", "A timer is added to the asset comment button for how long until you can post another comment.", true),
-				this.getFeatureRow("Trade and transaction counters", "Counters are added to the drop downs of the trades and transactions selections on the Money page.", true),
-				this.getFeatureRow("Cancel all outbound trades button", "A button is added to the outbound trades tab on the Money page to cancel all outbound trades.", true),
 				this.getFeatureRow("Unfollow all users button on Friends page", "A button is added to your friends page to unfollow all users you are not friends with.", true),
 				this.getFeatureRow("Follow all friends button on Friends page", "A button is added to your friends page to follow all users you are friends with.", true),
 				this.getFeatureRow("Profile sale statistics", "Buttons are added to the profile page to calculate sales of clothing with user stats.", true),

@@ -31,16 +31,6 @@ rplus.ajax = [
 			var op = $("#MyTransactions_TransactionTypeSelect>option[value=\"" + d.transactiontype + "\"]");
 			op.text(op.text().replace(/\s*\(?\d*\)?$/, "") + (Number(r.TotalCount) ? " (" + r.TotalCount + ")" : ""));
 		}
-	}, {
-		match: /money\.aspx\/getmyitemtrades/i,
-		success: function (r, d) {
-			try { r = JSON.parse(JSON.parse(r).d); } catch (e) { return; }
-			try { d = JSON.parse(d); } catch (e) { return; }
-			var op = $("#TradeItems_TradeType>option[value=\"" + d.statustype + "\"]");
-			r.totalCount = Number(r.totalCount) || 0;
-			op.text(op.text().replace(/\s*\(?\d*\)?$/, "") + (Number(r.totalCount) ? " (" + r.totalCount + ")" : ""));
-			$("#rplusCancelOutbound").prop("disabled", r.totalCount <= 0).attr("class", r.totalCount ? "btn-small btn-neutral" : "btn-small btn-disabled-neutral")[d.statustype == "outbound" ? "show" : "hide"]();
-		}
 	}
 ];
 
