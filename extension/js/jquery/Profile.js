@@ -33,7 +33,7 @@ RPlus.Pages.Profile = function () {
 		}
 	}, 250);
 
-	storage.get(["profileRAP", "tradeTab"], function (vals, rapLabel) {
+	storage.get(["profileRAP"], function (vals, rapLabel) {
 		if (vals.profileRAP) {
 			$(".header-details>.details-info").append(rapLabel = $("<li><div class=\"text-label font-caption-header\">RAP</div><a userid=\"" + id + "\" class=\"rplusinventory text-name\" href=\"javascript:/* Roblox+ */;\"><span class=\"font-header-2\">...</span></a></li>"));
 			Roblox.inventory.getCollectibles(id).then(function (inv) {
@@ -41,11 +41,6 @@ RPlus.Pages.Profile = function () {
 			}, function () {
 				rapLabel.hide();
 			});
-		}
-
-		if (vals.tradeTab) {
-			$(".trade-link").hide().after($("<a>").text("Trade").attr("class", $(".trade-link").attr("class")).attr("href", Roblox.trades.getOpenTradeHref(id, 0, true)));
-			$("#profile-trade-items").hide().after($("<a>").text("Trade Items").attr("href", Roblox.trades.getOpenTradeHref(id, 0, true)));
 		}
 	});
 

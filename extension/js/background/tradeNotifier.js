@@ -75,7 +75,7 @@ RPlus.notifiers.trade = (function () {
 								console.log("trade moved", trade);
 							}
 
-							if (tradeMoved && headers.hasOwnProperty(trade.status) && rerun) {
+							if (headers.hasOwnProperty(trade.status) && rerun) {
 								mcb++;
 								notify(trade.id).then(function() {
 									fcb();

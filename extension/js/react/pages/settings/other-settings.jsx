@@ -40,23 +40,6 @@ class OtherSettings extends SettingsTab {
 				</div>
 				<div class="section">
 					<div class="container-header">
-						<h3>Trades</h3>
-					</div>
-					<div class="section-content">
-						<span class="text-lead">Open trades in new tab (instead of new window).</span>
-						<PillToggle getValue={this.getPillValue.bind(this, "tradeTab")}
-							onToggle={this.setPillValue.bind(this, "tradeTab")} />
-					</div>
-					<div class="section-content">
-						<span class="text-lead">Trade evaluator.</span>
-						<PillToggle getValue={this.getPillValue.bind(this, "tradePageRapAssist")}
-							onToggle={this.setPillValue.bind(this, "tradePageRapAssist")} />
-						<div class="rbx-divider"></div>
-						<span class="text-description">Loads trades on the trades page and evaluates who has higher value.</span>
-					</div>
-				</div>
-				<div class="section">
-					<div class="container-header">
 						<h3>Item Details Page</h3>
 					</div>
 					<div class="section-content">

@@ -142,22 +142,6 @@ Roblox.trades = (function () {
 			resolveExpiry: 10 * 1000
 		}),
 
-		openTradeWindow: $.promise.cache(function (resolve, reject, userId, counterTradeId) {
-			if (typeof (userId) != "number" || userId <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid userId"
-				}]);
-				return;
-			}
-
-			window.open(this.getTradeWindowUrl(userId, counterTradeId), "Trade" + userId + (counterTradeId ? "-" + counterTradeId : ""), "width=930,height=680", false);
-			resolve();
-		}, {
-			queued: true,
-			resolveExpiry: 1000
-		}),
-
 		openTradeTab: $.promise.cache(function (resolve, reject, userId, counterTradeId) {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
@@ -173,14 +157,6 @@ Roblox.trades = (function () {
 			queued: true,
 			resolveExpiry: 1000
 		}),
-
-		getOpenTradeHref: function (userId, counterTradeId, isTab) {
-			if (isTab) {
-				return "javascript:window.open(\"" + this.getTradeWindowUrl(userId, counterTradeId) + "\");event.preventDefault();";
-			} else {
-				return "javascript:window.open(\"" + this.getTradeWindowUrl(userId, counterTradeId) + "\", \"Trade" + userId + (counterTradeId ? "-" + counterTradeId : "") + "\", \"width=930,height=680\", false);event.preventDefault();";
-			}
-		},
 
 		canTradeWithUser: $.promise.cache(function (resolve, reject, userId) {
 			if (typeof (userId) !== "number" || userId <= 0) {
@@ -235,13 +211,7 @@ Roblox.trades = $.addTrigger($.promise.background("Roblox.trades", Roblox.trades
 
 Roblox.trades.openSettingBasedTradeWindow = function (userId, counterTradeId) {
 	return new Promise(function (resolve, reject) {
-		storage.get("tradeTab", function (on) {
-			if (on) {
-				Roblox.trades.openTradeTab(userId).then(resolve, reject);
-			} else {
-				Roblox.trades.openTradeWindow(userId).then(resolve, reject);
-			}
-		});
+		Roblox.trades.openTradeTab(userId).then(resolve, reject);
 	});
 };
 
