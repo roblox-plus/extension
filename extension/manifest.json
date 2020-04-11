@@ -177,6 +177,16 @@
 			],
 			"run_at": "document_end"
 		},
+
+		{
+			"css": [
+				"/css/output/pages/groups.css"
+			],
+			"matches": [
+				"*://*.roblox.com/groups/*/*"
+			],
+			"run_at": "document_end"
+		},
 		
 		{
 			"js": [

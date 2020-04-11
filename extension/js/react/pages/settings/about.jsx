@@ -31,6 +31,7 @@ class About extends React.Component {
 				this.getFeatureRow("Follow all friends button on Friends page", "A button is added to your friends page to follow all users you are friends with.", true),
 				this.getFeatureRow("Profile sale statistics", "Buttons are added to the profile page to calculate sales of clothing with user stats.", true),
 				this.getFeatureRow("Badge counter", "On the profile page you can calculate how many game badges a user has earned overall.", true),
+				this.getFeatureRow("Trade.", "On the Trade. group wall if you click into the context menu, each poster has a Trade button that opens to the trade window for the poster when clicked.", true),
 			]
 		};
 
