@@ -26,7 +26,7 @@ RPlus.notifiers.friends = (function () {
 					friendIds.push(friend.id);
 					friendMap[friend.id] = friend;
 				});
-				Roblox.users.getPresence(friendIds).then(function (presences) {
+				Roblox.presence.getPresence(friendIds).then(function (presences) {
 					var friendsWithPresence = [];
 					for (var n in presences) {
 						var friend = friendMap[Number(n)];

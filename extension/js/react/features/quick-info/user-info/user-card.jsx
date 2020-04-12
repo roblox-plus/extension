@@ -39,8 +39,7 @@ class UserInfoWidgetUserCard extends React.Component {
 			canFollowInGame: false
 		});
 
-		Roblox.users.getPresence([userId]).then(presences => {
-			let presence = presences[userId];
+		Roblox.presence.getPresenceByUserId(userId).then(presence => {
 			if (presence 
 				&& presence.game 
 				&& presence.locationType === 4 

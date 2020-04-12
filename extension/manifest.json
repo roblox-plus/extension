@@ -65,6 +65,7 @@
 
 				"/js/roblox/thumbnails.js",
 				"/js/roblox/users.js",
+				"/js/roblox/presence.js",
 				"/js/roblox/catalog.js",
 				"/js/roblox/inventory.js",
 				"/js/roblox/social.js",

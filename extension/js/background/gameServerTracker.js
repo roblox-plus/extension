@@ -8,9 +8,7 @@ RPlus.notifiers.gameServerTracker = (function () {
 		requireAuthenticatedUser: true
 	}, function (user, cache, rerun) {
 		return new Promise(function (resolve, reject) {
-			Roblox.users.getPresence([user.id]).then(function(presence) {
-				presence = presence[user.id];
-
+			Roblox.presence.getPresenceByUserId(user.id).then(function(presence) {
 				if (presence && presence.game && presence.game.serverId) {
 					Roblox.games.trackJoinedServer(presence.game.serverId).then(function() {
 						// Nothing to do, success!.

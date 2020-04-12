@@ -29,8 +29,7 @@ class ThumbnailPresence extends React.Component {
 			locationText: ""
 		});
 
-		Roblox.users.getPresence([userId]).then(presences => {
-			let presence = presences[userId];
+		Roblox.presence.getPresenceByUserId(userId).then(presence => {
 			if (!presence || this.props.userId !== userId) {
 				return;
 			}

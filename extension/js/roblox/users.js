@@ -9,22 +9,15 @@ Roblox.Services.Users = class extends Extension.BackgroundService {
 
 		this.userIdByNameCache = new TimedCache(30 * 60 * 1000); // username will always map to the same user id, that won't change. Only expire to free up memory.
 		this.userNameByIdCache = new TimedCache(60 * 1000); // usernames can change, lookup by id cache is short-lived to support this
-		this.presenceCache = new TimedCache(10 * 1000);
 		this.getByUserIdProcessor = new BatchItemProcessor({}, this.processGetByUserId.bind(this), console.error.bind(console, "Roblox.users.getByUserId"));
 		this.getByUsernameProcessor = new BatchItemProcessor({}, this.processGetByUsername.bind(this), console.error.bind(console, "Roblox.users.getByUsername"));
-		this.presenceProcessor = new BatchItemProcessor({
-			retryCooldownInMilliseconds: 5 * 1000,
-			processDelay: 250
-		}, this.processPresence.bind(this), console.error.bind(console, "Roblox.users.getPresence"))
 
 		this.register([
 			this.getAuthenticatedUser,
 			this.getByUserId,
 			this.getByUsername,
 			this.getUsernameByUserId,
-			this.getUserIdByUsername,
-			this.getPresence,
-			this.getPresenceByUserId
+			this.getUserIdByUsername
 		]);
 	}
 
@@ -206,53 +199,6 @@ Roblox.Services.Users = class extends Extension.BackgroundService {
 		});
 	}
 
-	getPresence(userIds) {
-		return new Promise((resolve, reject) => {
-			let presences = {};
-			let presenceCount = 0;
-
-			if (userIds.length <= 0) {
-				resolve(presences);
-				return;
-			}
-
-			const addPresence = (userId, presence) => {
-				presences[userId] = presence;
-				if (++presenceCount === userIds.length) {
-					resolve(presences);
-				}
-			};
-
-			userIds.forEach(userId => {
-				this.getPresenceByUserId(userId).then(presence => {
-					addPresence(userId, presence);
-				}).catch(err => {
-					console.warn(`Roblox.users.getPresenceByUserId(${userId}):`, err);
-					addPresence(userId, null);
-				});
-			});
-		});
-	}
-
-	getPresenceByUserId(userId) {
-		/*
-			locationTypes:
-				2 - Online
-				3 - Studio
-				4 - Game
-		*/
-
-		return new Promise((resolve, reject) => {
-			let presence = this.presenceCache.get(userId);
-			if (presence.exists) {
-				resolve(presence.item);
-				return;
-			}
-
-			this.presenceProcessor.push(userId).then(resolve).catch(reject);
-		});
-	}
-
 	processGetByUserId(userIds) {
 		return new Promise((resolve, reject) => {
 			let result = [];
@@ -361,71 +307,7 @@ Roblox.Services.Users = class extends Extension.BackgroundService {
 			});
 		});
 	}
-
-	processPresence(userIds) {
-		return new Promise((resolve, reject) => {
-			let result = [];
-			let remainingUserIds = [];
-
-			userIds.forEach(userId => {
-				if (userId > 0) {
-					remainingUserIds.push(userId);
-				} else {
-					result.push({
-						success: true,
-						item: userId,
-						value: null
-					});
-				}
-			});
-
-			if (remainingUserIds.length <= 0) {
-				resolve(result);
-				return;
-			}
-
-			// Mappings from location types from Api -> comment types mentioned above
-			let locationTypeTranslations = {
-				3: 3,
-				2: 4,
-				1: 2
-			};
-
-			$.post("https://presence.roblox.com/v1/presence/users", { userIds: remainingUserIds }).done((presences) => {
-				let presenceMap = {};
-				presences.userPresences.forEach((report) => {
-					presenceMap[report.userId] = {
-						game: report.gameId ? {
-							placeId: report.placeId,
-							serverId: report.gameId,
-							name: report.lastLocation
-						} : null,
-						locationName: report.lastLocation,
-						locationType: locationTypeTranslations[report.userPresenceType] || 0
-					};
-				});
-
-				remainingUserIds.forEach(userId => {
-					let presence = presenceMap[userId];
-					if (presence) {
-						this.presenceCache.set(userId, presence);
-					}
-
-					result.push({
-						success: true,
-						item: userId,
-						value: presence
-					});
-				});
-
-				resolve(result);
-			}).fail((jxhr, errors) => {
-				reject(errors);
-			});
-		});
-	}
 };
 
 Roblox.users = new Roblox.Services.Users();
-
 // WebGL3D
