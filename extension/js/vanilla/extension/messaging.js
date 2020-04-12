@@ -13,7 +13,7 @@ Extension.Messaging = class {
 		if (extension.executionContextType !== Extension.ExecutionContextTypes.background) {
 			let getTabId = this.sendMessage.bind(this);
 			if (id !== Extension.Messaging.Constants.RegistrarId) {
-				getTabId = Extension.Messaging.Registrar.sendMessage.bind(this);
+				getTabId = Extension.Messaging.Registrar.sendMessage.bind(Extension.Messaging.Registrar);
 			}
 
 			getTabId({}).then(this._tabIdLoaded.bind(this)).catch(this._tabIdLoadError.bind(this));
