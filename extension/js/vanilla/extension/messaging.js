@@ -189,4 +189,8 @@ chrome.runtime.onMessage.addListener((data, sender, callBack) => {
 			reject: err
 		});
 	});
+
+	// Required for asynchronous callbacks
+	// https://stackoverflow.com/a/20077854/1663648
+	return true;
 });
