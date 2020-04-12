@@ -34,8 +34,11 @@
 		{
 			"js": [
 				"/js/vendors/twemoji.min.js",
+
+				"/js/vanilla/extension.js",
 				"/js/archive/global.js",
 				"/js/plugins/jquery.trigger.js",
+
 				"/js/roblox/xsrfHandler.js",
 				"/js/roblox/apiSiteContentHandler.js",
 				"/js/archive/prefunc.js",

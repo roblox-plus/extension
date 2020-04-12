@@ -15,34 +15,20 @@ browser = (function (userAgentInfo) {
 })(navigator.userAgent.match(/(opera|chrome|safari|firefox|msie)\/([\d.]+)/i) || ["Unknown", "0.0"]);
 
 ext = (function () {
-	var manifest = chrome.runtime.getManifest();
-
-	function getUrl(path) {
-		return chrome.extension.getURL(path);
-	}
-
-	var isBackground = getUrl(manifest.background.page) === location.href;
+	let extension = Extension.Singleton;
 
 	return {
-		"id": chrome.runtime.id,
-		"manifest": manifest,
-		"incognito": chrome.extension.inIncognitoContext,
-		"isBackground": isBackground,
-		"isContentScript": !location.protocol.startsWith("chrome-extension"),
-		"isBrowserAction": location.protocol.startsWith("chrome-extension") && !isBackground,
+		"id": extension.id,
+		"manifest": extension.manifest,
+		"incognito": extension.isIncognito,
+		"isBackground": extension.executionContextType === Extension.ExecutionContextTypes.background,
+		"isContentScript": extension.executionContextType === Extension.ExecutionContextTypes.tab,
+		"isBrowserAction": extension.executionContextType === Extension.ExecutionContextTypes.browserAction,
 
-		"getUrl": getUrl,
-		
-		update: function (cb) {
-			cb = fixCB(cb);
-			if (browser.name == "Chrome") {
-				chrome.runtime.requestUpdateCheck(function (m) {
-					cb(m == "update_available");
-				});
-			} else {
-				cb(false);
-			}
+		"getUrl": function(path) {
+			return extension.getUrl(path);
 		},
+		
 		reload: function (callBack) {
 			ipc.send("ext:reload", {}, callBack);
 		}
