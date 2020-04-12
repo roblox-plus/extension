@@ -54,7 +54,8 @@ class BatchItemProcessor {
 			batchSize: 100,
 			maxAttempts: 5,
 			retryCooldownInMilliseconds: 500,
-			deduplicateItems: true
+			deduplicateItems: true,
+			processDelay: 0
 		};
 
 		this.queue = [];
@@ -99,7 +100,12 @@ class BatchItemProcessor {
 			}
 
 			this.queue.push(batchProcessorItem);
-			this.process();
+
+			if (this.settings.processDelay > 0) {
+				setTimeout(() => this.process(), this.settings.processDelay);
+			} else {
+				this.process();
+			}
 		});
 	}
 
