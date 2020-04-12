@@ -35,7 +35,8 @@
 			"js": [
 				"/js/vendors/twemoji.min.js",
 
-				"/js/vanilla/extension.js",
+				"/js/vanilla/extension/extension.js",
+				"/js/vanilla/extension/messaging.js",
 				"/js/archive/global.js",
 				"/js/plugins/jquery.trigger.js",
 

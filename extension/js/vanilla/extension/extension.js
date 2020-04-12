@@ -1,6 +1,9 @@
 class Extension {
 	constructor() {
 		this.manifest = chrome.runtime.getManifest();
+		this._vars = {
+			backgroundPageUrl: this.getUrl(this.manifest.background.page) // To avoid runtime error checking execution context type
+		};
 	}
 
 	get id() {
@@ -36,7 +39,7 @@ class Extension {
 	}
 
 	get executionContextType() {
-		if (this.manifest.background && this.manifest.background.page && this.getUrl(this.manifest.background.page) === location.href) {
+		if (this.manifest.background && this.manifest.background.page && this._vars.backgroundPageUrl === location.href) {
 			return Extension.ExecutionContextTypes.background;
 		}
 
