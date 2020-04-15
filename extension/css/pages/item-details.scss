@@ -19,8 +19,15 @@
 
 	.rplus-item-owners {
 		.pager {
-			width: 250px;
-			margin: 0 auto;
+			ul {
+				width: 250px;
+				margin: 0 auto;
+			}
+
+			.select-group {
+				float: right;
+				width: 150px;
+			}
 		}
 
 		.vlist {

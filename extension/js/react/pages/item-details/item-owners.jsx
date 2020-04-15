@@ -6,6 +6,7 @@ class ItemOwners extends React.Component {
 			loading: false,
 			loadError: false,
 			assetId: props.assetId,
+			sortOrder: "Asc",
 			owners: []
 		};
 
@@ -33,7 +34,7 @@ class ItemOwners extends React.Component {
 		});
 
 		return new Promise((resolve, reject) => {
-			Roblox.inventory.getAssetOwners(this.state.assetId, pagingParameters.cursor, "Asc").then((data) => {
+			Roblox.inventory.getAssetOwners(this.state.assetId, pagingParameters.cursor, this.state.sortOrder).then((data) => {
 				resolve({
 					nextPageCursor: data.nextPageCursor,
 					items: data.data.map(ownershipRecord => {
@@ -44,6 +45,14 @@ class ItemOwners extends React.Component {
 				});
 			}).catch(reject);
 		});
+	}
+
+	changeSortOrder(event) {
+		this.setState({
+			sortOrder: event.target.value
+		});
+
+		setTimeout(() => this.loadFirstPage(), 10);
 	}
 
 	loadFirstPage() {
@@ -100,31 +109,42 @@ class ItemOwners extends React.Component {
 		}
 
 		return (
-			<ul class="pager">
-				<li class={"first" + (this.itemOwnersPager.canLoadPreviousPage ? "" : " disabled")} onClick={this.loadFirstPage.bind(this)}>
-					<a>
-						<span class="icon-first-page"></span>
-					</a>
-				</li>
-				<li class={"pager-prev" + (this.itemOwnersPager.canLoadPreviousPage ? "" : " disabled")} onClick={this.loadPreviousPage.bind(this)}>
-					<a>
-						<span class="icon-left"></span>
-					</a>
-				</li>
-				<li class="pager-count">
-					<span>Page {this.itemOwnersPager.currentPageNumber}</span>
-				</li>
-				<li class={"pager-next" + (this.itemOwnersPager.canLoadNextPage ? "" : " disabled")} onClick={this.loadNextPage.bind(this)}>
-					<a>
-						<span class="icon-right"></span>
-					</a>
-				</li>
-				<li class="last disabled">
-					<a>
-						<span class="icon-last-page"></span>
-					</a>
-				</li>
-			</ul>
+			<div class="pager">
+				<div class="select-group rbx-select-group">
+					<select class="input-field select-option rbx-select"
+						value={this.state.sortOrder}
+						onChange={this.changeSortOrder.bind(this)}>
+						<option value="Asc">Ascending</option>
+						<option value="Desc">Descending</option>
+					</select>
+					<span class="icon-arrow icon-down-16x16"></span>
+				</div>
+				<ul class="pager">
+					<li class={"first" + (this.itemOwnersPager.canLoadPreviousPage ? "" : " disabled")} onClick={this.loadFirstPage.bind(this)}>
+						<a>
+							<span class="icon-first-page"></span>
+						</a>
+					</li>
+					<li class={"pager-prev" + (this.itemOwnersPager.canLoadPreviousPage ? "" : " disabled")} onClick={this.loadPreviousPage.bind(this)}>
+						<a>
+							<span class="icon-left"></span>
+						</a>
+					</li>
+					<li class="pager-count">
+						<span>Page {this.itemOwnersPager.currentPageNumber}</span>
+					</li>
+					<li class={"pager-next" + (this.itemOwnersPager.canLoadNextPage ? "" : " disabled")} onClick={this.loadNextPage.bind(this)}>
+						<a>
+							<span class="icon-right"></span>
+						</a>
+					</li>
+					<li class="last disabled">
+						<a>
+							<span class="icon-last-page"></span>
+						</a>
+					</li>
+				</ul>
+			</div>
 		)
 	}
 
