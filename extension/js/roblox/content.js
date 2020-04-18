@@ -1,125 +1,151 @@
 ﻿/*
 	roblox/content.js [03/18/2017]
 */
-(window.Roblox || (Roblox = {})).content = (function () {
-	return {
-		getAssetContentUrl: $.promise.cache(function (resolve, reject, assetId) {
-			if (typeof (assetId) != "number" || assetId <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid assetId"
-				}]);
-				return;
-			}
+var Roblox = Roblox || {};
+Roblox.Services = Roblox.Services || {};
+Roblox.Services.AssetContent = class extends Extension.BackgroundService {
+	constructor() {
+		super("Roblox.content");
 
+		this.assetContentUrlProcessor = new BatchItemProcessor({}, this.processAssetContentUrls.bind(this), console.error.bind(console, "Roblox.content.getAssetContentUrl"));
+		
+		this.register([
+			this.getAssetContentUrl,
+			this.getAssetContents
+		]);
+	}
+
+	getAssetContentUrl(assetId) {
+		return CachedPromise("Roblox.content.getAssetContentUrl", (resolve, reject) => {
+			this.assetContentUrlProcessor.push(assetId).then(resolve).catch(reject);
+		}, [assetId], {
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 10 * 1000
+		});
+	}
+
+	getAssetContents(assetId) {
+		return CachedPromise("Roblox.content.getAssetContents", (resolve, reject) => {
+			this.getAssetContentUrl(assetId).then(contentUrl => {
+				$.get(contentUrl).done((r) => {
+					resolve(r);
+				}).fail(() => {
+					reject([
+						{
+							code: 0,
+							message: "HTTP request failed"
+						}
+					]);
+				});
+			}).catch(reject);
+		}, [assetId], {});
+	}
+
+	getDependentAssetIds(assetId) {
+		return new Promise((resolve, reject) => {
+			let contentRegexes = [
+				/"TextureI?d?".*=\s*(\d+)/gi,
+				/"TextureI?d?".*rbxassetid:\/\/(\d+)/gi,
+				/"MeshId".*=\s*(\d+)/gi,
+				/MeshId.*rbxassetid:\/\/(\d+)/gi,
+				/asset\/?\?\s*id\s*=\s*(\d+)/gi,
+				/rbxassetid:\/\/(\d+)/gi
+			];
+
+			this.getAssetContents(assetId).then((r) => {
+				let assetIds = [];
+
+				contentRegexes.forEach(regex => {
+					let match = r.match(regex) || [];
+					match.forEach((m) => {
+						let id = Number((m.match(/(\d+)/) || [])[1]);
+						if (id && !isNaN(id) && !assetIds.includes(id)) {
+							assetIds.push(id);
+						}
+					});
+				});
+
+				resolve(assetIds);
+			}).catch(reject);
+		});
+	}
+
+	getDependentAssets(assetId) {
+		return new Promise((resolve, reject) => {
+			this.getDependentAssetIds(assetId).then(assetIds => {
+				let assets = [];
+				let loaded = 0;
+
+				if (assetIds.length <= 0) {
+					resolve(assets);
+					return;
+				}
+
+				assetIds.forEach(id => {
+					Roblox.catalog.getAssetInfo(id).then((asset) => {
+						assets.push(asset);
+
+						if (++loaded === assetIds.length) {
+							resolve(assets);
+						}
+					}).catch((err) => {
+						console.warn(`Roblox.content.getDependentAssets(${assetId}) - ${id}`, err);
+
+						if (++loaded === assetIds.length) {
+							resolve(assets);
+						}
+					});
+				});
+			}).catch(reject);
+		});
+	}
+
+	processAssetContentUrls(assetIds) {
+		return new Promise((resolve, reject) => {
 			$.ajax({
 				url: "https://assetdelivery.roblox.com/v1/assets/batch",
 				type: "POST",
-				data: [
-					{
+				data: assetIds.map(assetId => {
+					return {
 						"assetId": assetId,
-						"requestId": "Roblox+"
-					}
-				],
+						"requestId": `${assetId}`
+					};
+				}),
 				headers: {
 					"Roblox-Browser-Asset-Request": "Roblox+"
 				}
-			}).done(function (r) {
-				var location = r.length > 0 && r[0].location;
-				if (location) {
-					resolve(location);
-				} else {
-					reject([{
-						code: 0,
-						message: "Lookup failed"
-					}]);
-				}
-			}).fail(function (e) {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
+			}).done((r) => {
+				let result = [];
+				let assetMap = {};
+
+				r.forEach((asset) => {
+					assetMap[asset.requestId] = asset;
+				});
+
+				assetIds.forEach((assetId) => {
+					let item = {
+						item: assetId,
+						success: true
+					};
+
+					let asset = assetMap[assetId.toString()];
+					if (asset.errors) {
+						item.reject = asset.errors;
+					} else {
+						item.value = asset.location;
+					}
+
+					result.push(item);
+				});
+
+				resolve(result);
+			}).fail((jxhr, errors) => {
+				reject(errors);
 			});
-		}, {
-			resolveExpiry: 15 * 1000,
-			rejectExpiry: 10 * 1000,
-			queued: true
-		}),
+		});
+	}
+};
 
-		getAssetContents: $.promise.cache(function (resolve, reject, assetId) {
-			Roblox.content.getAssetContentUrl(assetId).then(function (contentUrl) {
-				$.get(contentUrl).done(function (r) {
-					resolve(r);
-				}).fail(function () {
-					reject([{
-						code: 0,
-						message: "HTTP request failed"
-					}]);
-				});
-			}).catch(reject);
-		}),
-
-		getDependentAssets: $.promise.cache(function (resolve, reject, assetId) {
-			if (typeof (assetId) != "number" || assetId <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid assetId"
-				}]);
-				return;
-			}
-
-			Roblox.content.getAssetContents(assetId).then(function (r) {
-				var assetIds = [];
-				(r.match(/"TextureI?d?".*=\s*\d+/gi) || r.match(/"TextureI?d?".*rbxassetid:\/\/\d+/gi) || []).forEach(function (id) {
-					id = Number(id.match(/(\d+)$/)[1]);
-					if (id && !assetIds.includes(id)) {
-						assetIds.push(id);
-					}
-				});
-				(r.match(/"MeshId".*=\s*\d+/gi) || r.match(/MeshId.*rbxassetid:\/\/\d+/gi) || []).forEach(function (id) {
-					id = Number(id.match(/(\d+)$/)[1]);
-					if (id && !assetIds.includes(id)) {
-						assetIds.push(id);
-					}
-				});
-				if (r.match(/^\d+;?/)) {
-					r.split(";").forEach(function (id) {
-						id = Number(id);
-						if (id && !assetIds.includes(id)) {
-							assetIds.push(id);
-						}
-					});
-				} else {
-					(r.match(/asset\/?\?\s*id\s*=\s*\d+/gi) || r.match(/rbxassetid:\/\/\d+/gi) || []).forEach(function (id) {
-						id = Number(id.match(/(\d+)$/)[1]);
-						if (id && !assetIds.includes(id)) {
-							assetIds.push(id);
-						}
-					});
-				}
-				if (assetIds.length > 0) {
-					var assets = [];
-					var loaded = 0;
-					assetIds.forEach(function (id) {
-						Roblox.catalog.getAssetInfo(id).then(function (asset) {
-							assets.push(asset);
-							if (++loaded == assetIds.length) {
-								resolve(assets);
-							}
-						}, function () {
-							if (++loaded == assetIds.length) {
-								resolve(assets);
-							}
-						});
-					});
-				} else {
-					resolve([]);
-				}
-			}).catch(reject);
-		})
-	};
-})();
-
-Roblox.content = $.addTrigger($.promise.background("Roblox.content", Roblox.content));
+Roblox.content = new Roblox.Services.AssetContent();
 
 // WebGL3D

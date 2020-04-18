@@ -148,7 +148,9 @@ class BatchItemProcessor {
 			batch.forEach((item) => {
 				var processedItem = processResult.find(p => p.item === item.item);
 
-				if (processedItem && processedItem.success) {
+				if (processedItem && processedItem.reject) {
+					item.reject(processedItem.reject);
+				} else if (processedItem && processedItem.success) {
 					item.resolve(processedItem.value);
 				} else if (item.attempts < this.settings.maxAttempts) {
 					this.retry(item);

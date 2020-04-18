@@ -26,7 +26,7 @@ Roblox.Services.GameBadges = class extends Extension.BackgroundService {
 		}, [userId, badgeId], {
 			rejectExpiry: 5 * 1000,
 			resolveExpiry: 60 * 1000
-		})
+		});
 	}
 
 	getBadgeAwardItems(queue, batchSize) {
@@ -64,7 +64,7 @@ Roblox.Services.GameBadges = class extends Extension.BackgroundService {
 
 			$.get(`https://badges.roblox.com/v1/users/${userId}/badges/awarded-dates`, {
 				badgeIds: Object.keys(batchMap).join(",")
-			}).done(function(awardedDates) {
+			}).done((awardedDates) => {
 				let result = [];
 				let dateMap = {};
 
@@ -81,7 +81,7 @@ Roblox.Services.GameBadges = class extends Extension.BackgroundService {
 				}
 
 				resolve(result);
-			}).fail(function(jxhr, errors) { 
+			}).fail((jxhr, errors) => { 
 				reject(errors);
 			});
 		});
