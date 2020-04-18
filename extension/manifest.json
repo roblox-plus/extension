@@ -39,6 +39,7 @@
 				"/js/vanilla/extension/messaging.js",
 				"/js/vanilla/extension/backgroundService.js",
 				"/js/vanilla/cachedPromise.js",
+				"/js/vanilla/queuedPromise.js",
 				"/js/archive/global.js",
 				"/js/plugins/jquery.trigger.js",
 
