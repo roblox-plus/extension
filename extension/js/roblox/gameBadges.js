@@ -1,96 +1,93 @@
 var Roblox = Roblox || {};
+Roblox.Services = Roblox.Services || {};
+Roblox.Services.GameBadges = class extends Extension.BackgroundService {
+	constructor() {
+		super("Roblox.gameBadges");
 
-Roblox.gameBadges = (function () {
-	return {
-		getIdFromUrl: function (url) {
-			return Number((url.match(/\/badges\/(\d+)\//i) || ["", 0])[1]) || 0;
-		},
+		this.badgeAwardDateProcessor = new BatchItemProcessor({
+			processDelay: 100
+		}, this.processBadgeAwardDates.bind(this), console.error.bind(console, "Roblox.gameBadges"), this.getBadgeAwardItems.bind(this));
+		
+		this.register([
+			this.getBadgeAwardedDate
+		]);
+	}
 
-		// getBadgeAwardedDate(userId, badgeId)
-		getBadgeAwardedDate: $.promise.cache(function (resolve, originalReject, userIdsAndBadgeIds) {
-			var userIdRequests = {};
-			var resultIndexes = {};
-			var results = [];
-			var doneUserIds = 0;
+	getIdFromUrl(url) {
+		return Number((url.match(/\/badges\/(\d+)\//i) || ["", 0])[1]) || 0;
+	}
 
-			userIdsAndBadgeIds.forEach(function(kvp, index) {
-				let userId = kvp[0];
-				let badgeId = kvp[1];
-				
-				if (userIdRequests[userId]) {
-					userIdRequests[userId].push(badgeId);
-				} else {
-					userIdRequests[userId] = [badgeId];
+	getBadgeAwardedDate(userId, badgeId) {
+		return CachedPromise("Roblox.gameBadges.getBadgeAwardedDate", (resolve, reject) => {
+			this.badgeAwardDateProcessor.push({
+				userId: userId,
+				badgeId: badgeId
+			}).then(resolve).catch(reject);
+		}, [userId, badgeId], {
+			rejectExpiry: 5 * 1000,
+			resolveExpiry: 60 * 1000
+		})
+	}
+
+	getBadgeAwardItems(queue, batchSize) {
+		let userId = 0;
+		let batch = [];
+
+		for (let i in queue) {
+			let item = queue[i];
+
+			if (userId) {
+				if (item.item.userId === userId) {
+					batch.push(item);
 				}
+			} else {
+				userId = item.item.userId;
+				batch.push(item);
+			}
 
-				var resolveKey = userId + ":" + badgeId;
-				if (resultIndexes[resolveKey]) {
-					resultIndexes[resolveKey].push(index);
-				} else {
-					resultIndexes[resolveKey] = [index];
-				}
+			if (batch.length >= batchSize) {
+				break;
+			}
+		}
 
-				results[index] = null;
+		return batch;
+	}
+
+	processBadgeAwardDates(batchItems) {
+		return new Promise((resolve, reject) => {
+			let userId = batchItems[0].userId;
+			let batchMap = {};
+
+			batchItems.forEach(batchItem => {
+				batchMap[batchItem.badgeId] = batchItem;
 			});
 
-			var reject = function(e) {
-				if (originalReject) {
-					originalReject(e);
-					resolve = null;
-					originalReject = null;
-				}
-			};
+			$.get(`https://badges.roblox.com/v1/users/${userId}/badges/awarded-dates`, {
+				badgeIds: Object.keys(batchMap).join(",")
+			}).done(function(awardedDates) {
+				let result = [];
+				let dateMap = {};
 
-			var fcb = function() {
-				if (!resolve) {
-					return;
-				}
-
-				if (++doneUserIds == Object.keys(userIdRequests).length) {
-					resolve(results);
-				}
-			};
-
-			for (let userId in userIdRequests) {
-				$.get(`https://badges.roblox.com/v1/users/${userId}/badges/awarded-dates`, {
-					badgeIds: userIdRequests[userId].join(",")
-				}).done(function(awardedDates) {
-					try {
-						awardedDates.data.forEach(function(award) {
-							resultIndexes[userId + ":" + award.badgeId].forEach(function(index) {
-								results[index] = award.awardedDate;
-							});
-						});
-
-						fcb();
-					} catch (e) {
-						reject(e);
-						return;
-					}
-				}).fail(function(jxhr, errors) { 
-					reject(errors);
+				awardedDates.data.forEach(award => {
+					dateMap[award.badgeId] = award.awardedDate;
 				});
-			}
 
-			if (Object.keys(userIdRequests).length <= 0) {
-				reject([
-					{
-						code: 0,
-						message: "No badge ids."
-					}
-				]);
-			}
-		}, {
-			rejectExpiry: 5 * 1000,
-			resolveExpiry: 60 * 1000,
-			queued: true,
-			batchSize: 100
-		})
-	};
-})();
+				for (let badgeId in batchMap) {
+					result.push({
+						item: batchMap[badgeId],
+						value: dateMap[badgeId],
+						success: true
+					});
+				}
 
-Roblox.gameBadges = $.addTrigger($.promise.background("Roblox.gameBadges", Roblox.gameBadges));
+				resolve(result);
+			}).fail(function(jxhr, errors) { 
+				reject(errors);
+			});
+		});
+	}
+}
 
-
+Roblox.gameBadges = new Roblox.Services.GameBadges();
 
 // WebGL3D

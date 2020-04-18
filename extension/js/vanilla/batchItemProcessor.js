@@ -47,7 +47,7 @@ class BatchProcessorItem {
 }
 
 class BatchItemProcessor {
-	constructor(settings, batchProcessor, errorHandler) {
+	constructor(settings, batchProcessor, errorHandler, batchGetter) {
 		// batchProcesor is a function that should return a promise
 		// errorHandler is a function that should return void (recieves one argument: the error from the batchProcessor reject or individual item reject)
 		let defaultSettings = {
@@ -63,6 +63,7 @@ class BatchItemProcessor {
 		this.deduplicationItems = {};
 		this.processor = batchProcessor;
 		this.errorHandler = errorHandler;
+		this.batchGetter = batchGetter || this.getBatch.bind(this);
 		this.running = false;
 
 		for (let settingName in defaultSettings) {
@@ -73,6 +74,10 @@ class BatchItemProcessor {
 
 			this.settings[settingName] = settingValue;
 		}
+	}
+
+	getBatch(queue, batchSize) {
+		return queue.slice(0, batchSize);
 	}
 
 	push(item) {
@@ -122,10 +127,19 @@ class BatchItemProcessor {
 		}
 
 		this.running = true;
-		let batch = this.queue.splice(0, this.settings.batchSize);
 		let processItems = [];
+		let batch = this.batchGetter(this.queue, this.settings.batchSize);
+
+		if (batch.length <= 0) {
+			return;
+		}
 
 		batch.forEach((item) => {
+			var index = this.queue.indexOf(item);
+			if (index >= 0) {
+				this.queue.splice(index, 1);
+			}
+
 			item.incrementAttempts();
 			processItems.push(item.item);
 		});
