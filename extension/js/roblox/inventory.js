@@ -2,26 +2,40 @@
 	roblox/inventory.js [03/12/2017]
 */
 var Roblox = Roblox || {};
+Roblox.Services = Roblox.Services || {};
+Roblox.Services.Inventory = class extends Extension.BackgroundService {
+	constructor() {
+		super("Roblox.inventory");
 
-Roblox.inventory = (function () {
-	function loadUserCollectibleAssets(userId, cursor) {
-		return new Promise(function (resolve, reject) {
-			$.get("https://inventory.roblox.com/v1/users/" + userId + "/assets/collectibles", { cursor: cursor || "", sortOrder: "Asc", limit: 100 }).done(function (r) {
+		this.register([
+			this.getCollectibles,
+			this.delete,
+			this.getAssetOwners,
+			this.getPlayerBadges
+		]);
+	}
+
+	loadUserCollectibleAssets(userId, cursor) {
+		return new Promise((resolve, reject) => {
+			$.get(`https://inventory.roblox.com/v1/users/${userId}/assets/collectibles`, {
+				cursor: cursor || "",
+				sortOrder: "Asc",
+				limit: 100
+			}).done((r) => {
 				if (r.nextPageCursor) {
-					loadUserCollectibleAssets(userId, r.nextPageCursor).then(function (extraData) {
+					this.loadUserCollectibleAssets(userId, r.nextPageCursor).then((extraData) => {
 						resolve(r.data.concat(extraData));
-					}, reject);
+					}).catch(reject);
 				} else {
 					resolve(r.data);
 				}
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
+			}).fail(Roblox.api.$reject(reject));
 		});
 	}
 
-	return {
-		getCollectibles: $.promise.cache(function (resolve, reject, userId) {
+	getCollectibles(userId) {
+		return CachedPromise(`${this.serviceId}.getCollectibles`, (resolve, reject) => {
+			// TODO: Audit Api for error codes
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
 					code: 0,
@@ -30,10 +44,10 @@ Roblox.inventory = (function () {
 				return;
 			}
 			
-			var collectibles = [];
-			var combinedValue = 0;
+			let collectibles = [];
+			let combinedValue = 0;
 			
-			loadUserCollectibleAssets(userId).then(function (data) {
+			this.loadUserCollectibleAssets(userId).then(function (data) {
 				data.forEach(function (userAsset) {
 					combinedValue += userAsset.recentAveragePrice || 0;
 				});
@@ -52,13 +66,15 @@ Roblox.inventory = (function () {
 					collectibles: collectibles
 				});
 			}).catch(reject);
-		}, {
-				rejectExpiry: 10 * 1000,
-				resolveExpiry: 5 * 60 * 1000,
-				queued: true
-			}),
+		}, [userId], {
+			rejectExpiry: 10 * 1000,
+			resolveExpiry: 5 * 60 * 1000,
+			queued: true
+		});
+	}
 
-		delete: $.promise.cache(function (resolve, reject, assetId) {
+	delete(assetId) {
+		return new Promise((resolve, reject) => {
 			if (typeof (assetId) != "number" || assetId <= 0) {
 				reject([{
 					code: 0,
@@ -67,17 +83,17 @@ Roblox.inventory = (function () {
 				return;
 			}
 
-			$.post("https://assetgame.roblox.com/asset/delete-from-inventory", { assetId: assetId }).done(function () {
+			$.post("https://assetgame.roblox.com/asset/delete-from-inventory", {
+				assetId: assetId
+			}).done(function () {
 				resolve();
-			}).fail(function () {
-				reject([]);
-			});
-		}, {
-				rejectExpiry: 1000,
-				resolveExpiry: 1000
-			}),
+			}).fail(Roblox.api.$reject(reject));
+		});
+	}
 
-		getAssetOwners: $.promise.cache(function (resolve, reject, assetId, cursor, sortOrder) {
+	getAssetOwners(assetId, cursor, sortOrder) {
+		return CachedPromise(`${this.serviceId}`, (resolve, reject) => {
+			// TODO: Audit Api for error codes
 			if (typeof (assetId) != "number" || assetId <= 0) {
 				reject([{
 					code: 0,
@@ -86,15 +102,19 @@ Roblox.inventory = (function () {
 				return;
 			}
 
-			$.get("https://inventory.roblox.com/v2/assets/" + assetId + "/owners", { cursor: cursor || "", sortOrder: sortOrder || "Asc", limit: 100 }).done(function (data) {
+			$.get(`https://inventory.roblox.com/v2/assets/${assetId}/owners`, {
+				cursor: cursor || "",
+				sortOrder: sortOrder || "Asc",
+				limit: 100
+			}).done((data) => {
 				var dcb = -1;
-				var fcb = function () {
+				const fcb = () => {
 					if (++dcb === data.data.length) {
 						resolve(data);
 					}
 				};
 
-				data.data.forEach(function (record, index) {
+				data.data.forEach((record, index) => {
 					var translatedRecord = {
 						userAssetId: record.id,
 						serialNumber: record.serialNumber,
@@ -104,7 +124,7 @@ Roblox.inventory = (function () {
 					};
 
 					if (record.owner) {
-						Roblox.users.getByUserId(record.owner.id).then(function (user) {
+						Roblox.users.getByUserId(record.owner.id).then((user) => {
 							translatedRecord.owner = {
 								userId: user.id,
 								username: user.username
@@ -112,7 +132,7 @@ Roblox.inventory = (function () {
 
 							data.data[index] = translatedRecord;
 							fcb();
-						});
+						}).catch(fcb);
 					} else {
 						data.data[index] = translatedRecord;
 						fcb();
@@ -120,16 +140,17 @@ Roblox.inventory = (function () {
 				});
 
 				fcb();
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [assetId, cursor, sortOrder], {
 			queued: true,
 			resolveExpiry: 30 * 1000,
 			rejectExpiry: 10 * 1000
-		}),
+		});
+	}
 
-		getPlayerBadges: $.promise.cache(function (resolve, reject, userId, cursor) {
+	getPlayerBadges(userId, cursor) {
+		return CachedPromise(`${this.serviceId}.getPlayerBadges`, (resolve, reject) => {
+			// TODO: Audit Api for error codes
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
 					code: 0,
@@ -138,36 +159,32 @@ Roblox.inventory = (function () {
 				return;
 			}
 
-			$.get("https://badges.roblox.com/v1/users/" + userId + "/badges", {
+			$.get(`https://badges.roblox.com/v1/users/${userId}/badges`, {
 				limit: 100,
 				sortOrder: "Desc",
 				cursor: cursor || ""
 			}).done(function (r) {
-				var response = {
+				let response = {
 					previousPageCursor: r.previousPageCursor,
 					nextPageCursor: r.nextPageCursor,
-					data: []
+					data: r.data.map(badge => {
+						return {
+							id: badge.id,
+							name: badge.name
+						};
+					})
 				};
 
-				r.data.forEach(function (badge) {
-					response.data.push({
-						id: badge.id,
-						name: badge.name
-					});
-				});
-
 				resolve(response);
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
-		}, {
-				resolveExpiry: 15 * 1000,
-				rejectExpiry: 15 * 1000,
-				queued: true
-			})
-	};
-})();
+			}).fail(Roblox.api.$reject(reject));
+		}, [userId, cursor], {
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 15 * 1000,
+			queued: true
+		});
+	}
+};
 
-Roblox.inventory = $.addTrigger($.promise.background("Roblox.inventory", Roblox.inventory));
+Roblox.inventory = new Roblox.Services.Inventory();
 
 // WebGL3D
