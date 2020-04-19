@@ -303,7 +303,6 @@ storage = {
 			if (type(k) == "string") {
 				cb = fixCB(cb);
 				localStorage.setItem(k, JSON.stringify([v]));
-				foreach(storage.updated.cb, function (n, o) { o(k, v); });
 				cb(true);
 				return true;
 			} else if (type(k) == "object") {
@@ -328,18 +327,8 @@ storage = {
 		} else {
 			ipc.send("storage.", { request: "storage", method: "remove", key: k }, cb);
 		}
-	},
-	updated: function (cb) {
-		if (isCB(cb)) {
-			storage.updated.cb.push(cb);
-		}
 	}
 };
-storage.updated.cb = [function (k, v) {
-	ipc.getTabs().forEach(function(tabId) {
-		ipc.send("storage.", { request: "storage", key: k, value: v }, _, tabId);
-	});
-}];
 
 if (ext.isBackground) {
 	ipc.on("storage.", function (a, callBack) {
@@ -355,12 +344,6 @@ if (ext.isBackground) {
 			} else if (a.method == "remove") {
 				storage.remove(a.key, callBack);
 			}
-		}
-	});
-} else {
-	ipc.on("storage.", function (a, callBack) {
-		if (a.request == "storage" && type(a.key) == "string") {
-			foreach(storage.updated.cb, function (n, o) { o(a.key, a.value); });
 		}
 	});
 }
