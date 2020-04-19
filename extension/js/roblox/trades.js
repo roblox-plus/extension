@@ -2,16 +2,33 @@
 	roblox/avatar.js [03/23/2017]
 */
 var Roblox = Roblox || {};
+Roblox.Services = Roblox.Services || {};
+Roblox.Services.Trades = class extends Extension.BackgroundService {
+	constructor() {
+		super("Roblox.trades");
 
-Roblox.trades = (function () {
-	var tradeTypes = ["inbound", "outbound", "completed", "inactive"];
+		this.tradeTypes = ["inbound", "outbound", "completed", "inactive"];
 
-	return {
-		getTradeWindowUrl: function (userId, counterTradeId) {
-			return "https://www.roblox.com/Trade/TradeWindow.aspx?TradePartnerID=" + userId + (counterTradeId ? "&TradeSessionId=" + counterTradeId : "");
-		},
+		this.register([
+			this.decline,
+			this.get,
+			this.getTradesPaged,
+			this.canTradeWithUser,
+			this.getTradeCount
+		]);
+	}
 
-		decline: $.promise.cache(function (resolve, reject, tradeId) {
+	getTradeWindowUrl(userId, counterTradeId) {
+		let baseUrl = `https://www.roblox.com/Trade/TradeWindow.aspx?TradePartnerID=${userId}`;
+		if (counterTradeId) {
+			baseUrl += `&TradeSessionId=${counterTradeId}`;
+		}
+
+		return baseUrl;
+	}
+
+	decline(tradeId) {
+		return CachedPromise(`${this.serviceId}.decline`, (resolve, reject) => {
 			if (typeof (tradeId) != "number" || tradeId <= 0) {
 				reject([{
 					code: 0,
@@ -20,17 +37,17 @@ Roblox.trades = (function () {
 				return;
 			}
 
-			$.post(`https://trades.roblox.com/v1/trades/${tradeId}/decline`).done(function() {
+			$.post(`https://trades.roblox.com/v1/trades/${tradeId}/decline`).done(() => {
 				resolve();
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [tradeId], {
 			resolveExpiry: 5 * 60 * 1000,
 			queued: true
-		}),
+		});
+	}
 
-		get: $.promise.cache(function (resolve, reject, tradeId) {
+	get(tradeId) {
+		return CachedPromise(`${this.serviceId}.getTradesPaged`, (resolve, reject) => {
 			if (typeof (tradeId) != "number" || tradeId <= 0) {
 				reject([{
 					code: 0,
@@ -39,16 +56,13 @@ Roblox.trades = (function () {
 				return;
 			}
 
-			Roblox.users.getAuthenticatedUser().then(function(authenticatedUser) {
+			Roblox.users.getAuthenticatedUser().then((authenticatedUser) => {
 				if (!authenticatedUser) {
-					reject([{
-						code: 0,
-						message: "Unauthorized"
-					}]);
+					reject([Roblox.api.errorCodes.generic.unauthorized]);
 					return;
 				}
 
-				$.get("https://trades.roblox.com/v1/trades/" + tradeId).done(function(r) {
+				$.get(`https://trades.roblox.com/v1/trades/${tradeId}`).done((r) => {
 					let trade = {
 						id: r.id,
 						status: r.status == "Open" ? (r.offers[0].user.id === authenticatedUser.id ? "Outbound" : "Inbound") : r.status,
@@ -57,7 +71,7 @@ Roblox.trades = (function () {
 						tradePartnerOffer: {}
 					};
 
-					r.offers.forEach(function(offerData) {
+					r.offers.forEach((offerData) => {
 						let offer = {
 							user: {
 								id: offerData.user.id,
@@ -69,7 +83,7 @@ Roblox.trades = (function () {
 							userAssets: []
 						};
 
-						offerData.userAssets.forEach(function(userAsset) {
+						offerData.userAssets.forEach((userAsset) => {
 							let value = userAsset.recentAveragePrice || 0;
 							if (isNaN(value)) {
 								value = 0;
@@ -98,16 +112,16 @@ Roblox.trades = (function () {
 					});
 
 					resolve(trade);
-				}).catch(function(jxhr, errors) {
-					reject(errors);
-				});
+				}).fail(Roblox.api.$reject(reject));
 			}).catch(reject);
-		}, {
+		}, [tradeId], {
 			queued: true
-		}),
+		});
+	}
 
-		getTradesPaged: $.promise.cache(function (resolve, reject, tradeType, cursor) {
-			if (typeof (tradeType) != "string" || !tradeTypes.includes(tradeType)) {
+	getTradesPaged(tradeType, cursor) {
+		return CachedPromise(`${this.serviceId}.getTradesPaged`, (resolve, reject) => {
+			if (typeof (tradeType) != "string" || !this.tradeTypes.includes(tradeType)) {
 				reject([{
 					code: 0,
 					message: "Invalid tradeType"
@@ -115,14 +129,14 @@ Roblox.trades = (function () {
 				return;
 			}
 
-			$.get("https://trades.roblox.com/v1/trades/" + tradeType, {
+			$.get(`https://trades.roblox.com/v1/trades/${tradeType}`, {
 				sortOrder: "Desc",
 				limit: 100,
 				cursor: cursor || ""
-			}).done(function(r) {
+			}).done((r) => {
 				resolve({
 					nextPageCursor: r.nextPageCursor,
-					data: r.data.map(function(trade) {
+					data: r.data.map((trade) => {
 						return {
 							id: trade.id,
 							status: trade.status,
@@ -134,15 +148,15 @@ Roblox.trades = (function () {
 						};
 					})
 				});
-			}).catch(function(jxhr, errors) { 
-				reject(errors);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [tradeType, cursor], {
 			queued: true,
 			resolveExpiry: 10 * 1000
-		}),
+		});
+	}
 
-		openTradeTab: $.promise.cache(function (resolve, reject, userId, counterTradeId) {
+	openTradeTab(userId, counterTradeId) {
+		return new Promise((resolve, reject) => {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
 					code: 0,
@@ -150,15 +164,14 @@ Roblox.trades = (function () {
 				}]);
 				return;
 			}
-
+	
 			window.open(this.getTradeWindowUrl(userId, counterTradeId));
 			resolve();
-		}, {
-			queued: true,
-			resolveExpiry: 1000
-		}),
+		});
+	}
 
-		canTradeWithUser: $.promise.cache(function (resolve, reject, userId) {
+	canTradeWithUser(userId) {
+		return CachedPromise(`${this.serviceId}.canTradeWithUser`, (resolve, reject) => {
 			if (typeof (userId) !== "number" || userId <= 0) {
 				reject([{
 					code: 0,
@@ -167,52 +180,43 @@ Roblox.trades = (function () {
 				return;
 			}
 
-			Roblox.users.getCurrentUserId().then(function (authenticatedUserId) {
-				if (authenticatedUserId <= 0) {
+			Roblox.users.getAuthenticatedUser().then((authenticatedUser) => {
+				if (!authenticatedUser) {
 					resolve(false);
 					return;
 				}
 
-				$.get(Roblox.trades.getTradeWindowUrl(userId)).done(function (r) {
-					temp1 = r;
-					var tradePartnerId = Number((temp1.match(/<form[^>]+action="\/Trade\/TradeWindow.aspx\?TradePartnerID=(\d+)"/i) || ["", 0])[1]);
+				$.get(this.getTradeWindowUrl(userId)).done((r) => {
+					let tradePartnerId = Number((r.match(/<form[^>]+action="\/Trade\/TradeWindow.aspx\?TradePartnerID=(\d+)"/i) || ["", 0])[1]);
 					resolve(tradePartnerId === userId);
-				}).fail(function () {
-					reject([{
-						code: 0,
-						message: "HTTP request failed"
-					}]);
-				});
+				}).fail(Roblox.api.$reject(reject));
 			}).catch(reject);
-		}, {
+		}, [userId], {
 			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 15 * 1000
-		}),
+		});
+	}
 
-		getTradeCount: $.promise.cache(function (resolve, reject, tradeType) {
-			$.get("https://trades.roblox.com/v1/trades/" + tradeType + "/count").done(function (r) {
+	getTradeCount(tradeType) {
+		return CachedPromise(`${this.serviceId}.getTradeCount`, (resolve, reject) => {
+			$.get(`https://trades.roblox.com/v1/trades/${tradeType}/count`).done((r) => {
 				resolve(r.count);
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [tradeType], {
 			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 15 * 1000
-		})
-	};
-})();
+		});
+	}
 
-Roblox.trades = $.addTrigger($.promise.background("Roblox.trades", Roblox.trades));
-
-Roblox.trades.openSettingBasedTradeWindow = function (userId, counterTradeId) {
-	return new Promise(function (resolve, reject) {
-		Roblox.trades.openTradeTab(userId).then(resolve, reject);
-	});
+	openSettingBasedTradeWindow(userId, counterTradeId) {
+		return new Promise(function (resolve, reject) {
+			this.openTradeTab(userId).then(resolve).catch(reject);
+		});
+	}
 };
+
+Roblox.trades = new Roblox.Services.Trades();
 
 // WebGL3D
