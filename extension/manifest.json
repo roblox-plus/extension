@@ -43,6 +43,7 @@
 				"/js/archive/global.js",
 				"/js/plugins/jquery.trigger.js",
 
+				"/js/roblox/api.js",
 				"/js/roblox/xsrfHandler.js",
 				"/js/roblox/apiSiteContentHandler.js",
 				"/js/archive/prefunc.js",

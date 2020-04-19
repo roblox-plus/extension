@@ -2,53 +2,66 @@
 	roblox/economy.js [04/30/2017]
 */
 var Roblox = Roblox || {};
+Roblox.Services = Roblox.Services || {};
+Roblox.Services.Economy = class extends Extension.BackgroundService {
+	constructor() {
+		super("Roblox.economy");
 
-Roblox.economy = (function () {
-	return {
-		getCurrencyBalance: $.promise.cache(function (resolve, reject) {
-			Roblox.users.getCurrentUserId().then(function (authenticatedUserId) {
-				if (authenticatedUserId <= 0) {
-					reject([{
-						code: 0,
-						message: "Unauthorized"
-					}]);
+		this.register([
+			this.getCurrencyBalance,
+			this.purchaseProduct
+		]);
+	}
+
+	getCurrencyBalance() {
+		return CachedPromise(`${this.serviceId}.getCurrencyBalance`, (resolve, reject) => {
+			Roblox.users.getAuthenticatedUser().then((user) => {
+				if (!user) {
+					reject([Roblox.api.errorCodes.generic.unauthorized]);
 					return;
 				}
 
-				$.get("https://economy.roblox.com/v1/users/" + authenticatedUserId + "/currency").done(function(r) {
+				$.get(`https://economy.roblox.com/v1/users/${user.id}/currency`).done((r) => {
 					resolve({
 						robux: r.robux
 					});
-				}).fail(function (jxhr, errors) {
-					reject(errors);
-				});
-			}, reject);
-		}, {
-			queued: true
-		}),
+				}).fail(Roblox.api.$reject(reject));
+			}).catch(reject);
+		}, [], {});
+	}
 
-		purchaseProduct: $.promise.cache(function (resolve, reject, productId, expectedPrice) {
+	purchaseProduct(productId, expectedPrice) {
+		return QueuedPromise(`${this.serviceId}.purchaseProduct`, (resolve, reject) => {
 			if (typeof (expectedPrice) != "number" || expectedPrice < 0 || Math.floor(expectedPrice) !== expectedPrice) {
-				reject([{
-					code: 0,
-					message: "Invalid expectedPrice"
-				}]);
+				reject([
+					{
+						code: 0,
+						message: "Invalid expectedPrice"
+					}
+				]);
+
 				return;
 			}
 
 			Roblox.catalog.getProductInfo(productId).then(function (product) {
 				if ((!product.isFree && expectedPrice === 0) || (!product.isForSale && expectedPrice > 0)) {
-					reject([{
-						code: 0,
-						message: "Asset is not for sale."
-					}]);
+					reject([
+						{
+							code: 0,
+							message: "Asset is not for sale."
+						}
+					]);
+
 					return;
 				}
 				if ((expectedPrice === 0 && !product.isFree) || product.robuxPrice !== expectedPrice) {
-					reject([{
-						code: 0,
-						message: "Price changed"
-					}]);
+					reject([
+						{
+							code: 0,
+							message: "Price changed"
+						}
+					]);
+
 					return;
 				}
 
@@ -79,12 +92,10 @@ Roblox.economy = (function () {
 					}]);
 				});
 			}, reject);
-		}, {
-			queued: true
-		})
-	};
-})();
+		});
+	}
+};
 
-Roblox.economy = $.addTrigger($.promise.background("Roblox.economy", Roblox.economy));
+Roblox.economy = new Roblox.Services.Economy();
 
 // WebGL3D

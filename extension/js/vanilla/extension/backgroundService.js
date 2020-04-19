@@ -13,6 +13,10 @@ Extension.BackgroundService = class {
 	}
 	
 	register(methods) {
+		if (this.extension.executionContextType === Extension.ExecutionContextTypes.background) {
+			return;
+		}
+
 		methods.forEach((method) => {
 			this._registry[method.name] = method;
 			let service = this;
