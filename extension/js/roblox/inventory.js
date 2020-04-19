@@ -43,10 +43,10 @@ Roblox.Services.Inventory = class extends Extension.BackgroundService {
 				}]);
 				return;
 			}
-			
+
 			let collectibles = [];
 			let combinedValue = 0;
-			
+
 			this.loadUserCollectibleAssets(userId).then(function (data) {
 				data.forEach(function (userAsset) {
 					combinedValue += userAsset.recentAveragePrice || 0;

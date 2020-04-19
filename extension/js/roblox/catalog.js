@@ -2,10 +2,12 @@
 	roblox/catalog.js [03/18/2017]
 */
 var Roblox = Roblox || {};
+Roblox.Services = Roblox.Services || {};
+Roblox.Services.Catalog = class extends Extension.BackgroundService {
+	constructor() {
+		super("Roblox.catalog");
 
-Roblox.catalog = (function () {
-	return {
-		assetTypes: {
+		this.assetTypes = {
 			"1": "Image",
 			"2": "T-Shirt",
 			"3": "Audio",
@@ -57,71 +59,84 @@ Roblox.catalog = (function () {
 			"54": "Swim Animation",
 			"55": "Walk Animation",
 			"56": "Pose Animation"
-		},
-		wearableAssetTypeIds: [2, 8, 11, 12, 17, 18, 19, 25, 26, 27, 28, 29, 30, 31, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56],
-		collectibleAssetTypeIds: [8, 18, 19, 41, 42, 43, 44, 45, 46, 47],
-		
-		getIdFromUrl: function (url) {
-			return Number((url.match(/\/catalog\/(\d+)\//i) || url.match(/\/library\/(\d+)\//i) || url.match(/item\.aspx.*id=(\d+)/i) || url.match(/item\?.*id=(\d+)/i) || ["", 0])[1]) || 0;
-		},
+		};
 
-		getAssetUrl: function (assetId, assetName) {
-			if (typeof (assetName) != "string" || !assetName) {
-				assetName = "redirect";
-			} else {
-				assetName = assetName.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "") || "redirect";
-			}
-			return "https://www.roblox.com/catalog/" + assetId + "/" + assetName;
-		},
+		this.register([
+			this.decline,
+			this.get,
+			this.getTradesPaged,
+			this.canTradeWithUser,
+			this.getTradeCount
+		]);
+	}
 
-		getBundleUrl: function(bundleId, bundleName) {
-			if (typeof (bundleName) != "string" || !bundleName) {
-				bundleName = "redirect";
-			} else {
-				bundleName = bundleName.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "") || "redirect";
-			}
-			return "https://www.roblox.com/bundles/" + bundleId + "/" + bundleName;
-		},
+	getIdFromUrl(url) {
+		return Number((url.match(/\/catalog\/(\d+)\//i) || url.match(/\/library\/(\d+)\//i) || url.match(/item\.aspx.*id=(\d+)/i) || url.match(/item\?.*id=(\d+)/i) || ["", 0])[1]) || 0;
+	}
 
-		calculateAveragePriceAfterSale: function (currentAveragePrice, priceToSellFor) {
-			if (typeof (currentAveragePrice) != "number" || typeof (priceToSellFor) != "number" || priceToSellFor <= 0) {
-				return 0;
-			}
-			if (currentAveragePrice == priceToSellFor) {
-				return currentAveragePrice;
-			}
-			if (currentAveragePrice <= 0) {
-				return priceToSellFor;
-			}
-			return (currentAveragePrice > priceToSellFor ? Math.floor : Math.ceil)((currentAveragePrice * .9) + (priceToSellFor * .1));
-		},
+	getAssetUrl(assetId, assetName) {
+		if (typeof (assetName) != "string" || !assetName) {
+			assetName = "redirect";
+		} else {
+			assetName = assetName.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "") || "redirect";
+		}
 
-		getAssetBundles: $.promise.cache(function (resolve, reject, assetId) {
-			$.get("https://catalog.roblox.com/v1/assets/" + assetId + "/bundles").done(function(r) {
-				resolve(r.data.map(function(bundle) {
-					var outfitId = NaN;
-					bundle.items.forEach(function(item) {
+		return `https://www.roblox.com/catalog/${assetId}/${assetName}`;
+	}
+
+	getBundleUrl(bundleId, bundleName) {
+		if (typeof (bundleName) != "string" || !bundleName) {
+			bundleName = "redirect";
+		} else {
+			bundleName = bundleName.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "") || "redirect";
+		}
+
+		return `https://www.roblox.com/bundles/${bundleId}/${bundleName}`;
+	}
+
+	calculateAveragePriceAfterSale(currentAveragePrice, priceToSellFor) {
+		if (typeof (currentAveragePrice) != "number" || typeof (priceToSellFor) != "number" || priceToSellFor <= 0) {
+			return 0;
+		}
+
+		if (currentAveragePrice == priceToSellFor) {
+			return currentAveragePrice;
+		}
+
+		if (currentAveragePrice <= 0) {
+			return priceToSellFor;
+		}
+
+		return (currentAveragePrice > priceToSellFor ? Math.floor : Math.ceil)((currentAveragePrice * .9) + (priceToSellFor * .1));
+	}
+
+	getAssetBundles(assetId) {
+		return CachedPromise(`${this.serviceId}.getAssetBundles`, (resolve, reject) => {
+			$.get(`https://catalog.roblox.com/v1/assets/${assetId}/bundles`).done((r) => {
+				resolve(r.data.map((bundle) => {
+					let outfitId = NaN;
+					bundle.items.forEach((item) => {
 						if (item.type === "UserOutfit") {
 							outfitId = item.id;
 						}
 					});
-					
+
 					return {
 						id: bundle.id,
 						name: bundle.name,
 						outfitId: outfitId
 					};
 				}));
-			}).fail(function(jxhr, errors) {
-				reject(errors);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [assetId], {
 			queued: true,
 			resolveExpiry: 5 * 60 * 1000,
 			rejectExpiry: 5 * 1000
-		}),
+		});
+	}
 
-		getAssetInfo: $.promise.cache(function (resolve, reject, assetId) {
+	getAssetInfo(assetId) {
+		return CachedPromise(`${this.serviceId}.getAssetInfo`, (resolve, reject) => {
 			if (typeof (assetId) != "number" || assetId <= 0) {
 				reject([{
 					code: 0,
@@ -129,8 +144,10 @@ Roblox.catalog = (function () {
 				}]);
 				return;
 			}
-			
-			$.get("https://api.roblox.com/marketplace/productinfo", { assetId: assetId }).done(function (r) {
+
+			$.get("https://api.roblox.com/marketplace/productinfo", {
+				assetId: assetId
+			}).done((r) => {
 				var remaining = Number(r.Remaining) || 0;
 				var sales = Number(r.Sales) || 0;
 				resolve({
@@ -156,16 +173,16 @@ Roblox.catalog = (function () {
 					stock: r.IsLimitedUnique ? remaining + sales : null,
 					buildersClubMembershipType: r.MinimumMembershipLevel
 				});
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [assetId], {
 			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 5 * 1000
-		}),
-		
-		getProductInfo: $.promise.cache(function (resolve, reject, productId) {
+		});
+	}
+
+	getProductInfo(productId) {
+		return CachedPromise(`${this.serviceId}.getProductInfo`, (resolve, reject) => {
 			if (typeof (productId) != "number" || productId <= 0) {
 				reject([{
 					code: 0,
@@ -174,7 +191,9 @@ Roblox.catalog = (function () {
 				return;
 			}
 
-			$.get("https://api.roblox.com/marketplace/productdetails", { productId: productId }).done(function (r) {
+			$.get("https://api.roblox.com/marketplace/productdetails", {
+				productId: productId
+			}).done((r) => {
 				var remaining = Number(r.Remaining) || 0;
 				resolve({
 					id: r.ProductId,
@@ -195,16 +214,16 @@ Roblox.catalog = (function () {
 					remaining: remaining,
 					buildersClubMembershipType: r.MinimumMembershipLevel
 				});
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [productId], {
 			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 5 * 1000
-		}),
-		
-		getGamePassInfo: $.promise.cache(function (resolve, reject, gamePassId) {
+		});
+	}
+
+	getGamePassInfo(gamePassId) {
+		return CachedPromise(`${this.serviceId}.getGamePassInfo`, (resolve, reject) => {
 			if (typeof (gamePassId) != "number" || gamePassId <= 0) {
 				reject([{
 					code: 0,
@@ -213,7 +232,9 @@ Roblox.catalog = (function () {
 				return;
 			}
 
-			$.get("https://api.roblox.com/marketplace/game-pass-product-info", { gamePassId: gamePassId }).done(function (r) {
+			$.get("https://api.roblox.com/marketplace/game-pass-product-info", {
+				gamePassId: gamePassId
+			}).done((r) => {
 				resolve({
 					id: gamePassId,
 					name: r.Name,
@@ -228,27 +249,23 @@ Roblox.catalog = (function () {
 					isForSale: r.IsForSale,
 					isFree: r.IsPublicDomain
 				});
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [gamePassId], {
 			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 5 * 1000
-		}),
+		});
+	}
 
-		getAssetSalesCount: $.promise.cache(function (resolve, reject, assetId) {
-			Roblox.catalog.getAssetInfo(assetId).then(function(asset) {
+	getAssetSalesCount(assetId) {
+		return new Promise((resolve, reject) => {
+			this.getAssetInfo(assetId).then((asset) => {
 				resolve(asset.sales);
 			}).catch(reject);
-		}, {
-			queued: true,
-			resolveExpiry: 15 * 1000,
-			rejectExpiry: 5 * 1000
-		})
-	};
-})();
+		});
+	}
+};
 
-Roblox.catalog = $.addTrigger($.promise.background("Roblox.catalog", Roblox.catalog));
+Roblox.catalog = new Roblox.Services.Catalog();
 
 // WebGL3D
