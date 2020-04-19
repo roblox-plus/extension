@@ -1,6 +1,7 @@
 Extension.BackgroundService = class {
 	constructor(serviceId) {
 		this.extension = Extension.Singleton;
+		this.serviceId = serviceId;
 		this.promiseMessenger = new Extension.Messaging(this.extension, `Extension.BackgroundService.${serviceId}`, this.handlePromise.bind(this));
 		this._registry = {};
 	}

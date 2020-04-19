@@ -22,7 +22,7 @@ function CachedPromise(id, func, args, configuration) {
 		CachedPromise.Caches[id] = cache;
 	}
 
-	return new Promise(function(resolve, reject) {
+	const promiseHandler = function(resolve, reject) {
 		let cacheKey = JSON.stringify(args);
 		if (cache.queue[cacheKey]) {
 			cache.queue[cacheKey].push({
@@ -84,7 +84,13 @@ function CachedPromise(id, func, args, configuration) {
 
 			delete cache.queue[cacheKey];
 		});
-	});
+	};
+
+	if (configuration.queued) {
+		return QueuedPromise(id, promiseHandler, configuration);
+	}
+
+	return new Promise(promiseHandler);
 }
 
 CachedPromise.Caches = {};

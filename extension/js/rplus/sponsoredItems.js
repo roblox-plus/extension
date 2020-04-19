@@ -1,8 +1,16 @@
-(window.RPlus || (RPlus = {})).sponsoredItems = (function () {
-	return {
-		getSponsoredItems: $.promise.cache(function (resolve, reject, category, subcategory) {
-			console.log("Load sponsored items for category:", category, "(subcategory " + subcategory + ")");
+var RPlus = RPlus || {};
+RPlus.Services = RPlus.Services || {};
+RPlus.Services.SponsoredItems = class extends Extension.BackgroundService {
+	constructor() {
+		super("Roblox.sponsoredItems");
 
+		this.register([
+			this.getSponsoredItems
+		]);
+	}
+
+	getSponsoredItems(category, subcategory) {
+		return CachedPromise(`${this.serviceId}.getSponsoredItems`, (resolve, reject) => {
 			RPlus.settings.get().then(function (settings) {
 				if (!settings.sponsoredCatalogItemsEnabled) {
 					resolve([]);
@@ -15,18 +23,20 @@
 				}).done(function(r) {
 					resolve(r.data);
 				}).fail(function() {
-					reject([{
-						code: 0,
-						message: "HTTP request failed"
-					}]);
+					reject([
+						{
+							code: 0,
+							message: "HTTP request failed"
+						}
+					]);
 				});
 			}).catch(console.error);
-		}, {
+		}, [category, subcategory], {
+			queued: true,
 			resolveExpiry: 2 * 60 * 1000,
-			rejectExpiry: 30 * 1000,
-			queued: true
-		})
-	};
-})();
+			rejectExpiry: 30 * 1000
+		});
+	}
+};
 
-RPlus.sponsoredItems = $.addTrigger($.promise.background("RPlus.sponsoredItems", RPlus.sponsoredItems));
+RPlus.sponsoredItems = new RPlus.Services.SponsoredItems();
