@@ -60,15 +60,7 @@ rplus.startup("$", function () {
 	});
 
 	$(window).load(function () {
-		function datTipsy(elements, data) {
-			if (elements.length && elements.tipsy) {
-				elements.tipsy(data);
-			}
-		}
-
 		setInterval(function () {
-			datTipsy($("#BuyWithRobux>div[data-item-id='391072534'][title]"), { "gravity": "s" });
-
 			var links = $("[rplus-linkify-ready]").removeAttr("rplus-linkify-ready");
 			if (links && links.linkify) {
 				links.linkify();

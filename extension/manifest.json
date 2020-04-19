@@ -280,7 +280,6 @@
 		"*.js",
 		"jquery.min.map",
 		"/images/icons/icon_32x32.png",
-		"/images/notifier.png",
 		"*://*.roblox.com/*",
 		"*://*.rbxcdn.com/*",
 		"*://*.roblox.plus/*"
