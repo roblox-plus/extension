@@ -1,142 +1,112 @@
 ﻿/*
 	roblox/games.js [03/18/2017]
 */
-(window.Roblox || (Roblox = {})).games = (function () {
-	var launchFrame = $("<iframe>").hide();
-	var baseLaunchUrl = "https://assetgame.roblox.com/game/PlaceLauncher.ashx?";
-	var authTicketUrl = "https://auth.roblox.com/v1/authentication-ticket?" + $.param({ verification: ext.id, _: +new Date });
-	var refererOverrideValue = "https://www.roblox.com/users/48103520/profile?roblox=plus";
+var Roblox = Roblox || {};
+Roblox.Services = Roblox.Services || {};
+Roblox.Services.Games = class extends Extension.BackgroundService {
+	constructor() {
+		super("Roblox.games");
 
-	var getAuthTicket = function () {
-		return new Promise(function (resolve, reject) {
-			$.post(authTicketUrl).done(function (r, status, xhr) {
-				resolve(xhr.getResponseHeader("rbx-authentication-ticket"));
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
-			});
-		});
-	};
+		let securityParameters = $.param({ verification: ext.id, _: +new Date });
+		this.launchFrame = $("<iframe>").hide();
+		this.baseLaunchUrl = "https://assetgame.roblox.com/game/PlaceLauncher.ashx?";
+		this.authTicketUrl = `https://auth.roblox.com/v1/authentication-ticket?${securityParameters}`;
+		this.refererOverrideValue = "https://www.roblox.com/users/48103520/profile?roblox=plus";
 
-	var getServers = $.promise.cache(function (resolve, reject, placeId, cursor) {
-		$.get("https://www.roblox.com/games/getgameinstancesjson", { placeId: placeId, startindex: (cursor - 1) * 10 }).done(function (r) {
-			resolve({
-				nextPageCursor: r.TotalCollectionSize > cursor * 10 && r.Collection.length >= 10 ? cursor + 1 : null,
-				previousPageCursor: cursor > 1 ? cursor - 1 : null,
-				data: r.Collection
-			});
-		}).fail(function (jxhr, errors) {
-			reject(errors);
-		});
-	}, {
-		queued: true,
-		resolveExpiry: 15 * 1000,
-		rejectExpiry: 10 * 1000
-	});
-
-	var getVipServers = $.promise.cache(function (resolve, reject, universeId, pageNumber) {
-		pageNumber = pageNumber || 1;
-
-		$.get("https://www.roblox.com/private-server/instance-list-json", { universeId: universeId, page: pageNumber }).done(function (r) {
-			var vipServers = [];
-
-			(r.Instances || []).forEach(function (server) {
-				if (server.PrivateServer.StatusType !== 1) {
-					return;
-				}
-
-				var expirationDate = Number((server.PrivateServer.ExpirationDate.match(/\d+/) || ["0"])[0]);
-				vipServers.push({
-					id: server.PrivateServer.Id,
-					name: server.Name,
-					owner: {
-						id: server.PrivateServer.OwnerUserId
-					},
-					expirationDate: isNaN(expirationDate) || expirationDate <= 0 ? NaN : expirationDate
-				});
-			});
-
-			if (!r.TotalPages || r.TotalPages <= pageNumber) {
-				resolve(vipServers);
-			} else {
-				getVipServers(universeId, pageNumber + 1).then(function (moreVipServers) {
-					resolve(vipServers.concat(moreVipServers));
-				}).catch(reject);
-			}
-		}).fail(function (jxhr, errors) {
-			reject(errors);
-		});
-	}, {
-		resolveExpiry: 15 * 1000,
-		rejectExpiry: 10 * 1000
-	});
-
-	var trackJoinedServer = function(serverId) {
-		Roblox.games.trackJoinedServer(serverId).then(function() {
-			// server tracked, nothing to do.
-		}).catch(console.error);
-	};
-
-	if (ext.isBackground) {
-		$(function () {
-			$("body").append(launchFrame);
-		});
-
-		chrome.webRequest.onBeforeSendHeaders.addListener(function (data) {
-			var swappedReferer = false;
-
-			data.requestHeaders.forEach(function (header) {
-				var headerName = header.name.toLowerCase();
-				if (headerName === "User-Agent") {
-					header.value += " Roblox/Plus";
-				} else if (headerName === "referer") {
-					header.value = refererOverrideValue;
-					swappedReferer = true;
-				}
-			});
-
-			if (!swappedReferer) {
-				data.requestHeaders.push({
-					name: "Referer",
-					value: refererOverrideValue
-				});
-			}
-
-			return { requestHeaders: data.requestHeaders };
-		}, { urls: [authTicketUrl], types: ["xmlhttprequest"] }, ["blocking", "requestHeaders", "extraHeaders"]);
-	} else {
-		$("<a href=\"javascript:Roblox=window.Roblox||{};(Roblox.VideoPreRollDFP||Roblox.VideoPreRoll||{}).showVideoPreRoll=false;\">")[0].click();
-
-		setInterval(function() {
-			var gameServerSrc = $("#gamelaunch").attr("src"); 
-			if (gameServerSrc) {
-				var gameServerIdMatch = decodeURIComponent(gameServerSrc).match(/accessCode=([\w\-]+)/i) || [""];
-				var gameServerId = gameServerIdMatch[1];
-				if (gameServerId) {
-					trackJoinedServer(gameServerId);
-				}
-			}
-		}, 1000);
+		this.register([
+			this.getAuthTicket,
+			this.getVipServers,
+			this.launch,
+			this.getGroupGames,
+			this.hasJoinedServer,
+			this.trackJoinedServer,
+			this.getAllRunningServers
+		]);
 	}
 
+	getIdFromUrl(url) {
+		return Number((url.match(/\/games\/(\d+)\//i) || url.match(/place\.aspx.*id=(\d+)/i) || url.match(/place\?.*id=(\d+)/i) || ["", 0])[1]) || 0;
+	}
+	
+	getGameUrl(placeId, placeName) {
+		if (typeof (placeName) != "string" || !placeName) {
+			placeName = "redirect";
+		} else {
+			placeName = placeName.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "") || "redirect";
+		}
 
-	return {
-		getIdFromUrl: function (url) {
-			return Number((url.match(/\/games\/(\d+)\//i) || url.match(/place\.aspx.*id=(\d+)/i) || url.match(/place\?.*id=(\d+)/i) || ["", 0])[1]) || 0;
-		},
+		return `https://www.roblox.com/games/${placeId}/${placeName}`;
+	}
 
-		getGameUrl: function (placeId, placeName) {
-			if (typeof (placeName) != "string" || !placeName) {
-				placeName = "redirect";
-			} else {
-				placeName = placeName.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "") || "redirect";
-			}
-			return "https://www.roblox.com/games/" + placeId + "/" + placeName;
-		},
+	getAuthTicket() {
+		return QueuedPromise((resolve, reject) => {
+			$.post(this.authTicketUrl).done((r, status, xhr) => {
+				resolve(xhr.getResponseHeader("rbx-authentication-ticket"));
+			}).fail(Roblox.api.$reject(reject));
+		});
+	}
 
-		launch: $.promise.cache(function (resolve, reject, launchArguments) {
+	getServers(placeId, cursor) {
+		return CachedPromise(`${this.serviceId}.getServers`, (resolve, reject) => {
+			$.get("https://www.roblox.com/games/getgameinstancesjson", {
+				placeId: placeId,
+				startindex: (cursor - 1) * 10
+			}).done((r) => {
+				resolve({
+					nextPageCursor: r.TotalCollectionSize > cursor * 10 && r.Collection.length >= 10 ? cursor + 1 : null,
+					previousPageCursor: cursor > 1 ? cursor - 1 : null,
+					data: r.Collection
+				});
+			}).fail(Roblox.api.$reject(reject));
+		}, [placeId, cursor], {
+			queued: true,
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 10 * 1000
+		});
+	}
+
+	getVipServers(universeId, pageNumber) {
+		return CachedPromise(`${this.serviceId}.getVipServers`, (resolve, reject) => {
+			pageNumber = pageNumber || 1;
+
+			$.get("https://www.roblox.com/private-server/instance-list-json", {
+				universeId: universeId,
+				page: pageNumber
+			}).done((r) => {
+				var vipServers = [];
+	
+				(r.Instances || []).forEach((server) => {
+					if (server.PrivateServer.StatusType !== 1) {
+						return;
+					}
+	
+					var expirationDate = Number((server.PrivateServer.ExpirationDate.match(/\d+/) || ["0"])[0]);
+					vipServers.push({
+						id: server.PrivateServer.Id,
+						name: server.Name,
+						owner: {
+							id: server.PrivateServer.OwnerUserId
+						},
+						expirationDate: isNaN(expirationDate) || expirationDate <= 0 ? NaN : expirationDate
+					});
+				});
+	
+				if (!r.TotalPages || r.TotalPages <= pageNumber) {
+					resolve(vipServers);
+				} else {
+					this.getVipServers(universeId, pageNumber + 1).then((moreVipServers) => {
+						resolve(vipServers.concat(moreVipServers));
+					}).catch(reject);
+				}
+			}).fail(Roblox.api.$reject(reject));
+		}, [universeId, pageNumber], {
+			resolveExpiry: 15 * 1000,
+			rejectExpiry: 10 * 1000
+		});
+	}
+	
+	launch(launchArguments) {
+		return new Promise((resolve, reject) => {
 			if (typeof (launchArguments) != "object") {
 				reject([{
 					code: 0,
@@ -144,9 +114,9 @@
 				}]);
 				return;
 			}
-
+	
 			var launchParameters = {};
-
+	
 			if (launchArguments.hasOwnProperty("followUserId")) {
 				if (typeof (launchArguments.followUserId) != "number" || launchArguments.followUserId <= 0) {
 					reject([{
@@ -155,7 +125,7 @@
 					}]);
 					return;
 				}
-
+	
 				launchParameters = {
 					request: "RequestFollowUser",
 					userId: launchArguments.followUserId
@@ -175,84 +145,84 @@
 					}]);
 					return;
 				}
-
+	
 				if (launchArguments.serverId) {
-					trackJoinedServer(launchArguments.serverId);
+					Roblox.games.trackJoinedServer(launchArguments.serverId).then(() => {
+						// server tracked, nothing to do.
+					}).catch(console.error);
 				}
-
+	
 				launchParameters = {
 					request: launchArguments.serverId ? "RequestGameJob" : "RequestGame",
 					gameId: launchArguments.serverId || "",
 					placeId: launchArguments.placeId
 				};
 			}
-
-			getAuthTicket().then(function (authTicket) {
-				var launchUrl = baseLaunchUrl + $.param(launchParameters);
-				launchFrame.attr("src", "roblox-player:1+launchmode:play+gameinfo:" + authTicket + "+launchtime:" + (+new Date) + "+placelauncherurl:" + encodeURIComponent(launchUrl));
+	
+			this.getAuthTicket().then((authTicket) => {
+				let launchUrl = this.baseLaunchUrl + $.param(launchParameters);
+				this.launchFrame.attr("src", "roblox-player:1+launchmode:play+gameinfo:" + authTicket + "+launchtime:" + (+new Date) + "+placelauncherurl:" + encodeURIComponent(launchUrl));
 				resolve();
 			}).catch(reject);
-		}, {
-			resolveExpiry: 500,
-			rejectExpiry: 500,
-			queued: true
-		}),
+		});
+	}
 
-		getGroupGames: $.promise.cache(function(resolve, reject, groupId) {
+	getGroupGames(groupId) {
+		return CachedPromise(`${this.serviceId}.getGroupGames`, (resolve, reject) => {
 			$.get(`https://games.roblox.com/v2/groups/${groupId}/games`, {
 				limit: 100,
 				sortOrder: "Asc",
 				accessFilter: "Public"
-			}).done(function(games) {
-				resolve(games.data.map(function(game) {
+			}).done((games) => {
+				resolve(games.data.map((game) => {
 					return {
 						id: game.id,
 						name: game.name
 					};
 				}));
-			}).fail(function(jxhr, errors) {
-				reject(errors);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [groupId], {
 			resolveExpiry: 60 * 1000,
 			rejectExpiry: 5 * 1000,
 			queued: true
-		}),
+		});
+	}
 
-		getVipServers: getVipServers,
-
-		isGameServerTrackingEnabled: function() {
-			return new Promise(function(resolve, reject) {
-				storage.get("gameServerTracker", function(gameServerTrackerSettings) {
-					if (gameServerTrackerSettings && gameServerTrackerSettings.on) {
-						Roblox.users.getCurrentUserId().then(function(authenticatedUserId) {
-							RPlus.premium.isPremium(authenticatedUserId).then(resolve).catch(reject);
-						}).catch(reject);
-					} else {
-						resolve(false);
-					}
-				});
+	isGameServerTrackingEnabled() {
+		return new Promise((resolve, reject) => {
+			storage.get("gameServerTracker", (gameServerTrackerSettings) => {
+				if (gameServerTrackerSettings && gameServerTrackerSettings.on) {
+					Roblox.users.getAuthenticatedUser().then((authenticatedUser) => {
+						if (authenticatedUser) {
+							RPlus.premium.isPremium(authenticatedUser.Id).then(resolve).catch(reject);
+						} else {
+							resolve(false);
+						}
+					}).catch(reject);
+				} else {
+					resolve(false);
+				}
 			});
-		},
+		});
+	}
 
-		hasJoinedServer: $.promise.cache(function(resolve, reject, gameServerId) {
+	hasJoinedServer(gameServerId) {
+		return new Promise((resolve, reject) => {
 			var cache = RPlus.notifiers.gameServerTracker.getCache();
 			resolve(cache.hasOwnProperty(gameServerId));
-		}, {
-			rejectExpiry: 5 * 1000,
-			resolveExpiry: 250
-		}),
+		});
+	}
 
-		trackJoinedServer: $.promise.cache(function(resolve, reject, gameServerId) {
+	trackJoinedServer(gameServerId) {
+		return new Promise((resolve, reject) => {
 			var cache = RPlus.notifiers.gameServerTracker.getCache();
 			cache[gameServerId] = +new Date;
 			resolve();
-		}, {
-			rejectExpiry: 5 * 1000,
-			resolveExpiry: 30 * 1000
-		}),
+		});
+	}
 
-		getAllRunningServers: $.promise.cache(function (resolve, reject, placeId) {
+	getAllRunningServers(placeId) {
+		return CachedPromise(`${this.serviceId}.getAllRunningServers`, (resolve, reject) => {
 			var runningServers = [];
 			var serverMap = {};
 			var serversData = {
@@ -261,28 +231,28 @@
 				TotalCollectionSize: 0,
 				Collection: []
 			};
-
-			function getRunningServers(cursor) {
-				getServers(placeId, cursor).then(function (data) {
+	
+			const getRunningServers = (cursor) => {
+				this.getServers(placeId, cursor).then((data) => {
 					if (data.ShowShutdownAllButton) {
 						serversData.ShowShutdownAllButton = data.ShowShutdownAllButton;
 					}
-
-					data.data.forEach(function (server) {
+	
+					data.data.forEach((server) => {
 						if (serverMap.hasOwnProperty(server.Guid)) {
 							return;
 						}
-
+	
 						var players = [];
-						server.CurrentPlayers.forEach(function (player) {
+						server.CurrentPlayers.forEach((player) => {
 							players.push({
 								id: player.Id,
 								username: player.Username
 							});
 						});
-
+	
 						serversData.Collection.push(server);
-
+	
 						runningServers.push(serverMap[server.Guid] = {
 							id: server.Guid,
 							capacity: server.Capacity,
@@ -292,31 +262,83 @@
 							playerList: players
 						});
 					});
-
+	
 					if (data.nextPageCursor) {
 						getRunningServers(data.nextPageCursor);
 					} else {
 						serversData.TotalCollectionSize = serversData.Collection.length;
-						serversData.Collection = serversData.Collection.sort(function(a, b) {
+						serversData.Collection = serversData.Collection.sort((a, b) => {
 							return a.CurrentPlayers.length - b.CurrentPlayers.length;
 						});
-
+	
 						resolve({
 							servers: runningServers,
 							data: serversData
 						});
 					}
-				}, reject);
-			}
+				}).catch(reject);
+			};
+
 			getRunningServers(1);
-		}, {
+		}, [placeId], {
 			resolveExpiry: 120 * 1000,
 			rejectExpiry: 5 * 1000
-		})
-	};
-})();
+		});
+	}
+};
 
-Roblox.games = $.addTrigger($.promise.background("Roblox.games", Roblox.games));
+Roblox.games = new Roblox.Services.Games();
 
+switch (Extension.Singleton.executionContextType) {
+	case Extension.ExecutionContextTypes.background:
+		$(function () {
+			$("body").append(Roblox.games.launchFrame);
+		});
+
+		chrome.webRequest.onBeforeSendHeaders.addListener(function (data) {
+			var swappedReferer = false;
+
+			data.requestHeaders.forEach((header) => {
+				var headerName = header.name.toLowerCase();
+				if (headerName === "User-Agent") {
+					header.value += " Roblox/Plus";
+				} else if (headerName === "referer") {
+					header.value = Roblox.games.refererOverrideValue;
+					swappedReferer = true;
+				}
+			});
+
+			if (!swappedReferer) {
+				data.requestHeaders.push({
+					name: "Referer",
+					value: Roblox.games.refererOverrideValue
+				});
+			}
+
+			return { requestHeaders: data.requestHeaders };
+		}, {
+			urls: [ Roblox.games.authTicketUrl ],
+			types: ["xmlhttprequest"]
+		}, ["blocking", "requestHeaders", "extraHeaders"]);
+
+		break;
+	case Extension.ExecutionContextTypes.tab:
+		$("<a href=\"javascript:Roblox=window.Roblox||{};(Roblox.VideoPreRollDFP||Roblox.VideoPreRoll||{}).showVideoPreRoll=false;\">")[0].click();
+
+		setInterval(function() {
+			var gameServerSrc = $("#gamelaunch").attr("src"); 
+			if (gameServerSrc) {
+				var gameServerIdMatch = decodeURIComponent(gameServerSrc).match(/accessCode=([\w\-]+)/i) || [""];
+				var gameServerId = gameServerIdMatch[1];
+				if (gameServerId) {
+					Roblox.games.trackJoinedServer(gameServerId).then(() => {
+						// server tracked, nothing to do.
+					}).catch(console.error);
+				}
+			}
+		}, 1000);
+
+		break;
+}
 
 // WebGL3D
