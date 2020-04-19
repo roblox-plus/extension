@@ -8,6 +8,7 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 		super("Roblox.social");
 
 		this.register([
+			this.getFriendRequestCount,
 			this.getBlockedUsers,
 			this.followUser,
 			this.unfollowUser,
@@ -15,6 +16,16 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 			this.isFollowing,
 			this.getFriends
 		]);
+	}
+
+	getFriendRequestCount() {
+		return CachedPromise(`${this.serviceId}.getFriendRequestCount`, (resolve, reject) => {
+			$.get("https://friends.roblox.com/v1/user/friend-requests/count").done((r) => {
+				resolve(r.count);
+			}).fail(Roblox.api.$reject(reject));
+		}, [], {
+			resolveExpiry: 30 * 1000
+		});
 	}
 
 	getBlockedUsers() {

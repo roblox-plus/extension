@@ -267,9 +267,14 @@ RPlus.navigation = RPlus.navigation || (function () {
 						}).catch(tryLoop);
 
 						maxLoops++;
-						Roblox.navigation.getNavigationCounters().then(function (counters) {
-							RPlus.navigation.setMessagesCount(counters.unreadMessageCount);
-							RPlus.navigation.setFriendRequestCount(counters.friendRequestCount);
+						Roblox.privateMessages.getUnreadMessageCount().then((count) => {
+							RPlus.navigation.setMessagesCount(count);
+							tryLoop();
+						}).catch(tryLoop);
+
+						maxLoops++;
+						Roblox.social.getFriendRequestCount().then((count) => {
+							RPlus.navigation.setFriendRequestCount(count);
 							tryLoop();
 						}).catch(tryLoop);
 
