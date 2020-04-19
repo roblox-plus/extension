@@ -1,57 +1,72 @@
 var RPlus = RPlus || {};
-RPlus.bucketedSales = (function () {
-	var knownCreators = {};
+RPlus.Services = RPlus.Services || {};
+RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
+	constructor() {
+		super("RPlus.bucketedSales");
+		
+		this.knownCreators = {};
 
-	const addDays = function (date, days) {
+		this.register([
+			this.getItemScanStatus,
+			this.getBucketedItemSales,
+			this.getBucketedItemRevenue,
+			this.getBucketedSellerSales,
+			this.getBucketedSellerRevenue,
+			this.getBucketedGroupSalesByGame,
+			this.getBucketedGroupRevenueByGame
+		]);
+	}
+
+	addDays(date, days) {
 		if (days === 0) {
 			return date;
 		}
 
-		var copyDate = new Date(date);
+		let copyDate = new Date(date);
 		return new Date(copyDate.setDate(copyDate.getDate() + days));
-	};
+	}
 
-	const roundDownDate = function (date) {
-		var copyDate = new Date(date);
+	roundDownDate(date) {
+		let copyDate = new Date(date);
 		return new Date(copyDate.setHours(0, 0, 0, 0));
-	};
+	}
 
-	const getDateKey = function (date) {
+	getDateKey(date) {
 		return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-	};
+	}
 
-	const createEmptySalesArray = function () {
-		var sales = [];
-		for (var h = 0; h < 24; h++) {
+	createEmptySalesArray() {
+		let sales = [];
+		for (let h = 0; h < 24; h++) {
 			sales.push(0);
 		}
 
 		return sales;
-	};
-
-	const createResultBuckets = function (oldestDate, upToDate) {
-		var result = {};
-		var days = Math.floor((upToDate.getTime() - oldestDate.getTime()) / (24 * 60 * 60 * 1000));
+	}
+	
+	createResultBuckets(oldestDate, upToDate) {
+		let result = {};
+		let days = Math.floor((upToDate.getTime() - oldestDate.getTime()) / (24 * 60 * 60 * 1000));
 
 		for (let day = 0; day < days; day++) {
-			let date = addDays(oldestDate, day);
-			let dateKey = getDateKey(date);
-			result[dateKey] = createEmptySalesArray();
+			let date = this.addDays(oldestDate, day);
+			let dateKey = this.getDateKey(date);
+			result[dateKey] = this.createEmptySalesArray();
 		}
 
 		return result;
 	}
+	
+	translateTransactionsToSales(transactions, oldestDate, upToDate) {
+		let result = this.createResultBuckets(oldestDate, upToDate);
 
-	const translateTransactionsToSales = function (transactions, oldestDate, upToDate) {
-		var result = createResultBuckets(oldestDate, upToDate);
-
-		transactions.forEach(function (transaction) {
-			var saleDate = new Date(transaction.created);
-			var dateKey = getDateKey(saleDate);
-			var saleArray = result[dateKey];
+		transactions.forEach((transaction) => {
+			let saleDate = new Date(transaction.created);
+			let dateKey = this.getDateKey(saleDate);
+			let saleArray = result[dateKey];
 
 			if (!saleArray) {
-				saleArray = createEmptySalesArray();
+				saleArray = this.createEmptySalesArray();
 				result[dateKey] = saleArray;
 			}
 
@@ -59,18 +74,18 @@ RPlus.bucketedSales = (function () {
 		});
 
 		return result;
-	};
+	}
 
-	const translateTransactionsToRevenue = function (transactions, oldestDate, upToDate) {
-		var result = createResultBuckets(oldestDate, upToDate);
+	translateTransactionsToRevenue(transactions, oldestDate, upToDate) {
+		let result = this.createResultBuckets(oldestDate, upToDate);
 
-		transactions.forEach(function (transaction) {
-			var saleDate = new Date(transaction.created);
-			var dateKey = getDateKey(saleDate);
-			var saleArray = result[dateKey];
+		transactions.forEach((transaction) => {
+			let saleDate = new Date(transaction.created);
+			let dateKey = this.getDateKey(saleDate);
+			let saleArray = result[dateKey];
 
 			if (!saleArray) {
-				saleArray = createEmptySalesArray();
+				saleArray = this.createEmptySalesArray();
 				result[dateKey] = saleArray;
 			}
 
@@ -78,9 +93,9 @@ RPlus.bucketedSales = (function () {
 		});
 
 		return result;
-	};
+	}
 
-	const tryScanCreator = function (creator) {
+	tryScanCreator(creator) {
 		switch (creator.type) {
 			case "User":
 				console.log("Kicking off user transaction scan...", creator.id);
@@ -99,30 +114,30 @@ RPlus.bucketedSales = (function () {
 			default:
 				console.warn("Unrecognized creator type:", creator.type);
 		}
-	};
+	}
 
-	const getCreatorByItem = function (itemType, itemId) {
-		return new Promise(function (resolve, reject) {
+	getCreatorByItem(itemType, itemId) {
+		return new Promise((resolve, reject) => {
 			var cacheKey = `${itemType}:${itemId}`;
-			if (knownCreators[cacheKey]) {
-				resolve(Object.assign({}, knownCreators[cacheKey]));
+			if (this.knownCreators[cacheKey]) {
+				resolve(Object.assign({}, this.knownCreators[cacheKey]));
 				return;
 			}
 
 			var gotCreator = function(creator) {
-				knownCreators[cacheKey] = creator;
+				this.knownCreators[cacheKey] = creator;
 				resolve(Object.assign({}, creator));
 			};
 
 			switch (itemType) {
 				case "Asset":
-					Roblox.catalog.getAssetInfo(itemId).then(function (asset) {
+					Roblox.catalog.getAssetInfo(itemId).then((asset) => {
 						gotCreator(asset.creator);
 					}).catch(reject);
 					
 					return;
 				case "GamePass":
-					Roblox.catalog.getGamePassInfo(itemId).then(function (gamePass) {
+					Roblox.catalog.getGamePassInfo(itemId).then((gamePass) => {
 						gotCreator(gamePass.creator);
 					}).catch(reject);
 					
@@ -132,42 +147,42 @@ RPlus.bucketedSales = (function () {
 					return;
 			}
 		});
-	};
+	}
 
-	const getAssetTransactions = function (assetId, oldestDate) {
-		return new Promise(function (resolve, reject) {
-			getCreatorByItem("Asset", assetId).then(function(creator) {
-				tryScanCreator(creator);
+	getAssetTransactions(assetId, oldestDate) {
+		return new Promise((resolve, reject) => {
+			this.getCreatorByItem("Asset", assetId).then((creator) => {
+				this.tryScanCreator(creator);
 				Roblox.economyTransactions.getItemTransactions("Asset", assetId, oldestDate.getTime()).then(resolve).catch(reject);
 			}).catch(reject);
 		});
-	};
+	}
 
-	const getGamePassTransactions = function (gamePassId, oldestDate) {
-		return new Promise(function (resolve, reject) {
-			getCreatorByItem("GamePass", gamePassId).then(function(creator) {
-				tryScanCreator(creator);
+	getGamePassTransactions(gamePassId, oldestDate) {
+		return new Promise((resolve, reject) => {
+			this.getCreatorByItem("GamePass", gamePassId).then((creator) => {
+				this.tryScanCreator(creator);
 				Roblox.economyTransactions.getItemTransactions("GamePass", gamePassId, oldestDate.getTime()).then(resolve).catch(reject);
 			}).catch(reject);
 		});
-	};
+	}
 
-	const getTransactionsByItem = function (itemType, itemId, transactionsLoaded, oldestDate, reject) {
+	getTransactionsByItem(itemType, itemId, transactionsLoaded, oldestDate, reject) {
 		switch (itemType) {
 			case "Asset":
-				getAssetTransactions(itemId, oldestDate).then(transactionsLoaded).catch(reject);
+				this.getAssetTransactions(itemId, oldestDate).then(transactionsLoaded).catch(reject);
 				return;
 			case "GamePass":
-				getGamePassTransactions(itemId, oldestDate).then(transactionsLoaded).catch(reject);
+				this.getGamePassTransactions(itemId, oldestDate).then(transactionsLoaded).catch(reject);
 				return;
 			default:
 				reject("Unsupported itemType: " + itemType);
 				return;
 		}
-	};
+	}
 
-	const getTransactionsBySeller = function (sellerType, sellerId, oldestDate) {
-		return new Promise(function(resolve, reject) {
+	getTransactionsBySeller(sellerType, sellerId, oldestDate) {
+		return new Promise((resolve, reject) => {
 			switch (sellerType) {
 				case "User":
 					Roblox.economyTransactions.getUserTransactions(sellerId, oldestDate.getTime()).then(resolve).catch(reject);
@@ -180,13 +195,13 @@ RPlus.bucketedSales = (function () {
 					return;
 			}
 
-			tryScanCreator({ type: sellerType, id: sellerId });
+			this.tryScanCreator({ type: sellerType, id: sellerId });
 		});
-	};
+	}
 
-	return {
-		getItemScanStatus: $.promise.cache(function (resolve, reject, itemType, itemId) {
-			getCreatorByItem(itemType, itemId).then(function(creator) {
+	getItemScanStatus(itemType, itemId) {
+		return new Promise((resolve, reject) => {
+			this.getCreatorByItem(itemType, itemId).then(function(creator) {
 				switch (creator.type) {
 					case "User":
 						Roblox.economyTransactions.getUserScanStatus(creator.id).then(resolve).catch(reject);
@@ -199,79 +214,129 @@ RPlus.bucketedSales = (function () {
 						return;
 				}
 			}).catch(reject);
-		}, {
-			rejectExpiry: 100,
-			resolveExpiry: 100
-		}),
+		});
+	}
 
-		getBucketedItemSales: $.promise.cache(function (resolve, reject, itemType, itemId, days) {
-			var currentDate = new Date();
-			var oldestDate = roundDownDate(addDays(currentDate, -days));
-
-			getTransactionsByItem(itemType, itemId, function (transactions) {
-				resolve(translateTransactionsToSales(transactions, oldestDate, currentDate));
+	getBucketedItemSales(itemType, itemId, days) {
+		return CachedPromise(`${this.serviceId}.getBucketedItemSales`, (resolve, reject) => {
+			let currentDate = new Date();
+			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
+	
+			this.getTransactionsByItem(itemType, itemId, (transactions) => {
+				resolve(this.translateTransactionsToSales(transactions, oldestDate, currentDate));
 			}, oldestDate, reject);
-		}),
+		}, [itemType, itemId, days], {});
+	}
 
-		getBucketedItemRevenue: $.promise.cache(function (resolve, reject, itemType, itemId, days) {
-			var currentDate = new Date();
-			var oldestDate = roundDownDate(addDays(currentDate, -days));
+	getBucketedItemRevenue(itemType, itemId, days) {
+		return CachedPromise(`${this.serviceId}.getBucketedItemRevenue`, (resolve, reject) => {
+			let currentDate = new Date();
+			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
 
-			getTransactionsByItem(itemType, itemId, function (transactions) {
-				resolve(translateTransactionsToRevenue(transactions, oldestDate, currentDate));
+			this.getTransactionsByItem(itemType, itemId, (transactions) => {
+				resolve(this.translateTransactionsToRevenue(transactions, oldestDate, currentDate));
 			}, oldestDate, reject);
-		}),
+		}, [itemType, itemId, days], {});
+	}
 
-		getBucketedSellerSales: $.promise.cache(function (resolve, reject, sellerType, sellerId, days) {
-			var currentDate = new Date();
-			var oldestDate = roundDownDate(addDays(currentDate, -days));
-
-			getTransactionsBySeller(sellerType, sellerId, oldestDate).then(function (transactions) {
-				resolve(translateTransactionsToSales(transactions, oldestDate, currentDate));
+	getBucketedSellerSales(sellerType, sellerId, days) {
+		return CachedPromise(`${this.serviceId}.getBucketedSellerSales`, (resolve, reject) => {
+			let currentDate = new Date();
+			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
+	
+			this.getTransactionsBySeller(sellerType, sellerId, oldestDate).then((transactions) => {
+				resolve(this.translateTransactionsToSales(transactions, oldestDate, currentDate));
 			}).catch(reject);
-		}),
+		}, [sellerType, sellerId, days], {});
+	}
 
-		getBucketedSellerRevenue: $.promise.cache(function (resolve, reject, sellerType, sellerId, days) {
-			var currentDate = new Date();
-			var oldestDate = roundDownDate(addDays(currentDate, -days));
-
-			getTransactionsBySeller(sellerType, sellerId, oldestDate).then(function (transactions) {
-				resolve(translateTransactionsToRevenue(transactions, oldestDate, currentDate));
+	getBucketedSellerRevenue(sellerType, sellerId, days) {
+		return CachedPromise(`${this.serviceId}.getBucketedSellerRevenue`, (resolve, reject) => {
+			let currentDate = new Date();
+			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
+	
+			this.getTransactionsBySeller(sellerType, sellerId, oldestDate).then((transactions) => {
+				resolve(this.translateTransactionsToRevenue(transactions, oldestDate, currentDate));
 			}).catch(reject);
-		}),
-
-		getBucketedGroupSalesByGame: $.promise.cache(function (resolve, reject, groupId, days) {
-			var currentDate = new Date();
-			var oldestDate = roundDownDate(addDays(currentDate, -days));
-
-			getTransactionsBySeller("Group", groupId, oldestDate).then(function (transactions) {
-				var filteredTransactions = {};
-				var result = {};
-
-				transactions.forEach(function(transaction) {
+		}, [sellerType, sellerId, days], {});
+	}
+	
+	getBucketedGroupSalesByGame(groupId, days) {
+		return CachedPromise(`${this.serviceId}.getBucketedGroupSalesByGame`, (resolve, reject) => {
+			let currentDate = new Date();
+			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
+	
+			this.getTransactionsBySeller("Group", groupId, oldestDate).then((transactions) => {
+				let filteredTransactions = {};
+				let result = {};
+	
+				transactions.forEach((transaction) => {
 					if (!transaction.gameId) {
 						return;
 					}
-
+	
 					if (!filteredTransactions[transaction.gameId]) {
 						filteredTransactions[transaction.gameId] = [];
 					}
-
+	
 					filteredTransactions[transaction.gameId].push(transaction);
 				});
-
+	
 				for (let gameId in filteredTransactions) {
-					result[gameId] = translateTransactionsToSales(filteredTransactions[gameId], oldestDate, currentDate);
+					result[gameId] = this.translateTransactionsToSales(filteredTransactions[gameId], oldestDate, currentDate);
 				}
-
+	
 				// Add missing games that haven't made any money recently (better user experience).
-				Roblox.games.getGroupGames(groupId).then(function(games) {
-					games.forEach(function(game) {
+				Roblox.games.getGroupGames(groupId).then((games) => {
+					games.forEach((game) => {
 						if (!result[game.id]) {
-							result[game.id] = createResultBuckets(oldestDate, currentDate);
+							result[game.id] = this.createResultBuckets(oldestDate, currentDate);
 						}
 					});
+	
+					resolve(result);
+				}).catch((err) => {
+					// Nice to have. Not critical.
+					console.error(err);
+					resolve(result);
+				});
+			}).catch(reject);
+		}, [groupId, days], {});
+	}
 
+	getBucketedGroupRevenueByGame(groupId, days) {
+		return CachedPromise(`${this.serviceId}.getBucketedGroupRevenueByGame`, (resolve, reject) => {
+			let currentDate = new Date();
+			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
+	
+			this.getTransactionsBySeller("Group", groupId, oldestDate).then((transactions) => {
+				let filteredTransactions = {};
+				let result = {};
+	
+				transactions.forEach((transaction) => {
+					if (!transaction.gameId) {
+						return;
+					}
+	
+					if (!filteredTransactions[transaction.gameId]) {
+						filteredTransactions[transaction.gameId] = [];
+					}
+	
+					filteredTransactions[transaction.gameId].push(transaction);
+				});
+	
+				for (let gameId in filteredTransactions) {
+					result[gameId] = this.translateTransactionsToRevenue(filteredTransactions[gameId], oldestDate, currentDate);
+				}
+	
+				// Add missing games that haven't made any money recently (better user experience).
+				Roblox.games.getGroupGames(groupId).then((games) => {
+					games.forEach((game) => {
+						if (!result[game.id]) {
+							result[game.id] = this.createResultBuckets(oldestDate, currentDate);
+						}
+					});
+	
 					resolve(result);
 				}).catch(function(err) {
 					// Nice to have. Not critical.
@@ -279,49 +344,8 @@ RPlus.bucketedSales = (function () {
 					resolve(result);
 				});
 			}).catch(reject);
-		}),
+		}, [groupId, days], {});
+	}
+};
 
-		getBucketedGroupRevenueByGame: $.promise.cache(function (resolve, reject, groupId, days) {
-			var currentDate = new Date();
-			var oldestDate = roundDownDate(addDays(currentDate, -days));
-
-			getTransactionsBySeller("Group", groupId, oldestDate).then(function (transactions) {
-				var filteredTransactions = {};
-				var result = {};
-
-				transactions.forEach(function(transaction) {
-					if (!transaction.gameId) {
-						return;
-					}
-
-					if (!filteredTransactions[transaction.gameId]) {
-						filteredTransactions[transaction.gameId] = [];
-					}
-
-					filteredTransactions[transaction.gameId].push(transaction);
-				});
-
-				for (let gameId in filteredTransactions) {
-					result[gameId] = translateTransactionsToRevenue(filteredTransactions[gameId], oldestDate, currentDate);
-				}
-
-				// Add missing games that haven't made any money recently (better user experience).
-				Roblox.games.getGroupGames(groupId).then(function(games) {
-					games.forEach(function(game) {
-						if (!result[game.id]) {
-							result[game.id] = createResultBuckets(oldestDate, currentDate);
-						}
-					});
-
-					resolve(result);
-				}).catch(function(err) {
-					// Nice to have. Not critical.
-					console.error(err);
-					resolve(result);
-				});
-			}).catch(reject);
-		})
-	};
-})();
-
-RPlus.bucketedSales = $.addTrigger($.promise.background("RPlus.bucketedSales", RPlus.bucketedSales));
+RPlus.bucketedSales = new RPlus.Services.BucketedSales();
