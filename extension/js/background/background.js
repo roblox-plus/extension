@@ -147,8 +147,8 @@ if (browser.name == "Chrome") {
 
 
 /* Migrate users to Roblox dark theme */
-storage.get("siteTheme", function (value) {
-	if (value === "darkblox") {
+Extension.Storage.Singleton.get("siteTheme").then((theme) => {
+	if (theme === "darkblox") {
 		Roblox.users.getAuthenticatedUser().then(function (authenticatedUser) {
 			if (!authenticatedUser) {
 				console.warn("Will migrate out of darkblox theme when user logs in.");
@@ -162,12 +162,16 @@ storage.get("siteTheme", function (value) {
 					"themeType": "Dark"
 				}
 			}).done(function () {
-				storage.remove("siteTheme");
+				Extension.Storage.Singleton.remove("siteTheme").then(() => {
+				}).catch(e => console.warn("Failed to remove siteTheme setting", e));
 			}).fail(function () {
 				console.error("Failed to migrate out of ")
 			});
 		});
 	}
+
+}).catch((err) => {
+	console.warn("Failed to read setting: siteTheme", err);
 });
 
 

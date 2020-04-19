@@ -264,19 +264,6 @@ storage = {
 		} else {
 			ipc.send("storage.", { request: "storage", method: "set", key: k, value: v }, cb);
 		}
-	},
-	remove: function (k, cb) {
-		if (ext.isBackground) {
-			if (type(k) == "string") {
-				localStorage.removeItem(k);
-			} else if (type(k) == "array") {
-				foreach(k, function (n, o) { storage.remove(o); });
-			}
-			fixCB(cb)(true);
-			return true;
-		} else {
-			ipc.send("storage.", { request: "storage", method: "remove", key: k }, cb);
-		}
 	}
 };
 
@@ -291,8 +278,6 @@ if (ext.isBackground) {
 				} else if (type(a.key) == "string") {
 					storage.set(a.key, a.value, callBack);
 				}
-			} else if (a.method == "remove") {
-				storage.remove(a.key, callBack);
 			}
 		}
 	});
