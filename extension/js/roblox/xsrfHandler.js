@@ -5,18 +5,16 @@
 	var token = "";
 	var validXsrfMethods = ["POST", "PATCH", "DELETE"];
 	var headerName = "X-CSRF-TOKEN";
-	var xsrfTrigger = $.addTrigger({});
 
 	function setToken(t) {
 		if (typeof (t) == "string") {
-			xsrfTrigger.trigger("xsrfTokenChanged", token = t);
+			token = t;
 		}
 	}
 
 	function getToken() {
 		return token;
 	}
-
 
 	$.ajaxPrefilter(function (options, originalOptions, jxhr) {
 		var promise = $.Deferred();
@@ -41,10 +39,10 @@
 		return promise.promise(jxhr);
 	});
 
-
-	xsrfTrigger.setToken = setToken;
-	xsrfTrigger.getToken = getToken;
-	return xsrfTrigger;
+	return {
+		setToken: setToken,
+		getToken: getToken
+	};
 })();
 
 
