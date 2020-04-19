@@ -34,10 +34,7 @@
 				try {
 					promise.reject(jxhr, JSON.parse(jxhr.responseText).errors, global.parseArguments(arguments));
 				} catch (e) {
-					promise.reject(jxhr, [{
-						code: 0,
-						message: "HTTP request failed"
-					}], global.parseArguments(arguments));
+					promise.reject(jxhr, [Roblox.api.errorCodes.generic.requestFailed], global.parseArguments(arguments));
 				}
 			}
 		});
