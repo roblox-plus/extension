@@ -10,7 +10,7 @@ RPlus.Pages.Group = function (pathMatch) {
 
 	console.log("Group:", id);
 
-	storage.get("groupRoleDisplay", function(groupRoleDisplayEnabled) {
+	Extension.Storage.Singleton.get("groupRoleDisplay").then(function(groupRoleDisplayEnabled) {
 		if (!groupRoleDisplayEnabled) {
 			return;
 		}
@@ -28,7 +28,7 @@ RPlus.Pages.Group = function (pathMatch) {
 				}
 			});
 		}, 500);
-	});
+	}).catch(console.warn);
 
 	if (id == 650266) {
 		setInterval(function () {

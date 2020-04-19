@@ -190,7 +190,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 
 	isGameServerTrackingEnabled() {
 		return new Promise((resolve, reject) => {
-			storage.get("gameServerTracker", (gameServerTrackerSettings) => {
+			Extension.Storage.Singleton.get("gameServerTracker").then((gameServerTrackerSettings) => {
 				if (gameServerTrackerSettings && gameServerTrackerSettings.on) {
 					Roblox.users.getAuthenticatedUser().then((authenticatedUser) => {
 						if (authenticatedUser) {
@@ -202,7 +202,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 				} else {
 					resolve(false);
 				}
-			});
+			}).catch(reject);
 		});
 	}
 

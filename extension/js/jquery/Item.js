@@ -31,7 +31,7 @@ RPlus.Pages.Item = function () {
 	var commentButton = $(".rbx-post-comment");
 	if (commentButton.length) {
 		setInterval(function () {
-			storage.get("commentTimer", function (commentTimer) {
+			Extension.Storage.Singleton.get("commentTimer").then(function (commentTimer) {
 				var waitTime = 60 * 1000; // floodcheck time
 				var remaining = commentTimer[Roblox.users.authenticatedUserId] && commentTimer[Roblox.users.authenticatedUserId].hasOwnProperty(id) ? waitTime - (getMil() - commentTimer[Roblox.users.authenticatedUserId][id]) : 0;
 				if (commentTimer.last && getMil() < commentTimer.last + (60 * 1000)) {
@@ -39,7 +39,7 @@ RPlus.Pages.Item = function () {
 				}
 				commentButton.prop("disabled", remaining > 0).html(remaining ? "Post Comment<br>(" + Math.ceil(remaining / 1000) + ")" : "Post Comment");
 				$(".rbx-comment-input").prop("disabled", remaining > 0);
-			});
+			}).catch(console.warn);
 		}, 1000);
 	}
 
@@ -156,7 +156,7 @@ RPlus.Pages.Item = function () {
 			recalc();
 		}, 1000);
 
-		storage.get("remainingCounter", function (loop) {
+		Extension.Storage.Singleton.get("remainingCounter").then(function (loop) {
 			var spans = $(".item-note.has-price-label>span");
 			if (spans.length == 2 && loop) {
 				loop = function () {
@@ -172,10 +172,10 @@ RPlus.Pages.Item = function () {
 				};
 				loop();
 			}
-		});
+		}).catch(console.warn);
 	}
 
-	storage.get("itemSalesCounter", function(itemSalesCounterEnabled) {
+	Extension.Storage.Singleton.get("itemSalesCounter").then(function(itemSalesCounterEnabled) {
 		if (!itemSalesCounterEnabled) {
 			return;
 		}
@@ -193,7 +193,7 @@ RPlus.Pages.Item = function () {
 				$(".item-type-field-container").after(container.append(label, count));
 			}).catch(console.error);
 		});
-	});
+	}).catch(console.warn);
 	
 	return {
 		item: item

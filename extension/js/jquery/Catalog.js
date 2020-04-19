@@ -2,7 +2,7 @@
 RPlus.Pages = RPlus.Pages || {};
 
 RPlus.Pages.Catalog = function () {
-	storage.get("catalog", function (catalogSettings) {
+	Extension.Storage.Singleton.get("catalog").then(function (catalogSettings) {
 		if (!catalogSettings || !catalogSettings.hideBlockedSellers) {
 			return;
 		}
@@ -27,7 +27,7 @@ RPlus.Pages.Catalog = function () {
 		});
 
 		creatorObserver.observe(document.body, { childList: true, subtree: true });
-	});
+	}).catch(console.warn);
 
 	return {};
 };

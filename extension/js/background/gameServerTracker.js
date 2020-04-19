@@ -3,7 +3,12 @@ RPlus.notifiers.gameServerTracker = (function () {
 		name: "GameServerTracker",
 		sleep: 20 * 1000,
 		isEnabled: function (callBack) {
-			callBack((storage.get("gameServerTracker") || {}).on);
+			Extension.Storage.Singleton.get("gameServerTracker").then(setting => {
+				callBack(setting && setting.on === true);
+			}).catch(err => {
+				console.warn(err);
+				callBack(false);
+			});
 		},
 		requireAuthenticatedUser: true
 	}, function (user, cache, rerun) {

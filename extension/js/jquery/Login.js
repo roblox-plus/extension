@@ -7,7 +7,7 @@ RPlus.Pages.Login = function () {
 		var el = $(this);
 		var id = ++cid;
 		if (el.val()) {
-			storage.get("changedLogin", function (v) {
+			Extension.Storage.Singleton.get("changedLogin").then(function (v) {
 				if (v && el.val()) {
 					Roblox.users.getByUsername(el.val()).then(function (u) {
 						console.log(u);
@@ -16,7 +16,7 @@ RPlus.Pages.Login = function () {
 						}
 					});
 				}
-			});
+			}).catch(console.warn);
 		}
 	});
 

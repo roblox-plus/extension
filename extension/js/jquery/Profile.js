@@ -33,16 +33,18 @@ RPlus.Pages.Profile = function () {
 		}
 	}, 250);
 
-	storage.get(["profileRAP"], function (vals, rapLabel) {
-		if (vals.profileRAP) {
-			$(".header-details>.details-info").append(rapLabel = $("<li><div class=\"text-label font-caption-header\">RAP</div><a userid=\"" + id + "\" class=\"rplusinventory text-name\" href=\"javascript:/* Roblox+ */;\"><span class=\"font-header-2\">...</span></a></li>"));
+	Extension.Storage.Singleton.get("profileRAP").then(function(profileRAP) {
+		if (profileRAP) {
+			let rapLabel= $("<li><div class=\"text-label font-caption-header\">RAP</div><a userid=\"" + id + "\" class=\"rplusinventory text-name\" href=\"javascript:/* Roblox+ */;\"><span class=\"font-header-2\">...</span></a></li>");
+			$(".header-details>.details-info").append(rapLabel);
+
 			Roblox.inventory.getCollectibles(id).then(function (inv) {
 				rapLabel.find("span").text(global.addCommas(inv.combinedValue));
 			}, function () {
 				rapLabel.hide();
 			});
 		}
-	});
+	}).catch(console.warn);
 
 	setTimeout(function () {
 		// Delayed because angular loads in widget
@@ -103,13 +105,13 @@ RPlus.Pages.Profile = function () {
 	});
 
 	if (($(".btn-friends:not([rplus])>button").text() || "").trim() == "Unfriend") {
-		storage.get("friendNotifier", function (notifier) {
+		Extension.Storage.Singleton.get("friendNotifier").then(function (notifier) {
 			if (!notifier.on) { return; }
 			notifier.blocked = type(notifier.blocked) != "array" ? [] : notifier.blocked;
 			$("#profile-header-more #popover-content>ul").prepend($("<li>").append($("<a rplus=\"notifier\">").attr("href", "javascript:$(\"#profile-header-more #popover-content>ul>li>a[rplus='notifier']\")[0].click();").text("Notifier: O" + (notifier.blocked.indexOf(id) >= 0 ? "ff" : "n")).click(function () {
 				var button = $(this);
 				console.log("click");
-				storage.get("friendNotifier", function (notifier) {
+				Extension.Storage.Singleton.get("friendNotifier").then(function (notifier) {
 					notifier.blocked = type(notifier.blocked) != "array" ? [] : notifier.blocked;
 					console.log(notifier);
 					if (notifier.blocked.indexOf(id) >= 0) {
@@ -137,9 +139,9 @@ RPlus.Pages.Profile = function () {
 							}
 						});
 					}
-				});
+				}).catch(console.warn);
 			})));
-		});
+		}).catch(console.warn);
 	}
 
 	return {};

@@ -162,7 +162,7 @@ RPlus.notifiers.catalog = (function () {
 			}
 		} else if (message.from === "/topics/catalog-notifier-freebies") {
 			try {
-				storage.get("autoTakeFreeItems", function (autoTake) {
+				Extension.Storage.Singleton.get("autoTakeFreeItems").then(function (autoTake) {
 					if(!autoTake) {
 						return;
 					}
@@ -204,7 +204,7 @@ RPlus.notifiers.catalog = (function () {
 					}).catch(function (e) {
 						console.error("Did a new item really come out? Why did this fail to purchase?", e);
 					});
-				});
+				}).catch(console.warn);
 			} catch (e) {
 				console.error("Failed to parse asset.", message);
 			}

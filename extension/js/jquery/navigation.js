@@ -13,15 +13,17 @@ RPlus.navigation = RPlus.navigation || (function () {
 	suffixes[trillion] = "T";
 
 	let getNavigationSettings = function (callBack) {
-		storage.get(["navigation", "navcounter"], function (settings) {
-			if (!settings.navigation || typeof (settings.navigation) !== "object") {
-				settings.navigation = {};
-			}
-
-			settings.navigation.liveNavigationCounters = !!settings.navcounter;
-
-			callBack(settings.navigation);
-		});
+		Extension.Storage.Singleton.get("navigation").then(navigation => {
+			Extension.Storage.Singleton.get("navcounter").then(navcounter => {
+				if (!navigation || typeof (navigation) !== "object") {
+					navigation = {};
+				}
+	
+				navigation.liveNavigationCounters = !!navcounter;
+	
+				callBack(navigation);
+			}).catch(console.warn);
+		}).catch(console.warn);
 	};
 
 	let getDivider = function (number) {

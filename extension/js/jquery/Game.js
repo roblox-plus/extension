@@ -229,7 +229,7 @@ RPlus.Pages.Game = function () {
 		}).catch(console.error);
 
 		if (Roblox.users.authenticatedUserId) { 
-			storage.get("badgeAchievementDatesEnabled", function(enabled) {
+			Extension.Storage.Singleton.get("badgeAchievementDatesEnabled").then(function(enabled) {
 				if (enabled) {
 					$(".badge-image:not([rplus-awarded-date])").each(function() {
 						var badgeImage = $(this);
@@ -244,7 +244,7 @@ RPlus.Pages.Game = function () {
 						}
 					}).attr("rplus-awarded-date", +new Date);
 				}
-			});
+			}).catch(console.warn);
 		}
 	}, 250);
 

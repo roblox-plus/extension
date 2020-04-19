@@ -9,12 +9,12 @@ class NavigationSettings extends SettingsTab {
 		];
 
 		let navigationSettings = this;
-		storage.get("navigation", function (navigation) {
+		Extension.Storage.Singleton.get("navigation").then(function (navigation) {
 			navigationSettings.setState({
 				counterRoundAt: navigation ? navigation.counterCommas : 10000,
 				navigationLinks: (navigation && navigation.buttons) || navigationSettings.state.navigationLinks
 			});
-		});
+		}).catch(console.warn);
 	}
 
 	updateCounterRoundAt(event) {
@@ -23,11 +23,11 @@ class NavigationSettings extends SettingsTab {
 			counterRoundAt: roundAt
 		});
 
-		storage.get("navigation", function (navigation) {
+		Extension.Storage.Singleton.get("navigation").then(function (navigation) {
 			navigation = navigation || {};
 			navigation.counterCommas = roundAt;
 			Extension.Storage.Singleton.blindSet("navigation", navigation);
-		});
+		}).catch(console.warn);
 	}
 
 	updateNavigationLink(index, property, event) {
@@ -62,7 +62,7 @@ class NavigationSettings extends SettingsTab {
 			return;
 		}
 
-		storage.get("navigation", function (navigation) {
+		Extension.Storage.Singleton.get("navigation").then(function (navigation) {
 			navigation = navigation || {};
 			navigation.buttons = navigation.buttons || [{ "text": "Create", "href": "/develop" }, { "text": "Trade", "href": "/my/money.aspx#/#TradeItems_tab" }];
 
@@ -77,7 +77,7 @@ class NavigationSettings extends SettingsTab {
 			});
 
 			Extension.Storage.Singleton.blindSet("navigation", navigation);
-		});
+		}).catch(console.warn);
 	}
 
 	blur(event) {
