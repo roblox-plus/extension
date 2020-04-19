@@ -188,56 +188,6 @@ ipc = (function () {
 	return ipc;
 })();
 
-// ipc.backgroundFunction
-(function(){
-	ipc.backgroundFunction = function (path, func) {
-		func.functionPath = path;
-		if (ext.isBackground) {
-			return func;
-		} else {
-			var retFunc = function () {
-				var args = [];
-				var callBack;
-				var callBackPosition = -1;
-				for (var n = 0; n < arguments.length; n++) {
-					if (typeof (arguments[n]) == "function") {
-						callBack = arguments[n];
-						callBackPosition = n;
-						args.push("callBack");
-					} else {
-						args.push(arguments[n]);
-					}
-				}
-				ipc.send("ipc.backgroundFunction", {
-					args: args,
-					path: path,
-					callBackPosition: callBackPosition
-				}, callBack || function () { });
-			};
-			retFunc.functionPath = path;
-			return retFunc;
-		}
-	};
-
-	if (ext.isBackground) {
-		ipc.on("ipc.backgroundFunction", function (data, callBack) {
-			var path = data.path.split(".");
-			var func = window;
-			var namespace = this;
-			while (path.length) {
-				func = func[path.shift()];
-				if (path.length == 1) {
-					namespace = func;
-				}
-			}
-			if (data.callBackPosition >= 0) {
-				data.args.splice(data.callBackPosition, 1, callBack);
-			}
-			func.apply(namespace, data.args);
-		});
-	}
-})();
-
 // $.addTrigger.broadcast
 $.addTrigger.init(function (obj) {
 	if (!obj.getNamespace()) {
