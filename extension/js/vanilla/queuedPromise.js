@@ -13,7 +13,6 @@ function QueuedPromise(id, func, configuration) {
 			queue = QueuedPromise.Queues[id] = {
 				Queue: [],
 				Running: 0,
-				Run: func,
 				Configuration: configuration
 			};
 		}
@@ -42,7 +41,8 @@ function QueuedPromise(id, func, configuration) {
 
 		queue.Queue.push({
 			resolve: resolve,
-			reject: reject
+			reject: reject,
+			run: func
 		});
 
 		QueuedPromise.Process(id);
@@ -64,7 +64,7 @@ QueuedPromise.Process = function(id) {
 		queue.Running++;
 
 		try {
-			queue.Run(queueItem.resolve, queueItem.reject);
+			queueItem.run(queueItem.resolve, queueItem.reject);
 		} catch(e) {
 			queueItem.reject(e);
 		}

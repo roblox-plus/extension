@@ -13,13 +13,13 @@ Extension.BackgroundService = class {
 	}
 	
 	register(methods) {
-		if (this.extension.executionContextType === Extension.ExecutionContextTypes.background) {
-			return;
-		}
-
 		methods.forEach((method) => {
-			this._registry[method.name] = method;
 			let service = this;
+			this._registry[method.name] = method;
+
+			if (this.extension.executionContextType === Extension.ExecutionContextTypes.background) {
+				return;
+			}
 
 			this[method.name] = function() {
 				let args = [];
@@ -27,10 +27,14 @@ Extension.BackgroundService = class {
 					args.push(arguments[i]);
 				}
 				
-				return service.promiseMessenger.sendMessage({
-					method: method.name,
-					arguments: args
-				});
+				try {
+					return service.promiseMessenger.sendMessage({
+						method: method.name,
+						arguments: args
+					});
+				} catch (e) {
+					console.error(`${this.serviceId}.${method}`, e);
+				}
 			};
 		});
 	}

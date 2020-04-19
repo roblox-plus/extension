@@ -2,40 +2,36 @@
 	roblox/ui.js [04/30/2017]
 */
 var Roblox = Roblox || {};
+Roblox.Services = Roblox.Services || {};
+Roblox.Services.UI = class {
+	constructor() {
+		this.modalBackdrop = null;
+		this.toggleCalls = 0;
 
-Roblox.ui = (function () {
-	var modalBackdrop;
-
-	$(function () {
-		modalBackdrop = $("div.modal-backdrop");
-		if (modalBackdrop.length <= 0) {
-			$("body").append(modalBackdrop = $("<div class=\"modal-backdrop fade out\" style=\"z-index: 1040;\">").hide());
-		}
-	});
-
-	var toggleCalls = 0;
-	function toggleBackdrop(isEnabled) {
-		var toggleId = ++toggleCalls;
-		if (isEnabled) {
-			modalBackdrop.show();
-		} else {
-			setTimeout(function () {
-				if (toggleCalls === toggleId) {
-					modalBackdrop.hide();
-				}
-			}, 200);
-		}
-		modalBackdrop.toggleClass("out", !isEnabled).toggleClass("in", isEnabled);
-	}
-
-	return {
-		feedbackTypes: {
+		this.feedbackTypes = {
 			success: "success",
 			warning: "warning",
 			info: "loading"
-		},
+		};
+	}
 
-		feedback: $.promise.cache(function (resolve, reject, text, type, expiry, isTextHtml) {
+	toggleBackdrop(isEnabled) {
+		let toggleId = ++this.toggleCalls;
+		if (isEnabled) {
+			this.modalBackdrop.show();
+		} else {
+			setTimeout(() => {
+				if (this.toggleCalls === toggleId) {
+					this.modalBackdrop.hide();
+				}
+			}, 200);
+		}
+
+		this.modalBackdrop.toggleClass("out", !isEnabled).toggleClass("in", isEnabled);
+	}
+
+	feedback(text, type, expiry, isTextHtml) {
+		return QueuedPromise(`Roblox.ui.feedback`, (resolve, reject) => {
 			if (typeof (type) != "string" || !this.feedbackTypes.hasOwnProperty(type)) {
 				reject([{
 					code: 0,
@@ -47,12 +43,12 @@ Roblox.ui = (function () {
 			if (typeof (text) == "string") {
 				text = text.trim();
 			}
-			type = this.feedbackTypes[type];
 
-			var feedbackWrapper = $("<div class=\"sg-system-feedback\">");
-			var feedbackContainer = $("<div class=\"alert-system-feedback\">");
-			var feedbackInner = $("<div>").attr("class", "alert alert-" + type);
-			var feedbackText = $("<span class=\"alert-context\">");
+			type = this.feedbackTypes[type];
+			let feedbackWrapper = $("<div class=\"sg-system-feedback\">");
+			let feedbackContainer = $("<div class=\"alert-system-feedback\">");
+			let feedbackInner = $("<div>").attr("class", `alert alert-${type}`);
+			let feedbackText = $("<span class=\"alert-context\">");
 
 			if (isTextHtml) {
 				feedbackText.html(text);
@@ -62,32 +58,28 @@ Roblox.ui = (function () {
 
 			$("body").append(feedbackWrapper.append(feedbackContainer.append(feedbackInner.append(feedbackText))));
 
-			function closeFeedback() {
+			const closeFeedback = () => {
 				feedbackInner.removeClass("on");
-				setTimeout(function () {
-					feedbackContainer.remove();
-				}, 5000);
+				setTimeout(() => feedbackContainer.remove(), 5000);
 				resolve();
-			}
+			};
 
-			setTimeout(function () {
+			setTimeout(() => {
 				feedbackInner.addClass("on");
 
 				if (typeof (expiry) == "number" && expiry > 0) {
 					setTimeout(closeFeedback, expiry);
 				} else {
-					var closeButton = $("<span class=\"icon-close-white\">");
+					let closeButton = $("<span class=\"icon-close-white\">");
 					closeButton.click(closeFeedback);
 					feedbackInner.append(closeButton);
 				}
 			}, 100);
-		}, {
-			queued: true,
-			resolveExpiry: 1,
-			rejectExpiry: 1
-		}),
+		});
+	}
 
-		confirm: $.promise.cache(function (resolve, reject, details) {
+	confirm(details) {
+		return QueuedPromise(`Roblox.ui.confirm`, (resolve, reject) => {
 			if (typeof (details) != "object") {
 				reject([{
 					code: 0,
@@ -96,21 +88,21 @@ Roblox.ui = (function () {
 				return;
 			}
 
-			var answer = null;
-			var modalWrapper = $("<div class=\"modal fade in\" role=\"dialog\">").hide();
-			var modalDialog = $("<div class=\"modal-dialog\">");
-			var modalContent = $("<div class=\"modal-content\">");
-			var modalHeader = $("<div class=\"modal-header\">");
-			var closeButton = $("<button class=\"close\" data-dismiss=\"modal\"><span><span class=\"icon-close\"></span></span></button>");
-			var headerText = $("<h5>");
-			var modalBody = $("<div class=\"modal-body\">");
-			var modalFooter = $("<div class=\"modal-footer\">");
-			var modalFootNote = $("<p class=\"small modal-footer-note\">");
-			var yesButton = $("<button>").attr("class", typeof (details.yesButtonClass) === "string" ? details.yesButtonClass : "btn-primary-md");
-			var noButton = $("<button>").attr("class", typeof (details.noButtonClass) === "string" ? details.noButtonClass : "btn-control-md");
+			let answer = null;
+			let modalWrapper = $("<div class=\"modal fade in\" role=\"dialog\">").hide();
+			let modalDialog = $("<div class=\"modal-dialog\">");
+			let modalContent = $("<div class=\"modal-content\">");
+			let modalHeader = $("<div class=\"modal-header\">");
+			let closeButton = $("<button class=\"close\" data-dismiss=\"modal\"><span><span class=\"icon-close\"></span></span></button>");
+			let headerText = $("<h5>");
+			let modalBody = $("<div class=\"modal-body\">");
+			let modalFooter = $("<div class=\"modal-footer\">");
+			let modalFootNote = $("<p class=\"small modal-footer-note\">");
+			let yesButton = $("<button>").attr("class", typeof (details.yesButtonClass) === "string" ? details.yesButtonClass : "btn-primary-md");
+			let noButton = $("<button>").attr("class", typeof (details.noButtonClass) === "string" ? details.noButtonClass : "btn-control-md");
 
-			function closeModal() {
-				toggleBackdrop(false);
+			const closeModal = () => {
+				this.toggleBackdrop(false);
 				modalWrapper.remove();
 				if (typeof (answer) == "boolean") {
 					resolve(answer);
@@ -125,7 +117,7 @@ Roblox.ui = (function () {
 			headerText.text(typeof(details.header) === "string" ? details.header.trim() : "Confirm Action");
 
 			closeButton.click(closeModal);
-			modalWrapper.click(function (e) {
+			modalWrapper.click((e) => {
 				if (e.target === modalWrapper[0]) {
 					closeModal();
 				}
@@ -135,6 +127,7 @@ Roblox.ui = (function () {
 				answer = true;
 				closeModal();
 			});
+			
 			noButton.text(typeof (details.noButtonText) == "string" ? details.noButtonText : "No").css("margin-left", "5px").click(function () {
 				answer = false;
 				closeModal();
@@ -158,16 +151,21 @@ Roblox.ui = (function () {
 
 			$("body").append(modalWrapper);
 
-			setTimeout(function () {
-				toggleBackdrop(true);
+			setTimeout(() => {
+				this.toggleBackdrop(true);
 				modalWrapper.show();
 			}, 50);
-		}, {
-			queued: true,
-			resolveExpiry: 1,
-			rejectExpiry: 1
-		})
-	};
-})();
+		});
+	}
+};
+
+Roblox.ui = new Roblox.Services.UI();
+
+$(function () {
+	Roblox.ui.modalBackdrop = $("div.modal-backdrop");
+	if (Roblox.ui.modalBackdrop.length <= 0) {
+		$("body").append(Roblox.ui.modalBackdrop = $("<div class=\"modal-backdrop fade out\" style=\"z-index: 1040;\">").hide());
+	}
+});
 
 // WebGL3D

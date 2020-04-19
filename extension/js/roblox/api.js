@@ -30,6 +30,13 @@ Roblox.Services.Api.ErrorCodes = {
 			code: 0,
 			message: "Unauthorized"
 		}
+	},
+
+	friends: {
+		invalidUserId: {
+			code: 1,
+			message: "The target user is invalid or does not exist."
+		}
 	}
 };
 

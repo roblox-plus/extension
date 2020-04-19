@@ -139,10 +139,7 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 	getFriends(userId) {
 		return CachedPromise(`${this.serviceId}.getFriends`, (resolve, reject) => {
 			if (typeof (userId) != "number" || userId <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid userId"
-				}]);
+				reject([Roblox.api.errorCodes.friends.invalidUserId]);
 				return;
 			}
 
