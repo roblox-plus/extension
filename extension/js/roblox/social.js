@@ -2,42 +2,55 @@
 	roblox/social.js [03/18/2017]
 */
 var Roblox = Roblox || {};
+Roblox.Services = Roblox.Services || {};
+Roblox.Services.Social = class extends Extension.BackgroundService {
+	constructor() {
+		super("Roblox.social");
 
-Roblox.social = (function () {
-	return {
-		getBlockedUsers: $.promise.cache(function (resolve, reject) {	
-			$.get("https://www.roblox.com/my/settings/json").done(function (r) {	
-				var users = [];	
-				r.BlockedUsersModel.BlockedUsers.forEach(function (user) {	
-					users.push({	
-						id: user.uid,	
-						username: user.Name	
-					});	
-				});	
-				resolve(users);	
-			}).fail(function () {	
-				reject([{	
-					code: 0,	
-					message: "HTTP request failed"	
-				}]);	
-			});	
-		}, {	
-			resolveExpiry: 60 * 1000	
-		}),	
-		isBlocked: $.promise.cache(function (resolve, reject, userId) {	
-			this.getBlockedUsers().then(function (blockedUsers) {	
-				for (var n in blockedUsers) {	
-					if (blockedUsers[n].id == userId) {	
-						resolve(true);	
-						return;	
-					}	
-				}	
-				resolve(false);	
-			}, reject);	
-		}, {	
-			resolveExpiry: 60 * 1000	
-		}),
-		followUser: $.promise.cache(function (resolve, reject, userId) {
+		this.register([
+			this.getBlockedUsers,
+			this.followUser,
+			this.unfollowUser,
+			this.unfriendUser,
+			this.isFollowing,
+			this.getFriends
+		]);
+	}
+
+	getBlockedUsers() {
+		return CachedPromise(`${this.serviceId}.getBlockedUsers`, (resolve, reject) => {
+			$.get("https://www.roblox.com/my/settings/json").done((r) => {
+				let users = r.BlockedUsersModel.BlockedUsers.map(user => {
+					return {
+						id: user.uid,
+						username: user.Name
+					};
+				});
+
+				resolve(users);
+			}).fail(Roblox.api.$reject(reject));
+		}, [], {
+			resolveExpiry: 60 * 1000
+		});
+	}
+
+	isBlocked(userId) {
+		return new Promise((resolve, reject) => {
+			this.getBlockedUsers().then((blockedUsers) => {
+				for (let n in blockedUsers) {
+					if (blockedUsers[n].id === userId) {
+						resolve(true);
+						return;
+					}
+				}
+
+				resolve(false);
+			}).catch(reject);
+		});
+	}
+
+	followUser(userId) {
+		return QueuedPromise(`${this.serviceId}.followUser`, (resolve, reject) => {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
 					code: 0,
@@ -46,18 +59,14 @@ Roblox.social = (function () {
 				return;
 			}
 
-			$.post("https://friends.roblox.com/v1/users/" + userId + "/follow").done(function () {
+			$.post(`https://friends.roblox.com/v1/users/${userId}/follow`).done(() => {
 				resolve();
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
-			});
-		}, {
-			queued: true
-		}),
-		unfollowUser: $.promise.cache(function (resolve, reject, userId) {
+			}).fail(Roblox.api.$reject(reject));
+		});
+	}
+
+	unfollowUser(userId) {
+		return QueuedPromise(`${this.serviceId}.unfollowUser`, (resolve, reject) => {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
 					code: 0,
@@ -66,18 +75,14 @@ Roblox.social = (function () {
 				return;
 			}
 
-			$.post("https://friends.roblox.com/v1/users/" + userId + "/unfollow").done(function () {
+			$.post(`https://friends.roblox.com/v1/users/${userId}/unfollow`).done(() => {
 				resolve();
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
-			});
-		}, {
-			queued: true
-		}),
-		unfriendUser: $.promise.cache(function (resolve, reject, userId) {
+			}).fail(Roblox.api.$reject(reject));
+		});
+	}
+
+	unfriendUser(userId) {
+		return QueuedPromise(`${this.serviceId}.unfriendUser`, (resolve, reject) => {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
 					code: 0,
@@ -86,18 +91,14 @@ Roblox.social = (function () {
 				return;
 			}
 
-			$.post("https://friends.roblox.com/v1/users/" + userId + "/unfriend").done(function () {
+			$.post(`https://friends.roblox.com/v1/users/${userId}/unfriend`).done(() => {
 				resolve();
-			}).fail(function () {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
-			});
-		}, {
-			queued: true
-		}),
-		isFollowing: $.promise.cache(function (resolve, reject, userId, followingUserId) {
+			}).fail(Roblox.api.$reject(reject));
+		});
+	}
+
+	isFollowing(userId, followingUserId) {
+		return CachedPromise(`${this.serviceId}.isFollowing`, (resolve, reject) => {
 			// is userId following followingUserId
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
@@ -118,7 +119,7 @@ Roblox.social = (function () {
 			$.get("https://api.roblox.com/user/following-exists", {
 				userId: followingUserId,
 				followerUserId: userId,
-			}).done(function(data) {
+			}).done((data) => {
 				if (data.success) {
 					resolve(data.isFollowing);
 				} else {
@@ -127,18 +128,16 @@ Roblox.social = (function () {
 						message: "Unknown error checking follow status"
 					}]);
 				}
-			}).fail(function() {
-				reject([{
-					code: 0,
-					message: "HTTP request failed"
-				}]);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [userId, followingUserId], {
 			queued: true,
 			resolveExpiry: 60 * 1000,
 			rejectExpiry: 15 * 1000
-		}),
-		getFriends: $.promise.cache(function (resolve, reject, userId) {
+		});
+	}
+
+	getFriends(userId) {
+		return CachedPromise(`${this.serviceId}.getFriends`, (resolve, reject) => {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
 					code: 0,
@@ -147,25 +146,23 @@ Roblox.social = (function () {
 				return;
 			}
 
-			$.get("https://friends.roblox.com/v1/users/" + userId + "/friends").done(function (r) {
-				var users = [];
-				r.data.forEach(function (user) {
-					users.push({
+			$.get(`https://friends.roblox.com/v1/users/${userId}/friends`).done((r) => {
+				let users = r.data.map(user => {
+					return {
 						id: user.id,
 						username: user.name
-					});
+					};
 				});
+				
 				resolve(users);
-			}).fail(function (jxhr, errors) {
-				reject(errors);
-			});
-		}, {
+			}).fail(Roblox.api.$reject(reject));
+		}, [userId], {
 			resolveExpiry: 60 * 1000,
 			queued: true
-		})
-	};
-})();
+		});
+	}
+};
 
-Roblox.social = $.addTrigger($.promise.background("Roblox.social", Roblox.social));
+Roblox.social = new Roblox.Services.Social();
 
 // WebGL3D
