@@ -18,7 +18,7 @@ Roblox.Services.GameBadges = class extends Extension.BackgroundService {
 	}
 
 	getBadgeAwardedDate(userId, badgeId) {
-		return CachedPromise("Roblox.gameBadges.getBadgeAwardedDate", (resolve, reject) => {
+		return CachedPromise(`${this.serviceId}.getBadgeAwardedDate`, (resolve, reject) => {
 			this.badgeAwardDateProcessor.push({
 				userId: userId,
 				badgeId: badgeId

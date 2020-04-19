@@ -92,7 +92,7 @@ Roblox.Services.Inventory = class extends Extension.BackgroundService {
 	}
 
 	getAssetOwners(assetId, cursor, sortOrder) {
-		return CachedPromise(`${this.serviceId}`, (resolve, reject) => {
+		return CachedPromise(`${this.serviceId}.getAssetOwners`, (resolve, reject) => {
 			// TODO: Audit Api for error codes
 			if (typeof (assetId) != "number" || assetId <= 0) {
 				reject([{

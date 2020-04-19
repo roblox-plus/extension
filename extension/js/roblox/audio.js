@@ -13,7 +13,7 @@ Roblox.Services.Audio = class extends Extension.BackgroundService {
 	}
 	
 	getSoundUrl(assetId) {
-		return CachedPromise("Roblox.audio.getSoundUrl", (resolve, reject) => {
+		return CachedPromise(`${this.serviceId}.getSoundUrl`, (resolve, reject) => {
 			Roblox.content.getAssetContentUrl(assetId).then(resolve).catch(reject);
 		}, [assetId], {
 			resolveExpiry: 30 * 60 * 1000,

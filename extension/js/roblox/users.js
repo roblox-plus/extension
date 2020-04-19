@@ -56,7 +56,7 @@ Roblox.Services.Users = class extends Extension.BackgroundService {
 	}
 
 	getAuthenticatedUser() {
-		return CachedPromise("Roblox.users.getAuthenticatedUser", (resolve, reject) => {
+		return CachedPromise(`${this.serviceId}.getAuthenticatedUser`, (resolve, reject) => {
 			$.get("https://users.roblox.com/v1/users/authenticated").done((r) => {
 				this.userIdByNameCache.set(r.name.toLowerCase(), r.id);
 				this.userNameByIdCache.set(r.id, r.name);
