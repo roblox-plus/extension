@@ -38,7 +38,7 @@ Roblox.Services.Trades = class extends Extension.BackgroundService {
 			}
 
 			$.post(`https://trades.roblox.com/v1/trades/${tradeId}/decline`).done(() => {
-				resolve();
+				resolve({});
 			}).fail(Roblox.api.$reject(reject));
 		}, [tradeId], {
 			resolveExpiry: 5 * 60 * 1000,
@@ -166,7 +166,7 @@ Roblox.Services.Trades = class extends Extension.BackgroundService {
 			}
 	
 			window.open(this.getTradeWindowUrl(userId, counterTradeId));
-			resolve();
+			resolve({});
 		});
 	}
 

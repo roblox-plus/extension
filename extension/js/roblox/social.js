@@ -60,7 +60,7 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 			}
 
 			$.post(`https://friends.roblox.com/v1/users/${userId}/follow`).done(() => {
-				resolve();
+				resolve({});
 			}).fail(Roblox.api.$reject(reject));
 		});
 	}
@@ -76,7 +76,7 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 			}
 
 			$.post(`https://friends.roblox.com/v1/users/${userId}/unfollow`).done(() => {
-				resolve();
+				resolve({});
 			}).fail(Roblox.api.$reject(reject));
 		});
 	}
@@ -92,7 +92,7 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 			}
 
 			$.post(`https://friends.roblox.com/v1/users/${userId}/unfriend`).done(() => {
-				resolve();
+				resolve({});
 			}).fail(Roblox.api.$reject(reject));
 		});
 	}

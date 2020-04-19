@@ -62,11 +62,10 @@ Roblox.Services.Catalog = class extends Extension.BackgroundService {
 		};
 
 		this.register([
-			this.decline,
-			this.get,
-			this.getTradesPaged,
-			this.canTradeWithUser,
-			this.getTradeCount
+			this.getAssetBundles,
+			this.getAssetInfo,
+			this.getProductInfo,
+			this.getGamePassInfo
 		]);
 	}
 

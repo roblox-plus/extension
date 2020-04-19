@@ -67,7 +67,7 @@ Roblox.Services.Users = class extends Extension.BackgroundService {
 				});
 			}).fail((jxhr, errors) => {
 				if (jxhr.status === 401) {
-					resolve();
+					resolve(null);
 					return;
 				}
 

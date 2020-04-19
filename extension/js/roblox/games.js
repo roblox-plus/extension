@@ -27,7 +27,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 	getIdFromUrl(url) {
 		return Number((url.match(/\/games\/(\d+)\//i) || url.match(/place\.aspx.*id=(\d+)/i) || url.match(/place\?.*id=(\d+)/i) || ["", 0])[1]) || 0;
 	}
-	
+
 	getGameUrl(placeId, placeName) {
 		if (typeof (placeName) != "string" || !placeName) {
 			placeName = "redirect";
@@ -39,7 +39,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 	}
 
 	getAuthTicket() {
-		return QueuedPromise((resolve, reject) => {
+		return QueuedPromise(`${this.serviceId}.getAuthTicket`, (resolve, reject) => {
 			$.post(this.authTicketUrl).done((r, status, xhr) => {
 				resolve(xhr.getResponseHeader("rbx-authentication-ticket"));
 			}).fail(Roblox.api.$reject(reject));
@@ -74,12 +74,12 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 				page: pageNumber
 			}).done((r) => {
 				var vipServers = [];
-	
+
 				(r.Instances || []).forEach((server) => {
 					if (server.PrivateServer.StatusType !== 1) {
 						return;
 					}
-	
+
 					var expirationDate = Number((server.PrivateServer.ExpirationDate.match(/\d+/) || ["0"])[0]);
 					vipServers.push({
 						id: server.PrivateServer.Id,
@@ -90,7 +90,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 						expirationDate: isNaN(expirationDate) || expirationDate <= 0 ? NaN : expirationDate
 					});
 				});
-	
+
 				if (!r.TotalPages || r.TotalPages <= pageNumber) {
 					resolve(vipServers);
 				} else {
@@ -104,7 +104,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 			rejectExpiry: 10 * 1000
 		});
 	}
-	
+
 	launch(launchArguments) {
 		return new Promise((resolve, reject) => {
 			if (typeof (launchArguments) != "object") {
@@ -114,9 +114,9 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 				}]);
 				return;
 			}
-	
-			var launchParameters = {};
-	
+
+			let launchParameters = {};
+
 			if (launchArguments.hasOwnProperty("followUserId")) {
 				if (typeof (launchArguments.followUserId) != "number" || launchArguments.followUserId <= 0) {
 					reject([{
@@ -125,7 +125,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 					}]);
 					return;
 				}
-	
+
 				launchParameters = {
 					request: "RequestFollowUser",
 					userId: launchArguments.followUserId
@@ -145,24 +145,24 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 					}]);
 					return;
 				}
-	
+
 				if (launchArguments.serverId) {
-					Roblox.games.trackJoinedServer(launchArguments.serverId).then(() => {
+					this.trackJoinedServer(launchArguments.serverId).then(() => {
 						// server tracked, nothing to do.
 					}).catch(console.error);
 				}
-	
+
 				launchParameters = {
 					request: launchArguments.serverId ? "RequestGameJob" : "RequestGame",
 					gameId: launchArguments.serverId || "",
 					placeId: launchArguments.placeId
 				};
 			}
-	
+
 			this.getAuthTicket().then((authTicket) => {
 				let launchUrl = this.baseLaunchUrl + $.param(launchParameters);
 				this.launchFrame.attr("src", "roblox-player:1+launchmode:play+gameinfo:" + authTicket + "+launchtime:" + (+new Date) + "+placelauncherurl:" + encodeURIComponent(launchUrl));
-				resolve();
+				resolve({});
 			}).catch(reject);
 		});
 	}
@@ -194,7 +194,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 				if (gameServerTrackerSettings && gameServerTrackerSettings.on) {
 					Roblox.users.getAuthenticatedUser().then((authenticatedUser) => {
 						if (authenticatedUser) {
-							RPlus.premium.isPremium(authenticatedUser.Id).then(resolve).catch(reject);
+							RPlus.premium.isPremium(authenticatedUser.id).then(resolve).catch(reject);
 						} else {
 							resolve(false);
 						}
@@ -217,7 +217,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 		return new Promise((resolve, reject) => {
 			var cache = RPlus.notifiers.gameServerTracker.getCache();
 			cache[gameServerId] = +new Date;
-			resolve();
+			resolve({});
 		});
 	}
 
@@ -231,18 +231,18 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 				TotalCollectionSize: 0,
 				Collection: []
 			};
-	
+
 			const getRunningServers = (cursor) => {
 				this.getServers(placeId, cursor).then((data) => {
 					if (data.ShowShutdownAllButton) {
 						serversData.ShowShutdownAllButton = data.ShowShutdownAllButton;
 					}
-	
+
 					data.data.forEach((server) => {
 						if (serverMap.hasOwnProperty(server.Guid)) {
 							return;
 						}
-	
+
 						var players = [];
 						server.CurrentPlayers.forEach((player) => {
 							players.push({
@@ -250,9 +250,9 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 								username: player.Username
 							});
 						});
-	
+
 						serversData.Collection.push(server);
-	
+
 						runningServers.push(serverMap[server.Guid] = {
 							id: server.Guid,
 							capacity: server.Capacity,
@@ -262,7 +262,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 							playerList: players
 						});
 					});
-	
+
 					if (data.nextPageCursor) {
 						getRunningServers(data.nextPageCursor);
 					} else {
@@ -270,7 +270,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 						serversData.Collection = serversData.Collection.sort((a, b) => {
 							return a.CurrentPlayers.length - b.CurrentPlayers.length;
 						});
-	
+
 						resolve({
 							servers: runningServers,
 							data: serversData
@@ -317,7 +317,7 @@ switch (Extension.Singleton.executionContextType) {
 
 			return { requestHeaders: data.requestHeaders };
 		}, {
-			urls: [ Roblox.games.authTicketUrl ],
+			urls: [Roblox.games.authTicketUrl],
 			types: ["xmlhttprequest"]
 		}, ["blocking", "requestHeaders", "extraHeaders"]);
 
@@ -325,8 +325,8 @@ switch (Extension.Singleton.executionContextType) {
 	case Extension.ExecutionContextTypes.tab:
 		$("<a href=\"javascript:Roblox=window.Roblox||{};(Roblox.VideoPreRollDFP||Roblox.VideoPreRoll||{}).showVideoPreRoll=false;\">")[0].click();
 
-		setInterval(function() {
-			var gameServerSrc = $("#gamelaunch").attr("src"); 
+		setInterval(function () {
+			var gameServerSrc = $("#gamelaunch").attr("src");
 			if (gameServerSrc) {
 				var gameServerIdMatch = decodeURIComponent(gameServerSrc).match(/accessCode=([\w\-]+)/i) || [""];
 				var gameServerId = gameServerIdMatch[1];

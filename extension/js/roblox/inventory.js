@@ -86,7 +86,7 @@ Roblox.Services.Inventory = class extends Extension.BackgroundService {
 			$.post("https://assetgame.roblox.com/asset/delete-from-inventory", {
 				assetId: assetId
 			}).done(function () {
-				resolve();
+				resolve({});
 			}).fail(Roblox.api.$reject(reject));
 		});
 	}
