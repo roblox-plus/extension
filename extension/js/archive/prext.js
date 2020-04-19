@@ -247,23 +247,6 @@ storage = {
 		} else {
 			ipc.send("storage.", { request: "storage", method: "get", key: k }, cb);
 		}
-	},
-	set: function (k, v, cb) {
-		if (ext.isBackground) {
-			if (type(k) == "string") {
-				cb = fixCB(cb);
-				localStorage.setItem(k, JSON.stringify([v]));
-				cb(true);
-				return true;
-			} else if (type(k) == "object") {
-				cb = fixCB(v);
-				foreach(k, function (n, o) { storage.set(n, o); });
-				cb(true);
-				return true;
-			}
-		} else {
-			ipc.send("storage.", { request: "storage", method: "set", key: k, value: v }, cb);
-		}
 	}
 };
 
@@ -272,12 +255,6 @@ if (ext.isBackground) {
 		if (a.request == "storage") {
 			if (a.method == "get") {
 				storage.get(a.key, callBack);
-			} else if (a.method == "set") {
-				if (type(a.key) == "object") {
-					storage.set(a.key, callBack);
-				} else if (type(a.key) == "string") {
-					storage.set(a.key, a.value, callBack);
-				}
 			}
 		}
 	});

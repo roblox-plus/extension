@@ -55,6 +55,14 @@ Extension.Storage = class extends Extension.BackgroundService {
 			resolve({});
 		});
 	}
+
+	blindSet(key, value) {
+		this.set(key, value).then(() => {
+			// set successful yay
+		}).catch(err => {
+			console.warn(`Failed to set value (Extension.Storage) for key (${key}):`, err);
+		});
+	}
 };
 
 Extension.Storage.Singleton = new Extension.Storage();

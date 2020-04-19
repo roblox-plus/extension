@@ -117,8 +117,10 @@ RPlus.Pages.Profile = function () {
 						var blocked = [];
 						notifier.blocked.forEach(function (o) { if (o != id) { blocked.push(o); } });
 						notifier.blocked = blocked;
-						storage.set("friendNotifier", notifier, function () {
+						Extension.Storage.Singleton.set("friendNotifier", notifier).then(() => {
 							button.text("Notifier: On");
+						}).catch(err => {
+							console.warn(err);
 						});
 					} else {
 						console.log("block");
@@ -127,8 +129,10 @@ RPlus.Pages.Profile = function () {
 						}).then(function(s) {
 							if (s) {
 								notifier.blocked.push(id);
-								storage.set("friendNotifier", notifier, function () {
+								Extension.Storage.Singleton.set("friendNotifier", notifier).then(() => {
 									button.text("Notifier: Off");
+								}).catch(err => {
+									console.warn(err);
 								});
 							}
 						});

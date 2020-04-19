@@ -40,7 +40,7 @@ foreach({
 	"userSince": getMil()
 }, function (n, o) {
 	if (type(storage.get(n)) != type(o)) {
-		storage.set(n, o);
+		Extension.Storage.Singleton.blindSet(n, o);
 	}
 });
 
@@ -72,7 +72,7 @@ setInterval(function () {
 			}
 		}
 		if (JSON.stringify(commentTimer) != JSON.stringify(storage.get("commentTimer"))) {
-			storage.set("commentTimer", commentTimer);
+			Extension.Storage.Singleton.blindSet("commentTimer", commentTimer);
 		}
 	});
 }, 5000);

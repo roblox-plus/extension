@@ -131,7 +131,7 @@ class NotificationSettings extends SettingsTab {
 						notifierSounds[settingName] = audioId;
 					}
 
-					storage.set("notifierSounds", notifierSounds);
+					Extension.Storage.Singleton.blindSet("notifierSounds", notifierSounds);
 				});
 			}).catch(function () {
 				// The user cancelled.
@@ -166,8 +166,10 @@ class NotificationSettings extends SettingsTab {
 
 			if (whitelistedGroups.hasOwnProperty(groupId)) {
 				delete whitelistedGroups[groupId];
-				storage.set("groupShoutNotifierList", whitelistedGroups, function () {
+				Extension.Storage.Singleton.set("groupShoutNotifierList", whitelistedGroups).then(() => {
 					notificationSettings.reloadWhitelistedGroups();
+				}).catch((err) => {
+					console.warn(err);
 				});
 			}
 		});
@@ -232,13 +234,15 @@ class NotificationSettings extends SettingsTab {
 					}
 
 					whitelistedGroups[groupId] = membership.group.name;
-					storage.set("groupShoutNotifierList", whitelistedGroups, function () {
+					Extension.Storage.Singleton.set("groupShoutNotifierList", whitelistedGroups).then(() => {
 						notificationSettings.setState({
 							showAddGroup: false,
 							groupError: ""
 						});
 						notificationSettings.clearGroupUrl();
 						notificationSettings.reloadWhitelistedGroups();
+					}).catch((err) => {
+						console.warn(err);
 					});
 				});
 			}).catch(function (e) {

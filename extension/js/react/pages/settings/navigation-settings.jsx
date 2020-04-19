@@ -26,7 +26,7 @@ class NavigationSettings extends SettingsTab {
 		storage.get("navigation", function (navigation) {
 			navigation = navigation || {};
 			navigation.counterCommas = roundAt;
-			storage.set("navigation", navigation);
+			Extension.Storage.Singleton.blindSet("navigation", navigation);
 		});
 	}
 
@@ -76,7 +76,7 @@ class NavigationSettings extends SettingsTab {
 				}
 			});
 
-			storage.set("navigation", navigation);
+			Extension.Storage.Singleton.blindSet("navigation", navigation);
 		});
 	}
 

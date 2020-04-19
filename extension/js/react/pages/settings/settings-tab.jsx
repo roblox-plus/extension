@@ -83,14 +83,14 @@ class SettingsTab extends React.Component {
 					pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
 				});
 
-				storage.set(embeddedSetting[0], embeddedObject);
+				Extension.Storage.Singleton.blindSet(embeddedSetting[0], embeddedObject);
 			});
 			return;
 		}
 
 		switch (settingName) {
 			case "groupShoutNotifier_mode":
-				storage.set(settingName, value ? "whitelist" : "all");
+				Extension.Storage.Singleton.blindSet(settingName, value ? "whitelist" : "all");
 
 				var pillOverride = {};
 				pillOverride.groupShoutWhitelistEnabled = value;
@@ -101,13 +101,15 @@ class SettingsTab extends React.Component {
 
 				break;
 			default:
-				storage.set(settingName, value, function () {
+				Extension.Storage.Singleton.set(settingName, value).then(() => {
 					var pillOverride = {};
 					pillOverride[settingName] = value;
 
 					notificationSettings.setState({
 						pills: Object.assign({}, notificationSettings.state.pills, pillOverride)
 					});
+				}).catch(e => {
+					console.warn(settingName, e);
 				});
 		}
 	}
