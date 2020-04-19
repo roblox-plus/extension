@@ -32,7 +32,7 @@ RPlus.Services.SponsoredItems = class extends Extension.BackgroundService {
 
 			const premiumBackup = () => {
 				return new Promise((resolve, reject) => {
-					$.get("https://api.roblox.plus/v1/rpluspremium/" + userId).done(function (data) {
+					$.get(`https://api.roblox.plus/v1/rpluspremium/${userId}`).done((data) => {
 						if (data.data) {
 							this.knownPremiums[userId] = {
 								expiration: data.data.expiration ? new Date(data.data.expiration).getTime() : null
