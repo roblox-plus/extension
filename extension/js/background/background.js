@@ -45,37 +45,42 @@ foreach({
 });
 
 /* Comment Timer */
-commentTimer = type(storage.get("commentTimer")) == "object" ? storage.get("commentTimer") : {};
-chrome.webRequest.onBeforeRequest.addListener(function (details) {
-	commentTimer.last = getMil();
-	Roblox.catalog.getAssetInfo(Number(details.requestBody.formData.assetId[0])).then(function (asset) {
-		Roblox.users.getCurrentUserId().then(function (uid) {
-			if (uid > 0 && uid != asset.creator.id) {
-				commentTimer[uid] = commentTimer[uid] || {};
-				commentTimer.last = getMil();
-				commentTimer[uid][asset.id] = getMil();
-			}
-		});
-	});
-}, { urls: ["*://*.roblox.com/comments/post"] }, ["requestBody"]);
+Extension.Storage.Singleton.get("commentTimer").then(commentTimer => {
+	commentTimer = commentTimer || {};
 
-setInterval(function () {
-	foreach(commentTimer, function (n, o) {
-		if (n != "last") {
-			foreach(o, function (i, v) {
-				if (v + (60 * 60 * 1000) < getMil()) {
-					delete o[i];
+	chrome.webRequest.onBeforeRequest.addListener(function (details) {
+		commentTimer.last = getMil();
+		Roblox.catalog.getAssetInfo(Number(details.requestBody.formData.assetId[0])).then(function (asset) {
+			Roblox.users.getCurrentUserId().then(function (uid) {
+				if (uid > 0 && uid != asset.creator.id) {
+					commentTimer[uid] = commentTimer[uid] || {};
+					commentTimer.last = getMil();
+					commentTimer[uid][asset.id] = getMil();
 				}
 			});
-			if (!Object.keys(o).length) {
-				delete commentTimer[n];
+		});
+	}, { urls: ["*://*.roblox.com/comments/post"] }, ["requestBody"]);
+	
+	setInterval(function () {
+		foreach(commentTimer, function (n, o) {
+			if (n != "last") {
+				foreach(o, function (i, v) {
+					if (v + (60 * 60 * 1000) < getMil()) {
+						delete o[i];
+					}
+				});
+				if (!Object.keys(o).length) {
+					delete commentTimer[n];
+				}
 			}
-		}
-		if (JSON.stringify(commentTimer) != JSON.stringify(storage.get("commentTimer"))) {
-			Extension.Storage.Singleton.blindSet("commentTimer", commentTimer);
-		}
-	});
-}, 5000);
+			if (JSON.stringify(commentTimer) != JSON.stringify(storage.get("commentTimer"))) {
+				Extension.Storage.Singleton.blindSet("commentTimer", commentTimer);
+			}
+		});
+	}, 5000);
+}).catch(err => {
+	console.warn("Failed to load commentTimer, this feature will be disabled.", err);
+});
 
 
 

@@ -10,7 +10,7 @@ class NotificationSettings extends SettingsTab {
 	}
 
 	getCurrentAudioId(settingName, callBack) {
-		storage.get("notifierSounds", function (notifierSounds) {
+		Extension.Storage.Singleton.get("notifierSounds").then(function (notifierSounds) {
 			if (notifierSounds && notifierSounds[settingName] && typeof (notifierSounds[settingName]) === "number") {
 				callBack(notifierSounds[settingName]);
 				return;
@@ -23,8 +23,10 @@ class NotificationSettings extends SettingsTab {
 				default:
 					callBack(0);
 			}
+		}).catch(err => {
+			console.warn(err);
+			callBack(0);
 		});
-
 	}
 
 	promptAudioModal(title, description, currentAudioId) {
@@ -119,7 +121,7 @@ class NotificationSettings extends SettingsTab {
 				}
 
 				console.log("Set audio id:", audioId);
-				storage.get("notifierSounds", function (notifierSounds) {
+				Extension.Storage.Singleton.get("notifierSounds").then(function (notifierSounds) {
 					notifierSounds = notifierSounds || {};
 
 					if (settingName === "tradeInbound") {
@@ -132,7 +134,7 @@ class NotificationSettings extends SettingsTab {
 					}
 
 					Extension.Storage.Singleton.blindSet("notifierSounds", notifierSounds);
-				});
+				}).catch(console.error);
 			}).catch(function () {
 				// The user cancelled.
 			});
@@ -157,29 +159,30 @@ class NotificationSettings extends SettingsTab {
 	}
 
 	removeGroup(groupId) {
-		let notificationSettings = this;
-
-		storage.get("groupShoutNotifierList", function (whitelistedGroups) {
-			if (typeof (whitelistedGroups) !== "object") {
+		Extension.Storage.Singleton.get("groupShoutNotifierList").then((whitelistedGroups) => {
+			if (!whitelistedGroups || typeof(whitelistedGroups) !== "object") {
 				whitelistedGroups = {};
 			}
 
 			if (whitelistedGroups.hasOwnProperty(groupId)) {
 				delete whitelistedGroups[groupId];
 				Extension.Storage.Singleton.set("groupShoutNotifierList", whitelistedGroups).then(() => {
-					notificationSettings.reloadWhitelistedGroups();
+					this.reloadWhitelistedGroups();
 				}).catch((err) => {
 					console.warn(err);
 				});
 			}
+		}).catch(err => {
+			console.warn(err);
+			this.reloadWhitelistedGroups();
 		});
 	}
 
 	reloadWhitelistedGroups() {
 		let notificationSettings = this;
 
-		storage.get("groupShoutNotifierList", function (whitelistedGroups) {
-			if (typeof (whitelistedGroups) !== "object") {
+		Extension.Storage.Singleton.get("groupShoutNotifierList").then((whitelistedGroups) => {
+			if (!whitelistedGroups || typeof(whitelistedGroups) !== "object") {
 				whitelistedGroups = {};
 			}
 
@@ -208,6 +211,12 @@ class NotificationSettings extends SettingsTab {
 					whitelistedGroups: (<div class="section-content-off rplus-groupshout-whitelist">No groups listed.</div>)
 				});
 			}
+		}).catch(err => {
+			console.warn(err);
+			
+			this.setState({
+				whitelistedGroups: (<div class="section-content-off rplus-groupshout-whitelist">Failed to load groups list.</div>)
+			});
 		});
 	}
 
@@ -228,8 +237,8 @@ class NotificationSettings extends SettingsTab {
 					return;
 				}
 
-				storage.get("groupShoutNotifierList", function (whitelistedGroups) {
-					if (typeof (whitelistedGroups) !== "object") {
+				Extension.Storage.Singleton.get("groupShoutNotifierList").then((whitelistedGroups) => {
+					if (!whitelistedGroups || typeof(whitelistedGroups) !== "object") {
 						whitelistedGroups = {};
 					}
 
@@ -241,8 +250,16 @@ class NotificationSettings extends SettingsTab {
 						});
 						notificationSettings.clearGroupUrl();
 						notificationSettings.reloadWhitelistedGroups();
-					}).catch((err) => {
-						console.warn(err);
+					}).catch(function (e) {
+						console.error(e);
+						notificationSettings.setState({
+							groupError: "Failed to write group list. Please try again."
+						});
+					});
+				}).catch(function (e) {
+					console.error(e);
+					notificationSettings.setState({
+						groupError: "Failed to read group list. Please try again."
 					});
 				});
 			}).catch(function (e) {

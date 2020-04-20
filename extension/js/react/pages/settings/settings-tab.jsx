@@ -22,7 +22,7 @@ class SettingsTab extends React.Component {
 
 		let embeddedSetting = settingName.split(".");
 		if (embeddedSetting.length === 2) {
-			storage.get(embeddedSetting[0], function (embeddedObject) {
+			Extension.Storage.Singleton.get(embeddedSetting[0]).then(function (embeddedObject) {
 				embeddedObject = embeddedObject || {};
 
 				var value = embeddedObject[embeddedSetting[1]] || false;
@@ -34,13 +34,16 @@ class SettingsTab extends React.Component {
 				});
 
 				callBack(value);
+			}).catch(err => {
+				console.warn(embeddedSetting, err);
+				callBack(false);
 			});
 			return;
 		}
 
 		switch (settingName) {
 			case "groupShoutNotifier_mode":
-				storage.get(settingName, function (value) {
+				Extension.Storage.Singleton.get(settingName).then(function (value) {
 					let enabled = value === "whitelist";
 
 					var pillOverride = {};
@@ -51,10 +54,13 @@ class SettingsTab extends React.Component {
 					});
 
 					callBack(enabled);
+				}).catch(err => {
+					console.warn(settingName, err);
+					callBack(false);
 				});
 				break;
 			default:
-				storage.get(settingName, function (value) {
+				Extension.Storage.Singleton.get(settingName).then(function (value) {
 					var pillOverride = {};
 					pillOverride[settingName] = !!value;
 
@@ -63,6 +69,9 @@ class SettingsTab extends React.Component {
 					});
 
 					callBack(!!value);
+				}).catch(err => {
+					console.warn(err);
+					callBack(false);
 				});
 		}
 	}
@@ -72,7 +81,7 @@ class SettingsTab extends React.Component {
 
 		let embeddedSetting = settingName.split(".");
 		if (embeddedSetting.length === 2) {
-			storage.get(embeddedSetting[0], function (embeddedObject) {
+			Extension.Storage.Singleton.get(embeddedSetting[0]).then(function (embeddedObject) {
 				embeddedObject = embeddedObject || {};
 				embeddedObject[embeddedSetting[1]] = value;
 
@@ -84,7 +93,8 @@ class SettingsTab extends React.Component {
 				});
 
 				Extension.Storage.Singleton.blindSet(embeddedSetting[0], embeddedObject);
-			});
+			}).catch(console.error);
+
 			return;
 		}
 

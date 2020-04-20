@@ -341,7 +341,7 @@ Roblox.Services.EconomyTransactions = class extends Extension.BackgroundService 
 	
 	purgeTransactions() {
 		let p = new Promise((resolve, reject) => {
-			let purgeDate = getPurgeDate();
+			let purgeDate = this.getPurgeDate();
 			this.getTransactionsDatabase().then((transactionsDatabase) => {
 				transactionsDatabase.economyTransactions.query("created")
 					.range({lte: purgeDate.getTime()})

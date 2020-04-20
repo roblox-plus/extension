@@ -32,6 +32,10 @@ RPlus.Pages.Item = function () {
 	if (commentButton.length) {
 		setInterval(function () {
 			Extension.Storage.Singleton.get("commentTimer").then(function (commentTimer) {
+				if (!commentTimer) {
+					return;
+				}
+
 				var waitTime = 60 * 1000; // floodcheck time
 				var remaining = commentTimer[Roblox.users.authenticatedUserId] && commentTimer[Roblox.users.authenticatedUserId].hasOwnProperty(id) ? waitTime - (getMil() - commentTimer[Roblox.users.authenticatedUserId][id]) : 0;
 				if (commentTimer.last && getMil() < commentTimer.last + (60 * 1000)) {

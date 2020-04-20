@@ -11,37 +11,42 @@ RPlus.notifiers.trade = (function () {
 
 	var notify = function(tradeId) {
 		return new Promise(function(resolve, reject) {
-			Roblox.trades.get(tradeId).then(function (trade) {
-				var title = "Trade " + headers[trade.status];
-				Roblox.thumbnails.getUserHeadshotThumbnailUrl(trade.tradePartnerOffer.user.id, 150, 150).then((headshotThumbnailUrl) => {
-					$.notification({
-						tag: "trade" + trade.id,
-						title: title,
-						icon: headshotThumbnailUrl,
-						items: {
-							"Partner": trade.tradePartnerOffer.user.username,
-							"Your RAP": addComma(trade.authenticatedUserOffer.assetValue) + (trade.authenticatedUserOffer.robux ? " +R$" + addComma(trade.authenticatedUserOffer.robux) : ""),
-							"Their RAP": addComma(trade.tradePartnerOffer.assetValue) + (trade.tradePartnerOffer.robux ? " +R$" + addComma(trade.tradePartnerOffer.robux) : "")
-						},
-						buttons: trade.status === "Outbound" ? ["Cancel"] : [],
-						clickable: true,
-						metadata: {
-							url: "https://www.roblox.com/trades", // TODO: Add trade id if Roblox supports (or I add support for it)
-							robloxSound: Number((storage.get("notifierSounds") || {})["trade" + (trade.status == "Rejected" ? "Declined" : trade.status)]) || 0,
-							speak: title
-						}
-					}).click(function () {
-						this.close();
-					}).buttonClick(function () {
-						let note = this;
-						Roblox.trades.decline(trade.id).then(function () {
-							note.close();
-						}).catch(function (e) {
-							console.error(e);
-						});
-					});
+			Extension.Storage.Singleton.get("notifierSounds").then(notifierSounds => {
+				notifierSounds = notifierSounds || {};
 
-					resolve();
+				Roblox.trades.get(tradeId).then(function (trade) {
+					var title = "Trade " + headers[trade.status];
+					Roblox.thumbnails.getUserHeadshotThumbnailUrl(trade.tradePartnerOffer.user.id, 150, 150).then((headshotThumbnailUrl) => {
+						$.notification({
+							tag: "trade" + trade.id,
+							title: title,
+							icon: headshotThumbnailUrl,
+							items: {
+								"Partner": trade.tradePartnerOffer.user.username,
+								"Your RAP": addComma(trade.authenticatedUserOffer.assetValue) + (trade.authenticatedUserOffer.robux ? " +R$" + addComma(trade.authenticatedUserOffer.robux) : ""),
+								"Their RAP": addComma(trade.tradePartnerOffer.assetValue) + (trade.tradePartnerOffer.robux ? " +R$" + addComma(trade.tradePartnerOffer.robux) : "")
+							},
+							buttons: trade.status === "Outbound" ? ["Cancel"] : [],
+							clickable: true,
+							metadata: {
+								url: "https://www.roblox.com/trades", // TODO: Add trade id if Roblox supports (or I add support for it)
+								// TODO: I don't think this value can be set via the control panel
+								robloxSound: Number(notifierSounds["trade" + (trade.status == "Rejected" ? "Declined" : trade.status)]) || 0,
+								speak: title
+							}
+						}).click(function () {
+							this.close();
+						}).buttonClick(function () {
+							let note = this;
+							Roblox.trades.decline(trade.id).then(function () {
+								note.close();
+							}).catch(function (e) {
+								console.error(e);
+							});
+						});
+	
+						resolve();
+					}).catch(reject);
 				}).catch(reject);
 			}).catch(reject);
 		});
@@ -51,7 +56,10 @@ RPlus.notifiers.trade = (function () {
 		name: "Trade",
 		sleep: 10 * 1000,
 		isEnabled: function (callBack) {
-			callBack(storage.get("tradeNotifier") || false);
+			Extension.Storage.Singleton.get("tradeNotifier").then(callBack).catch(err => {
+				console.warn(err);
+				callBack(false);
+			});
 		},
 		requireAuthenticatedUser: true
 	}, function (user, cache, rerun) {
