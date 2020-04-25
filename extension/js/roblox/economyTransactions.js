@@ -110,7 +110,7 @@ Roblox.Services.EconomyTransactions = class extends Extension.BackgroundService 
 	getPurgeDate() {
 		let date = new Date();
 		return new Date(date.setDate(date.getDate() - this.transactionsMaxAge));
-	};
+	}
 
 	getMaxScanDate() {
 		let date = new Date();
@@ -471,6 +471,6 @@ Roblox.economyTransactions = new Roblox.Services.EconomyTransactions(Extension.S
 
 switch (Extension.Singleton.executionContextType) {
 	case Extension.ExecutionContextTypes.background:
-		setInterval(Roblox.economyTransactions.purgeTransactions, 60 * 60 * 1000); // Purge old transactions once per hour.
+		setInterval(() => Roblox.economyTransactions.purgeTransactions(), 60 * 60 * 1000); // Purge old transactions once per hour.
 		break;
 }
