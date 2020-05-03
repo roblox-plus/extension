@@ -3,7 +3,7 @@ RPlus.Services = RPlus.Services || {};
 RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 	constructor() {
 		super("RPlus.bucketedSales");
-		
+
 		this.knownCreators = {};
 
 		this.register([
@@ -43,7 +43,7 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 
 		return sales;
 	}
-	
+
 	createResultBuckets(oldestDate, upToDate) {
 		let result = {};
 		let days = Math.floor((upToDate.getTime() - oldestDate.getTime()) / (24 * 60 * 60 * 1000));
@@ -56,7 +56,7 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 
 		return result;
 	}
-	
+
 	translateTransactionsToSales(transactions, oldestDate, upToDate) {
 		let result = this.createResultBuckets(oldestDate, upToDate);
 
@@ -100,14 +100,14 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 			case "User":
 				console.log("Kicking off user transaction scan...", creator.id);
 
-				Roblox.economyTransactions.scanUserTransactions(creator.id).then(function (userTransactionCount) {
+				Roblox.economyTransactions.scanUserTransactions(creator.id).then((userTransactionCount) => {
 					console.log(`Scanned all user (${creator.id}) transactions (count: ${userTransactionCount})`);
 				}).catch(console.error);
 				break;
 			case "Group":
 				console.log("Kicking off group transaction scan...", creator.id);
 
-				Roblox.economyTransactions.scanGroupTransactions(creator.id).then(function (groupTransactionCount) {
+				Roblox.economyTransactions.scanGroupTransactions(creator.id).then((groupTransactionCount) => {
 					console.log(`Scanned all group (${creator.id}) transactions (count: ${groupTransactionCount})`);
 				}).catch(console.error);
 				break;
@@ -124,7 +124,7 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 				return;
 			}
 
-			var gotCreator = function(creator) {
+			var gotCreator = (creator) => {
 				this.knownCreators[cacheKey] = creator;
 				resolve(Object.assign({}, creator));
 			};
@@ -134,13 +134,13 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 					Roblox.catalog.getAssetInfo(itemId).then((asset) => {
 						gotCreator(asset.creator);
 					}).catch(reject);
-					
+
 					return;
 				case "GamePass":
 					Roblox.catalog.getGamePassInfo(itemId).then((gamePass) => {
 						gotCreator(gamePass.creator);
 					}).catch(reject);
-					
+
 					return;
 				default:
 					reject("Unsupported itemType: " + itemType);
@@ -167,17 +167,14 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 		});
 	}
 
-	getTransactionsByItem(itemType, itemId, transactionsLoaded, oldestDate, reject) {
+	getTransactionsByItem(itemType, itemId, oldestDate) {
 		switch (itemType) {
 			case "Asset":
-				this.getAssetTransactions(itemId, oldestDate).then(transactionsLoaded).catch(reject);
-				return;
+				return this.getAssetTransactions(itemId, oldestDate);
 			case "GamePass":
-				this.getGamePassTransactions(itemId, oldestDate).then(transactionsLoaded).catch(reject);
-				return;
+				return this.getGamePassTransactions(itemId, oldestDate);
 			default:
-				reject("Unsupported itemType: " + itemType);
-				return;
+				return Promise.reject("Unsupported itemType: " + itemType);
 		}
 	}
 
@@ -201,7 +198,7 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 
 	getItemScanStatus(itemType, itemId) {
 		return new Promise((resolve, reject) => {
-			this.getCreatorByItem(itemType, itemId).then(function(creator) {
+			this.getCreatorByItem(itemType, itemId).then((creator) => {
 				switch (creator.type) {
 					case "User":
 						Roblox.economyTransactions.getUserScanStatus(creator.id).then(resolve).catch(reject);
@@ -221,10 +218,10 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 		return CachedPromise(`${this.serviceId}.getBucketedItemSales`, (resolve, reject) => {
 			let currentDate = new Date();
 			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
-	
-			this.getTransactionsByItem(itemType, itemId, (transactions) => {
+
+			this.getTransactionsByItem(itemType, itemId, oldestDate).then((transactions) => {
 				resolve(this.translateTransactionsToSales(transactions, oldestDate, currentDate));
-			}, oldestDate, reject);
+			}).catch(reject);
 		}, [itemType, itemId, days], {});
 	}
 
@@ -233,9 +230,9 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 			let currentDate = new Date();
 			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
 
-			this.getTransactionsByItem(itemType, itemId, (transactions) => {
+			this.getTransactionsByItem(itemType, itemId, oldestDate).then((transactions) => {
 				resolve(this.translateTransactionsToRevenue(transactions, oldestDate, currentDate));
-			}, oldestDate, reject);
+			}).catch(reject);
 		}, [itemType, itemId, days], {});
 	}
 
@@ -243,7 +240,7 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 		return CachedPromise(`${this.serviceId}.getBucketedSellerSales`, (resolve, reject) => {
 			let currentDate = new Date();
 			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
-	
+
 			this.getTransactionsBySeller(sellerType, sellerId, oldestDate).then((transactions) => {
 				resolve(this.translateTransactionsToSales(transactions, oldestDate, currentDate));
 			}).catch(reject);
@@ -254,38 +251,38 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 		return CachedPromise(`${this.serviceId}.getBucketedSellerRevenue`, (resolve, reject) => {
 			let currentDate = new Date();
 			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
-	
+
 			this.getTransactionsBySeller(sellerType, sellerId, oldestDate).then((transactions) => {
 				resolve(this.translateTransactionsToRevenue(transactions, oldestDate, currentDate));
 			}).catch(reject);
 		}, [sellerType, sellerId, days], {});
 	}
-	
+
 	getBucketedGroupSalesByGame(groupId, days) {
 		return CachedPromise(`${this.serviceId}.getBucketedGroupSalesByGame`, (resolve, reject) => {
 			let currentDate = new Date();
 			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
-	
+
 			this.getTransactionsBySeller("Group", groupId, oldestDate).then((transactions) => {
 				let filteredTransactions = {};
 				let result = {};
-	
+
 				transactions.forEach((transaction) => {
 					if (!transaction.gameId) {
 						return;
 					}
-	
+
 					if (!filteredTransactions[transaction.gameId]) {
 						filteredTransactions[transaction.gameId] = [];
 					}
-	
+
 					filteredTransactions[transaction.gameId].push(transaction);
 				});
-	
+
 				for (let gameId in filteredTransactions) {
 					result[gameId] = this.translateTransactionsToSales(filteredTransactions[gameId], oldestDate, currentDate);
 				}
-	
+
 				// Add missing games that haven't made any money recently (better user experience).
 				Roblox.games.getGroupGames(groupId).then((games) => {
 					games.forEach((game) => {
@@ -293,7 +290,7 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 							result[game.id] = this.createResultBuckets(oldestDate, currentDate);
 						}
 					});
-	
+
 					resolve(result);
 				}).catch((err) => {
 					// Nice to have. Not critical.
@@ -308,27 +305,27 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 		return CachedPromise(`${this.serviceId}.getBucketedGroupRevenueByGame`, (resolve, reject) => {
 			let currentDate = new Date();
 			let oldestDate = this.roundDownDate(this.addDays(currentDate, -days));
-	
+
 			this.getTransactionsBySeller("Group", groupId, oldestDate).then((transactions) => {
 				let filteredTransactions = {};
 				let result = {};
-	
+
 				transactions.forEach((transaction) => {
 					if (!transaction.gameId) {
 						return;
 					}
-	
+
 					if (!filteredTransactions[transaction.gameId]) {
 						filteredTransactions[transaction.gameId] = [];
 					}
-	
+
 					filteredTransactions[transaction.gameId].push(transaction);
 				});
-	
+
 				for (let gameId in filteredTransactions) {
 					result[gameId] = this.translateTransactionsToRevenue(filteredTransactions[gameId], oldestDate, currentDate);
 				}
-	
+
 				// Add missing games that haven't made any money recently (better user experience).
 				Roblox.games.getGroupGames(groupId).then((games) => {
 					games.forEach((game) => {
@@ -336,9 +333,9 @@ RPlus.Services.BucketedSales = class extends Extension.BackgroundService {
 							result[game.id] = this.createResultBuckets(oldestDate, currentDate);
 						}
 					});
-	
+
 					resolve(result);
-				}).catch(function(err) {
+				}).catch((err) => {
 					// Nice to have. Not critical.
 					console.error(err);
 					resolve(result);
