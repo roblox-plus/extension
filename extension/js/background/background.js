@@ -23,11 +23,6 @@ foreach({
 		groupShout: 0
 	},
 	"changedLogin": ext.incognito,
-	"startupNotification": {
-		on: !ext.incognito,
-		visit: browser.name !== "Chrome",
-		names: {}
-	},
 	"groupShoutNotifierList": { 2518656: "Roblox+ Fan Group" },
 	"navigation": {
 		"sideOpen": false,
@@ -39,9 +34,13 @@ foreach({
 	},
 	"userSince": getMil()
 }, function (n, o) {
-	if (type(storage.get(n)) != type(o)) {
-		Extension.Storage.Singleton.blindSet(n, o);
-	}
+	Extension.Storage.Singleton.get(n).then(v => {
+		if (type(v) != type(o)) {
+			Extension.Storage.Singleton.blindSet(n, o);
+		}
+	}).catch(e => {
+		console.warn("Could not get default value", n, e);
+	});
 });
 
 /* Comment Timer */
@@ -73,9 +72,14 @@ Extension.Storage.Singleton.get("commentTimer").then(commentTimer => {
 					delete commentTimer[n];
 				}
 			}
-			if (JSON.stringify(commentTimer) != JSON.stringify(storage.get("commentTimer"))) {
-				Extension.Storage.Singleton.blindSet("commentTimer", commentTimer);
-			}
+
+			Extension.Storage.Singleton.get("commentTimer").then(v => {
+				if (JSON.stringify(commentTimer) != JSON.stringify(v)) {
+					Extension.Storage.Singleton.blindSet("commentTimer", commentTimer);
+				}
+			}).catch(e => {
+				console.warn("could not read commentTimer", e);
+			});
 		});
 	}, 5000);
 }).catch(err => {
@@ -181,49 +185,63 @@ Extension.Storage.Singleton.get("siteTheme").then((theme) => {
 
 
 /* Startup Notification */
-(function (startnote, makenote) {
+Extension.Storage.Singleton.get("startupNotification").then(startnote => {
+	if (!startnote || typeof(startnote) !== "object") {
+		startnote = {
+			on: !ext.incognito,
+			visit: browser.name !== "Chrome",
+			names: {}
+		};
+
+		Extension.Storage.Singleton.blindSet("startupNotification", startnote);
+	}
+
+	const makenote = function () {
+		Roblox.users.getAuthenticatedUser().then(function (user) {
+			var username = user ? user.username : "";
+			for (var n in startnote.names) {
+				if (n.toLowerCase() === username.toLowerCase()) {
+					username = startnote.names[n];
+					break;
+				}
+			}
+	
+			RPlus.settings.get().then(function (ul) {
+				var note = $.notification({
+					title: ext.manifest.name + " started",
+					context: user ? "Hello, " + user.username + "!" : "You're currently signed out",
+					buttons: [
+						"Problems? Suggestions? Post here!"
+					],
+					items: {
+						"Version": ext.manifest.version,
+						"Made by": "WebGL3D"
+					},
+					clickable: true,
+					metadata: {
+						speak: username ? "Hello, " + username : "",
+						url: ul.updateLog || "https://www.roblox.com/users/48103520/profile?rbxp=48103520",
+						expiration: 15 * 1000
+					}
+				}).buttonClick(function () {
+					note.close();
+					window.open("https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group?rbxp=48103520");
+				});
+			}).catch(function (e) {
+				console.warn("no startup notification", e);
+			});
+		});
+	};
+
 	startnote.names = type(startnote.names) == "object" ? startnote.names : {};
 	if (startnote.on && !startnote.visit) {
-		makenote(startnote);
+		makenote();
 	} else if (startnote.on) {
-		var listener; listener = function () { chrome.webRequest.onCompleted.removeListener(listener); makenote(startnote); };
+		var listener; listener = function () { chrome.webRequest.onCompleted.removeListener(listener); makenote(); };
 		chrome.webRequest.onCompleted.addListener(listener, { types: ["main_frame"], urls: ["*://*.roblox.com/*"] });
 	}
-})(storage.get("startupNotification"), function (startnote) {
-	Roblox.users.getAuthenticatedUser().then(function (user) {
-		var username = user ? user.username : "";
-		for (var n in startnote.names) {
-			if (n.toLowerCase() === username.toLowerCase()) {
-				username = startnote.names[n];
-				break;
-			}
-		}
-
-		RPlus.settings.get().then(function (ul) {
-			var note = $.notification({
-				title: ext.manifest.name + " started",
-				context: user ? "Hello, " + user.username + "!" : "You're currently signed out",
-				buttons: [
-					"Problems? Suggestions? Post here!"
-				],
-				items: {
-					"Version": ext.manifest.version,
-					"Made by": "WebGL3D"
-				},
-				clickable: true,
-				metadata: {
-					speak: username ? "Hello, " + username : "",
-					url: ul.updateLog || "https://www.roblox.com/users/48103520/profile?rbxp=48103520",
-					expiration: 15 * 1000
-				}
-			}).buttonClick(function () {
-				note.close();
-				window.open("https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group?rbxp=48103520");
-			});
-		}).catch(function (e) {
-			console.warn("no startup notification", e);
-		});
-	});
+}).catch(e => {
+	console.warn("could not read startupNotification", e);
 });
 
 
