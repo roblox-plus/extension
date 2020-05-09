@@ -49,7 +49,9 @@ Roblox.Services.AssetContent = class extends Extension.BackgroundService {
 				/"MeshId".*=\s*(\d+)/gi,
 				/MeshId.*rbxassetid:\/\/(\d+)/gi,
 				/asset\/?\?\s*id\s*=\s*(\d+)/gi,
-				/rbxassetid:\/\/(\d+)/gi
+				/rbxassetid:\/\/(\d+)/gi,
+				/:LoadAsset\((\d+)\)/gi,
+				/require\((\d+)\)/gi
 			];
 
 			this.getAssetContents(assetId).then((r) => {
