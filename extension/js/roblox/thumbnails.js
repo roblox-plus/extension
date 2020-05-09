@@ -18,7 +18,8 @@ Roblox.Services.Thumbnails = class extends Extension.BackgroundService {
 		this.types = {
 			bundle: "bundle",
 			asset: "asset",
-			userHeadshot: "userHeadshot"
+			userHeadshot: "userHeadshot",
+			groupIcon: "groupIcon"
 		};
 
 		this.thumbnailStateImages = {
@@ -187,6 +188,9 @@ Roblox.Services.Thumbnails = class extends Extension.BackgroundService {
 				case this.types.userHeadshot:
 					thumbnailApiType = "AvatarHeadShot";
 					break;
+				case this.types.groupIcon:
+					thumbnailApiType = "GroupIcon";
+					break;
 				default:
 					reject([
 						{
@@ -253,6 +257,14 @@ Roblox.Services.Thumbnails = class extends Extension.BackgroundService {
 	
 	getBundleThumbnailUrl(bundleId, width, height) {
 		return this.getThumbnailUrl(this.types.bundle, bundleId, width, height);
+	}
+	
+	getGroupIcon(groupId, width, height) {
+		return this.getThumbnail(this.types.groupIcon, groupId, width, height);
+	}
+	
+	getGroupIconUrl(groupId, width, height) {
+		return this.getThumbnailUrl(this.types.groupIcon, groupId, width, height);
 	}
 };
 
