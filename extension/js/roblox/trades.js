@@ -18,13 +18,8 @@ Roblox.Services.Trades = class extends Extension.BackgroundService {
 		]);
 	}
 
-	getTradeWindowUrl(userId, counterTradeId) {
-		let baseUrl = `https://www.roblox.com/Trade/TradeWindow.aspx?TradePartnerID=${userId}`;
-		if (counterTradeId) {
-			baseUrl += `&TradeSessionId=${counterTradeId}`;
-		}
-
-		return baseUrl;
+	getTradeWindowUrl(userId) {
+		return `https://www.roblox.com/users/${userId}/trade`;
 	}
 
 	decline(tradeId) {
@@ -155,7 +150,7 @@ Roblox.Services.Trades = class extends Extension.BackgroundService {
 		});
 	}
 
-	openTradeTab(userId, counterTradeId) {
+	openTradeTab(userId) {
 		return new Promise((resolve, reject) => {
 			if (typeof (userId) != "number" || userId <= 0) {
 				reject([{
@@ -165,7 +160,7 @@ Roblox.Services.Trades = class extends Extension.BackgroundService {
 				return;
 			}
 	
-			window.open(this.getTradeWindowUrl(userId, counterTradeId));
+			window.open(this.getTradeWindowUrl(userId));
 			resolve({});
 		});
 	}
@@ -181,14 +176,13 @@ Roblox.Services.Trades = class extends Extension.BackgroundService {
 			}
 
 			Roblox.users.getAuthenticatedUser().then((authenticatedUser) => {
-				if (!authenticatedUser) {
+				if (!authenticatedUser || authenticatedUser.id === userId) {
 					resolve(false);
 					return;
 				}
 
-				$.get(this.getTradeWindowUrl(userId)).done((r) => {
-					let tradePartnerId = Number((r.match(/<form[^>]+action="\/Trade\/TradeWindow.aspx\?TradePartnerID=(\d+)"/i) || ["", 0])[1]);
-					resolve(tradePartnerId === userId);
+				$.get(`https://www.roblox.com/users/${userId}/profile`).done((r) => {
+					resolve(r.includes("cantrade=true"));
 				}).fail(Roblox.api.$reject(reject));
 			}).catch(reject);
 		}, [userId], {
@@ -210,8 +204,8 @@ Roblox.Services.Trades = class extends Extension.BackgroundService {
 		});
 	}
 
-	openSettingBasedTradeWindow(userId, counterTradeId) {
-		return new Promise(function (resolve, reject) {
+	openSettingBasedTradeWindow(userId) {
+		return new Promise((resolve, reject) => {
 			this.openTradeTab(userId).then(resolve).catch(reject);
 		});
 	}

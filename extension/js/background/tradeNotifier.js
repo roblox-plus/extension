@@ -15,42 +15,53 @@ RPlus.notifiers.trade = (function () {
 				notifierSounds = notifierSounds || {};
 
 				Roblox.trades.get(tradeId).then(function (trade) {
-					var title = "Trade " + headers[trade.status];
 					Roblox.thumbnails.getUserHeadshotThumbnailUrl(trade.tradePartnerOffer.user.id, 150, 150).then((headshotThumbnailUrl) => {
-						$.notification({
-							tag: "trade" + trade.id,
-							title: title,
+						var title = `Trade ${headers[trade.status]}`;
+						let buttons = [];
+						if (trade.status === "Outbound") {
+							buttons.push({
+								text: "Cancel"
+							});
+						}
+
+						Extension.NotificationService.Singleton.createNotification({
+							id: `trade${trade.id}`,
+							title: "Trade Notifier",
+							context: title,
 							icon: headshotThumbnailUrl,
 							items: {
 								"Partner": trade.tradePartnerOffer.user.username,
 								"Your RAP": addComma(trade.authenticatedUserOffer.assetValue) + (trade.authenticatedUserOffer.robux ? " +R$" + addComma(trade.authenticatedUserOffer.robux) : ""),
 								"Their RAP": addComma(trade.tradePartnerOffer.assetValue) + (trade.tradePartnerOffer.robux ? " +R$" + addComma(trade.tradePartnerOffer.robux) : "")
 							},
-							buttons: trade.status === "Outbound" ? ["Cancel"] : [],
-							clickable: true,
+							buttons: buttons,
+							displayExpiration: 30 * 1000,
 							metadata: {
+								cancelTradeId: trade.id,
 								url: "https://www.roblox.com/trades", // TODO: Add trade id if Roblox supports (or I add support for it)
-								// TODO: I don't think this value can be set via the control panel
 								robloxSound: Number(notifierSounds["trade" + (trade.status == "Rejected" ? "Declined" : trade.status)]) || 0,
 								speak: title
 							}
-						}).click(function () {
-							this.close();
-						}).buttonClick(function () {
-							let note = this;
-							Roblox.trades.decline(trade.id).then(function () {
-								note.close();
-							}).catch(function (e) {
-								console.error(e);
-							});
-						});
-	
+						}).then(notification => {
+							console.log("Trade notification", trade, notification);
+						}).catch(console.error);
+						
 						resolve();
 					}).catch(reject);
 				}).catch(reject);
 			}).catch(reject);
 		});
 	};
+
+	Extension.NotificationService.Singleton.onNotificationButtonClicked.addEventListener(e => {
+		if (e.buttonIndex === 0 && e.notification.metadata.cancelTradeId) {
+			Roblox.trades.decline(e.notification.metadata.cancelTradeId).then(function () {
+				Extension.NotificationService.Singleton.closeNotification(e.notification.id).then(() => {
+					// Trade declined and notification closed successfully
+				}).catch(console.warn);
+			}).catch(console.error);
+		}
+	});
 
 	return RPlus.notifiers.init({
 		name: "Trade",
