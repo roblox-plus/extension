@@ -1,11 +1,8 @@
-/*
-	jquery.notifications.ext.js [10/08/2016]
-*/
 (function () {
-	var audioPlayers = {};
-	var speaking = "";
+	let audioPlayers = {};
+	let speaking = "";
 
-	function setNotificationCount() {
+	const setNotificationCount = () => {
 		if (Extension.Singleton.isIncognito) {
 			return;
 		}

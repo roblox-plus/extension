@@ -163,7 +163,7 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 	clickNotification(id) {
 		let notification = this.notifications[id];
 		if (notification) {
-			return this.onNotificationButtonClicked.dispatchEvent(notification);
+			return this.onNotificationClicked.dispatchEvent(notification);
 		} else {
 			return Promise.reject("Notification does not exist");
 		}

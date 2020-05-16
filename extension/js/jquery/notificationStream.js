@@ -4,6 +4,7 @@
 var RPlus = RPlus || {};
 RPlus.notificationStream = RPlus.notificationStream || (function () {
 	var selectedNotificationStream = "";
+	let notificationCards = {};
 
 	function createNotificationImageContainer(src, title, link) {
 		var container = $("<div class=\"notification-image-container\">");
@@ -55,14 +56,16 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		var imageContainer = createNotificationImageContainer(notification.icon, "", notification.metadata.url);
 		var contentContainer = createNotificationContentContainer(notification.title, notification.context, message);
 
-		if (notification.clickable) {
+		if (notification.metadata.url) {
 			card.addClass("clickable");
 			innerCard.removeAttr("disabled");
 		}
 
 		innerCard.click(function (e) {
 			if (e.target === closeButton[0]) {
-				notification.close();
+				Extension.NotificationService.Singleton.closeNotification(notification.id).then(() => {
+					// notification closed
+				}).catch(console.error);
 				return false;
 			}
 		});
@@ -76,7 +79,7 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 	function pushNotification(customStreamDiv, data) {
 		var notification = createNotificationCard(data);
 		customStreamDiv.prepend(notification);
-		notification.slideDown();
+		notification.show();
 		return notification;
 	}
 
@@ -86,6 +89,16 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		$("ul[data-extension-stream][data-extension-stream = '" + selectedNotificationStream + "']").fadeIn();
 	}
 
+	function notificationClosed(notification) {
+		let notificationCard = notificationCards[notification.id];
+		delete notificationCards[notification.id];
+
+		if (notificationCard) {
+			// TODO: Why doesn't this work?
+			notificationCard.card.remove();
+		}
+	}
+
 	function init() {
 		var notificationView = $(".notification-content-view").each(function () {
 			var customStreamDiv = $("<ul class=\"rplus-stream-list notification-stream-list\">").attr("data-extension-stream", ext.id).hide();
@@ -93,20 +106,29 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 			
 			robloxStreamDiv.after(customStreamDiv);
 
-			$.notification.on("notification", function (notification) {
+			const notificationCreated = function (notification) {
 				var card = pushNotification(customStreamDiv, notification);
 
 				card.click(function () {
-					notification.click();
-				});
-
-				notification.close(function () {
-					card.slideUp(function () {
-						card.remove();
+					Extension.NotificationService.Singleton.clickNotification(notification.id).then(() => {
+						// notification clicked
+					}).catch(err => {
+						console.error(err, notification);
 					});
 				});
-			});
-			
+
+				notificationCards[notification.id] = {
+					notification: notification,
+					card: card
+				};
+			};
+
+			Extension.NotificationService.Singleton.onNotificationCreated.addEventListener(notificationCreated);
+			Extension.NotificationService.Singleton.onNotificationClosed.addEventListener(notificationClosed);
+
+			Extension.NotificationService.Singleton.getNotifications().then(notifications => {
+				notifications.forEach(notificationCreated);
+			}).catch(console.error);			
 		});
 
 		let showNotificationsMessenger = new Extension.Messaging(Extension.Singleton, `notificationStream.showNotifications`, messageData => {
