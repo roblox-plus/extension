@@ -216,20 +216,12 @@ Extension.Storage.Singleton.get("startupNotification").then(startnote => {
 					expiration: 15 * 1000,
 					buttons: [
 						{
-							text: "Problems? Suggestions? Post here!"
+							text: "Problems? Suggestions? Post here!",
+							url: "https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group?rbxp=48103520"
 						}
 					],
 					metadata: {
 						url: ul.updateLog || "https://www.roblox.com/users/48103520/profile?rbxp=48103520"
-					}
-				});
-
-				Extension.NotificationService.Singleton.onNotificationButtonClicked.addEventListener(e => {
-					if (e.notification.id === startNotificationId) {
-						window.open("https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group?rbxp=48103520");
-						Extension.NotificationService.Singleton.closeNotification(e.notification.id).then(() => {
-							// Notification closed
-						}).catch(console.error);
 					}
 				});
 			}).catch(function (e) {

@@ -51,12 +51,13 @@ RPlus.notifiers.groupShout = (function () {
 							console.log("RPlus.notifiers.groupShout", group.group);
 						}
 
-						let links = [];
 						let buttons = [];
 						foreach(shout.body.match(url.roblox.linkify) || [], function (n, o) {
 							if (buttons.length < 2) {
-								links.push(o);
-								buttons.push("Visit link " + links.length);
+								buttons.push({
+									text: `Visit link ${buttons.length + 1}`,
+									url: o
+								});
 							} else {
 								return true;
 							}
@@ -64,23 +65,22 @@ RPlus.notifiers.groupShout = (function () {
 						
 						Extension.Storage.Singleton.get("notifierSounds").then(notifierSounds => {
 							Roblox.thumbnails.getGroupIconUrl(group.group.id, 420, 420).then(groupIconUrl => {
-								$.notification({
-									tag: "groupshout" + group.group.id,
-									title: group.group.name,
+								Extension.NotificationService.Singleton.createNotification({
+									id: `groupShout${group.group.id}`,
+									title: "Group Shout",
+									context: group.group.name,
 									message: string.clean(shout.body.replace(/https?:\/\/w?w?w?\./gi, "")),
 									icon: groupIconUrl,
 									buttons: buttons,
-									clickable: true,
+									displayExpiration: 30 * 1000,
 									metadata: {
 										robloxSound: Number((notifierSounds || {}).groupShout) || 0,
 										url: Roblox.groups.getGroupUrl(group.group.id, group.group.name),
-										speak: "Group shout from " + group.group.name
+										speak: `Group shout from ${group.group.name}`
 									}
-								}).click(function () {
-									this.close();
-								}).buttonClick(function (index) {
-									window.open(links[index]);
-								});
+								}).then(notification => {
+									console.log("Group shout notification", group.group, notification);
+								}).catch(console.error);
 							}).catch(e => {
 								console.warn("failed to load group icon for notification", e, group);
 							});
@@ -89,7 +89,7 @@ RPlus.notifiers.groupShout = (function () {
 						});
 					});
 
-					cache.timestamp = cacheTimestamp;
+					cache.timestamp = math.ceil(cacheTimestamp, 1000);
 					resolve([]);
 				}).fail((jxhr, errors) => {
 					reject(errors);

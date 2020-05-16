@@ -146,7 +146,6 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 				}
 
 				if (expiration && expiration > 0) {
-					chromeNotification.requireInteraction = false;
 					setTimeout(() => {
 						// TODO: This will give an unexpected result if the user clicks close on the notification and then another notification is shown with the same id after
 						this.hideNotification(notification.id);

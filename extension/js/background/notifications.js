@@ -78,6 +78,13 @@
 		}
 	});
 
+	Extension.NotificationService.Singleton.onNotificationButtonClicked.addEventListener(data => {
+		let button = data.notification.buttons[data.buttonIndex];
+		if (button && button.url) {
+			window.open(button.url);
+		}
+	});
+
 	chrome.contextMenus.create({
 		id: "clearNotifications",
 		title: "Clear Notifications",
