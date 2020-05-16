@@ -3,18 +3,19 @@ RPlus.notifiers.friends = (function () {
 	function clicknote(friend, header) {
 		Extension.Storage.Singleton.get("notifierSounds").then(notifierSounds => {
 			Roblox.thumbnails.getUserHeadshotThumbnailUrl(friend.id, 150, 150).then((headshotThumbnailUrl) => {
-				$.notification({
-					tag: "friend" + friend.id,
+				Extension.NotificationService.Singleton.createNotification({
+					id: `friend${friend.id}`,
+					context: "Roblox+ Friend Notifier",
 					title: header,
 					icon: headshotThumbnailUrl,
-					clickable: true,
+					displayExpiration: 30 * 1000,
 					metadata: {
 						robloxSound: Number((notifierSounds || {}).friend) || 0,
 						url: Roblox.users.getProfileUrl(friend.id)
 					}
-				}).click(function () {
-					this.close();
-				});
+				}).then(() => {
+					// Notification created
+				}).catch(console.warn.bind(console, "Roblox.notifiers.friends"));
 			}).catch(console.error.bind(console, "Roblox.notifiers.friends"));
 		}).catch(e => {
 			console.warn(e);
@@ -45,6 +46,14 @@ RPlus.notifiers.friends = (function () {
 		});
 	};
 
+	Extension.NotificationService.Singleton.onNotificationButtonClicked.addEventListener(e => {
+		if (e.notification.metadata.followGameUserId) {
+			Roblox.games.launch({
+				followUserId: e.notification.metadata.followGameUserId
+			});
+		}
+	});
+
 	return RPlus.notifiers.init({
 		name: "Friends",
 		sleep: 10 * 1000,
@@ -72,35 +81,35 @@ RPlus.notifiers.friends = (function () {
 						if (rerun && (!Array.isArray(fn.blocked) || !fn.blocked.includes(friend.id))) {
 							if (!old) {
 								//clicknote(o,"You and "+o.username+" are now friends!");
-							} else if (fn.online && (old.isOnline != friend.isOnline) && friend.isOnline) {
-								clicknote(friend, friend.username + " is now online");
-							} else if (fn.offline && (old.isOnline != friend.isOnline) && !friend.isOnline) {
-								clicknote(friend, friend.username + " is now offline");
 							} else if (fn.game && friend.game && (!old.game || old.game.serverId !== friend.game.serverId)) {
 								Extension.Storage.Singleton.get("notifierSounds").then(notifierSounds => {
 									Roblox.thumbnails.getUserHeadshotThumbnailUrl(friend.id, 150, 150).then((headshotThumbnailUrl) => {
-										$.notification({
-											tag: "friend" + friend.id,
-											title: friend.username + " joined a game",
-											context: friend.game.name,
+										Extension.NotificationService.Singleton.createNotification({
+											id: `friend${friend.id}`,
+											title: `${friend.username} joined a game`,
+											context: "Roblox+ Friend Notifier",
+											message: friend.game.name,
 											icon: headshotThumbnailUrl,
-											buttons: ["Follow"],
-											clickable: true,
+											buttons: [
+												{ text: "Follow" }
+											],
+											displayExpiration: 30 * 1000,
 											metadata: {
+												followGameUserId: friend.id,
 												robloxSound: Number((notifierSounds || {}).friend) || 0,
 												url: Roblox.users.getProfileUrl(friend.id)
 											}
-										}).click(function () {
-											this.close();
-										}).buttonClick(function () {
-											Roblox.games.launch({
-												followUserId: friend.id
-											});
-										});
+										}).then(function () {
+											// Notification created
+										}).catch(console.warn.bind(console, "Roblox.notifiers.friends"));
 									}).catch(console.error.bind(console, "Roblox.notifiers.friends"));
 								}).catch(e => {
 									console.warn(e);
 								});
+							} else if (fn.online && (old.isOnline != friend.isOnline) && friend.isOnline) {
+								clicknote(friend, friend.username + " is now online");
+							} else if (fn.offline && (old.isOnline != friend.isOnline) && !friend.isOnline) {
+								clicknote(friend, friend.username + " is now offline");
 							}
 						}
 
