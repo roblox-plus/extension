@@ -4,7 +4,9 @@ Extension.Messaging = class {
 		this.messageHandler = messageHandler;
 		this.extension = extension;
 		this.tabId = null;
-		this.ready = id === Extension.Messaging.Constants.RegistrarId || extension.executionContextType === Extension.ExecutionContextTypes.background;
+		this.tabIds = [];
+		this.isRegistrar = id === Extension.Messaging.Constants.RegistrarId;
+		this.ready = this.isRegistrar || extension.executionContextType === Extension.ExecutionContextTypes.background;
 		this.disconnected = false;
 		this.queue = [];
 		
@@ -16,7 +18,9 @@ Extension.Messaging = class {
 				getTabId = Extension.Messaging.Registrar.sendMessage.bind(Extension.Messaging.Registrar);
 			}
 
-			getTabId({}).then(this._tabIdLoaded.bind(this)).catch(this._tabIdLoadError.bind(this));
+			getTabId({
+				ping: true
+			}).then(this._tabIdLoaded.bind(this)).catch(this._tabIdLoadError.bind(this));
 		}
 	}
 
@@ -105,6 +109,14 @@ Extension.Messaging = class {
 		});
 	}
 
+	getAllTabIds() {
+		if (this.isRegistrar) {
+			return Promise.resolve(JSON.parse(JSON.stringify(this.tabIds)));
+		} else {
+			return Extension.Messaging.Registrar.getAllTabIds();
+		}
+	}
+
 	_tabIdLoaded(tabId) {
 		this.tabId = tabId;
 		this.ready = true;
@@ -126,6 +138,19 @@ Extension.Messaging = class {
 					Extension.Messaging.Constants.Errors.disconnected
 				]
 			});
+		}
+	}
+
+	_tabRegistered(tabId) {
+		if (!this.tabIds.includes(tabId)) {
+			this.tabIds.push(tabId);
+		}
+	}
+
+	_tabClosed(tabId) {
+		let tabIndex = this.tabIds.indexOf(tabId);
+		if (tabIndex >= 0) {
+			this.tabIds.splice(tabIndex, 1);
 		}
 	}
 };
@@ -154,9 +179,13 @@ Extension.Messaging.Constants = {
 };
 
 Extension.Messaging.Registrar = new Extension.Messaging(Extension.Singleton, Extension.Messaging.Constants.RegistrarId, function(messageData) {
-	return new Promise((resolve, reject) => {
-		resolve(messageData.tab.id);
-	});
+	if (messageData.data.unload) {
+		Extension.Messaging.Registrar._tabClosed(messageData.tab.id);
+	} else if (messageData.data.ping) {
+		Extension.Messaging.Registrar._tabRegistered(messageData.tab.id);
+	}
+
+	return Promise.resolve(messageData.tab.id);
 });
 
 chrome.runtime.onMessage.addListener((data, sender, callBack) => {
@@ -194,3 +223,30 @@ chrome.runtime.onMessage.addListener((data, sender, callBack) => {
 	// https://stackoverflow.com/a/20077854/1663648
 	return true;
 });
+
+if (Extension.Singleton.executionContextType === Extension.ExecutionContextTypes.background) {
+	chrome.tabs.onRemoved.addListener(function (tabId) {
+		Extension.Messaging.Registrar.handleMessage({
+			data: {
+				unload: true
+			},
+			tab: {
+				id: tabId
+			}
+		}).then(() => {
+			// successfully unloaded tab
+		}).catch(err => {
+			console.warn("Extension.Messaging.Registrar unload", err);
+		});
+	});
+} else {
+	window.addEventListener("beforeunload", function() {
+		Extension.Messaging.Registrar.sendMessage({
+			unload: true
+		}).then(() => {
+			// nothing to do, successfully unregistered
+		}).catch(err => {
+			console.warn("Extension.Messaging.Registrar unload", err);
+		});
+	});
+}
