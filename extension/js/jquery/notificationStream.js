@@ -109,11 +109,13 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 			
 		});
 
-		ipc.on("rplus:showNotifications", function (data, callBack) {
+		let showNotificationsMessenger = new Extension.Messaging(Extension.Singleton, `notificationStream.showNotifications`, messageData => {
 			toggleStreams();
 			if (!notificationView.is(":visible")) {
 				$("#nav-ns-icon")[0].click();
 			}
+
+			return Promise.resolve({});
 		});
 
 		$.notification.init();
