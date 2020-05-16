@@ -6,23 +6,18 @@
 	var speaking = "";
 
 	function setNotificationCount() {
-		if (ext.incognito) {
+		if (Extension.Singleton.isIncognito) {
 			return;
 		}
-		chrome.browserAction.setBadgeText({
-			text: (Object.keys($.notification.getNotifications()).length || "").toString()
-		});
+
+		Extension.NotificationService.Singleton.getNotifications().then(notifications => {
+			chrome.browserAction.setBadgeText({
+				text: notifications.length > 0 ? notifications.length.toString() : ""
+			});
+		}).catch(console.warn);
 	}
 
-	$.notification.on("notification", function (notification) {
-		if (notification.metadata.hasOwnProperty("url")) {
-			notification.click(function (tabId) {
-				if (tabId === 0) {
-					window.open(this.metadata.url);
-				}
-			});
-		}
-
+	Extension.NotificationService.Singleton.onNotificationCreated.addEventListener(notification => {
 		Extension.Storage.Singleton.get("notificationVolume").then(storedVolume => {
 			var volume = 0.5;
 			if (notification.metadata.hasOwnProperty("volume")) {
@@ -32,23 +27,28 @@
 			}
 
 			if (notification.metadata.robloxSound) {
-				Roblox.audio.getSoundPlayer(notification.metadata.robloxSound).then(function (player) {
-					audioPlayers[notification.tag] = player;
-					player.play(volume).stop(function () {
-						delete audioPlayers[notification.tag];
+				Roblox.audio.getSoundPlayer(notification.metadata.robloxSound).then((player) => {
+					audioPlayers[notification.id] = player;
+
+					player.play(volume).stop(() => {
+						delete audioPlayers[notification.id];
 					});
-				}).catch(function(e) {
+				}).catch((e) => {
 					console.error("Failed to play audio", notification.metadata.robloxSound, e);
 				});
 			} else if (notification.metadata.speak) {
+				if (chrome.tts.isSpeaking) {
+					chrome.tts.stop();
+				}
+
 				chrome.tts.speak(notification.metadata.speak, {
 					lang: "en-GB",
 					volume: volume,
 					onEvent: function (e) {
 						if (e.type == "start") {
-							speaking = notification.tag;
+							speaking = notification.id;
 						} else {
-							if (speaking == notification.tag) {
+							if (speaking == notification.id) {
 								speaking = "";
 							}
 						}
@@ -59,22 +59,26 @@
 			console.warn(notification, err);
 		});
 
-		if (notification.metadata.hasOwnProperty("expiration")) {
-			setTimeout(function () {
-				notification.close();
-			}, notification.metadata.expiration);
+		setNotificationCount();
+	});
+
+	Extension.NotificationService.Singleton.onNotificationClosed.addEventListener(notification => {
+		if (audioPlayers[notification.id]) {
+			audioPlayers[notification.id].stop();
 		}
 
-		setNotificationCount();
-	}).on("close", function (notification) {
-		if (audioPlayers[notification.tag]) {
-			audioPlayers[notification.tag].stop();
-		}
-		if (speaking == notification.tag) {
+		if (speaking == notification.id) {
 			chrome.tts.stop();
 		}
 
+		delete audioPlayers[notification.id];
 		setNotificationCount();
+	});
+
+	Extension.NotificationService.Singleton.onNotificationClicked.addEventListener(notification => {
+		if (notification.metadata.url) {
+			window.open(notification.metadata.url);
+		}
 	});
 
 	chrome.contextMenus.create({
@@ -82,7 +86,9 @@
 		title: "Clear Notifications",
 		contexts: ["browser_action"],
 		onclick: function () {
-			$.notification.clear();
+			Extension.NotificationService.Singleton.clearNotifications().then(notifications => {
+				console.log("Notifications cleared", notifications);
+			}).catch(console.error);
 		}
 	});
 })();

@@ -198,7 +198,9 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 					promises.push(this.closeNotification(notification.id));
 				});
 
-				Promise.all(promises).then(resolve).catch(reject);
+				Promise.all(promises).then(() => {
+					resolve(notifications);
+				}).catch(reject);
 			}).catch(reject);
 		});
 	}
