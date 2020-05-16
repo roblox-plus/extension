@@ -23,38 +23,41 @@
 			});
 		}
 
-		var volume = 0.5;
-		if (notification.metadata.hasOwnProperty("volume")) {
-			volume = notification.metadata.volume;
-		} else {
-			var storedVolume = Number(storage.get("notificationVolume"));
-			volume = isNaN(storedVolume) ? 0.5 : storedVolume;
-		}
+		Extension.Storage.Singleton.get("notificationVolume").then(storedVolume => {
+			var volume = 0.5;
+			if (notification.metadata.hasOwnProperty("volume")) {
+				volume = notification.metadata.volume;
+			} else {
+				volume = isNaN(storedVolume) ? 0.5 : storedVolume;
+			}
 
-		if (notification.metadata.robloxSound) {
-			Roblox.audio.getSoundPlayer(notification.metadata.robloxSound).then(function (player) {
-				audioPlayers[notification.tag] = player;
-				player.play(volume).stop(function () {
-					delete audioPlayers[notification.tag];
+			if (notification.metadata.robloxSound) {
+				Roblox.audio.getSoundPlayer(notification.metadata.robloxSound).then(function (player) {
+					audioPlayers[notification.tag] = player;
+					player.play(volume).stop(function () {
+						delete audioPlayers[notification.tag];
+					});
+				}).catch(function(e) {
+					console.error("Failed to play audio", notification.metadata.robloxSound, e);
 				});
-			}).catch(function(e) {
-				console.error("Failed to play audio", notification.metadata.robloxSound, e);
-			});
-		} else if (notification.metadata.speak) {
-			chrome.tts.speak(notification.metadata.speak, {
-				lang: "en-GB",
-				volume: volume,
-				onEvent: function (e) {
-					if (e.type == "start") {
-						speaking = notification.tag;
-					} else {
-						if (speaking == notification.tag) {
-							speaking = "";
+			} else if (notification.metadata.speak) {
+				chrome.tts.speak(notification.metadata.speak, {
+					lang: "en-GB",
+					volume: volume,
+					onEvent: function (e) {
+						if (e.type == "start") {
+							speaking = notification.tag;
+						} else {
+							if (speaking == notification.tag) {
+								speaking = "";
+							}
 						}
 					}
-				}
-			});
-		}
+				});
+			}
+		}).catch(err => {
+			console.warn(notification, err);
+		});
 
 		if (notification.metadata.hasOwnProperty("expiration")) {
 			setTimeout(function () {
