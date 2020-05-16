@@ -7,7 +7,7 @@ RPlus.notifiers.catalog = (function () {
 	var tokenExpiration = 30 * 60 * 1000;
 
 	function updateToken() {
-		storage.get("itemNotifier", function (itemNotifierOn) {
+		Extension.Storage.Singleton.get("itemNotifier").then(itemNotifierOn => {
 			if (!itemNotifierOn) {
 				setTimeout(updateToken, minTokenBackoff);
 				return;
@@ -31,6 +31,9 @@ RPlus.notifiers.catalog = (function () {
 				tokenBackoff = Math.min(maxTokenBackoff, tokenBackoff * 2);
 				setTimeout(updateToken, tokenBackoff);
 			});
+		}).catch(err => {
+			console.warn(err);
+			setTimeout(updateToken, minTokenBackoff);
 		});
 	}
 
@@ -83,64 +86,68 @@ RPlus.notifiers.catalog = (function () {
 	}
 
 	function processNotification(notification) {
-		var assetId = NaN;
+		Extension.Storage.Singleton.get("notifierSounds").then(notifierSounds => {
+			notifierSounds = notifierSounds || {};
+			var assetId = NaN;
 
-		var metadata = {};
+			var metadata = {};
 
-		if (notification.url) {
-			metadata.url = notification.url;
-			assetId = Roblox.catalog.getIdFromUrl(notification.url) || NaN;
-			if (!isNaN(assetId)) {
-				var notifierSounds = storage.get("notifierSounds") || {};
-				metadata.robloxSound = (notification.title || "").toLowerCase().includes("it's free")
-					? 130771265
-					: Number(notifierSounds.item) || 205318910;
+			if (notification.url) {
+				metadata.url = notification.url;
+				assetId = Roblox.catalog.getIdFromUrl(notification.url) || NaN;
+				if (!isNaN(assetId)) {
+					metadata.robloxSound = (notification.title || "").toLowerCase().includes("it's free")
+						? 130771265
+						: Number(notifierSounds.item) || 205318910;
+				}
 			}
-		}
 
-		var creatorName = notification.items && notification.items.Creator;
-		if (creatorName) {
-			Roblox.users.getAuthenticatedUser().then(function(user) {
-				if (!user) {
-					console.log("Skipping notification because user is not logged in", notification);
-					return;
-				}
-
-				if (creatorName === user.username) {
-					showNotification(notification, metadata, assetId);
-					return;
-				}
-
-				Roblox.users.getUserIdByUsername(creatorName).then(function(creatorId) {
-					if (!creatorId) {
-						console.warn("Skipping notification because could not map creatorName -> creatorId", notification, creatorName, creatorId);
+			var creatorName = notification.items && notification.items.Creator;
+			if (creatorName) {
+				Roblox.users.getAuthenticatedUser().then(function(user) {
+					if (!user) {
+						console.log("Skipping notification because user is not logged in", notification);
 						return;
 					}
 
-					if (creatorId === user.id) {
+					if (creatorName === user.username) {
 						showNotification(notification, metadata, assetId);
 						return;
 					}
 
-					Roblox.social.isFollowing(user.id, creatorId).then(function(following) {
-						if (!following) {
-							console.log("Skipping notification because user does not follow creator", notification);
+					Roblox.users.getUserIdByUsername(creatorName).then(function(creatorId) {
+						if (!creatorId) {
+							console.warn("Skipping notification because could not map creatorName -> creatorId", notification, creatorName, creatorId);
 							return;
 						}
 
-						showNotification(notification, metadata, assetId);
+						if (creatorId === user.id) {
+							showNotification(notification, metadata, assetId);
+							return;
+						}
+
+						Roblox.social.isFollowing(user.id, creatorId).then(function(following) {
+							if (!following) {
+								console.log("Skipping notification because user does not follow creator", notification);
+								return;
+							}
+
+							showNotification(notification, metadata, assetId);
+						}).catch(function(err) {
+							console.error("Skipping notification for failure to check following creator", creatorName, notification, err);
+						});
 					}).catch(function(err) {
-						console.error("Skipping notification for failure to check following creator", creatorName, notification, err);
+						console.error("Skipping notification for failure to map creatorName -> creatorId", creatorName, notification, err);
 					});
 				}).catch(function(err) {
-					console.error("Skipping notification for failure to map creatorName -> creatorId", creatorName, notification, err);
+					console.error("Skipping notification because could not check user is not logged in", notification, err);
 				});
-			}).catch(function(err) {
-				console.error("Skipping notification because could not check user is not logged in", notification, err);
-			});
-		} else {
-			showNotification(notification, metadata, assetId);
-		}
+			} else {
+				showNotification(notification, metadata, assetId);
+			}
+		}).catch(err => {
+			console.warn("Not showing notification", err, notification);
+		});
 	}
 
 	function processMessage(message) {
@@ -148,7 +155,7 @@ RPlus.notifiers.catalog = (function () {
 
 		if (message.from === "/topics/catalog-notifier" || message.from === "/topics/catalog-notifier-premium") {
 			if (message.data && message.data.notification) {
-				storage.get("itemNotifier", function (itemNotifierOn) {
+				Extension.Storage.Singleton.get("itemNotifier").then(itemNotifierOn => {
 					if(!itemNotifierOn) {
 						return;
 					}
@@ -158,6 +165,8 @@ RPlus.notifiers.catalog = (function () {
 					} catch (e) {
 						console.error("Failed to parse notification.", message);
 					}
+				}).catch(err => {
+					console.warn(err, message);
 				});
 			}
 		} else if (message.from === "/topics/catalog-notifier-freebies") {
