@@ -53,4 +53,12 @@ Extension.Event = class {
 			return Promise.reject("Extension.Event can only be dispatched from a background script.");
 		}
 	}
+
+	blindDispatchEvent(eventData) {
+		this.dispatchEvent(eventData).then(() => {
+			// event dispatched
+		}).catch(err => {
+			console.warn(`Extension.Event.blindDispatchEvent (${this.name})`, err);
+		});
+	}
 }

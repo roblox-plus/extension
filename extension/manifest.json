@@ -39,6 +39,7 @@
 				"/js/vanilla/extension/messaging.js",
 				"/js/vanilla/extension/event.js",
 				"/js/vanilla/extension/backgroundService.js",
+				"/js/vanilla/extension/notificationService.js",
 				"/js/vanilla/extension/storage.js",
 				"/js/vanilla/queuedPromise.js",
 				"/js/vanilla/cachedPromise.js",
