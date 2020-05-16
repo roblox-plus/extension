@@ -11,7 +11,7 @@ Extension.BackgroundService = class {
 			this._registry[messageData.data.method].apply(this, messageData.data.arguments).then(resolve).catch(reject);
 		});
 	}
-	
+
 	register(methods) {
 		methods.forEach((method) => {
 			let service = this;
