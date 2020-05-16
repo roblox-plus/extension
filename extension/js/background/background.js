@@ -205,27 +205,32 @@ Extension.Storage.Singleton.get("startupNotification").then(startnote => {
 					break;
 				}
 			}
-	
+
+			let startNotificationId = `${Extension.Singleton.id}.startNotification`;
 			RPlus.settings.get().then(function (ul) {
-				var note = $.notification({
-					title: ext.manifest.name + " started",
-					context: user ? "Hello, " + user.username + "!" : "You're currently signed out",
+				Extension.NotificationService.Singleton.createNotification({
+					id: startNotificationId,
+					title: user ? `Hello, ${user.username}!` : "You're currently signed out",
+					message: "Made by WebGL3D",
+					context: `${Extension.Singleton.manifest.name} ${Extension.Singleton.manifest.version} started`,
+					expiration: 15 * 1000,
 					buttons: [
-						"Problems? Suggestions? Post here!"
+						{
+							text: "Problems? Suggestions? Post here!"
+						}
 					],
-					items: {
-						"Version": ext.manifest.version,
-						"Made by": "WebGL3D"
-					},
-					clickable: true,
 					metadata: {
-						speak: username ? "Hello, " + username : "",
-						url: ul.updateLog || "https://www.roblox.com/users/48103520/profile?rbxp=48103520",
-						expiration: 15 * 1000
+						url: ul.updateLog || "https://www.roblox.com/users/48103520/profile?rbxp=48103520"
 					}
-				}).buttonClick(function () {
-					note.close();
-					window.open("https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group?rbxp=48103520");
+				});
+
+				Extension.NotificationService.Singleton.onNotificationButtonClicked.addEventListener(e => {
+					if (e.notification.id === startNotificationId) {
+						window.open("https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group?rbxp=48103520");
+						Extension.NotificationService.Singleton.closeNotification(e.notification.id).then(() => {
+							// Notification closed
+						}).catch(console.error);
+					}
 				});
 			}).catch(function (e) {
 				console.warn("no startup notification", e);

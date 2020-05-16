@@ -139,8 +139,6 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 
 			return Promise.resolve({});
 		});
-
-		$.notification.init();
 	}
 
 	$(init);

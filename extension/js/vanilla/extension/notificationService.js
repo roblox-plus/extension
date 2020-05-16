@@ -65,6 +65,16 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 						console.warn(`Extension.NotificationService.showNotification("${notification.id}", ${notificationData.displayExpiration})`, err);
 					});
 				}
+
+				if (notificationData.expiration && notificationData.expiration > 0) {
+					setTimeout(() => {
+						this.closeNotification(notification.id).then(() => {
+							// Notification closed successfully
+						}).catch(err => {
+							console.warn(`Extension.NotificationService.closeNotification("${notification.id}")`, err);
+						});
+					}, notificationData.expiration);
+				}
 			};
 
 			let existingNotification = this.notifications[notification.id];
@@ -121,7 +131,7 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 					message: notification.message,
 					requireInteraction: true
 				};
-	
+
 				if (notification.context.length > 0) {
 					chromeNotification.contextMessage = notification.context;
 				}
