@@ -223,43 +223,6 @@ $.addTrigger.init(function (obj) {
 	});
 });
 
-
-/* storage */
-storage = {
-	get: function (k, cb) {
-		if (ext.isBackground) {
-			cb = fixCB(cb);
-			if (type(k) == "string") {
-				try {
-					k = JSON.parse(localStorage.getItem(k));
-					k = k.length ? k[0] : "";
-				} catch (e) {
-					k = "";
-				}
-				cb(k);
-				return k;
-			} else if (type(k) == "array") {
-				var ret = {};
-				foreach(k, function (n, o) { ret[o] = storage.get(o); });
-				cb(ret);
-				return ret;
-			}
-		} else {
-			ipc.send("storage.", { request: "storage", method: "get", key: k }, cb);
-		}
-	}
-};
-
-if (ext.isBackground) {
-	ipc.on("storage.", function (a, callBack) {
-		if (a.request == "storage") {
-			if (a.method == "get") {
-				storage.get(a.key, callBack);
-			}
-		}
-	});
-}
-
 /* Reloading */
 if (ext.isBackground) {
 	$(window).on("unload", function () {
