@@ -12,7 +12,7 @@
 				text: notifications.length > 0 ? notifications.length.toString() : ""
 			});
 		}).catch(console.warn);
-	}
+	};
 
 	Extension.NotificationService.Singleton.onNotificationCreated.addEventListener(notification => {
 		Extension.Storage.Singleton.get("notificationVolume").then(storedVolume => {

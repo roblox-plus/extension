@@ -4,6 +4,7 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 
 		this._idBase = 0;
 		this.notifications = {};
+		this.imageCache = {};
 		this.extension = extension;
 		this.onNotificationClosed = new Extension.Event("Extension.NotificationService.onNotificationClosed", extension);
 		this.onNotificationCreated = new Extension.Event("Extension.NotificationService.onNotificationCreated", extension);
@@ -18,7 +19,9 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 			this.getNotifications,
 
 			this.clickNotification,
-			this.clickNotificationButton
+			this.clickNotificationButton,
+
+			this.getNotificationImageUrl
 		]);
 	}
 
@@ -151,9 +154,19 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 						this.hideNotification(notification.id);
 					}, expiration);
 				}
-	
-				chrome.notifications.create(notification.id, chromeNotification, function() {
-					resolve({});
+
+				const makeChromeNotification = () => {
+					chrome.notifications.create(notification.id, chromeNotification, function() {
+						resolve({});
+					});
+				};
+
+				this.getNotificationImageUrl(chromeNotification.iconUrl).then((imageUrl) => {
+					chromeNotification.iconUrl = imageUrl;
+					makeChromeNotification();
+				}).catch((err) => {
+					console.warn(err);
+					makeChromeNotification();
 				});
 			});
 		} else {
@@ -211,6 +224,49 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 					resolve(notifications);
 				}).catch(reject);
 			}).catch(reject);
+		});
+	}
+
+	getNotificationImageUrl(imageUrl) {
+		// This method exists because chrome notifications won't display at all if the image download fails or has incorrect response headers
+		// This method attempts to turn an HTTP image url into a data url
+		// https://stackoverflow.com/a/42508185/1663648
+		// https://stackoverflow.com/a/30407959/1663648
+		if (imageUrl.startsWith("chrome-extension")) {
+			return Promise.resolve(imageUrl);
+		}
+
+		return new Promise((resolve, reject) => {
+			if (this.imageCache[imageUrl]) {
+				resolve(this.imageCache[imageUrl]);
+				return;
+			}
+
+			const onError = function(e) {
+				console.warn("getNotificationImageUrl", imageUrl, e);
+
+				// hope for the best...
+				resolve(imageUrl);
+			};
+
+			fetch(imageUrl).then((response) => {
+				return response.blob()
+			}).then((blob) => {
+				var blobReader = new FileReader();
+
+				blobReader.onerror = onError;
+				blobReader.onload = (e) => {
+					this.imageCache[imageUrl] = e.target.result;
+					resolve(e.target.result);
+
+					// Clean up the memory later..
+					setTimeout(() => {
+						delete this.imageCache[imageUrl];
+					}, 5 * 60 * 1000);
+				};
+
+				blobReader.readAsDataURL(blob);
+			}).catch(onError);
 		});
 	}
 };
