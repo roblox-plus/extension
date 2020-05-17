@@ -113,7 +113,7 @@ RPlus.Pages.Game = function () {
 			jplayer.animate({ volume: 0 }, 500);
 		});
 
-		RPlus.style.loadStylesheet(ext.getUrl("/css/easterEggs/rockefellerStreet.css"));
+		RPlus.style.loadStylesheet(Extension.Singleton.getUrl("/css/easterEggs/rockefellerStreet.css"));
 	}
 
 	$(".voting-panel.body").each(function () {

@@ -21,10 +21,6 @@ ext = (function () {
 		"id": extension.id,
 		"incognito": extension.isIncognito,
 
-		"getUrl": function(path) {
-			return extension.getUrl(path);
-		},
-
 		"reload": function() {
 			Extension.Reload().then(() => {
 				// Reload successful

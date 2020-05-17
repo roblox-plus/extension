@@ -48,7 +48,7 @@ fixCB(({
 			RPlus.quickInfo.trigger(Roblox.users.getProfileUrl(Number($(this).attr("userid"))));
 		});
 
-		$("head").append($("<script>").attr("src", ext.getUrl("/js/jquery/overwrite.js")));
+		$("head").append($("<script>").attr("src", Extension.Singleton.getUrl("/js/jquery/overwrite.js")));
 	}
 })[document.contentType])(window.location.hostname.split("."), url.send(), []);
 

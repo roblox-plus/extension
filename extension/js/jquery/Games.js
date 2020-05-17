@@ -14,7 +14,7 @@ RPlus.Pages.Games = function () {
 		}
 	});
 
-	RPlus.style.loadStylesheet(ext.getUrl("/css/pages/games.css"));
+	RPlus.style.loadStylesheet(Extension.Singleton.getUrl("/css/pages/games.css"));
 
 	return {};
 };
