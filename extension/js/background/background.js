@@ -175,7 +175,7 @@ Extension.Storage.Singleton.get("startupNotification").then(startnote => {
 	if (!startnote || typeof(startnote) !== "object") {
 		startnote = {
 			on: !Extension.Singleton.isIncognito,
-			visit: browser.name !== "Chrome",
+			visit: false,
 			names: {}
 		};
 
