@@ -19,11 +19,7 @@ ext = (function () {
 
 	return {
 		"id": extension.id,
-		"manifest": extension.manifest,
 		"incognito": extension.isIncognito,
-		"isBackground": extension.executionContextType === Extension.ExecutionContextTypes.background,
-		"isContentScript": extension.executionContextType === Extension.ExecutionContextTypes.tab,
-		"isBrowserAction": extension.executionContextType === Extension.ExecutionContextTypes.browserAction,
 
 		"getUrl": function(path) {
 			return extension.getUrl(path);
@@ -36,7 +32,5 @@ ext = (function () {
 		}
 	};
 })();
-
-console.log(ext.manifest.name + " " + ext.manifest.version + " started" + (ext.incognito ? " in icognito" : ""));
 
 // WebGL3D

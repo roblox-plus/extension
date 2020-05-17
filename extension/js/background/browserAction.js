@@ -1,4 +1,4 @@
-﻿chrome.browserAction.setTitle({ title: ext.manifest.name + " " + ext.manifest.version });
+﻿chrome.browserAction.setTitle({ title: Extension.Singleton.manifest.name + " " + Extension.Singleton.manifest.version });
 
 (function() {
 	let showNotificationsMessenger = new Extension.Messaging(Extension.Singleton, `notificationStream.showNotifications`, messageData => {
@@ -19,7 +19,7 @@
 					console.warn("showNotificationsMessenger", err);
 				});
 			} else {
-				window.open(ext.manifest.homepage_url);
+				window.open(Extension.Singleton.manifest.homepage_url);
 			}
 		});
 	});

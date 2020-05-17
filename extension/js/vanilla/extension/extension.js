@@ -66,3 +66,4 @@ Extension.ExecutionContextTypes = {
 };
 
 Extension.Singleton = new Extension();
+console.log(Extension.Singleton.manifest.name + " " + Extension.Singleton.manifest.version + " started" + (Extension.Singleton.isIncognito ? " in icognito" : ""));

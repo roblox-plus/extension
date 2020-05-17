@@ -22,7 +22,7 @@ foreach({
 		messages: 0,
 		groupShout: 0
 	},
-	"changedLogin": ext.incognito,
+	"changedLogin": Extension.Singleton.isIncognito,
 	"groupShoutNotifierList": { 2518656: "Roblox+ Fan Group" },
 	"navigation": {
 		"sideOpen": false,
@@ -174,7 +174,7 @@ Extension.Storage.Singleton.get("siteTheme").then((theme) => {
 Extension.Storage.Singleton.get("startupNotification").then(startnote => {
 	if (!startnote || typeof(startnote) !== "object") {
 		startnote = {
-			on: !ext.incognito,
+			on: !Extension.Singleton.isIncognito,
 			visit: browser.name !== "Chrome",
 			names: {}
 		};

@@ -2,7 +2,7 @@
 chrome.contextMenus.create({
 	id: "mainContext",
 	documentUrlPatterns: ["*://*.roblox.com/*"],
-	title: ext.manifest.name,
+	title: Extension.Singleton.manifest.name,
 	contexts: ["link"],
 	targetUrlPatterns: ["*://*.roblox.com/users/*/profile*"]
 });
