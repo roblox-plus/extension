@@ -51,7 +51,6 @@
 				"/js/roblox/apiSiteContentHandler.js",
 				"/js/archive/prefunc.js",
 				"/js/archive/prext.js",
-				"/js/plugins/jquery.notifications.js",
 
 				"/js/vanilla/timedCache.js",
 				"/js/vanilla/batchItemProcessor.js",
