@@ -45,7 +45,6 @@
 				"/js/vanilla/queuedPromise.js",
 				"/js/vanilla/cachedPromise.js",
 				"/js/archive/global.js",
-				"/js/plugins/jquery.trigger.js",
 
 				"/js/roblox/api.js",
 				"/js/roblox/xsrfHandler.js",

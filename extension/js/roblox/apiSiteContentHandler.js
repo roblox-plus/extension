@@ -3,9 +3,9 @@
 */
 (window.Roblox || (Roblox = {})).apiSiteContentHandler = (function () {
 	var validContentMethods = ["POST", "PATCH", "DELETE"];
-	var contentTrigger = $.addTrigger({
+	var contentTrigger = {
 		apiSubdomains: Roblox.api.subdomains
-	});
+	};
 
 	var originalAjax = $.ajax;
 	$.ajax = function () {
