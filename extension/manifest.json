@@ -104,6 +104,7 @@
 		{
 			"js": [
 				"/js/jquery/content.js",
+				"/js/output/react/features/notification-stream/notification-stream-widget.js",
 				"/js/jquery/notificationStream.js",
 
 				"/js/jquery/Login.js",
@@ -119,6 +120,9 @@
 				"/js/jquery/Messages.js",
 
 				"/js/jquery/loadPages.js"
+			],
+			"css": [
+				"/css/output/features/notification-stream-widget.css"
 			],
 			"matches": [ "*://www.roblox.com/*", "*://web.roblox.com/*" ],
 			"run_at": "document_end"

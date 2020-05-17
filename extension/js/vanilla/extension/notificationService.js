@@ -57,27 +57,31 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 			};
 
 			const createNotification = () => {
-				this.notifications[notification.id] = notification;
-				this.onNotificationCreated.blindDispatchEvent(notification);
-				resolve(notification);
+				this.getNotificationImageUrl(notification.icon).then(icon => {
+					notification.icon = icon;
 
-				if (!notificationData.hidden) {
-					this.showNotification(notification.id, notificationData.displayExpiration).then(() => {
-						// Notification shown successfully
-					}).catch(err => {
-						console.warn(`Extension.NotificationService.showNotification("${notification.id}", ${notificationData.displayExpiration})`, err);
-					});
-				}
-
-				if (notificationData.expiration && notificationData.expiration > 0) {
-					setTimeout(() => {
-						this.closeNotification(notification.id).then(() => {
-							// Notification closed successfully
+					this.notifications[notification.id] = notification;
+					this.onNotificationCreated.blindDispatchEvent(notification);
+					resolve(notification);
+	
+					if (!notificationData.hidden) {
+						this.showNotification(notification.id, notificationData.displayExpiration).then(() => {
+							// Notification shown successfully
 						}).catch(err => {
-							console.warn(`Extension.NotificationService.closeNotification("${notification.id}")`, err);
+							console.warn(`Extension.NotificationService.showNotification("${notification.id}", ${notificationData.displayExpiration})`, err);
 						});
-					}, notificationData.expiration);
-				}
+					}
+	
+					if (notificationData.expiration && notificationData.expiration > 0) {
+						setTimeout(() => {
+							this.closeNotification(notification.id).then(() => {
+								// Notification closed successfully
+							}).catch(err => {
+								console.warn(`Extension.NotificationService.closeNotification("${notification.id}")`, err);
+							});
+						}, notificationData.expiration);
+					}
+				}).catch(reject);
 			};
 
 			let existingNotification = this.notifications[notification.id];
@@ -155,18 +159,8 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 					}, expiration);
 				}
 
-				const makeChromeNotification = () => {
-					chrome.notifications.create(notification.id, chromeNotification, function() {
-						resolve({});
-					});
-				};
-
-				this.getNotificationImageUrl(chromeNotification.iconUrl).then((imageUrl) => {
-					chromeNotification.iconUrl = imageUrl;
-					makeChromeNotification();
-				}).catch((err) => {
-					console.warn(err);
-					makeChromeNotification();
+				chrome.notifications.create(notification.id, chromeNotification, function() {
+					resolve({});
 				});
 			});
 		} else {
