@@ -84,7 +84,7 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 	}
 
 	function toggleStreams() {
-		selectedNotificationStream = selectedNotificationStream === ext.id ? "roblox" : ext.id;
+		selectedNotificationStream = selectedNotificationStream === Extension.Singleton.id ? "roblox" : Extension.Singleton.id;
 		$("ul[data-extension-stream][data-extension-stream != '" + selectedNotificationStream + "']").fadeOut();
 		$("ul[data-extension-stream][data-extension-stream = '" + selectedNotificationStream + "']").fadeIn();
 	}
@@ -101,7 +101,7 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 
 	function init() {
 		var notificationView = $(".notification-content-view").each(function () {
-			var customStreamDiv = $("<ul class=\"rplus-stream-list notification-stream-list\">").attr("data-extension-stream", ext.id).hide();
+			var customStreamDiv = $("<ul class=\"rplus-stream-list notification-stream-list\">").attr("data-extension-stream", Extension.Singleton.id).hide();
 			var robloxStreamDiv = $(this).find(".notification-stream-list").attr("data-extension-stream", "roblox");
 			
 			robloxStreamDiv.after(customStreamDiv);

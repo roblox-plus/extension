@@ -7,7 +7,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 	constructor() {
 		super("Roblox.games");
 
-		let securityParameters = $.param({ verification: ext.id, _: +new Date });
+		let securityParameters = $.param({ verification: Extension.Singleton.id, _: +new Date });
 		this.launchFrame = $("<iframe>").hide();
 		this.baseLaunchUrl = "https://assetgame.roblox.com/game/PlaceLauncher.ashx?";
 		this.authTicketUrl = `https://auth.roblox.com/v1/authentication-ticket?${securityParameters}`;

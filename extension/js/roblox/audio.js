@@ -37,7 +37,7 @@ Roblox.Services.Audio = class extends Extension.BackgroundService {
 		let button = $("<span class=\"icon-play\">");
 
 		button.setAudioId = function (assetId) {
-			return button.attr("data-" + ext.id + "-robloxsound", assetId).addClass("icon-play").removeClass("icon-pause icon-audio icon-brokenpage");
+			return button.attr("data-" + Extension.Singleton.id + "-robloxsound", assetId).addClass("icon-play").removeClass("icon-pause icon-audio icon-brokenpage");
 		};
 
 		button.setVolume = function (v) {
@@ -54,7 +54,7 @@ Roblox.audio = new Roblox.Services.Audio();
 if (Extension.Singleton.executionContextType == Extension.ExecutionContextTypes.tab) {
 	$(function () {
 		let soundMap = {};
-		let dataName = ext.id + "-robloxsound";
+		let dataName = Extension.Singleton.id + "-robloxsound";
 		let attrName = "data-" + dataName;
 
 		$("body").on("click", ".icon-play[" + attrName + "]", function () {
