@@ -27,3 +27,10 @@ Extension.ReloadService.Singleton = new Extension.ReloadService(Extension.Single
 Extension.Reload = function() {
 	return Extension.ReloadService.Singleton.reload();
 };
+
+var ext = ext || {};
+ext.reload = function() {
+	Extension.Reload().then(() => {
+		// Reload successful
+	}).catch(console.error);
+};
