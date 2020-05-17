@@ -141,20 +141,6 @@ Roblox.users.getAuthenticatedUser().then(function (user) {
 	console.error(e);
 });
 
-
-
-/* Update Check */
-if (browser.name == "Chrome") {
-	setInterval(function () {
-		chrome.runtime.requestUpdateCheck(function (e) {
-			if (e == "update_available") {
-				setTimeout(ext.reload, 10 * 1000);
-			}
-		});
-	}, 60 * 1000);
-}
-
-
 /* Migrate users to Roblox dark theme */
 Extension.Storage.Singleton.get("siteTheme").then((theme) => {
 	if (theme === "darkblox") {

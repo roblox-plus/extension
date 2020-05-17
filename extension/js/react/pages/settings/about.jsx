@@ -203,11 +203,11 @@ class About extends React.Component {
 	}
 
 	reloadExtension() {
-		ext.reload(function () {
+		Extension.Reload().then(() => {
 			setTimeout(function () {
 				window.location.reload(true);
 			}, 1000);
-		});
+		}).catch(console.error);
 	}
 
 	render() {

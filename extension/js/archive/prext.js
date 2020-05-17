@@ -28,16 +28,16 @@ ext = (function () {
 		"getUrl": function(path) {
 			return extension.getUrl(path);
 		},
-		
-		reload: function (callBack) {
-			ipc.send("ext:reload", {}, callBack);
+
+		"reload": function() {
+			Extension.Reload().then(() => {
+				// Reload successful
+			}).catch(console.error);
 		}
 	};
 })();
 
 console.log(ext.manifest.name + " " + ext.manifest.version + " started" + (ext.incognito ? " in icognito" : ""));
-
-
 
 /*
 	inter process communication
@@ -222,28 +222,5 @@ $.addTrigger.init(function (obj) {
 		}
 	});
 });
-
-/* Reloading */
-if (ext.isBackground) {
-	$(window).on("unload", function () {
-		ext.reload(function () { });
-		return "No";
-	});
-}
-ipc.on("ext:reload", function (data, callBack) {
-	callBack(true);
-	if (ext.manifest.permissions.includes("contextMenus")) {
-		chrome.contextMenus.removeAll(function() {
-			chrome.runtime.reload();
-		});
-	} else {
-		setTimeout(function () {
-			chrome.runtime.reload();
-		}, 500);
-	}
-});
-ext.reload.enabled = true;
-
-
 
 // WebGL3D
