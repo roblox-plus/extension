@@ -87,6 +87,7 @@
 				"/js/rplus/sponsoredItems.js",
 				"/js/rplus/premium.js",
 				"/js/rplus/bucketedSales.js",
+				"/js/rplus/robuxHistory.js",
 
 				"/js/jquery/navigation.js"
 			],
