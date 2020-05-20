@@ -4,7 +4,7 @@ RPlus.Services.RobuxHistory = class extends Extension.BackgroundService {
 	constructor(extension) {
 		super("RPlus.robuxHistory");
 
-		this.robuxHistoryMaxAge = 30; // Measured in days - 30 days is up to 43,200 data points
+		this.robuxHistoryMaxAge = 32; // Measured in days - 30 days is up to 43,200 data points
 		this.currencyHolderTypes = {
 			"User": "User",
 			"Group": "Group"
@@ -53,7 +53,8 @@ RPlus.Services.RobuxHistory = class extends Extension.BackgroundService {
 
 		this.register([
 			this.getRobuxHistory,
-			this.recordRobuxHistory
+			this.recordRobuxHistory,
+			this.recordAuthenticatedUserRobux
 		]);
 	}
 	
@@ -74,6 +75,20 @@ RPlus.Services.RobuxHistory = class extends Extension.BackgroundService {
 		});
 	}
 
+	isEnabled() {
+		return new Promise((resolve, reject) => {
+			Extension.Storage.Singleton.get("robuxHistoryEnabled").then((robuxHistoryEnabled) => {
+				if (robuxHistoryEnabled) {
+					Roblox.users.getAuthenticatedUser().then((user) => {
+						RPlus.premium.isPremium(user.id).then(resolve).catch(reject);
+					}).catch(reject);
+				} else {
+					resolve(false);
+				}
+			}).catch(reject);
+		});
+	}
+
 	getRobuxHistory(currencyHolderType, currencyHolderId, startDateTime, endDateTime) {
 		return new Promise((resolve, reject) => {
 			this.getDatabase().then((currencyBalancesDatabase) => {
@@ -85,6 +100,23 @@ RPlus.Services.RobuxHistory = class extends Extension.BackgroundService {
 					.filter(row => row.currencyHolderType == currencyHolderType && row.currencyHolderId == currencyHolderId)
 					.execute()
 					.then(resolve).catch(reject);
+			}).catch(reject);
+		});
+	}
+
+	recordAuthenticatedUserRobux(robux) {
+		return new Promise((resolve, reject) => {
+			this.isEnabled().then((enabled) => {
+				if (!enabled) {
+					resolve(false);
+					return;
+				}
+	
+				Roblox.users.getAuthenticatedUser().then((user) => {
+					this.recordRobuxHistory(this.currencyHolderTypes.User, user.id, robux).then(() => {
+						resolve(true);
+					}).catch(reject);
+				}).catch(reject);
 			}).catch(reject);
 		});
 	}

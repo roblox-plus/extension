@@ -24,16 +24,10 @@ Roblox.Services.Economy = class extends Extension.BackgroundService {
 				$.get(`https://economy.roblox.com/v1/users/${user.id}/currency`).done((r) => {
 					let robuxHistory = window.RPlus && window.RPlus.robuxHistory;
 					if (robuxHistory) {
-						Extension.Storage.Singleton.get("robuxHistoryEnabled").then((robuxHistoryEnabled) => {
-							if (robuxHistoryEnabled) {
-								robuxHistory.recordRobuxHistory(robuxHistory.currencyHolderTypes.User, user.id, r.robux).then(() => {
-									// Recorded Robux history
-								}).catch(e => {
-									console.warn("recordRobuxHistory failure", e);
-								});
-							}
+						robuxHistory.recordAuthenticatedUserRobux(r.robux).then((recorded) => {
+							// Robux recorded pretty much
 						}).catch(e => {
-							console.warn("robuxHistoryEnabled check failure", e);
+							console.warn("recordAuthenticatedUserRobux failure", e);
 						});
 					}
 

@@ -255,6 +255,16 @@
 				"*://*.roblox.com/library/*/*"
 			],
 			"run_at": "document_start"
+		},
+		
+		{
+			"js": [
+				"/js/output/react/pages/money/robux-history-chart.js"
+			],
+			"matches": [
+				"*://*.roblox.com/My/Money.aspx"
+			],
+			"run_at": "document_end"
 		}
 	],
 

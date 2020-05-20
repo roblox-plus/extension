@@ -30,7 +30,6 @@ class BucketedSalesChart extends React.Component {
 				useHTML: this.props.legend || false,
 				labelFormatter: function() {
 					var span = $("<span class=\"text-lead\">").text(this.name);
-					console.log(span[0].outerHTML);
 					return span[0].outerHTML;
 				}
 			},

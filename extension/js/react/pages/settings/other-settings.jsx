@@ -84,6 +84,19 @@ class OtherSettings extends SettingsTab {
 							onToggle={this.setPillValue.bind(this, "groupRoleDisplay")} />
 					</div>
 				</div>
+				<div class="section">
+					<div class="container-header">
+						<h3>Money</h3>
+					</div>
+					<div class="section-content">
+						<span class="text-lead">Track Robux History</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "robuxHistoryEnabled")}
+							onToggle={this.setPillValue.bind(this, "robuxHistoryEnabled")}
+							disabled={!this.state.isPremium} />
+						<div class="rbx-divider"></div>
+						<span class="text-description">Keeps track of your Robux history while live navigation counters are turned on and charts them on the <a class="text-link" href="/My/Money.aspx#/#Summary_tab">Money page summary tab</a>. This feature is for Roblox+ Premium users only.</span>
+					</div>
+				</div>
 			</div>
 		);
 	}
