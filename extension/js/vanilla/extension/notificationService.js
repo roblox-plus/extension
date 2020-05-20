@@ -53,7 +53,9 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 				}) : [],
 
 				// Metadata about the notification that can be dumped into. Not used for any display purposes.
-				metadata: typeof(notificationData.metadata) === "object" ? notificationData.metadata : {}
+				metadata: typeof(notificationData.metadata) === "object" ? notificationData.metadata : {},
+
+				created: +new Date
 			};
 
 			const createNotification = () => {
@@ -203,7 +205,9 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 			notifications.push(this.notifications[id]);
 		}
 
-		return Promise.resolve(notifications);
+		return Promise.resolve(notifications.sort((a, b) => {
+			return b.created - a.created;
+		}));
 	}
 
 	clearNotifications() {

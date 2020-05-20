@@ -81,7 +81,7 @@ RPlus.notifiers.friends = (function () {
 						if (rerun && (!Array.isArray(fn.blocked) || !fn.blocked.includes(friend.id))) {
 							if (!old) {
 								//clicknote(o,"You and "+o.username+" are now friends!");
-							} else if (fn.game && friend.game && (!old.game || old.game.serverId !== friend.game.serverId)) {
+							} else if (fn.game && friend.game && friend.locationType === 4 && (!old.game || old.game.serverId !== friend.game.serverId)) {
 								Extension.Storage.Singleton.get("notifierSounds").then(notifierSounds => {
 									Roblox.thumbnails.getUserHeadshotThumbnailUrl(friend.id, 150, 150).then((headshotThumbnailUrl) => {
 										Extension.NotificationService.Singleton.createNotification({

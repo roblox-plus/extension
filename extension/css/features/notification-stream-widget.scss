@@ -13,7 +13,12 @@
 		}
 
 		.notification-data-container {
-			margin-top: -4px;	
+			margin-top: -4px;
+
+			.text-subject {
+				white-space: pre;
+				overflow: hidden;
+			}
 		}
 	}
 }
