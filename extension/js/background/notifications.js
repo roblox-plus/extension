@@ -14,6 +14,10 @@
 		}).catch(console.warn);
 	};
 
+	const audioStopped = (notificationId) => {
+		delete audioPlayers[notificationId];
+	};
+
 	Extension.NotificationService.Singleton.onNotificationCreated.addEventListener(notification => {
 		Extension.Storage.Singleton.get("notificationVolume").then(storedVolume => {
 			var volume = 0.5;
@@ -27,9 +31,7 @@
 				Roblox.audio.getSoundPlayer(notification.metadata.robloxSound).then((player) => {
 					audioPlayers[notification.id] = player;
 
-					player.play(volume).stop(() => {
-						delete audioPlayers[notification.id];
-					});
+					player.play(volume).stop(audioStopped.bind(audioStopped, notification.id));
 				}).catch((e) => {
 					console.error("Failed to play audio", notification.metadata.robloxSound, e);
 				});
