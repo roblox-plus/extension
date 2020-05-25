@@ -135,6 +135,18 @@ Roblox.users.getAuthenticatedUser().then(function (user) {
 				}
 			}
 		}, { urls: ["*://www.roblox.com/catalog/*/*"] }, ["blocking", "responseHeaders"]);
+
+		chrome.webRequest.onBeforeRequest.addListener(function (details) {
+			let url = new URL(details.url);
+			
+			// dumb stupid in the way parameter
+			if (url.searchParams.has("refPageId")) {
+				url.searchParams.delete("refPageId");
+				return {
+					redirectUrl: url.toString()
+				};
+			}
+		}, { urls: ["*://www.roblox.com/games/*"] }, ["blocking"]);
 	}
 }).catch(function (e) {
 	// oh well..
