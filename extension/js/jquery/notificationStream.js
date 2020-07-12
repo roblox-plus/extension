@@ -11,32 +11,22 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 	};
 
 	const toggleStreams = function() {
-		if (!elements.robloxNotificationStreamContainer) {
-			return;
-		}
-
-		let hideStream = elements.customNotificationStreamContainer;
-		let showStream = elements.robloxNotificationStreamContainer;
-		if (elements.robloxVisible) {
-			let newShowStream = hideStream;
-			hideStream = showStream;
-			showStream = newShowStream;
-		}
-
 		elements.robloxVisible = !elements.robloxVisible;
-		hideStream.fadeOut();
-		showStream.fadeIn();
 
-		if (!elements.notificationStream.is(":visible")) {
+		if (!elements.notificationStream || !elements.notificationStream.is(":visible")) {
 			$("#nav-ns-icon")[0].click();
 		}
 	};
 
+	const setStreamVisibility = function(streamContainer, visible) {
+		if (!streamContainer.is(":visible") && visible) {
+			streamContainer.fadeIn();
+		} else if (streamContainer.is(":visible") && !visible) {
+			streamContainer.fadeOut();
+		}
+	};
+
 	const init = function() {
-		elements.notificationStream = $(".notification-content-view:not(.ng-hide) .notification-stream-body .notification-stream-data");
-		elements.robloxNotificationStreamContainer = elements.notificationStream.find(".notification-stream-list");
-		elements.robloxNotificationStreamContainer.after(elements.customNotificationStreamContainer);
-		
 		let notificationStreamWidget = React.createElement(NotificationStreamWidget, {});
 		ReactDOM.render(notificationStreamWidget, elements.customNotificationStreamContainer[0]);
 	};
@@ -46,9 +36,35 @@ RPlus.notificationStream = RPlus.notificationStream || (function () {
 		return Promise.resolve({});
 	});
 
+	setInterval(() => {
+		let notificationStream = $(".notification-content-view:not(.ng-hide) .notification-stream-body .notification-stream-data");
+		if (notificationStream.length > 0) {
+			elements.notificationStream = notificationStream;
+		} else {
+			elements.notificationStream = null;
+			return;
+		}
+
+		let robloxNotificationStreamContainer = notificationStream.find(".notification-stream-list:not(.rplus-notification-stream)");
+		if (robloxNotificationStreamContainer.length > 0) {
+			elements.robloxNotificationStreamContainer = robloxNotificationStreamContainer;
+		} else {
+			elements.robloxNotificationStreamContainer = null;
+			return;
+		}
+
+		if (!robloxNotificationStreamContainer.parent()[0].contains(elements.customNotificationStreamContainer[0])) {
+			robloxNotificationStreamContainer.after(elements.customNotificationStreamContainer);
+		}
+
+		setStreamVisibility(elements.customNotificationStreamContainer, !elements.robloxVisible);
+		setStreamVisibility(robloxNotificationStreamContainer, elements.robloxVisible);
+	}, 250);
+
 	$(init);
 
 	return {
+		elements: elements,
 		messenger: showNotificationsMessenger,
 		toggleStreams: toggleStreams
 	};

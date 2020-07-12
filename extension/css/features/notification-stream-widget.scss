@@ -15,9 +15,10 @@
 		.notification-data-container {
 			margin-top: -4px;
 
-			.text-subject {
-				white-space: pre;
+			.message-preview {
 				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 		}
 	}

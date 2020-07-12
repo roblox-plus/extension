@@ -29,7 +29,13 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 		quickInfoWidget = ReactDOM.render(React.createElement(QuickInfoWidget), container[0]);
 
 		$("#header").append(container);
-		$("#navbar-setting").before(icon);
+
+		var settingsIcon = $("#navbar-setting");
+		if (settingsIcon.length <= 0) {
+			settingsIcon = $("#navbar-settings");
+		}
+
+		settingsIcon.before(icon);
 	});
 
 	return {
