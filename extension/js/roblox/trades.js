@@ -181,8 +181,8 @@ Roblox.Services.Trades = class extends Extension.BackgroundService {
 					return;
 				}
 
-				$.get(`https://www.roblox.com/users/${userId}/profile`).done((r) => {
-					resolve(r.includes("cantrade=true"));
+				$.get(`https://trades.roblox.com/v1/users/${userId}/can-trade-with`).done(r => {
+					resolve(r.canTrade);
 				}).fail(Roblox.api.$reject(reject));
 			}).catch(reject);
 		}, [userId], {
