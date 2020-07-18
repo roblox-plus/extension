@@ -32,7 +32,7 @@ RPlus.style = RPlus.style || (function () {
 			}
 
 			if ($("#BodyWrapper,form[action^='/build/']").length > 0) {
-				var hasDarkTheme = window.parent && window.parent !== window ? window.parent.document.body.classList.contains(darkThemeClass) : $("#header").hasClass(darkThemeClass);
+				var hasDarkTheme = window.parent && window.parent !== window ? window.parent.document.body.classList.contains(darkThemeClass) : ($("#header").hasClass(darkThemeClass) || $("#navigation-container").hasClass(darkThemeClass));
 				document.body.classList.toggle(darkThemeClass, hasDarkTheme);
 				document.body.classList.toggle("rplus-dark-theme", hasDarkTheme);
 			}
