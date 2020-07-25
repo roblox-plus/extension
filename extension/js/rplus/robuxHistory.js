@@ -4,7 +4,7 @@ RPlus.Services.RobuxHistory = class extends Extension.BackgroundService {
 	constructor(extension) {
 		super("RPlus.robuxHistory");
 
-		this.robuxHistoryMaxAge = 32; // Measured in days - 30 days is up to 43,200 data points
+		this.robuxHistoryMaxAge = 32 * 12; // Measured in days - 30 days is up to 43,200 data points
 		this.currencyHolderTypes = {
 			"User": "User",
 			"Group": "Group"

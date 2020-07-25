@@ -10,9 +10,9 @@ class RobuxHistoryChart extends React.Component {
 
 		this.state = {
 			chartName: "Robux History",
-			days: Math.max(1, Math.min(props.days, 30)),
+			days: Math.max(1, Math.min(props.days, 366)),
 			minDays: 1,
-			maxDays: 30,
+			maxDays: 366,
 			startDate: new Date(),
 			chartData: null,
 			mode: this.modes.hourly
@@ -190,6 +190,8 @@ RPlus.robuxHistory.isEnabled().then(robuxHistoryEnabled => {
 				return 1;
 			case "week":
 				return 7;
+			case "year":
+				return 366;
 			case "month":
 			default:
 				return 30;
