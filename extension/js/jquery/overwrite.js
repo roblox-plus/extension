@@ -17,7 +17,9 @@ rplus.ajax = [
 				return;
 			}
 
-			var maxPage = Math.max(1, Math.ceil(r.TotalCollectionSize / 10));
+			var maxRows = $("#rbx-running-games").data("maximumrows") || 10;
+			var totalServers = Math.min(r.TotalCollectionSize, Number($("#rbx-running-games").attr("data-max-servers")) || Infinity);
+			var maxPage = Math.max(1, Math.ceil(totalServers / maxRows));
 			console.log("Max games page: " + maxPage);
 
 			$(".rbx-running-games-footer .pager-total>span:last-child").text(maxPage);

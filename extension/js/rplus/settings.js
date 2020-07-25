@@ -4,7 +4,14 @@ RPlus.Services.Settings = class extends Extension.BackgroundService {
 	constructor() {
 		super("RPlus.settings");
 		
-		this.settingFields = { "updateLog": "", "serialTracker": true, "checkPremiumOnServer": false, "updateLogPost": "", "sponsoredCatalogItemsEnabled": false };
+		this.settingFields = {
+			"updateLog": "", 
+			"serialTracker": true, 
+			"checkPremiumOnServer": false, 
+			"updateLogPost": "",
+			"sponsoredCatalogItemsEnabled": false,
+			"gameServerCap": 1261
+		};
 
 		this.register([
 			this.get,
@@ -48,7 +55,7 @@ RPlus.Services.Settings = class extends Extension.BackgroundService {
 				}
 
 				let upload = `<roblox${encodeURIComponent(JSON.stringify(ns))}</roblox>`;
-				$.post(`https://data.roblox.com/Data/Upload.ashx?assetid=311113112&type=Model&length=${upload.length}`, upload).done(function (r) {
+				$.post(`https://data.roblox.com/Data/Upload.ashx?assetid=311113112&type=Model&length=${upload.length}`, upload).done((r) => {
 					resolve(ns);
 				}).fail(Roblox.api.$reject(reject));
 			}).catch(reject);
