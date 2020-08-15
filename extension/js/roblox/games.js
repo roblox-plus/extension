@@ -8,10 +8,11 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 		super("Roblox.games");
 
 		let securityParameters = $.param({ verification: Extension.Singleton.id, _: +new Date });
-		this.launchFrame = $("<iframe>").hide();
+		this.launchFrame = $("<iframe id=\"roblox-plus-game-launcher\">").hide();
 		this.baseLaunchUrl = "https://assetgame.roblox.com/game/PlaceLauncher.ashx?";
 		this.authTicketUrl = `https://auth.roblox.com/v1/authentication-ticket?${securityParameters}`;
 		this.refererOverrideValue = "https://www.roblox.com/users/48103520/profile?roblox=plus";
+		this.launchMessenger = new Extension.Messaging(this.extension, `Extension.BackgroundService.${this.serviceId}.ProtocolLaunchMessenger`, this.tryLaunchProtocolUrl.bind(this));
 
 		this.register([
 			this.getAuthTicket,
@@ -161,8 +162,39 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 
 			this.getAuthTicket().then((authTicket) => {
 				let launchUrl = this.baseLaunchUrl + $.param(launchParameters);
-				this.launchFrame.attr("src", "roblox-player:1+launchmode:play+gameinfo:" + authTicket + "+launchtime:" + (+new Date) + "+placelauncherurl:" + encodeURIComponent(launchUrl));
+				this.launchMessenger.sendMessage({
+					protocolUrl: "roblox-player:1+launchmode:play+gameinfo:" + authTicket + "+launchtime:" + (+new Date) + "+placelauncherurl:" + encodeURIComponent(launchUrl)
+				}).then(resolve).catch(reject);
+			}).catch(reject);
+		});
+	}
+
+	tryLaunchProtocolUrl(message) {
+		// Basically this exists because I'm pretty sure the reason the entire chrome browser _just crashes_ when trying to launch a game
+		// is because of how protocol URLs are launched. If it has to pop up and ask "are you sure you want to launch Roblox?" and it's in a background page
+		// the whole browser just shuts down. This should at least prevent _some of that_ by "if they have a tab open, use that instead!"
+		return new Promise((resolve, reject) => {
+			let protocolUrl = message.data.protocolUrl;
+			if (!protocolUrl) {
+				reject("Missing protocolUrl");
+				return;
+			}
+
+			if (Extension.Singleton.executionContextType === Extension.ExecutionContextTypes.tab) {
+				this.launchFrame.attr("src", protocolUrl);
 				resolve({});
+				return;
+			}
+
+			this.launchMessenger.getAllTabIds().then(tabIds => {
+				if (tabIds.length > 0) {
+					this.launchMessenger.sendMessage({
+						protocolUrl: protocolUrl
+					}, tabIds[0]).then(resolve).catch(reject);
+				} else {
+					this.launchFrame.attr("src", protocolUrl);
+					resolve({});
+				}
 			}).catch(reject);
 		});
 	}
@@ -289,12 +321,12 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 
 Roblox.games = new Roblox.Services.Games();
 
+$(function () {
+	$("body").append(Roblox.games.launchFrame);
+});
+
 switch (Extension.Singleton.executionContextType) {
 	case Extension.ExecutionContextTypes.background:
-		$(function () {
-			$("body").append(Roblox.games.launchFrame);
-		});
-
 		chrome.webRequest.onBeforeSendHeaders.addListener(function (data) {
 			var swappedReferer = false;
 
