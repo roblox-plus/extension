@@ -98,28 +98,6 @@ Roblox.users.getAuthenticatedUser().then(function (user) {
 			return { redirectUrl: "https://assetgame.roblox.com/asset/" + match[1] };
 		}, { urls: ["*://www.roblox.com/asset/*"] }, ["blocking"]);
 
-		// Sound is dumb sometimes: net::ERR_CONTENT_DECODING_FAILED
-		chrome.webRequest.onBeforeRequest.addListener(function (details) {
-			let redirectUrl = details.url.replace(/c(\d)\.rbxcdn\.com/i, "c$1ak.rbxcdn.com");
-			console.log("Redirecting...", details.url, redirectUrl);
-			return {
-				redirectUrl: redirectUrl
-			};
-		}, {
-			urls: [
-				"*://c0.rbxcdn.com/*",
-				"*://c1.rbxcdn.com/*",
-				"*://c2.rbxcdn.com/*",
-				"*://c3.rbxcdn.com/*",
-				"*://c4.rbxcdn.com/*",
-				"*://c5.rbxcdn.com/*",
-				"*://c6.rbxcdn.com/*",
-				"*://c7.rbxcdn.com/*"
-			]
-		}, [
-			"blocking"
-		]);
-
 		chrome.webRequest.onHeadersReceived.addListener(function (details) {
 			var id = Roblox.catalog.getIdFromUrl(details.url);
 			if (id > 0) {
