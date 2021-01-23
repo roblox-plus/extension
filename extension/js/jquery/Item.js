@@ -70,11 +70,11 @@ RPlus.Pages.Item = function () {
 	}
 
 	var canViewOwners = function() {
-		if (item.creator.id === 1) {
-			return item.assetTypeId !== 1 && item.assetTypeId !== 4;
+		if (item.limited) {
+			return true;
 		}
 
-		if (Roblox.users.authenticatedUserId === 48103520 || canAuthenticatedUserEdit()) {
+		if (canAuthenticatedUserEdit()) {
 			return true;
 		}
 
@@ -88,14 +88,12 @@ RPlus.Pages.Item = function () {
 			return;
 		}
 
-		if (item.creator.id === 1 || canAuthenticatedUserEdit()) {
+		if (canAuthenticatedUserEdit()) {
 			callBack(true);
 			return;
 		}
 
-		RPlus.premium.isPremium(Roblox.users.authenticatedUserId).then(callBack).catch(function(e) {
-			callBack(false);
-		});
+		callBack(false);
 	};
 
 	var canViewAssetContents = function() {
