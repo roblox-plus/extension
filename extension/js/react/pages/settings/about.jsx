@@ -22,15 +22,11 @@ class About extends React.Component {
 				this.getFeatureRow("Sales + Revenue charts", "On item details pages and the group configure page charts will be added under the sales tab (or group summary tab) with sales per hour/day. This feature will show up for Roblox+ Premium users only."),
 				this.getFeatureRow("Texture download", "A download option is added to Roblox created images."),
 				this.getFeatureRow("Asset contents", "On item details pages a tab is added to view content the asset depends on."),
-				this.getFeatureRow("Asset owners list", "A list of owners is added as a tab on item details pages depending on the asset type and creator."),
+				this.getFeatureRow("Asset owners list", "A list of owners is added as a tab on item details pages for limited items, or items you've created."),
 				this.getFeatureRow("Delete from inventory page", "Delete buttons are added to the inventory page for some asset types."),
 				this.getFeatureRow("Avatar filter bar", "A text box is added to the avatar page to filter visible items down to items that match the text."),
 				this.getFeatureRow("Roblox+ notification stream", "Clicking the extension browser icon while on a Roblox page will take over the notification stream with notifications from Roblox+."),
 				this.getFeatureRow("Comment timer", "A timer is added to the asset comment button for how long until you can post another comment.", true),
-				this.getFeatureRow("Unfollow all users button on Friends page", "A button is added to your friends page to unfollow all users you are not friends with.", true),
-				this.getFeatureRow("Follow all friends button on Friends page", "A button is added to your friends page to follow all users you are friends with.", true),
-				this.getFeatureRow("Profile sale statistics", "Buttons are added to the profile page to calculate sales of clothing with user stats.", true),
-				this.getFeatureRow("Badge counter", "On the profile page you can calculate how many game badges a user has earned overall.", true),
 				this.getFeatureRow("Trade.", "On the Trade. group wall if you click into the context menu, each poster has a Trade button that opens to the trade window for the poster when clicked.", true),
 			]
 		};

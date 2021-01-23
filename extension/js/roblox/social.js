@@ -127,19 +127,31 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 				return;
 			}
 
-			$.get("https://api.roblox.com/user/following-exists", {
-				userId: followingUserId,
-				followerUserId: userId,
-			}).done((data) => {
-				if (data.success) {
-					resolve(data.isFollowing);
-				} else {
+			Roblox.users.getAuthenticatedUser().then(user => {
+				if (!user) {
 					reject([{
 						code: 0,
-						message: "Unknown error checking follow status"
+						message: "Unauthenticated"
 					}]);
+					return;
 				}
-			}).fail(Roblox.api.$reject(reject));
+
+				if (user.id !== userId) {
+					reject([{
+						code: 0,
+						message: "userId must match authenticated user id :("
+					}]);
+					return;
+				}
+
+				$.post("https://friends.roblox.com/v1/user/following-exists", {
+					targetUserIds: [
+						followingUserId
+					]
+				}).done(data => {
+					resolve(data.followings[0].isFollowing);
+				}).catch(Roblox.api.$reject(reject));
+			}).catch(reject);
 		}, [userId, followingUserId], {
 			queued: true,
 			resolveExpiry: 60 * 1000,
