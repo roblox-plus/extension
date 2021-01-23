@@ -119,6 +119,7 @@
 				"/js/jquery/Avatar.js",
 				"/js/jquery/Catalog.js",
 				"/js/jquery/Messages.js",
+				"/js/jquery/DeveloperStats.js",
 
 				"/js/jquery/loadPages.js"
 			],
@@ -253,6 +254,16 @@
 			"matches": [
 				"*://*.roblox.com/catalog/*/*",
 				"*://*.roblox.com/library/*/*"
+			],
+			"run_at": "document_start"
+		},
+		
+		{
+			"js": [
+				"/js/output/react/pages/developer-stats/premium-payouts-summary.js"
+			],
+			"matches": [
+				"*://*.roblox.com/places/*/*"
 			],
 			"run_at": "document_start"
 		},
