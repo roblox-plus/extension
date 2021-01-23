@@ -322,7 +322,15 @@ RPlus.navigation = RPlus.navigation || (function () {
 
 		// Control Panel link
 		if ($("#navigation").length && !$("#navigation .rplus-icon").length) {
-			$("#navigation .rbx-upgrade-now").before("<li><a href=\"/my/account?tab=rplus\" class=\"text-nav\"><span class=\"rplus-icon\"></span><span>Control Panel</span></a></li>");
+			let navigationItem = $("<li>").append(
+				$("<a href=\"/my/account?tab=rplus\" class=\"dynamic-overflow-container text-nav\">").append(
+					$("<div>").append(
+						$("<span class=\"rplus-icon\">")
+					),
+					$("<span class=\"font-header-2 dynamic-ellipsis-item\">").text("Control Panel")
+				));
+
+			$("#navigation .rbx-upgrade-now").before(navigationItem);
 		}
 
 		// Allow messages button in navigation bar to refresh the page while on the messages page
