@@ -46,64 +46,6 @@ RPlus.Pages.Profile = function () {
 		}
 	}).catch(console.warn);
 
-	setTimeout(function () {
-		// Delayed because angular loads in widget
-
-		var originalButton = $(".container-header > a[ng-href *= '/badges']");
-		var header = originalButton.parent().find(">h3");
-		var ticks = 0;
-
-		function countBadges(count, cursor) {
-			ticks++;
-			header.text("Player Badges (Counting" + (".").repeat((ticks % 3) + 1) + ")");
-
-			return new Promise(function (resolve, reject) {
-				Roblox.inventory.getPlayerBadges(id, cursor).then(function(badges) {
-					if (badges.nextPageCursor) {
-						countBadges(count + badges.data.length, badges.nextPageCursor).then(resolve).catch(reject);
-					} else {
-						resolve(badges.data.length + count);
-					}
-				}).catch(reject);
-			});
-		}
-
-		var button = $("<a>").attr({
-			href: "javascript:/* Roblox+ */",
-			class: "btn-fixed-width btn-secondary-xs"
-		}).click(function () {
-			$(this).hide();
-			header.text("Player Badges (Counting...)");
-			countBadges(0, "").then(function(count) {
-				header.text("Player Badges (" + count + ")");
-			}).catch(function(e) {
-				console.warn(e);
-			});
-		}).css("float", "right").text("Count");
-
-		$(".container-header > a[ng-href *= '/badges']").after(button);
-	}, 1337);
-
-	foreach({ 3: "Clothing", 6: "Model" }, function (n, o) {
-		var count = 0, stat, load;
-		load = function (page) {
-			stat.text(".".repeat((page % 3) + 1));
-			$.get("/catalog/json?Subcategory=" + n + "&ResultsPerPage=42&IncludeNotForSale=true&CreatorId=" + id + "&PageNumber=" + page).done(function (r) {
-				for (var n in r) {
-					count += Number((r[n].Sales || "").replace(/\D+/g, "")) || 0;
-				}
-				if (r.length == 42) {
-					load(page + 1);
-				} else {
-					stat.text(addComma(count));
-				}
-			}).fail(function () {
-				setTimeout(load, 250, page);
-			});
-		};
-		$(".profile-stats-container").append($("<li class=\"profile-stat\">").append($("<p class=\"text-label\">").text(o + " Sales")).append(stat = $("<p class=\"text-lead\">").append($("<a href=\"javascript:/* Roblox+ */\">[ Load ]</a>").click(function () { load(1); }))));
-	});
-
 	if (($(".btn-friends:not([rplus])>button").text() || "").trim() == "Unfriend") {
 		Extension.Storage.Singleton.get("friendNotifier").then(function (notifier) {
 			if (!notifier.on) { return; }
