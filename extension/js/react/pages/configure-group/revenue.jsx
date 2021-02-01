@@ -92,7 +92,7 @@ Roblox.users.getAuthenticatedUser().then(function(user) {
 		}
 
 		setInterval(function() {
-			var groupRevenueSummaryTab = $("group-revenue-summary");
+			var groupRevenueSummaryTab = $("revenue-summary");
 			if (groupRevenueSummaryTab.length > 0){
 				var rplusRevenueContainer = groupRevenueSummaryTab.find("#rplus-group-revenue");
 				if (rplusRevenueContainer.length <= 0) {
