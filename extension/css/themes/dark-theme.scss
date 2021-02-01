@@ -227,19 +227,6 @@ $tab-text-active-color: #fff;
 			background-color: $Flint;
 		}
 
-		/* Money */
-		.MyMoneyPage {
-			#Summary_tab .RobuxColumn, 
-			#Summary_tab .TicketsColumn,
-			.StandardPanelContainer .StandardPanelWhite {
-				background: transparent;
-			}
-
-			.loading {
-				background: $Slate url(https://static.rbxcdn.com/images/ProgressIndicator4.gif) no-repeat center !important;
-			}
-		}
-
 		/* VIP Server Configuration */
 		#configure-form {
 			#whitelist.disabled {

@@ -273,7 +273,7 @@
 				"/js/output/react/pages/money/robux-history-chart.js"
 			],
 			"matches": [
-				"*://*.roblox.com/My/Money.aspx"
+				"*://*.roblox.com/transactions*"
 			],
 			"run_at": "document_end"
 		}
