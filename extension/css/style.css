@@ -236,33 +236,6 @@ input.rplusslider[type='range']::-webkit-slider-thumb{
 	text-decoration: underline;
 }
 
-/* Money */
-#RPlusTradeId{
-	position: absolute;
-	top: 3px;
-	left: 3px;
-	font-size: 10px;
-	color: rgb(150,150,150);
-}
-
-#rplusCancelOutbound{
-	position: absolute;
-	width: 58px;
-	left: calc(100% - 75px);
-}
-
-#TradeRequest .InventoryItemContainerOuter:hover .InventoryItemContainerInner{
-	height: 170px !important;
-}
-#TradeRequest .InventoryItemContainerOuter[withserial]:hover .InventoryItemContainerInner{
-	height: 190px !important;
-}
-
-.InventoryItemContainerInner:hover .BuildersClubOverlay{
-	top: -78px !important;
-}
-
-
 /* Inventory */
 .recommended-thumb{
 	position: relative;

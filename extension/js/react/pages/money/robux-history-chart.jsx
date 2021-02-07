@@ -176,50 +176,44 @@ RPlus.robuxHistory.isEnabled().then(robuxHistoryEnabled => {
 		return;
 	}
 
-	let robuxHistoryContainer = $("<div id=\"rplus-robux-history\">");
-	let summaryTab = $("#Summary_tab").append(robuxHistoryContainer);
-
-	// This.... is a sin.......
-	let modeContainer = $("<div class=\"SortsAndFilters\">");
-	let modeLabel = $("<span class=\"form-label\">").text("Time Step:");
-	let modeSelect = $("<select class=\"form-select\">");
-
 	const getDays = () => {
-		switch ($("#TimePeriod").val()) {
-			case "day":
-				return 1;
-			case "week":
-				return 7;
-			case "year":
-				return 366;
-			case "month":
-			default:
-				return 30;
+		let days = [1, 7, 30, 366];
+		let li = $(".transaction-date-dropdown ul>li");
+		for (let i = 0; i < li.length; i++) {
+			if ($(li[i]).hasClass("active")) {
+				return days[i];
+			}
 		}
+		
+		return days[2];
 	};
 
-	(["Raw", "Hourly", "Daily"]).forEach(function(mode) {
-		let option = $("<option>").val(mode.toLowerCase()).text(mode);
-		modeSelect.append(option);
-	});
+	let currentDays = getDays();
+	let robuxHistoryContainer = $("<div id=\"rplus-robux-history\">");
+	let transactionsPageContainer = $("#transactions-page-container").after(robuxHistoryContainer);
 
-	modeSelect.val("hourly");
-
-	console.log("Render RobuxHistoryChart in #Summary_tab (" + summaryTab.length + ")");
-	let robuxHistoryChart = ReactDOM.render(<RobuxHistoryChart currencyHolderType="User" currencyHolderId={Roblox.users.authenticatedUserId} days={getDays()} />, robuxHistoryContainer[0]);
+	console.log("Render RobuxHistoryChart in #transactions-page-container (" + transactionsPageContainer.length + ")");
+	let robuxHistoryChart = ReactDOM.render(<RobuxHistoryChart currencyHolderType="User" currencyHolderId={Roblox.users.authenticatedUserId} days={currentDays} />, robuxHistoryContainer[0]);
 	console.log(robuxHistoryChart);
 
-	$("#TimePeriod").change(function() {
+	setInterval(() => {
+		if (transactionsPageContainer.find("div.summary").length > 0) {
+			robuxHistoryContainer.show();
+		} else {
+			robuxHistoryContainer.hide();
+			return;
+		}
+
+		const nowDays = getDays();
+		if (nowDays === currentDays) {
+			return;
+		}
+
+		currentDays = nowDays;
 		robuxHistoryChart.componentWillReceiveProps({
-			days: getDays()
+			days: nowDays
 		});
-	});
-
-	modeSelect.change(function(e) {
-		robuxHistoryChart.setMode(e.originalEvent);
-	});
-
-	$("#TimePeriod").parent().after(modeContainer.append(modeLabel, modeSelect));
+	}, 500);
 }).catch(console.warn);
 
 // WebGL3D
