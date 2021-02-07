@@ -76,6 +76,7 @@ if (Extension.Singleton.executionContextType == Extension.ExecutionContextTypes.
 				"Accept": "*/*",
 				"Accept-Encoding": "deflate, gzip",
 				"Cookie": "",
+				"X-CSRF-TOKEN": "",
 				"Content-Type": "application/xml",
 				"Requester": "Client",
 				"Content-Length": url.param("length", details.url)
