@@ -7,8 +7,12 @@ RPlus.Pages.init = function() {
 		return;
 	}
 
-	for (var pageName in RPlus.Pages) {
+	for (let pageName in RPlus.Pages) {
 		if (RPlus.Pages.hasOwnProperty(pageName)) {
+			if (pageName === "init") {
+				continue;
+			}
+
 			if (typeof (RPlus.Pages[pageName]) != "function") {
 				console.warn("Miss-indexed page value:", pageName);
 			}
