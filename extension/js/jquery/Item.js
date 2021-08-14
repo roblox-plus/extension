@@ -102,7 +102,26 @@ RPlus.Pages.Item = function () {
 			return true;
 		}
 
-		var enabledAssetTypes = ["LeftArm", "RightArm", "Torso", "Head", "RightLeg", "LeftLeg", "Hat", "Gear", "Face", "Package", "Waist Accessory", "Back Accessory", "Front Accessory", "Hair Accessory", "Shoulder Accessory", "Neck Accessory", "Face Accessory"];
+		var enabledAssetTypes = [
+			"LeftArm",
+			"RightArm",
+			"Torso",
+			"Head",
+			"RightLeg",
+			"LeftLeg",
+			"Hat",
+			"Gear",
+			"Face",
+			"Package",
+			"Waist Accessory",
+			"Back Accessory",
+			"Front Accessory",
+			"Hair Accessory",
+			"Shoulder Accessory",
+			"Neck Accessory",
+			"Face Accessory",
+			"EmoteAnimation"
+		];
 		if (enabledAssetTypes.indexOf(item.assetType) >= 0) {
 			return true;
 		}

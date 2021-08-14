@@ -76,16 +76,6 @@ class OtherSettings extends SettingsTab {
 				</div>
 				<div class="section">
 					<div class="container-header">
-						<h3>Groups</h3>
-					</div>
-					<div class="section-content">
-						<span class="text-lead">Display role on group wall post.</span>
-						<PillToggle getValue={this.getPillValue.bind(this, "groupRoleDisplay")}
-							onToggle={this.setPillValue.bind(this, "groupRoleDisplay")} />
-					</div>
-				</div>
-				<div class="section">
-					<div class="container-header">
 						<h3>Money</h3>
 					</div>
 					<div class="section-content">

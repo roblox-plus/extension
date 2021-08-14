@@ -120,6 +120,36 @@ Roblox.Services.Groups = class extends Extension.BackgroundService {
 			}).catch(reject);
 		});
 	}
+
+	getGroupShout(groupId) {
+		return CachedPromise(`${this.serviceId}.getGroupShout`, (resolve, reject) => {
+			if (typeof (groupId) != "number" || groupId <= 0) {
+				reject([{
+					code: 1,
+					message: "Group is invalid or does not exist."
+				}]);
+				return;
+			}
+
+			$.get(`https://groups.roblox.com/v1/groups/${groupId}`).done(data => {
+				if (data.shout && data.shout.poster) {
+					resolve({
+						body: data.shout.body,
+						poster: {
+							id: data.shout.poster.userId,
+							name: data.shout.poster.username
+						},
+						updated: data.shout.updated
+					});
+				} else {
+					resolve(null);
+				}
+			}).fail(Roblox.api.$reject(reject));
+		}, [groupId], {
+			queued: true,
+			resolveExpiry: 2 * 60 * 1000
+		});
+	}
 };
 
 Roblox.groups = new Roblox.Services.Groups();
