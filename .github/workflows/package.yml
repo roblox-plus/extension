@@ -42,4 +42,3 @@ jobs:
         with:
           name: extension
           path: extension/**
-        working-directory: extension
