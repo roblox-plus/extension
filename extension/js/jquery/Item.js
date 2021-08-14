@@ -120,7 +120,7 @@ RPlus.Pages.Item = function () {
 			"Shoulder Accessory",
 			"Neck Accessory",
 			"Face Accessory",
-			"Emote"
+			"EmoteAnimation"
 		];
 		if (enabledAssetTypes.indexOf(item.assetType) >= 0) {
 			return true;
