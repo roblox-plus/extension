@@ -23,7 +23,7 @@ jobs:
       - name: Set manifest version
         run: |
           jq '|= { "version": "2.4.${{ github.run_number }}" }' manifest.json > tmp.$$.json && mv tmp.$$.json manifest.json
-          echo manifest.json
+          cat manifest.json
         working-directory: extension
 
       # Bundling
