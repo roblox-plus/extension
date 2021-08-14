@@ -13,6 +13,7 @@ RPlus.Pages.Profile = function () {
 		$("#about>.profile-collections>.container-header>h3").after("<a href=\"/catalog/browse.aspx?Subcategory=17&SortType=3&IncludeNotForSale=true\" class=\"btn-secondary-sm btn-more inventory-link\">Recent</a>");
 	}
 
+	/*
 	setInterval(function () {
 		if (($(".btn-friends:not([rplus])>button").text() || "").trim() == "Unfriend") {
 			var original; original = $(".btn-friends").after($("<li class=\"btn-friends\" rplus>").mouseover(function () {
@@ -32,6 +33,7 @@ RPlus.Pages.Profile = function () {
 			}).append("<button class=\"btn-control-md\">Unfriend</button>")).attr("rplus", "").hide();
 		}
 	}, 250);
+	//*/
 
 	Extension.Storage.Singleton.get("profileRAP").then(function(profileRAP) {
 		if (profileRAP) {
