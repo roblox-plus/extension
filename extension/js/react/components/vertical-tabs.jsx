@@ -25,7 +25,7 @@ class VerticalTabs extends React.Component {
 			tabListItems.push(
 				<li className={"menu-option" + (tab === activeTab ? " active" : "")}
 					onClick={ verticalTabs.selectTab.bind(verticalTabs, tab) }>
-					<a class="rbx-tab-heading">
+					<a class="rbx-tab-heading menu-option-content">
 						<span class="font-caption-header">{ tab.label }</span>
 					</a>
 				</li>
