@@ -20,7 +20,7 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 		quickInfoWidget.processInput(e.originalEvent.dataTransfer.getData("text"));
 	});
 
-	$(document).ready(function() {
+	const addIconToHeader = () => {
 		if ($("#header").length <= 0) {
 			return;
 		}
@@ -35,7 +35,12 @@ RPlus.quickInfo = RPlus.quickInfo || (function () {
 			settingsIcon = $("#navbar-settings");
 		}
 
-		settingsIcon.before(icon);
+		settingsIcon.after(icon);
+	};
+
+	$(document).ready(function() {
+		// This fix sucks.
+		setTimeout(addIconToHeader, 250);
 	});
 
 	return {

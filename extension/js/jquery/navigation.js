@@ -237,6 +237,23 @@ RPlus.navigation = RPlus.navigation || (function () {
 	$(function () {
 		// Sync counters with settings
 		let updateLoop = function () {
+			// Control Panel link
+			if ($("#navigation").length && !$("#navigation .rplus-icon").length) {
+				let navigationItem = $("<li>").append(
+					$("<a href=\"/my/account?tab=rplus\" class=\"dynamic-overflow-container text-nav\">").append(
+						$("<div>").append(
+							$("<span class=\"rplus-icon\">")
+						),
+						$("<span class=\"font-header-2 dynamic-ellipsis-item\">").text("Control Panel")
+					));
+	
+				$("#navigation .rbx-upgrade-now").before(navigationItem);
+			}
+	
+			// Allow messages button in navigation bar to refresh the page while on the messages page
+			// TODO: Investigate what's overriding this (it doesn't work)
+			$("#nav-message").attr("href", "/my/messages");
+
 			getNavigationSettings(function (navigationSettings) {
 				let loops = 0;
 				let maxLoops = 1;
@@ -319,23 +336,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 				RPlus.navigation.setSideNavigationOpen(true);
 			}
 		});
-
-		// Control Panel link
-		if ($("#navigation").length && !$("#navigation .rplus-icon").length) {
-			let navigationItem = $("<li>").append(
-				$("<a href=\"/my/account?tab=rplus\" class=\"dynamic-overflow-container text-nav\">").append(
-					$("<div>").append(
-						$("<span class=\"rplus-icon\">")
-					),
-					$("<span class=\"font-header-2 dynamic-ellipsis-item\">").text("Control Panel")
-				));
-
-			$("#navigation .rbx-upgrade-now").before(navigationItem);
-		}
-
-		// Allow messages button in navigation bar to refresh the page while on the messages page
-		// TODO: Investigate what's overriding this (it doesn't work)
-		$("#nav-message").attr("href", "/my/messages");
 
 		updateLoop();
 	});
