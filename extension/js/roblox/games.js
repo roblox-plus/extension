@@ -21,8 +21,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 			this.launch,
 			this.getGroupGames,
 			this.hasJoinedServer,
-			this.trackJoinedServer,
-			this.getAllRunningServers
+			this.trackJoinedServer
 		]);
 	}
 
@@ -269,71 +268,6 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 			var cache = RPlus.notifiers.gameServerTracker.getCache();
 			cache[gameServerId] = +new Date;
 			resolve({});
-		});
-	}
-
-	getAllRunningServers(placeId) {
-		return CachedPromise(`${this.serviceId}.getAllRunningServers`, (resolve, reject) => {
-			var runningServers = [];
-			var serverMap = {};
-			var serversData = {
-				PlaceId: placeId,
-				ShowShutdownAllButton: false,
-				TotalCollectionSize: 0,
-				Collection: []
-			};
-
-			const getRunningServers = (cursor) => {
-				this.getServers(placeId, cursor).then((data) => {
-					if (data.ShowShutdownAllButton) {
-						serversData.ShowShutdownAllButton = data.ShowShutdownAllButton;
-					}
-
-					data.data.forEach((server) => {
-						if (serverMap.hasOwnProperty(server.Guid)) {
-							return;
-						}
-
-						var players = [];
-						server.CurrentPlayers.forEach((player) => {
-							players.push({
-								id: player.Id,
-								username: player.Username
-							});
-						});
-
-						serversData.Collection.push(server);
-
-						runningServers.push(serverMap[server.Guid] = {
-							id: server.Guid,
-							capacity: server.Capacity,
-							framesPerSecond: server.Fps,
-							ping: server.Ping,
-							isSlow: server.ShowSlowGameMessage,
-							playerList: players
-						});
-					});
-
-					if (data.nextPageCursor) {
-						getRunningServers(data.nextPageCursor);
-					} else {
-						serversData.TotalCollectionSize = serversData.Collection.length;
-						serversData.Collection = serversData.Collection.sort((a, b) => {
-							return a.CurrentPlayers.length - b.CurrentPlayers.length;
-						});
-
-						resolve({
-							servers: runningServers,
-							data: serversData
-						});
-					}
-				}).catch(reject);
-			};
-
-			getRunningServers(1);
-		}, [placeId], {
-			resolveExpiry: 120 * 1000,
-			rejectExpiry: 5 * 1000
 		});
 	}
 };
