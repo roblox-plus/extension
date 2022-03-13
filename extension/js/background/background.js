@@ -29,7 +29,7 @@ foreach({
 		"counterCommas": 100000000,
 		"buttons": [
 			{ text: "Create", href: "/develop" },
-			{ text: "Trade", href: "/my/money.aspx#/#TradeItems_tab" }
+			{ text: "Robux", href: "/robux?ctx-nav" }
 		]
 	},
 	"userSince": getMil()
