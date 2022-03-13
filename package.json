@@ -6,7 +6,7 @@
 		"scss": ".\\node_modules\\.bin\\node-sass extension/css -o extension/css/output"
 	},
 	"devDependencies": {
-		"node-sass": "^6.0.1",
+		"node-sass": "^7.0.0",
 		"@babel/cli": "^7.14.8",
 		"@babel/core": "^7.15.0",
 		"@babel/preset-react": "^7.14.5"
