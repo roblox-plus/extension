@@ -213,6 +213,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 		var button = $("ul.nav.rbx-navbar").first().find(">li>a")[buttonIndex];
 		if (button) {
 			return {
+				button: $(button),
 				text: $(button).text(),
 				href: $(button).attr("href")
 			};
@@ -225,13 +226,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 			return;
 		}
 
-		$("ul.nav.rbx-navbar").each(function () {
-			var li = $(this).find(">li>a");
-			var button = li[buttonIndex];
-			if (button) {
-				$(button).text(text).attr("href", link);
-			}
-		});
+		buttonTextAndLink.button.text(text).attr("href", link);
 	};
 
 	$(function () {
