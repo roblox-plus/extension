@@ -13,7 +13,10 @@ Extension.Storage = class extends Extension.BackgroundService {
 		return new Promise((resolve, reject) => {
 			let value = null;
 			try {
-				value = this.getSync(key);
+				const proposedValue = this.getSync(key);
+				if (proposedValue !== undefined) {
+					value = proposedValue;
+				}
 			} catch (e) {
 				reject(e);
 				return;
