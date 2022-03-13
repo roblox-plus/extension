@@ -47,25 +47,6 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 		});
 	}
 
-	getServers(placeId, cursor) {
-		return CachedPromise(`${this.serviceId}.getServers`, (resolve, reject) => {
-			$.get("https://www.roblox.com/games/getgameinstancesjson", {
-				placeId: placeId,
-				startindex: (cursor - 1) * 10
-			}).done((r) => {
-				resolve({
-					nextPageCursor: r.TotalCollectionSize > cursor * 10 && r.Collection.length >= 10 ? cursor + 1 : null,
-					previousPageCursor: cursor > 1 ? cursor - 1 : null,
-					data: r.Collection
-				});
-			}).fail(Roblox.api.$reject(reject));
-		}, [placeId, cursor], {
-			queued: true,
-			resolveExpiry: 15 * 1000,
-			rejectExpiry: 10 * 1000
-		});
-	}
-
 	getVipServerById(vipServerId) {
 		return CachedPromise(`${this.serviceId}.getVipServers`, (resolve, reject) => {
 			$.get(`https://games.roblox.com/v1/vip-servers/${vipServerId}`).done((r) => {
@@ -305,6 +286,32 @@ switch (Extension.Singleton.executionContextType) {
 			urls: [Roblox.games.authTicketUrl],
 			types: ["xmlhttprequest"]
 		}, ["blocking", "requestHeaders", "extraHeaders"]);
+
+		chrome.webRequest.onBeforeRequest.addListener(request => {
+			const url = new URL(request.url);
+			if (!url.pathname.match(/^\/v1\/games\/\d+\/servers\/Public/i)) {
+				return;
+			}
+
+			const ascendingGameServersSortOrderEnabled = Extension.Storage.Singleton.getSync("ascendingGameServersSortOrder");
+			if (!ascendingGameServersSortOrderEnabled) {
+				return;
+			}
+
+			const currentSortOrder = url.searchParams.get("sortOrder");
+			if (currentSortOrder !== "Asc") {
+				url.searchParams.set("sortOrder", "Asc");
+			} else {
+				return;
+			}
+
+			return {
+				redirectUrl: url.toString()
+			};
+		}, {
+			urls: ["https://games.roblox.com/v1/games/*/servers/Public*"],
+			types: ["xmlhttprequest"]
+		}, ["blocking"]);
 
 		break;
 	case Extension.ExecutionContextTypes.tab:

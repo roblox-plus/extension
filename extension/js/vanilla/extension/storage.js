@@ -13,13 +13,7 @@ Extension.Storage = class extends Extension.BackgroundService {
 		return new Promise((resolve, reject) => {
 			let value = null;
 			try {
-				let rawValue = localStorage.getItem(key);
-				if (typeof(rawValue) === "string") {
-					let valueArray = JSON.parse(rawValue);
-					if (Array.isArray(valueArray) && valueArray.length > 0) {
-						value = valueArray[0];
-					}
-				}
+				value = this.getSync(key);
 			} catch (e) {
 				reject(e);
 				return;
@@ -27,6 +21,20 @@ Extension.Storage = class extends Extension.BackgroundService {
 			
 			resolve(value);
 		});
+	}
+
+	getSync(key) {
+		if (Extension.Singleton.executionContextType !== Extension.ExecutionContextTypes.background) {
+			throw new Error("Extension.Storage.getSync only available in the background page");
+		}
+
+		let rawValue = localStorage.getItem(key);
+		if (typeof(rawValue) === "string") {
+			let valueArray = JSON.parse(rawValue);
+			if (Array.isArray(valueArray) && valueArray.length > 0) {
+				return valueArray[0];
+			}
+		}
 	}
 
 	set(key, value) {

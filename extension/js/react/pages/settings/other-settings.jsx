@@ -31,6 +31,13 @@ class OtherSettings extends SettingsTab {
 						<span class="text-description">Keeps track of which game servers you've joined and which ones you haven't. This feature is for Roblox+ Premium users only.</span>
 					</div>
 					<div class="section-content">
+						<span class="text-lead">Ascending Servers</span>
+						<PillToggle getValue={this.getPillValue.bind(this, "ascendingGameServersSortOrder")}
+							onToggle={this.setPillValue.bind(this, "ascendingGameServersSortOrder")} />
+						<div class="rbx-divider"></div>
+						<span class="text-description">Sort servers in from least players -&gt; most players.</span>
+					</div>
+					<div class="section-content">
 						<span class="text-lead">Badge Achievement Dates</span>
 						<PillToggle getValue={this.getPillValue.bind(this, "badgeAchievementDatesEnabled")}
 							onToggle={this.setPillValue.bind(this, "badgeAchievementDatesEnabled")} />
