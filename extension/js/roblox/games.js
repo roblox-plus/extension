@@ -16,12 +16,12 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 
 		this.register([
 			this.getAuthTicket,
+			this.getVipServerById,
 			this.getVipServers,
 			this.launch,
 			this.getGroupGames,
 			this.hasJoinedServer,
-			this.trackJoinedServer,
-			this.getAllRunningServers
+			this.trackJoinedServer
 		]);
 	}
 
@@ -47,60 +47,60 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 		});
 	}
 
-	getServers(placeId, cursor) {
-		return CachedPromise(`${this.serviceId}.getServers`, (resolve, reject) => {
-			$.get("https://www.roblox.com/games/getgameinstancesjson", {
-				placeId: placeId,
-				startindex: (cursor - 1) * 10
-			}).done((r) => {
+	getVipServerById(vipServerId) {
+		return CachedPromise(`${this.serviceId}.getVipServers`, (resolve, reject) => {
+			$.get(`https://games.roblox.com/v1/vip-servers/${vipServerId}`).done((r) => {
+				const expirationDate = new Date(r.subscription.expirationDate);
 				resolve({
-					nextPageCursor: r.TotalCollectionSize > cursor * 10 && r.Collection.length >= 10 ? cursor + 1 : null,
-					previousPageCursor: cursor > 1 ? cursor - 1 : null,
-					data: r.Collection
+					id: r.id,
+					name: r.name,
+					expirationDate: expirationDate.getTime()
 				});
 			}).fail(Roblox.api.$reject(reject));
-		}, [placeId, cursor], {
+		}, [vipServerId], {
 			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 10 * 1000
 		});
 	}
 
-	getVipServers(universeId, pageNumber) {
+	getVipServers(placeId, cursor) {
 		return CachedPromise(`${this.serviceId}.getVipServers`, (resolve, reject) => {
-			pageNumber = pageNumber || 1;
-
-			$.get("https://www.roblox.com/private-server/instance-list-json", {
-				universeId: universeId,
-				page: pageNumber
-			}).done((r) => {
-				var vipServers = [];
-
-				(r.Instances || []).forEach((server) => {
-					if (server.PrivateServer.StatusType !== 1) {
-						return;
-					}
-
-					var expirationDate = Number((server.PrivateServer.ExpirationDate.match(/\d+/) || ["0"])[0]);
-					vipServers.push({
-						id: server.PrivateServer.Id,
-						name: server.Name,
-						owner: {
-							id: server.PrivateServer.OwnerUserId
-						},
-						expirationDate: isNaN(expirationDate) || expirationDate <= 0 ? NaN : expirationDate
+			Roblox.users.getAuthenticatedUser().then(authenticatedUser => {
+				$.get(`https://games.roblox.com/v1/games/${placeId}/servers/VIP`, {
+					limit: 100,
+					cursor: cursor || ""
+				}).done((r) => {
+					const vipServers = [];
+					const vipServerPromises = []; 
+	
+					r.data.forEach(server => {
+						if (server.owner.id === authenticatedUser.id) {
+							vipServerPromises.push(this.getVipServerById(server.vipServerId).then(vipServer => {
+								vipServer.owner = server.owner;
+								vipServers.push(vipServer);
+							}));
+						} else {
+							vipServers.push({
+								id: server.vipServerId,
+								name: server.name,
+								owner: server.owner
+							});
+						}
 					});
-				});
-
-				if (!r.TotalPages || r.TotalPages <= pageNumber) {
-					resolve(vipServers);
-				} else {
-					this.getVipServers(universeId, pageNumber + 1).then((moreVipServers) => {
-						resolve(vipServers.concat(moreVipServers));
+	
+					Promise.all(vipServerPromises).then(() => {	
+						if (r.nextPageCursor) {
+							this.getVipServers(placeId, r.nextPageCursor).then(moreVipServers => {
+								resolve(vipServers.concat(moreVipServers));
+							}).catch(reject);
+						} else {
+							resolve(vipServers);
+						}
 					}).catch(reject);
-				}
-			}).fail(Roblox.api.$reject(reject));
-		}, [universeId, pageNumber], {
+				}).fail(Roblox.api.$reject(reject));
+			}).catch(reject);
+		}, [placeId, cursor], {
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 10 * 1000
 		});
@@ -252,71 +252,6 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 			resolve({});
 		});
 	}
-
-	getAllRunningServers(placeId) {
-		return CachedPromise(`${this.serviceId}.getAllRunningServers`, (resolve, reject) => {
-			var runningServers = [];
-			var serverMap = {};
-			var serversData = {
-				PlaceId: placeId,
-				ShowShutdownAllButton: false,
-				TotalCollectionSize: 0,
-				Collection: []
-			};
-
-			const getRunningServers = (cursor) => {
-				this.getServers(placeId, cursor).then((data) => {
-					if (data.ShowShutdownAllButton) {
-						serversData.ShowShutdownAllButton = data.ShowShutdownAllButton;
-					}
-
-					data.data.forEach((server) => {
-						if (serverMap.hasOwnProperty(server.Guid)) {
-							return;
-						}
-
-						var players = [];
-						server.CurrentPlayers.forEach((player) => {
-							players.push({
-								id: player.Id,
-								username: player.Username
-							});
-						});
-
-						serversData.Collection.push(server);
-
-						runningServers.push(serverMap[server.Guid] = {
-							id: server.Guid,
-							capacity: server.Capacity,
-							framesPerSecond: server.Fps,
-							ping: server.Ping,
-							isSlow: server.ShowSlowGameMessage,
-							playerList: players
-						});
-					});
-
-					if (data.nextPageCursor) {
-						getRunningServers(data.nextPageCursor);
-					} else {
-						serversData.TotalCollectionSize = serversData.Collection.length;
-						serversData.Collection = serversData.Collection.sort((a, b) => {
-							return a.CurrentPlayers.length - b.CurrentPlayers.length;
-						});
-
-						resolve({
-							servers: runningServers,
-							data: serversData
-						});
-					}
-				}).catch(reject);
-			};
-
-			getRunningServers(1);
-		}, [placeId], {
-			resolveExpiry: 120 * 1000,
-			rejectExpiry: 5 * 1000
-		});
-	}
 };
 
 Roblox.games = new Roblox.Services.Games();
@@ -352,6 +287,32 @@ switch (Extension.Singleton.executionContextType) {
 			urls: [Roblox.games.authTicketUrl],
 			types: ["xmlhttprequest"]
 		}, ["blocking", "requestHeaders", "extraHeaders"]);
+
+		chrome.webRequest.onBeforeRequest.addListener(request => {
+			const url = new URL(request.url);
+			if (!url.pathname.match(/^\/v1\/games\/\d+\/servers\/Public/i)) {
+				return;
+			}
+
+			const ascendingGameServersSortOrderEnabled = Extension.Storage.Singleton.getSync("ascendingGameServersSortOrder");
+			if (!ascendingGameServersSortOrderEnabled) {
+				return;
+			}
+
+			const currentSortOrder = url.searchParams.get("sortOrder");
+			if (currentSortOrder !== "Asc") {
+				url.searchParams.set("sortOrder", "Asc");
+			} else {
+				return;
+			}
+
+			return {
+				redirectUrl: url.toString()
+			};
+		}, {
+			urls: ["https://games.roblox.com/v1/games/*/servers/Public*"],
+			types: ["xmlhttprequest"]
+		}, ["blocking"]);
 
 		break;
 	case Extension.ExecutionContextTypes.tab:

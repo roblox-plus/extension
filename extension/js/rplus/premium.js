@@ -46,12 +46,13 @@ RPlus.Services.SponsoredItems = class extends Extension.BackgroundService {
 				});
 			};
 
-			Roblox.games.getVipServers(105689058).then((vipServers) => {
+			Roblox.games.getVipServers(258257446).then((vipServers) => {
 				var currentDateTime = +new Date;
 				for (var n = 0; n < vipServers.length; n++) {
-					if (vipServers[n].owner.id === userId && vipServers[n].expirationDate >= currentDateTime) {
+					const vipServer = vipServers[n];
+					if (vipServer.owner.id === userId && vipServer.expirationDate && vipServer.expirationDate >= currentDateTime) {
 						this.knownPremiums[userId] = {
-							expiration: vipServers[n].expirationDate
+							expiration: vipServer.expirationDate
 						};
 						resolve(this.knownPremiums[userId]);
 						return;

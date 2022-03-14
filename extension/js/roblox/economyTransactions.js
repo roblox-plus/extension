@@ -241,7 +241,7 @@ Roblox.Services.EconomyTransactions = class extends Extension.BackgroundService 
 					url = `https://economy.roblox.com/v2/users/${seller.id}/transactions`;
 					break;
 				case this.sellerTypes.Group:
-					url = `https://economy.roblox.com/v1/groups/${seller.id}/transactions`;
+					url = `https://economy.roblox.com/v2/groups/${seller.id}/transactions`;
 					break;
 				default:
 					reject(`Unknown transaction seller type: ${seller.type}`);
