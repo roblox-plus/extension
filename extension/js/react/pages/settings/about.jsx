@@ -16,7 +16,6 @@ class About extends React.Component {
 			updateLogSaveStatus: "",
 
 			featureList: [
-				this.getFeatureRow("Game server pager", "On the game details page the load more servers button is turned into a pager with options to skip to the first or last page of servers."),
 				this.getFeatureRow("Game server tracking", "On the game details page on servers it will show you which servers you have already played in. This feature will show up for Roblox+ Premium users only."),
 				this.getFeatureRow("Sales + Revenue charts", "On item details pages and the group configure page charts will be added under the sales tab (or group summary tab) with sales per hour/day. This feature will show up for Roblox+ Premium users only."),
 				this.getFeatureRow("Texture download", "A download option is added to Roblox created images."),
