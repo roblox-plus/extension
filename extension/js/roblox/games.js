@@ -58,6 +58,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 				});
 			}).fail(Roblox.api.$reject(reject));
 		}, [placeId, cursor], {
+			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 10 * 1000
 		});
