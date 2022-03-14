@@ -57,7 +57,7 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
 					expirationDate: expirationDate.getTime()
 				});
 			}).fail(Roblox.api.$reject(reject));
-		}, [placeId, cursor], {
+		}, [vipServerId], {
 			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 10 * 1000
