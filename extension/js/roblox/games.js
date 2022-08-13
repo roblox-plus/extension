@@ -288,32 +288,6 @@ switch (Extension.Singleton.executionContextType) {
 			types: ["xmlhttprequest"]
 		}, ["blocking", "requestHeaders", "extraHeaders"]);
 
-		chrome.webRequest.onBeforeRequest.addListener(request => {
-			const url = new URL(request.url);
-			if (!url.pathname.match(/^\/v1\/games\/\d+\/servers\/Public/i)) {
-				return;
-			}
-
-			const ascendingGameServersSortOrderEnabled = Extension.Storage.Singleton.getSync("ascendingGameServersSortOrder");
-			if (!ascendingGameServersSortOrderEnabled) {
-				return;
-			}
-
-			const currentSortOrder = url.searchParams.get("sortOrder");
-			if (currentSortOrder !== "Asc") {
-				url.searchParams.set("sortOrder", "Asc");
-			} else {
-				return;
-			}
-
-			return {
-				redirectUrl: url.toString()
-			};
-		}, {
-			urls: ["https://games.roblox.com/v1/games/*/servers/Public*"],
-			types: ["xmlhttprequest"]
-		}, ["blocking"]);
-
 		break;
 	case Extension.ExecutionContextTypes.tab:
 		$("<a href=\"javascript:Roblox=window.Roblox||{};(Roblox.VideoPreRollDFP||Roblox.VideoPreRoll||{}).showVideoPreRoll=false;\">")[0].click();
