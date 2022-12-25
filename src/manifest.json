@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "version": "3.0.0",
+
+  "name": "Roblox+",
+  "description": "Extends the features available on roblox.com",
+
+  "author": "WebGL3D",
+
+  "minimum_chrome_version": "100.0.0",
+
+  "incognito": "split",
+
+  "background": {
+    "service_worker": "./dist/service-worker.js"
+  },
+
+  "content_scripts": [],
+
+  "host_permissions": [
+    "https://*.roblox.com/*",
+    "https://*.roblox.plus/*",
+    "https://*.rbxcdn.com/*"
+  ],
+
+  "permissions": ["contextMenus", "notifications", "tts"]
+}
