@@ -21,7 +21,21 @@
     "service_worker": "./dist/service-worker.js"
   },
 
-  "content_scripts": [],
+  "content_scripts": [
+    {
+      "css": ["./dist/css/game-details.css"],
+      "js": ["./dist/pages/game-details.js"],
+      "matches": ["https://*.roblox.com/games/*/*"],
+      "run_at": "document_end"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["*.js.map"],
+      "matches": ["https://*.roblox.com/*"]
+    }
+  ],
 
   "host_permissions": [
     "https://*.roblox.com/*",
@@ -29,5 +43,12 @@
     "https://*.rbxcdn.com/*"
   ],
 
-  "permissions": ["contextMenus", "notifications", "tts"]
+  "permissions": [
+    "contextMenus",
+    "notifications",
+    "tts",
+    "https://*.roblox.com/*",
+    "https://*.roblox.plus/*",
+    "https://*.rbxcdn.com/*"
+  ]
 }

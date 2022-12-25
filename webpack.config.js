@@ -1,15 +1,41 @@
+const fs = require('fs');
 const path = require('path');
+
+const pagesDirectory = './src/js/pages';
+
+const getEntryFiles = () => {
+  const entryFiles = {
+    './service-worker.js': './src/js/service-worker.ts',
+  };
+
+  fs.readdirSync(pagesDirectory).forEach((directory) => {
+    entryFiles[
+      `./pages/${directory}.js`
+    ] = `${pagesDirectory}/${directory}/index.ts`;
+  });
+
+  return entryFiles;
+};
 
 module.exports = {
   devtool: 'cheap-module-source-map',
-  entry: './src/js/service-worker.ts',
+  entry: getEntryFiles(),
 
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
         exclude: /node_modules/,
+        use: 'ts-loader',
+      },
+      {
+        test: /\.scss$/,
+        exclude: /node_modules/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'css/[name].css',
+        },
+        use: ['sass-loader'],
       },
     ],
   },
@@ -20,10 +46,10 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, './src/dist'),
-    filename: 'service-worker.js',
+    filename: '[name]',
   },
 
   resolve: {
-    extensions: ['.ts', '.tsx'],
+    extensions: ['.ts', '.tsx', '.scss'],
   },
 };

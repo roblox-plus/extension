@@ -1,0 +1,15 @@
+game-badges-list {
+	.badge-image {
+		border-radius: 100%;
+		overflow: hidden;
+		position: relative;
+
+		.rplus-awarded-date {
+			background-color: rgba(25, 25, 25, 0.6);
+			position: absolute;
+			left: 0;
+			top: 16px;
+			width: 100%;
+		}
+	}
+}
