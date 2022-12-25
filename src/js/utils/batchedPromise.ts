@@ -7,6 +7,12 @@ type BatchConfiguration = {
 
   // The minimum time to wait between sending batches.
   minWaitTime?: number;
+
+  // How long to cache the results for for each input.
+  cacheDuration?: number;
+
+  // How long to wait before retrying a failed input.
+  retryDelay?: number;
 };
 
 type InputType = string | number;
@@ -29,15 +35,21 @@ const BatchedPromise = <OutputType>(
     reject: Reject[];
   };
 
-  let running = false;
-  let lastProcess = 0;
+  const maxBatchSize = configuration.maxBatchSize || 100;
   const minWaitTime = configuration.minWaitTime || 250;
   const maxWaitTime = Math.max(
     configuration.maxWaitTime || 1000,
     minWaitTime + 1
   );
-  const maxBatchSize = configuration.maxBatchSize || 100;
+  const cacheDuration = configuration.cacheDuration || 5000;
+  const retryDelay = configuration.retryDelay || 5000;
+
+  let running = false;
+  let lastProcess = 0;
+
   const queue: QueuedPromise[] = [];
+  const cache: { [i: InputType]: OutputType } = {};
+  const cachedRejections: { [i: InputType]: any } = {};
 
   const tryProcessQueue = (): void => {
     if (running) {
@@ -81,6 +93,13 @@ const BatchedPromise = <OutputType>(
             );
           }
 
+          if (retryDelay > 0) {
+            cachedRejections[queuedItem.input] = error;
+            setTimeout(() => {
+              delete cachedRejections[queuedItem.input];
+            }, retryDelay);
+          }
+
           while (queuedItem.reject.length > 0) {
             const reject = queuedItem.reject.shift();
             if (!reject) {
@@ -119,6 +138,13 @@ const BatchedPromise = <OutputType>(
               );
             }
 
+            if (cacheDuration > 0) {
+              cache[queuedItem.input] = outputs[i];
+              setTimeout(() => {
+                delete cache[queuedItem.input];
+              }, retryDelay);
+            }
+
             // Make sure we resolve all the promises that are waiting for this item.
             while (queuedItem.resolve.length > 0) {
               const resolve = queuedItem.resolve.shift();
@@ -144,9 +170,6 @@ const BatchedPromise = <OutputType>(
               }
             }
           }
-          outputs.forEach((output, index) => {
-            while (queuedItems[index].resolve.length > 0) {}
-          });
         })
         .catch(rejectAll);
     } catch (e) {
@@ -160,6 +183,16 @@ const BatchedPromise = <OutputType>(
   setInterval(tryProcessQueue, minWaitTime);
 
   return (input: InputType) => {
+    const cachedRejection = cachedRejections[input];
+    if (cachedRejection || cachedRejections.hasOwnProperty(input)) {
+      return Promise.reject(cachedRejection);
+    }
+
+    const cachedOutput = cache[input];
+    if (cachedOutput || cache.hasOwnProperty(input)) {
+      return Promise.resolve(cachedOutput);
+    }
+
     return new Promise<OutputType>((resolve, reject) => {
       for (let i = 0; i < queue.length; i++) {
         if (queue[i].input === input) {
