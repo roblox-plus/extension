@@ -1,6 +1,6 @@
-import { getUserById } from './services/usersService';
+import { getAuthenticatedUser } from './services/usersService';
 
-getUserById(48103520)
+getAuthenticatedUser()
   .then((user) => {
     console.log(user);
   })
