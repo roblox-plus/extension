@@ -46,6 +46,7 @@
   "permissions": [
     "contextMenus",
     "notifications",
+    "storage",
     "tts",
     "https://*.roblox.com/*",
     "https://*.roblox.plus/*",

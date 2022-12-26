@@ -102,7 +102,7 @@ const _getUserByName = BatchedPromise<User | null>(
   }
 );
 
-// Translate it so that the
+// Translate it so that the cache is maintained across case sensitivity
 const getUserByName = (username: string) =>
   _getUserByName(username.toLowerCase());
 

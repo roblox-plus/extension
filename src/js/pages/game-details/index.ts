@@ -1,9 +1,15 @@
 import { getBadgeAwardedDate } from '../../services/badgesService';
 import { getAuthenticatedUser } from '../../services/usersService';
+import { getSettingValue } from '../../services/settingsService';
 import User from '../../types/user';
 import '../../../css/pages/game-details.scss';
 
-const badgesCheck = (authenticatedUser: User) => {
+const badgesCheck = async (authenticatedUser: User) => {
+  const enabled = await getSettingValue('badge-award-dates-enabled');
+  if (!enabled) {
+    return;
+  }
+
   const awardedAttribute = 'rplus-awarded-date';
   document
     .querySelectorAll(
@@ -44,7 +50,13 @@ const badgesCheck = (authenticatedUser: User) => {
 };
 
 const pageLoaded = (authenticatedUser: User) => {
-  setInterval(() => badgesCheck(authenticatedUser), 1000);
+  setInterval(async () => {
+    try {
+      await badgesCheck(authenticatedUser);
+    } catch (e) {
+      console.error(e);
+    }
+  }, 1000);
 };
 
 getAuthenticatedUser()

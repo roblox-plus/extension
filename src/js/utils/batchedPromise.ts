@@ -243,7 +243,7 @@ const BatchedPromise = <OutputType>(
       }
 
       queue.push({
-        input: input,
+        input,
         resolve: [resolve],
         reject: [reject],
       });
@@ -283,27 +283,25 @@ const translateOutput = <ItemType, OutputType>(
 
 if (isBackgroundServiceWorker) {
   chrome.runtime.onMessage.addListener(function (
-    request,
+    message,
     sender,
     sendResponse
   ) {
-    if (!request.backgroundServiceKey || sender.id !== chrome.runtime.id) {
+    if (!message.backgroundServiceKey || sender.id !== chrome.runtime.id) {
       // Not for us.
       return;
     }
 
-    const backgroundService = backgroundServices[request.backgroundServiceKey];
+    const backgroundService = backgroundServices[message.backgroundServiceKey];
     if (!backgroundService) {
       sendResponse({
-        error: new Error(
-          `Missing required background service: ${request.backgroundServiceKey}`
-        ),
+        error: `Missing required background service: ${message.backgroundServiceKey}`,
       });
 
       return;
     }
 
-    backgroundService(request.data)
+    backgroundService(message.input)
       .then((data) => {
         sendResponse({ data });
       })
