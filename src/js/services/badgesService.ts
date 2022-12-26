@@ -1,6 +1,9 @@
 import { BatchedPromise, translateOutput } from '../utils/batchedPromise';
 
 // HACK: "Internal" get badge awarded date method is a hack to batch by user id, then batch badges together.
+// This hack also means these batched promises are being created dynamically, and so we cannot use the backgroundServiceKey,
+// because the message would be sent to the service worker, to a listener that potentially doesn't exist.
+// Oh well.
 const badgeAwardPromises: {
   [i: number]: (badgeId: number) => Promise<Date | null>;
 } = {};

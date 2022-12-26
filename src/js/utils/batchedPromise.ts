@@ -1,3 +1,5 @@
+import { isBackgroundServiceWorker } from '../constants';
+
 type BatchConfiguration = {
   // The max number of items to include in a batch.
   maxBatchSize?: number;
@@ -13,9 +15,16 @@ type BatchConfiguration = {
 
   // How long to wait before retrying a failed input.
   retryDelay?: number;
+
+  // A unique string to identify the batched promise instance between the service worker, and the content scripts.
+  backgroundServiceKey?: string;
 };
 
 type InputType = string | number;
+
+const backgroundServices: {
+  [backgroundServiceKey: string]: (input: InputType) => Promise<any>;
+} = {};
 
 const BatchedPromise = <OutputType>(
   configuration: BatchConfiguration,
@@ -182,7 +191,7 @@ const BatchedPromise = <OutputType>(
 
   setInterval(tryProcessQueue, minWaitTime);
 
-  return (input: InputType) => {
+  const batchedPromise = (input: InputType) => {
     const cachedRejection = cachedRejections[input];
     if (cachedRejection || cachedRejections.hasOwnProperty(input)) {
       return Promise.reject(cachedRejection);
@@ -193,7 +202,38 @@ const BatchedPromise = <OutputType>(
       return Promise.resolve(cachedOutput);
     }
 
-    return new Promise<OutputType>((resolve, reject) => {
+    return new Promise<OutputType>(async (resolve, reject) => {
+      if (!isBackgroundServiceWorker && configuration.backgroundServiceKey) {
+        try {
+          const response = await chrome.runtime.sendMessage({
+            backgroundServiceKey: configuration.backgroundServiceKey,
+            input: input,
+          });
+
+          if (!response) {
+            reject(new Error('No response from service worker.'));
+            return;
+          }
+
+          if (response.hasOwnProperty('error')) {
+            reject(response.error);
+          } else {
+            resolve(response.data);
+          }
+        } catch (e) {
+          try {
+            reject(e);
+          } catch (e2) {
+            console.error(
+              'Failed to reject a promise that was sent to the service worker, which also potentially never made it to the service worker.',
+              e2
+            );
+          }
+        }
+
+        return;
+      }
+
       for (let i = 0; i < queue.length; i++) {
         if (queue[i].input === input) {
           queue[i].resolve.push(resolve);
@@ -209,6 +249,12 @@ const BatchedPromise = <OutputType>(
       });
     });
   };
+
+  if (configuration.backgroundServiceKey) {
+    backgroundServices[configuration.backgroundServiceKey] = batchedPromise;
+  }
+
+  return batchedPromise;
 };
 
 const translateOutput = <ItemType, OutputType>(
@@ -234,5 +280,41 @@ const translateOutput = <ItemType, OutputType>(
 
   return outputs;
 };
+
+if (isBackgroundServiceWorker) {
+  chrome.runtime.onMessage.addListener(function (
+    request,
+    sender,
+    sendResponse
+  ) {
+    if (!request.backgroundServiceKey || sender.id !== chrome.runtime.id) {
+      // Not for us.
+      return;
+    }
+
+    const backgroundService = backgroundServices[request.backgroundServiceKey];
+    if (!backgroundService) {
+      sendResponse({
+        error: new Error(
+          `Missing required background service: ${request.backgroundServiceKey}`
+        ),
+      });
+
+      return;
+    }
+
+    backgroundService(request.data)
+      .then((data) => {
+        sendResponse({ data });
+      })
+      .catch((error) => {
+        sendResponse({ error });
+      });
+
+    // Required for asynchronous callbacks
+    // https://stackoverflow.com/a/20077854/1663648
+    return true;
+  });
+}
 
 export { BatchedPromise, translateOutput };

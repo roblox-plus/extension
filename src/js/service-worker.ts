@@ -5,5 +5,3 @@ getAuthenticatedUser()
     console.log(user);
   })
   .catch((err) => console.error('boop', err));
-
-console.log('Hello, world!');

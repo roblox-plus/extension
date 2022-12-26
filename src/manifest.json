@@ -18,7 +18,7 @@
   "incognito": "split",
 
   "background": {
-    "service_worker": "./dist/service-worker.js"
+    "service_worker": "dist/service-worker.js"
   },
 
   "content_scripts": [
