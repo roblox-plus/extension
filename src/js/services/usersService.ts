@@ -6,7 +6,7 @@ const _getAuthenticatedUser = BatchedPromise<User | null>(
     cacheDuration: 15 * 1000,
   },
   async (_) => {
-    if (document) {
+    if (globalThis.document) {
       // TODO: Think about this logic.. on one hand it saves us requests, because the data is in the page load.
       // On the other hand, the user could log out in one tab, this tab may not reload, and then log in as someone else,
       // and then suddenly this returns the wrong data.
