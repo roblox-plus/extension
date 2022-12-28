@@ -1,5 +1,6 @@
 import { BatchedPromise } from '../utils/batchedPromise';
 import { isBackgroundServiceWorker } from '../constants';
+import { addMessageListener, sendMessage } from './extensionService';
 
 const _getSettingValue = BatchedPromise<any>(
   {
@@ -25,43 +26,19 @@ const setSettingValue = async (key: string, value: any): Promise<void> => {
       await chrome.storage.local.set(set);
     }
   } else {
-    const response = await chrome.runtime.sendMessage({
-      // Prefixed with the word "disconnected" so that the batchedPromise listener doesn't pick it up.
-      disconnectedBackgroundServiceKey: 'settingsService.setSettingValue',
-      key,
-      value,
+    await sendMessage('settingsService.setSettingValue', {
+      key: key,
+      value: value,
     });
-
-    if (response.hasOwnProperty('error')) {
-      throw response.error;
-    }
   }
 };
 
 const getSettingValue = (key: string) => _getSettingValue(key);
 
 if (isBackgroundServiceWorker) {
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (
-      sender.id !== chrome.runtime.id ||
-      message.disconnectedBackgroundServiceKey !==
-        'settingsService.setSettingValue'
-    ) {
-      return;
-    }
-
+  addMessageListener('settingsService.setSettingValue', (message) =>
     setSettingValue(message.key, message.value)
-      .then(() => {
-        sendResponse({});
-      })
-      .catch((error) => {
-        sendResponse({ error });
-      });
-
-    // Required for asynchronous callbacks
-    // https://stackoverflow.com/a/20077854/1663648
-    return true;
-  });
+  );
 }
 
 // Export + attach to global
