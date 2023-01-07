@@ -97,8 +97,12 @@ const BatchedPromise = <OutputType>(
           const queuedItem = queue.shift();
           if (!queuedItem) {
             // This should actually never happen, because we only got here because we know the size of the queue array.
+            console.error('Logging cause so it is not lost', error);
             throw new Error(
-              'The queue of promises did not have a queued item to resolve for. This is a critical problem.'
+              'The queue of promises did not have a queued item to resolve for. This is a critical problem.',
+              {
+                cause: error,
+              }
             );
           }
 
@@ -138,17 +142,22 @@ const BatchedPromise = <OutputType>(
             return;
           }
 
-          for (let i = 0; i < queuedItems.length; i++) {
+          for (
+            let queueItemIndex = 0;
+            queueItemIndex < queuedItems.length;
+            queueItemIndex++
+          ) {
+            const output = outputs[queueItemIndex];
             const queuedItem = queue.shift();
             if (!queuedItem) {
               // This should actually never happen, because we only got here because we know the size of the queue array.
               throw new Error(
-                'The queue of promises did not have a queued item to resolve for. This is a critical problem.'
+                `The queue of promises did not have a queued item to resolve for. This is a critical problem.\n\ti: ${queueItemIndex}\n\tqueuedItems.length: ${queuedItems.length}`
               );
             }
 
             if (cacheDuration > 0) {
-              cache[queuedItem.input] = outputs[i];
+              cache[queuedItem.input] = output;
               setTimeout(() => {
                 delete cache[queuedItem.input];
               }, retryDelay);
@@ -166,7 +175,7 @@ const BatchedPromise = <OutputType>(
               }
 
               try {
-                resolve(outputs[i]);
+                resolve(output);
               } catch (e) {
                 try {
                   reject(e);
@@ -180,11 +189,13 @@ const BatchedPromise = <OutputType>(
             }
           }
         })
-        .catch(rejectAll);
+        .catch(rejectAll)
+        .finally(() => {
+          running = false;
+        });
     } catch (e) {
       // This is technically possible if the process call fails to create the promise.
       console.error('Failed to create processing promise.', e);
-    } finally {
       running = false;
     }
   };
@@ -234,10 +245,10 @@ const BatchedPromise = <OutputType>(
         return;
       }
 
-      for (let i = 0; i < queue.length; i++) {
-        if (queue[i].input === input) {
-          queue[i].resolve.push(resolve);
-          queue[i].reject.push(reject);
+      for (let queueIndex = 0; queueIndex < queue.length; queueIndex++) {
+        if (queue[queueIndex].input === input) {
+          queue[queueIndex].resolve.push(resolve);
+          queue[queueIndex].reject.push(reject);
           return;
         }
       }
