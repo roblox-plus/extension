@@ -44,6 +44,30 @@ const sendMessage = (serviceName: string, data: MessageData): Promise<any> => {
   });
 };
 
+const broadcastMessage = async (
+  serviceName: string,
+  data: MessageData
+): Promise<void> => {
+  const tabs = await chrome.tabs.query({});
+  await Promise.all(
+    tabs.map(async (tab) => {
+      if (!tab.id || !tab.url) {
+        // If we don't have the URL then we don't have permission to this tab, so we're skipping it.
+        return;
+      }
+
+      try {
+        await chrome.tabs.sendMessage(tab.id, {
+          serviceName,
+          data,
+        });
+      } catch (e) {
+        console.warn('Failed to send broadcast to tab', tab, serviceName, data);
+      }
+    })
+  );
+};
+
 const reload = () => {
   console.log('hoopla');
 
@@ -60,38 +84,38 @@ const reload = () => {
   }
 };
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (sender.id !== chrome.runtime.id || !message.serviceName) {
+    // Not for us.
+    return;
+  }
+
+  const backgroundService = backgroundServices[message.serviceName];
+  if (!backgroundService) {
+    sendResponse({
+      error: `Missing required background service: ${message.serviceName}`,
+    });
+
+    return;
+  }
+
+  backgroundService(message.data)
+    .then((data) => {
+      sendResponse({ data });
+    })
+    .catch((error) => {
+      sendResponse({ error });
+    });
+
+  // Required for asynchronous callbacks
+  // https://stackoverflow.com/a/20077854/1663648
+  return true;
+});
+
 if (isBackgroundServiceWorker) {
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (sender.id !== chrome.runtime.id || !message.serviceName) {
-      // Not for us.
-      return;
-    }
-
-    const backgroundService = backgroundServices[message.serviceName];
-    if (!backgroundService) {
-      sendResponse({
-        error: `Missing required background service: ${message.serviceName}`,
-      });
-
-      return;
-    }
-
-    backgroundService(message.data)
-      .then((data) => {
-        sendResponse({ data });
-      })
-      .catch((error) => {
-        sendResponse({ error });
-      });
-
-    // Required for asynchronous callbacks
-    // https://stackoverflow.com/a/20077854/1663648
-    return true;
-  });
-
   addMessageListener('extensionService.reload', (data: MessageData) =>
     reload()
   );
 }
 
-export { reload, sendMessage, addMessageListener };
+export { reload, sendMessage, broadcastMessage, addMessageListener };

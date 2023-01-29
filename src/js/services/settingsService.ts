@@ -1,6 +1,13 @@
 import { BatchedPromise } from '../utils/batchedPromise';
 import { isBackgroundServiceWorker } from '../constants';
-import { addMessageListener, sendMessage } from './extensionService';
+import {
+  addMessageListener,
+  broadcastMessage,
+  sendMessage,
+} from './extensionService';
+
+const lastKnownValue: { [key: string]: any } = {};
+const settingsChangeListener = new EventTarget();
 
 const _getSettingValue = BatchedPromise<any>(
   {
@@ -25,6 +32,11 @@ const setSettingValue = async (key: string, value: any): Promise<void> => {
       set[key] = value;
       await chrome.storage.local.set(set);
     }
+
+    await broadcastMessage('settingsService.settingChanged', {
+      key: key,
+      value: value,
+    });
   } else {
     await sendMessage('settingsService.setSettingValue', {
       key: key,
@@ -33,12 +45,59 @@ const setSettingValue = async (key: string, value: any): Promise<void> => {
   }
 };
 
-const getSettingValue = (key: string) => _getSettingValue(key);
+const getSettingValue = async (key: string): Promise<any> => {
+  try {
+    const value = await _getSettingValue(key);
+    lastKnownValue[key] = value;
+    return value;
+  } catch (e) {
+    // In case the extension disconnects.
+    if (lastKnownValue.hasOwnProperty(key)) {
+      return lastKnownValue[key];
+    }
+
+    // We tried.
+    throw e;
+  }
+};
+
+const getSettingValueAndListenForChanges = (
+  key: string,
+  callBack: (value: any) => Promise<void>
+) => {
+  settingsChangeListener.addEventListener(key, (event) => {
+    if (event instanceof CustomEvent) {
+      callBack(event.detail).catch((err) => {
+        console.warn('Settings change handler failed', key, err);
+      });
+    }
+  });
+
+  getSettingValue(key)
+    .then((value) => {
+      callBack(value).catch((err) => {
+        console.warn('Settings change handler failed', key, err);
+      });
+    })
+    .catch((err) => {
+      console.error('Failed to read initial setting value', key, err);
+    });
+};
 
 if (isBackgroundServiceWorker) {
   addMessageListener('settingsService.setSettingValue', (message) =>
     setSettingValue(message.key, message.value)
   );
+} else {
+  addMessageListener('settingsService.settingChanged', async (message) => {
+    lastKnownValue[message.key] = message.value;
+
+    settingsChangeListener.dispatchEvent(
+      new CustomEvent(message.key, {
+        detail: message.value,
+      })
+    );
+  });
 }
 
 // Export + attach to global
@@ -46,6 +105,10 @@ declare global {
   var settingsService: any;
 }
 
-globalThis.settingsService = { getSettingValue, setSettingValue };
+globalThis.settingsService = {
+  getSettingValue,
+  getSettingValueAndListenForChanges,
+  setSettingValue,
+};
 
-export { getSettingValue, setSettingValue };
+export { getSettingValue, getSettingValueAndListenForChanges, setSettingValue };
