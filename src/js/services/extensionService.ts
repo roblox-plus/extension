@@ -62,7 +62,13 @@ const broadcastMessage = async (
           data,
         });
       } catch (e) {
-        console.warn('Failed to send broadcast to tab', tab, serviceName, data);
+        console.warn(
+          'Failed to send broadcast to tab',
+          tab,
+          serviceName,
+          data,
+          e
+        );
       }
     })
   );

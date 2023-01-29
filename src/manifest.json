@@ -23,15 +23,21 @@
 
   "content_scripts": [
     {
+      "js": ["./dist/pages/settings.js"],
+      "matches": ["https://roblox.plus/settings*"],
+      "run_at": "document_start"
+    },
+    {
+      "js": ["./dist/pages/all.js"],
+      "css": ["./dist/css/all.css"],
+      "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
+      "run_at": "document_end"
+    },
+    {
       "css": ["./dist/css/game-details.css"],
       "js": ["./dist/pages/game-details.js"],
       "matches": ["https://*.roblox.com/games/*/*"],
       "run_at": "document_end"
-    },
-    {
-      "js": ["./dist/pages/settings.js"],
-      "matches": ["https://roblox.plus/settings*"],
-      "run_at": "document_start"
     }
   ],
 

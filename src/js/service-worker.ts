@@ -1,11 +1,8 @@
-import { getAuthenticatedUser } from './services/usersService';
+// We must import or export these values to ensure the content isn't thrown out.
 import { getSettingValue } from './services/settingsService';
 
-getAuthenticatedUser()
-  .then((user) => {
-    console.log(user);
-  })
-  .catch((err) => console.error('boop', err));
+export { getRobuxBalance } from './services/currencyService';
+export { getAuthenticatedUser } from './services/usersService';
 
 getSettingValue('startup-notification-enabled')
   .then((startupNotificationEnabled) => {

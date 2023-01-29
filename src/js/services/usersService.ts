@@ -3,6 +3,7 @@ import { BatchedPromise, translateOutput } from '../utils/batchedPromise';
 
 const _getAuthenticatedUser = BatchedPromise<User | null>(
   {
+    maxBatchSize: 1,
     cacheDuration: 15 * 1000,
     backgroundServiceKey: 'usersService.getAuthenticatedUser',
   },

@@ -14,6 +14,7 @@ const _getSettingValue = BatchedPromise<any>(
     maxBatchSize: 1,
     minWaitTime: 0,
     maxWaitTime: 0,
+    cacheDuration: -1,
     backgroundServiceKey: 'settingsService.getSettingValue',
   },
   async (keys) => {
