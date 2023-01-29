@@ -1,10 +1,13 @@
 import { getBadgeAwardedDate } from '../../services/badgesService';
-import { getAuthenticatedUser } from '../../services/usersService';
 import { getSettingValue } from '../../services/settingsService';
-import User from '../../types/user';
+import authenticatedUser from '../../utils/authenticatedUser';
 import '../../../css/pages/game-details.scss';
 
-const badgesCheck = async (authenticatedUser: User) => {
+const badgesCheck = async () => {
+  if (!authenticatedUser) {
+    return;
+  }
+
   const enabled = await getSettingValue('badge-award-dates-enabled');
   if (!enabled) {
     return;
@@ -16,6 +19,10 @@ const badgesCheck = async (authenticatedUser: User) => {
       `thumbnail-2d>span[thumbnail-type='BadgeIcon']:not([${awardedAttribute}])`
     )
     .forEach((badgeIcon) => {
+      if (!authenticatedUser) {
+        return;
+      }
+
       badgeIcon.setAttribute(awardedAttribute, '0');
 
       const badgeId = Number(badgeIcon.getAttribute('thumbnail-target-id'));
@@ -82,20 +89,15 @@ const updateVoteTitle = (
   }
 };
 
-const pageLoaded = (authenticatedUser: User | null) => {
-  setInterval(async () => {
-    updateVoteTitle(
-      document.querySelector('#vote-up-text'),
-      document.querySelector('#vote-down-text')
-    );
-    if (authenticatedUser) {
-      try {
-        await badgesCheck(authenticatedUser);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, 1000);
-};
+setInterval(async () => {
+  updateVoteTitle(
+    document.querySelector('#vote-up-text'),
+    document.querySelector('#vote-down-text')
+  );
 
-getAuthenticatedUser().then(pageLoaded).catch(console.error);
+  try {
+    await badgesCheck();
+  } catch (e) {
+    console.error(e);
+  }
+}, 500);
