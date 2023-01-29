@@ -27,6 +27,11 @@
       "js": ["./dist/pages/game-details.js"],
       "matches": ["https://*.roblox.com/games/*/*"],
       "run_at": "document_end"
+    },
+    {
+      "js": ["./dist/pages/settings.js"],
+      "matches": ["https://roblox.plus/settings*"],
+      "run_at": "document_start"
     }
   ],
 
@@ -43,13 +48,5 @@
     "https://*.rbxcdn.com/*"
   ],
 
-  "permissions": [
-    "contextMenus",
-    "notifications",
-    "storage",
-    "tts",
-    "https://*.roblox.com/*",
-    "https://*.roblox.plus/*",
-    "https://*.rbxcdn.com/*"
-  ]
+  "permissions": ["contextMenus", "notifications", "storage", "tts"]
 }
