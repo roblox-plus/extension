@@ -25,25 +25,13 @@ const abbreviations = [
   },
 ];
 
-const getRobux = (): number => {
-  const countElement = document.getElementById('nav-robux-amount');
-  const count = Number(countElement?.getAttribute('count') || NaN);
-  if (!isNaN(count)) {
-    return count;
-  }
-
-  const element = document.getElementById('nav-robux-balance');
-  const match = element?.innerText.match(/\d+/g) || [];
+const parseNumber = (input?: string) => {
+  const match = input?.match(/\d+/g) || [];
   if (match.length < 1) {
     return NaN;
   }
 
-  const textCount = Number(match.join(''));
-  if (!isNaN(textCount)) {
-    countElement?.setAttribute('count', textCount.toString());
-  }
-
-  return textCount;
+  return Number(match.join(''));
 };
 
 const setText = (element: HTMLElement, text: string) => {
@@ -54,26 +42,52 @@ const setText = (element: HTMLElement, text: string) => {
   element.innerText = text;
 };
 
-const setAbbreviatedRobux = (count: number, abbreviationAt: number) => {
+const getAbbreviateAtValue = async (): Promise<number> => {
+  let abbreviation: number | null = null;
+  try {
+    abbreviation = await getSettingValue('navigation-counter-abbreviation');
+  } catch (err) {
+    console.warn('Failed to fetch navigation-counter-abbreviation', err);
+  }
+
+  return abbreviation || abbreviations[0].value;
+};
+
+const abbreviate = (value: number, abbreviateAt: number): string => {
+  if (value >= abbreviateAt) {
+    for (let i = abbreviations.length - 1; i >= 0; i--) {
+      if (value >= abbreviations[i].value) {
+        return `${Math.floor(value / abbreviations[i].value).toLocaleString()}${
+          abbreviations[i].abbreviation
+        }+`;
+      }
+    }
+  }
+
+  return value.toLocaleString();
+};
+
+const getRobux = (): number => {
+  const countElement = document.getElementById('nav-robux-amount');
+  const count = Number(countElement?.getAttribute('count') || NaN);
+  if (!isNaN(count)) {
+    return count;
+  }
+
+  const element = document.getElementById('nav-robux-balance');
+  const textCount = parseNumber(element?.innerText);
+  if (!isNaN(textCount)) {
+    countElement?.setAttribute('count', textCount.toString());
+  }
+
+  return textCount;
+};
+
+const setAbbreviatedRobux = (count: number, abbreviateAt: number) => {
   const navbarElement = document.getElementById('nav-robux-amount');
   if (navbarElement) {
     navbarElement?.setAttribute('count', count.toString());
-
-    if (count < abbreviationAt) {
-      setText(navbarElement, count.toLocaleString());
-    } else {
-      for (let i = abbreviations.length - 1; i >= 0; i--) {
-        if (count >= abbreviations[i].value) {
-          setText(
-            navbarElement,
-            `${Math.floor(count / abbreviations[i].value).toLocaleString()}${
-              abbreviations[i].abbreviation
-            }+`
-          );
-          break;
-        }
-      }
-    }
+    setText(navbarElement, abbreviate(count, abbreviateAt));
   }
 
   const fullBalanceElement = document.getElementById('nav-robux-balance');
@@ -102,14 +116,54 @@ const setAbbreviatedRobux = (count: number, abbreviationAt: number) => {
 };
 
 const setRobux = async (count: number) => {
-  let abbreviation: number | null = null;
-  try {
-    abbreviation = await getSettingValue('navigation-counter-abbreviation');
-  } catch (err) {
-    console.warn('Failed to fetch navigation-counter-abbreviation', err);
+  const abbreviation = await getAbbreviateAtValue();
+  setAbbreviatedRobux(count, abbreviation || abbreviations[0].value);
+};
+
+const getPrivateMessageCount = (): number => {
+  const element = document.querySelector<HTMLElement>(
+    '#nav-message .notification'
+  );
+  return parseNumber(element?.getAttribute('title') || '');
+};
+
+const setPrivateMessageCount = async (count: number) => {
+  const element = document.querySelector<HTMLElement>(
+    '#nav-message .notification'
+  );
+
+  if (!element) {
+    return;
   }
 
-  setAbbreviatedRobux(count, abbreviation || abbreviations[0].value);
+  element.setAttribute('title', count.toLocaleString());
+  element.classList.toggle('hidden', count < 1);
+
+  const abbreviation = await getAbbreviateAtValue();
+  setText(element, abbreviate(count, abbreviation));
+};
+
+const getTradeCount = (): number => {
+  const element = document.querySelector<HTMLElement>(
+    '#nav-trade .notification'
+  );
+  return parseNumber(element?.getAttribute('title') || '');
+};
+
+const setTradeCount = async (count: number) => {
+  const element = document.querySelector<HTMLElement>(
+    '#nav-trade .notification'
+  );
+
+  if (!element) {
+    return;
+  }
+
+  element.setAttribute('title', count.toLocaleString());
+  element.classList.toggle('hidden', count < 1);
+
+  const abbreviation = await getAbbreviateAtValue();
+  setText(element, abbreviate(count, abbreviation));
 };
 
 const updateRobux = async () => {
@@ -131,6 +185,9 @@ getSettingValueAndListenForChanges(
     if (!authenticatedUser || !abbreviation) {
       return;
     }
+
+    await setPrivateMessageCount(getPrivateMessageCount());
+    await setTradeCount(getTradeCount());
 
     const robuxBalance = await getRobuxBalance(authenticatedUser.id);
     setAbbreviatedRobux(robuxBalance, abbreviation);
