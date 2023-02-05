@@ -10,4 +10,4 @@ console.log(
   `started ${isBackgroundServiceWorker ? 'in the background' : ''}`
 );
 
-export { isBackgroundServiceWorker };
+export { manifest, isBackgroundServiceWorker };

@@ -179,6 +179,43 @@ const updateRobux = async () => {
   }
 };
 
+const addSideNavigationBarItem = (
+  label: string,
+  id: string,
+  iconClassName: string,
+  link: URL
+) => {
+  const upgradeButton = document.querySelector(
+    '#left-navigation-container li.rbx-upgrade-now'
+  );
+  if (!upgradeButton) {
+    return;
+  }
+
+  const listItem = document.createElement('li');
+
+  const linkElement = document.createElement('a');
+  linkElement.setAttribute('id', id);
+  linkElement.setAttribute('href', link.href);
+  linkElement.setAttribute('class', 'dynamic-overflow-container text-nav');
+  listItem.appendChild(linkElement);
+
+  const imgDiv = document.createElement('div');
+  linkElement.appendChild(imgDiv);
+
+  // It feels wrong... but it's consistent.
+  const img = document.createElement('span');
+  img.setAttribute('class', iconClassName);
+  imgDiv.appendChild(img);
+
+  const labelSpan = document.createElement('span');
+  labelSpan.innerText = label;
+  labelSpan.setAttribute('class', 'font-header-2 dynamic-ellipsis-item');
+  linkElement.appendChild(labelSpan);
+
+  upgradeButton.before(listItem);
+};
+
 getSettingValueAndListenForChanges(
   'navigation-counter-abbreviation',
   async (abbreviation) => {
@@ -216,4 +253,4 @@ setInterval(async () => {
   }
 }, 250);
 
-export { getRobux, setRobux };
+export { addSideNavigationBarItem };

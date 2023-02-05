@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const pagesDirectory = './src/js/pages';
 
@@ -21,6 +22,16 @@ module.exports = {
   devtool: 'cheap-module-source-map',
   entry: getEntryFiles(),
 
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: (pathData) => {
+        // Without this absolute nonsense, the css files would have a js extension in them
+        const name = path.basename(pathData.chunk.name, '.js');
+        return `css/${name}.css`;
+      },
+    }),
+  ],
+
   module: {
     rules: [
       {
@@ -31,11 +42,36 @@ module.exports = {
       {
         test: /\.scss$/,
         exclude: /node_modules/,
-        type: 'asset/resource',
-        generator: {
-          filename: 'css/[name].css',
-        },
-        use: ['sass-loader'],
+        use: [
+          // Takes the JavaScript output from the garbage waste of space loader called css-loader
+          // and turns it back into css
+          MiniCssExtractPlugin.loader,
+          {
+            // Loads the css so that the url symbols can be resolved
+            // This plugin has the trash garbage stupid waste of time side effect
+            // of turning the css file into JavaScript
+            loader: 'css-loader',
+            options: {
+              // We don't actually care about sourcemaps for css
+              // so we disable them here
+              sourceMap: false,
+            },
+          },
+          // Allows relative paths to be used
+          'resolve-url-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              // resolve-url-loader requires sourceMap: true
+              sourceMap: true,
+            },
+          },
+        ],
+      },
+      {
+        // This turns images into data URIs
+        test: /\.(png)$/,
+        type: 'asset/inline',
       },
     ],
   },
