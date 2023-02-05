@@ -38,6 +38,11 @@
       "js": ["./dist/pages/game-details.js"],
       "matches": ["https://*.roblox.com/games/*/*"],
       "run_at": "document_end"
+    },
+    {
+      "js": ["./dist/pages/avatar.js"],
+      "matches": ["https://*.roblox.com/my/avatar"],
+      "run_at": "document_end"
     }
   ],
 
