@@ -44,7 +44,7 @@
   "web_accessible_resources": [
     {
       "resources": ["*.js.map"],
-      "matches": ["https://*.roblox.com/*"]
+      "matches": ["https://*.roblox.com/*", "https://roblox.plus/*"]
     }
   ],
 
