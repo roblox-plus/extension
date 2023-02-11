@@ -160,7 +160,7 @@ const BatchedPromise = <OutputType>(
               cache[queuedItem.input] = output;
               setTimeout(() => {
                 delete cache[queuedItem.input];
-              }, retryDelay);
+              }, cacheDuration);
             }
 
             // Make sure we resolve all the promises that are waiting for this item.
