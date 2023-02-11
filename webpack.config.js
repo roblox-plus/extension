@@ -37,7 +37,7 @@ module.exports = {
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: 'ts-loader',
+        use: ['ts-loader', './src/js/webpack/globalServiceLoader.js'],
       },
       {
         test: /\.scss$/,

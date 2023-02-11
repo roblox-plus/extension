@@ -101,15 +101,4 @@ if (isBackgroundServiceWorker) {
   });
 }
 
-// Export + attach to global
-declare global {
-  var settingsService: any;
-}
-
-globalThis.settingsService = {
-  getSettingValue,
-  getSettingValueAndListenForChanges,
-  setSettingValue,
-};
-
 export { getSettingValue, getSettingValueAndListenForChanges, setSettingValue };

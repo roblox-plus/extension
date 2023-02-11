@@ -107,11 +107,4 @@ const _getUserByName = BatchedPromise<User | null>(
 const getUserByName = (username: string) =>
   _getUserByName(username.toLowerCase());
 
-// Export + attach to global
-declare global {
-  var usersService: any;
-}
-
-globalThis.usersService = { getAuthenticatedUser, getUserById, getUserByName };
-
 export { getAuthenticatedUser, getUserById, getUserByName };
