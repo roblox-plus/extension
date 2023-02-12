@@ -1,5 +1,6 @@
 import User from '../types/user';
 import { BatchedPromise, translateOutput } from '../utils/batchedPromise';
+import authenticatedUser from '../utils/authenticatedUser';
 
 const _getAuthenticatedUser = BatchedPromise<User | null>(
   {
@@ -8,6 +9,10 @@ const _getAuthenticatedUser = BatchedPromise<User | null>(
     backgroundServiceKey: 'usersService.getAuthenticatedUser',
   },
   async (_) => {
+    if (authenticatedUser) {
+      return [authenticatedUser];
+    }
+
     const response = await fetch(
       'https://users.roblox.com/v1/users/authenticated'
     );

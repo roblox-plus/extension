@@ -45,6 +45,14 @@
       "js": ["./dist/pages/avatar.js"],
       "matches": ["https://*.roblox.com/my/avatar"],
       "run_at": "document_end"
+    },
+    {
+      "js": ["./dist/pages/item-details.js"],
+      "matches": [
+        "https://*.roblox.com/catalog/*/*",
+        "https://*.roblox.com/library/*/*"
+      ],
+      "run_at": "document_end"
     }
   ],
 
