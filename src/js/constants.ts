@@ -4,10 +4,18 @@ const isBackgroundServiceWorker =
   chrome.runtime.getURL(manifest.background?.service_worker || '') ===
   location.href;
 
-console.log(
-  manifest.name,
-  manifest.version,
-  `started ${isBackgroundServiceWorker ? 'in the background' : ''}`
-);
+if (!globalThis.manifest) {
+  globalThis.manifest = manifest;
+
+  console.log(
+    manifest.name,
+    manifest.version,
+    `started ${isBackgroundServiceWorker ? 'in the background' : ''}`
+  );
+}
+
+declare global {
+  var manifest: any;
+}
 
 export { manifest, isBackgroundServiceWorker };
