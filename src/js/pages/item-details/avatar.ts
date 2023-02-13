@@ -5,7 +5,7 @@ import {
   removeItem,
   wearItem,
 } from '../../services/avatarService';
-import { showErrorBanner, showSuccessBanner } from '../../components/Banner';
+import { showErrorBanner, showSuccessBanner } from '../../components/system-feedback';
 import { getTranslationResource } from '../../services/localizationService';
 import { assetId, assetType } from './details';
 
