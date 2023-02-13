@@ -47,6 +47,12 @@
       "run_at": "document_end"
     },
     {
+      "css": ["./dist/css/inventory.css"],
+      "js": ["./dist/pages/inventory.js"],
+      "matches": ["https://*.roblox.com/users/*/inventory"],
+      "run_at": "document_end"
+    },
+    {
       "js": ["./dist/pages/item-details.js"],
       "matches": [
         "https://*.roblox.com/catalog/*/*",
