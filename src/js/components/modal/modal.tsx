@@ -11,9 +11,18 @@ type ModalInputs = {
 };
 
 export default function Modal({ title, body, buttons, onClose }: ModalInputs) {
+  const closeIfBackdrop = (event: React.SyntheticEvent) => {
+    if (
+      event.target instanceof HTMLElement &&
+      event.target.classList.contains('modal')
+    ) {
+      onClose();
+    }
+  };
+
   return (
     <Fragment>
-      <div className="modal">
+      <div className="modal" onClick={closeIfBackdrop}>
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
