@@ -1,7 +1,20 @@
 type BannerType = 'success' | 'warning';
 
-const createBanner = (text: string, bannerType: BannerType) => {
+const getSystemFeedbackContainer = (): HTMLElement => {
   const systemFeedbackContainer = document.querySelector('.system-feedback');
+  if (systemFeedbackContainer instanceof HTMLElement) {
+    return systemFeedbackContainer;
+  }
+
+  const container = document.createElement('div');
+  container.setAttribute('class', 'system-feedback');
+  document.body.appendChild(container);
+
+  return container;
+};
+
+const createBanner = (text: string, bannerType: BannerType) => {
+  const systemFeedbackContainer = getSystemFeedbackContainer();
   const container = document.createElement('div');
   container.classList.add('alert-system-feedback');
   systemFeedbackContainer?.appendChild(container);
@@ -27,7 +40,7 @@ const showBanner = (text: string, bannerType: BannerType, timeout: number) => {
 
   setTimeout(() => {
     banner.classList.add('on');
-  }, 10);
+  }, 100);
 };
 
 const showErrorBanner = (text: string, timeout: number) => {

@@ -9,8 +9,16 @@ button.rplus-remove-button {
   right: 4px;
 }
 
-.item-card-container:hover {
-  button.rplus-remove-button {
-    display: block;
+.item-card {
+  &.rplus-item-deleted {
+    opacity: 0.5;
+  }
+
+  &:not(.rplus-item-deleted) {
+    .item-card-container:hover {
+      button.rplus-remove-button {
+        display: block;
+      }
+    }
   }
 }

@@ -1,11 +1,19 @@
 import authenticatedUser from '../../utils/authenticatedUser';
 import '../../../css/pages/inventory.scss';
-import { showConfirmationModal } from '../../components/modal';
-import { getTranslationResource } from '../../services/localizationService';
+import showDeleteItemModal from './showDeleteItemModal';
 
 const inventoryData = document.querySelector('inventory');
 const userId = Number(inventoryData?.getAttribute('user-id'));
 const showDeleteButtonTabs = ['models', 'audio', 'meshparts', 'decals'];
+
+const getItemName = (itemCardContainer: HTMLElement | null | undefined) => {
+  const itemName = itemCardContainer?.querySelector('.item-card-name');
+  if (itemName instanceof HTMLElement) {
+    return itemName.innerText;
+  }
+
+  return '';
+};
 
 const tryShowRemoveButton = (thumbnail: HTMLElement) => {
   if (
@@ -25,46 +33,28 @@ const tryShowRemoveButton = (thumbnail: HTMLElement) => {
     return;
   }
 
+  const itemCardContainer =
+    thumbnail.parentElement?.parentElement?.parentElement?.parentElement;
+  const itemName = getItemName(itemCardContainer);
+
   const removeButton = document.createElement('button');
   removeButton.setAttribute('type', 'button');
   removeButton.setAttribute('class', 'rplus-remove-button icon-alert');
-  thumbnail.parentElement?.parentElement?.parentElement?.parentElement?.appendChild(
-    removeButton
-  );
+  itemCardContainer?.appendChild(removeButton);
 
   removeButton.addEventListener('click', async () => {
-    try {
-      const title = await getTranslationResource(
-        'Feature.Item',
-        'Label.DeleteItem'
-      );
-      const body = await getTranslationResource(
-        'Feature.Item',
-        'Label.DeleteFromInventoryConfirm'
-      );
-      const confirmText = await getTranslationResource(
-        'CreatorDashboard.Controls',
-        'Action.Delete'
-      );
-      const cancelText = await getTranslationResource(
-        'CreatorDashboard.Controls',
-        'Action.Cancel'
-      );
+    itemCardContainer?.parentElement?.classList.add('rplus-item-deleted');
 
-      showConfirmationModal({
-        title,
-        body,
-        confirmText,
-        cancelText,
-      })
-        .then((confirmed) => {
-          console.log('Delete?', confirmed);
-        })
-        .catch((err) => {
-          console.error('Failed to complete confirmation modal.', err);
-        });
+    try {
+      const deleted = await showDeleteItemModal(assetId, itemName);
+      if (!deleted) {
+        // We did not actually delete the item, remove the class.
+        itemCardContainer?.parentElement?.classList.remove(
+          'rplus-item-deleted'
+        );
+      }
     } catch (e) {
-      console.error('Failed to open deletion confirmation modal.', e);
+      console.error('Item deletion modal failed, horribly.', e);
     }
   });
 };
