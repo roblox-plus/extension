@@ -5,27 +5,16 @@ import {
   removeItem,
   wearItem,
 } from '../../services/avatarService';
-import { showErrorBanner, showSuccessBanner } from '../../components/system-feedback';
+import {
+  showErrorBanner,
+  showSuccessBanner,
+} from '../../components/system-feedback';
 import { getTranslationResource } from '../../services/localizationService';
 import { assetId, assetType } from './details';
 
-const createContextMenuButton = (
-  contextMenu: HTMLElement,
-  label: string
-): HTMLButtonElement => {
-  const listItem = document.createElement('li');
-  listItem.classList.add('rplus-list-item');
-  contextMenu?.appendChild(listItem);
-
-  const button = document.createElement('button');
-  button.innerText = label;
-  button.setAttribute('role', 'button');
-  listItem.appendChild(button);
-
-  return button;
-};
-
-const initializeContextMenu = (contextMenu: HTMLElement) => {
+const initializeContextMenu = (
+  createContextMenuButton: (text: string) => HTMLButtonElement
+) => {
   getAvatarAssetRules()
     .then(async (avatarRules) => {
       const avatarRule = avatarRules.find(
@@ -46,11 +35,8 @@ const initializeContextMenu = (contextMenu: HTMLElement) => {
           'Feature.Item',
           'Action.TakeOff'
         );
-        const removeItemButton = createContextMenuButton(
-          contextMenu,
-          removeText
-        );
 
+        const removeItemButton = createContextMenuButton(removeText);
         removeItemButton.addEventListener('click', async () => {
           try {
             await removeItem(assetId);
@@ -66,11 +52,8 @@ const initializeContextMenu = (contextMenu: HTMLElement) => {
           'Feature.Item',
           'Action.Wear'
         );
-        const wearItemButton = createContextMenuButton(
-          contextMenu,
-          wearButtonText
-        );
 
+        const wearItemButton = createContextMenuButton(wearButtonText);
         wearItemButton.addEventListener('click', async () => {
           try {
             await wearItem(assetId);
