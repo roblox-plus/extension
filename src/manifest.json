@@ -47,6 +47,11 @@
       "run_at": "document_end"
     },
     {
+      "js": ["./dist/pages/groups.js"],
+      "matches": ["https://*.roblox.com/groups/*/*"],
+      "run_at": "document_end"
+    },
+    {
       "css": ["./dist/css/inventory.css"],
       "js": ["./dist/pages/inventory.js"],
       "matches": ["https://*.roblox.com/users/*/inventory"],
