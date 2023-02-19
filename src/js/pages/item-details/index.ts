@@ -1,4 +1,5 @@
 import { initializeContextMenu } from './contextMenu';
+export * as stats from './stats';
 
 // Listen for the context menu to open
 window.addEventListener('DOMNodeInserted', async (event) => {
