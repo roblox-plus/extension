@@ -62,7 +62,11 @@ const updateVoteTitle = (
 ) => {
   const upvoteCount = Number(upvoteSpan?.getAttribute('title'));
   const downvoteCount = Number(downvoteSpan?.getAttribute('title'));
-  if (isNaN(upvoteCount) || isNaN(downvoteCount)) {
+  if (
+    isNaN(upvoteCount) ||
+    isNaN(downvoteCount) ||
+    upvoteCount + downvoteCount < 1
+  ) {
     return;
   }
 
