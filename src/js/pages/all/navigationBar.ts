@@ -3,27 +3,10 @@ import {
   getSettingValue,
   getSettingValueAndListenForChanges,
 } from '../../services/settingsService';
+import abbreviateNumber, { abbreviations } from '../../utils/abbreviateNumber';
 import authenticatedUser from '../../utils/authenticatedUser';
 
 const devexRate = 0.0035;
-const abbreviations = [
-  {
-    value: 1000,
-    abbreviation: 'K',
-  },
-  {
-    value: 1_000_000,
-    abbreviation: 'M',
-  },
-  {
-    value: 1_000_000_000,
-    abbreviation: 'B',
-  },
-  {
-    value: 1_000_000_000_000,
-    abbreviation: 'T',
-  },
-];
 
 const parseNumber = (input?: string) => {
   const match = input?.match(/\d+/g) || [];
@@ -53,20 +36,6 @@ const getAbbreviateAtValue = async (): Promise<number> => {
   return abbreviation || abbreviations[0].value;
 };
 
-const abbreviate = (value: number, abbreviateAt: number): string => {
-  if (value >= abbreviateAt) {
-    for (let i = abbreviations.length - 1; i >= 0; i--) {
-      if (value >= abbreviations[i].value) {
-        return `${Math.floor(value / abbreviations[i].value).toLocaleString()}${
-          abbreviations[i].abbreviation
-        }+`;
-      }
-    }
-  }
-
-  return value.toLocaleString();
-};
-
 const getRobux = (): number => {
   const countElement = document.getElementById('nav-robux-amount');
   const count = Number(countElement?.getAttribute('count') || NaN);
@@ -87,7 +56,7 @@ const setAbbreviatedRobux = (count: number, abbreviateAt: number) => {
   const navbarElement = document.getElementById('nav-robux-amount');
   if (navbarElement) {
     navbarElement?.setAttribute('count', count.toString());
-    setText(navbarElement, abbreviate(count, abbreviateAt));
+    setText(navbarElement, abbreviateNumber(count, abbreviateAt));
   }
 
   const fullBalanceElement = document.getElementById('nav-robux-balance');
@@ -140,7 +109,7 @@ const setPrivateMessageCount = async (count: number) => {
   element.classList.toggle('hidden', count < 1);
 
   const abbreviation = await getAbbreviateAtValue();
-  setText(element, abbreviate(count, abbreviation));
+  setText(element, abbreviateNumber(count, abbreviation));
 };
 
 const getTradeCount = (): number => {
@@ -163,7 +132,7 @@ const setTradeCount = async (count: number) => {
   element.classList.toggle('hidden', count < 1);
 
   const abbreviation = await getAbbreviateAtValue();
-  setText(element, abbreviate(count, abbreviation));
+  setText(element, abbreviateNumber(count, abbreviation));
 };
 
 const updateRobux = async () => {
