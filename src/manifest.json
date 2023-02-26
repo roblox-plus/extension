@@ -38,30 +38,44 @@
     {
       "css": ["./dist/css/game-details.css"],
       "js": ["./dist/pages/game-details.js"],
-      "matches": ["https://*.roblox.com/games/*/*"],
+      "matches": [
+        "https://www.roblox.com/games/*/*",
+        "https://web.roblox.com/games/*/*"
+      ],
       "run_at": "document_end"
     },
     {
       "js": ["./dist/pages/avatar.js"],
-      "matches": ["https://*.roblox.com/my/avatar"],
+      "matches": [
+        "https://www.roblox.com/my/avatar",
+        "https://web.roblox.com/my/avatar"
+      ],
       "run_at": "document_end"
     },
     {
       "js": ["./dist/pages/groups.js"],
-      "matches": ["https://*.roblox.com/groups/*/*"],
+      "matches": [
+        "https://www.roblox.com/groups/*/*",
+        "https://web.roblox.com/groups/*/*"
+      ],
       "run_at": "document_end"
     },
     {
       "css": ["./dist/css/inventory.css"],
       "js": ["./dist/pages/inventory.js"],
-      "matches": ["https://*.roblox.com/users/*/inventory"],
+      "matches": [
+        "https://www.roblox.com/users/*/inventory",
+        "https://web.roblox.com/users/*/inventory"
+      ],
       "run_at": "document_end"
     },
     {
       "js": ["./dist/pages/item-details.js"],
       "matches": [
-        "https://*.roblox.com/catalog/*/*",
-        "https://*.roblox.com/library/*/*"
+        "https://www.roblox.com/catalog/*/*",
+        "https://web.roblox.com/catalog/*/*",
+        "https://www.roblox.com/library/*/*",
+        "https://web.roblox.com/library/*/*"
       ],
       "run_at": "document_end"
     }
