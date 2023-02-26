@@ -97,6 +97,17 @@
       "run_at": "document_end"
     },
     {
+      "css": ["./dist/css/login.css"],
+      "js": ["./dist/pages/login.js"],
+      "matches": [
+        "https://www.roblox.com/login",
+        "https://web.roblox.com/login",
+        "https://www.roblox.com/NewLogin",
+        "https://web.roblox.com/NewLogin"
+      ],
+      "run_at": "document_end"
+    },
+    {
       "js": ["./dist/pages/profile.js"],
       "matches": [
         "https://www.roblox.com/users/*/profile*",
