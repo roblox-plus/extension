@@ -53,6 +53,15 @@
       "run_at": "document_end"
     },
     {
+      "js": ["./dist/pages/games-list.js"],
+      "css": ["./dist/css/games-list.css"],
+      "matches": [
+        "https://www.roblox.com/discover",
+        "https://web.roblox.com/discover"
+      ],
+      "run_at": "document_end"
+    },
+    {
       "js": ["./dist/pages/groups.js"],
       "matches": [
         "https://www.roblox.com/groups/*/*",

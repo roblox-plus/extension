@@ -1,0 +1,20 @@
+.game-card-link {
+  .rplus-rank-indicator {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    padding: 4px;
+    aspect-ratio: 1 / 1;
+    align-items: center;
+    justify-content: center;
+    background: rgba(32, 32, 32, 0.5);
+    border-radius: 100%;
+  }
+
+  &:hover {
+    .rplus-rank-indicator {
+      display: flex;
+    }
+  }
+}
