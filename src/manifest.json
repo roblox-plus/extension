@@ -53,6 +53,14 @@
       "run_at": "document_end"
     },
     {
+      "js": ["./dist/pages/game-pass-details.js"],
+      "matches": [
+        "https://www.roblox.com/game-pass/*/*",
+        "https://web.roblox.com/game-pass/*/*"
+      ],
+      "run_at": "document_end"
+    },
+    {
       "js": ["./dist/pages/games-list.js"],
       "css": ["./dist/css/games-list.css"],
       "matches": [
