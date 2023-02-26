@@ -31,7 +31,7 @@ module.exports = function (source) {
     return declareGlobal(source, serviceName);
   }
 
-  if (serviceName === 'service-worker') {
+  if (path.basename(path.dirname(this.resourcePath)) === 'service-worker') {
     // This to make sure all services are included in the service worker, so they can listen for messages.
     // And just.. be available.
     const services = fs.readdirSync('./src/js/services');
@@ -40,7 +40,7 @@ module.exports = function (source) {
         `export * as ${path.basename(
           serviceFileName,
           '.ts'
-        )} from './services/${path.basename(serviceFileName, '.ts')}'`
+        )} from '../services/${path.basename(serviceFileName, '.ts')}'`
     );
 
     return serviceExports.join('\n') + '\n' + source;

@@ -6,7 +6,7 @@ const pagesDirectory = './src/js/pages';
 
 const getEntryFiles = () => {
   const entryFiles = {
-    './service-worker.js': './src/js/service-worker.ts',
+    './service-worker.js': './src/js/service-worker/index.ts',
   };
 
   fs.readdirSync(pagesDirectory).forEach((directory) => {
