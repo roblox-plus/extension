@@ -1,4 +1,3 @@
-import { BatchedPromise } from '../utils/batchedPromise';
 import { isBackgroundServiceWorker } from '../constants';
 import {
   addMessageListener,
@@ -8,21 +7,6 @@ import {
 
 const lastKnownValue: { [key: string]: any } = {};
 const settingsChangeListener = new EventTarget();
-
-const _getSettingValue = BatchedPromise<any>(
-  {
-    maxBatchSize: 1,
-    minWaitTime: 0,
-    maxWaitTime: 0,
-    cacheDuration: -1,
-    backgroundServiceKey: 'settingsService.getSettingValue',
-  },
-  async (keys) => {
-    const key = keys[0].toString();
-    const data = await chrome.storage.local.get(key);
-    return [data[key]];
-  }
-);
 
 const setSettingValue = async (key: string, value: any): Promise<void> => {
   if (isBackgroundServiceWorker) {
@@ -47,18 +31,25 @@ const setSettingValue = async (key: string, value: any): Promise<void> => {
 };
 
 const getSettingValue = async (key: string): Promise<any> => {
-  try {
-    const value = await _getSettingValue(key);
-    lastKnownValue[key] = value;
-    return value;
-  } catch (e) {
-    // In case the extension disconnects.
-    if (lastKnownValue.hasOwnProperty(key)) {
-      return lastKnownValue[key];
-    }
+  if (isBackgroundServiceWorker) {
+    const value = await chrome.storage.local.get(key);
+    return value[key];
+  } else {
+    try {
+      const value = await sendMessage('settingsService.getSettingValue', {
+        key,
+      });
+      lastKnownValue[key] = value;
+      return value;
+    } catch (e) {
+      // In case the extension disconnects.
+      if (lastKnownValue.hasOwnProperty(key)) {
+        return lastKnownValue[key];
+      }
 
-    // We tried.
-    throw e;
+      // We tried.
+      throw e;
+    }
   }
 };
 
@@ -88,6 +79,10 @@ const getSettingValueAndListenForChanges = (
 if (isBackgroundServiceWorker) {
   addMessageListener('settingsService.setSettingValue', (message) =>
     setSettingValue(message.key, message.value)
+  );
+
+  addMessageListener('settingsService.getSettingValue', (message) =>
+    getSettingValue(message.key)
   );
 } else {
   addMessageListener('settingsService.settingChanged', async (message) => {
