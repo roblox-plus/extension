@@ -75,8 +75,6 @@ const broadcastMessage = async (
 };
 
 const reload = () => {
-  console.log('hoopla');
-
   if (isBackgroundServiceWorker) {
     setTimeout(() => {
       chrome.runtime.reload();
