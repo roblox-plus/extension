@@ -1,15 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+import { readdirSync } from 'fs';
+import { basename, dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 const pagesDirectory = './src/js/pages';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const getEntryFiles = () => {
   const entryFiles = {
     './service-worker.js': './src/js/service-worker/index.ts',
   };
 
-  fs.readdirSync(pagesDirectory).forEach((directory) => {
+  readdirSync(pagesDirectory).forEach((directory) => {
     entryFiles[
       `./pages/${directory}.js`
     ] = `${pagesDirectory}/${directory}/index.ts`;
@@ -18,7 +20,7 @@ const getEntryFiles = () => {
   return entryFiles;
 };
 
-module.exports = {
+export default {
   devtool: 'cheap-module-source-map',
   entry: getEntryFiles(),
 
@@ -26,7 +28,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: (pathData) => {
         // Without this absolute nonsense, the css files would have a js extension in them
-        const name = path.basename(pathData.chunk.name, '.js');
+        const name = basename(pathData.chunk.name, '.js');
         return `css/${name}.css`;
       },
     }),
@@ -37,7 +39,7 @@ module.exports = {
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: ['ts-loader', './src/js/webpack/globalServiceLoader.js'],
+        use: ['ts-loader', 'extension-service-loader'],
       },
       {
         test: /\.scss$/,
@@ -81,7 +83,7 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, './src/dist'),
+    path: resolve(__dirname, './src/dist'),
     filename: '[name]',
   },
 

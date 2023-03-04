@@ -2,6 +2,7 @@
   "name": "roblox.plus",
   "version": "3.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "webpack --mode development --progress"
   },
@@ -12,6 +13,7 @@
     "@types/react-dom": "^18.0.10",
     "babel-loader": "^9.1.0",
     "css-loader": "^6.7.3",
+    "extension-service-loader": "file:./build/webpack/extension-service-loader",
     "mini-css-extract-plugin": "^2.7.2",
     "node-sass": "^8.0.0",
     "react": "^18.2.0",
