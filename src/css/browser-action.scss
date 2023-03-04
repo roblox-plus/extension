@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+
+  #root {
+    min-width: 384px;
+    min-height: 512px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .MuiAlert-root {
+      align-items: center;
+    }
+  }
+}

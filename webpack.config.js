@@ -9,6 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const getEntryFiles = () => {
   const entryFiles = {
     './service-worker.js': './src/js/service-worker/index.ts',
+    './browser-action.js': './src/js/browser-action/index.tsx',
   };
 
   readdirSync(pagesDirectory).forEach((directory) => {
@@ -88,6 +89,6 @@ export default {
   },
 
   resolve: {
-    extensions: ['.ts', '.tsx', '.scss'],
+    extensions: ['.js', '.ts', '.tsx', '.scss'],
   },
 };

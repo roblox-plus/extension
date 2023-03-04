@@ -121,7 +121,8 @@
     "default_icon": {
       "16": "./images/icons/icon_16x16.png",
       "32": "./images/icons/icon_32x32.png"
-    }
+    },
+    "default_popup": "browser-action.html"
   },
 
   "web_accessible_resources": [
