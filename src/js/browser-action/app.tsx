@@ -51,7 +51,7 @@ export default function () {
     if (authenticatedUser) {
       return (
         <Fragment>
-          <Header />
+          <Header user={authenticatedUser} />
         </Fragment>
       );
     }

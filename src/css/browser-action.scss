@@ -1,3 +1,5 @@
+@import './components/presence-thumbnail';
+
 body {
   margin: 0;
 
@@ -11,5 +13,13 @@ body {
     .MuiAlert-root {
       align-items: center;
     }
+  }
+}
+
+.browser-action-header {
+  .roblox-plus-presence-thumbnail {
+    width: 96px;
+    height: 96px;
+    margin: 8px;
   }
 }
