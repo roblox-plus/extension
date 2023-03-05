@@ -21,6 +21,14 @@ const getLibraryLink = (assetId: number, assetName: string): URL => {
   return getSEOLink(assetId, assetName, 'library');
 };
 
+const getPlaceLink = (placeId: number, placeName: string): URL => {
+  return getSEOLink(placeId, placeName, 'games');
+};
+
+const getUserProfileLink = (userId: number): URL => {
+  return getSEOLink(userId, 'profile', 'users');
+};
+
 const getIdFromUrl = (url: URL): number => {
   const match =
     url.pathname.match(
@@ -30,4 +38,10 @@ const getIdFromUrl = (url: URL): number => {
   return Number(match[2]);
 };
 
-export { getCatalogLink, getLibraryLink, getIdFromUrl };
+export {
+  getCatalogLink,
+  getLibraryLink,
+  getPlaceLink,
+  getUserProfileLink,
+  getIdFromUrl,
+};

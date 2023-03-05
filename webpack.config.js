@@ -73,7 +73,7 @@ export default {
       },
       {
         // This turns images into data URIs
-        test: /\.(png)$/,
+        test: /\.(png|svg)$/,
         type: 'asset/inline',
       },
     ],
