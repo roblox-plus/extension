@@ -89,7 +89,7 @@ const updateVoteTitle = (
     );
     percentageSpan.innerText = `${Math.floor(percentage)}%`;
 
-    upvoteSpan.parentElement.after(percentageSpan);
+    upvoteSpan.closest('.vote-summary')?.prepend(percentageSpan);
   }
 };
 

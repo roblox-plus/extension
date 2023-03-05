@@ -1,25 +1,29 @@
-.vote-numbers {
+.vote-summary {
+  .upvote {
+    width: 28px;
+  }
+
   .count-middle {
     text-align: center;
     width: 100%;
     position: absolute;
-    top: -25px;
+    top: -20px;
     left: 0;
   }
 }
 
 game-badges-list {
-	.badge-image {
-		border-radius: 100%;
-		overflow: hidden;
-		position: relative;
+  .badge-image {
+    border-radius: 100%;
+    overflow: hidden;
+    position: relative;
 
-		.rplus-awarded-date {
-			background-color: rgba(25, 25, 25, 0.6);
-			position: absolute;
-			left: 0;
-			top: 16px;
-			width: 100%;
-		}
-	}
+    .rplus-awarded-date {
+      background-color: rgba(25, 25, 25, 0.6);
+      position: absolute;
+      left: 0;
+      top: 16px;
+      width: 100%;
+    }
+  }
 }
