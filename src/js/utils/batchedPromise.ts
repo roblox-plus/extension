@@ -258,6 +258,8 @@ const BatchedPromise = <OutputType>(
         resolve: [resolve],
         reject: [reject],
       });
+
+      setTimeout(tryProcessQueue, 50);
     });
   };
 
