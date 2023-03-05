@@ -9,6 +9,11 @@ let lastKnownUser: User | null = null;
 let browserActionPort: chrome.runtime.Port | undefined = undefined;
 
 const _viewUser = (port: chrome.runtime.Port, user: User | null) => {
+  if (browserActionPort !== port) {
+    // context is no longer valid, skip
+    return;
+  }
+
   if (user) {
     lastKnownUser = user;
   }
@@ -75,9 +80,7 @@ if (isBackgroundServiceWorker) {
         // If we're viewing a user page, try to get the URL
         getUserById(userId)
           .then((user) => {
-            if (browserActionPort === port) {
-              _viewUser(port, user);
-            }
+            _viewUser(port, user);
           })
           .catch((err) => {
             console.error(
@@ -86,9 +89,7 @@ if (isBackgroundServiceWorker) {
               err
             );
 
-            if (browserActionPort === port) {
-              _viewUser(port, null);
-            }
+            _viewUser(port, null);
           });
       } else if (lastKnownUser) {
         // Before defaulting to the authenticated user, attempt to view the last user we viewed.
@@ -96,9 +97,7 @@ if (isBackgroundServiceWorker) {
       } else {
         getAuthenticatedUser()
           .then((user) => {
-            if (browserActionPort === port) {
-              _viewUser(port, user);
-            }
+            _viewUser(port, user);
           })
           .catch((err) => {
             console.error(
@@ -106,9 +105,7 @@ if (isBackgroundServiceWorker) {
               err
             );
 
-            if (browserActionPort === port) {
-              _viewUser(port, null);
-            }
+            _viewUser(port, null);
           });
       }
     }

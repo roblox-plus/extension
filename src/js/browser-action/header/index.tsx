@@ -111,7 +111,7 @@ export default function ({ user }: HeaderInput) {
           </Box>
         )}
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
         <Box sx={{ paddingTop: 2, textAlign: 'center' }}>
           <Link
             href={getUserProfileLink(user.id).href}
