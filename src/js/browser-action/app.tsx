@@ -6,14 +6,12 @@ import {
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Fragment, useEffect, useState } from 'react';
-import { getAuthenticatedUser } from '../services/usersService';
 import User from '../types/user';
 import Header from './header';
 
 export default function () {
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const [authenticatedUser, setAuthenticatedUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const useLightTheme = useMediaQuery('(prefers-color-scheme: light)');
   const theme = createTheme({
     palette: {
@@ -22,15 +20,22 @@ export default function () {
   });
 
   useEffect(() => {
-    getAuthenticatedUser()
-      .then(setAuthenticatedUser)
-      .catch((err) => {
-        console.error('Failed to load authenticated user', err);
-        setError(true);
-      })
-      .finally(() => {
+    setLoading(true);
+
+    const connectionPort = chrome.runtime.connect({
+      name: 'browser-action',
+    });
+
+    connectionPort.onMessage.addListener((message) => {
+      if (message.user) {
+        setUser(message.user);
         setLoading(false);
-      });
+      }
+    });
+
+    return () => {
+      connectionPort.disconnect();
+    };
   }, []);
 
   const render = () => {
@@ -38,20 +43,10 @@ export default function () {
       return <CircularProgress size={96} />;
     }
 
-    if (error) {
-      return (
-        <Alert severity="error">
-          {'Failed to check if you are logged in.'}
-          <br />
-          {'Please re-open the popup to try again.'}
-        </Alert>
-      );
-    }
-
-    if (authenticatedUser) {
+    if (user) {
       return (
         <Fragment>
-          <Header user={authenticatedUser} />
+          <Header user={user} />
         </Fragment>
       );
     }

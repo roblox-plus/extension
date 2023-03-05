@@ -98,7 +98,7 @@ export default function ({ user }: HeaderInput) {
     <AppBar className="browser-action-header" sx={{ flexDirection: 'row' }}>
       <Box>
         <PresenceThumbnail userId={user.id} />
-        {presence.location && (
+        {presence.location && presence.type === PresenceType.Experience && (
           <Box sx={{ padding: 1 }}>
             <Button
               onClick={joinGame}
@@ -144,7 +144,11 @@ export default function ({ user }: HeaderInput) {
           </List>
         )}
         {error && (
-          <Alert severity="error">Failed to load limited inventory.</Alert>
+          <Alert severity="error">
+            Failed to load limited inventory.
+            <br />
+            The inventory may be private.
+          </Alert>
         )}
       </Box>
     </AppBar>

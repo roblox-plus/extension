@@ -1,8 +1,9 @@
+import { viewUser } from '../../services/browserActionService';
 import { getLimitedInventory } from '../../services/inventoryService';
 import { getSettingValue } from '../../services/settingsService';
 import OwnedLimitedAsset from '../../types/ownedLimitedAsset';
 import abbreviateNumber from '../../utils/abbreviateNumber';
-import { userId } from './details';
+import { user } from './details';
 
 const headerDetails = document.querySelector('.header-details>ul.details-info');
 
@@ -46,8 +47,20 @@ getSettingValue('rap-on-profile')
     }
 
     const inventoryValueStat = createStat('RAP', '...');
+    inventoryValueStat.parentElement?.addEventListener(
+      'click',
+      async (event) => {
+        event.preventDefault();
 
-    getLimitedInventory(userId)
+        try {
+          await viewUser(user);
+        } catch (err) {
+          console.error('Failed to open browser action', err, user);
+        }
+      }
+    );
+
+    getLimitedInventory(user.id)
       .then((limitedInventory) => {
         const value = getTotalInventoryValue(limitedInventory);
         inventoryValueStat.setAttribute(
