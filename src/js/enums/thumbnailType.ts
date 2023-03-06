@@ -2,6 +2,9 @@
 enum ThumbnailType {
   // An avatar head shot thumbnail.
   AvatarHeadShot = 'AvatarHeadShot',
+
+  // The thumbnail for an asset.
+  Asset = 'Asset',
 }
 
 export default ThumbnailType;

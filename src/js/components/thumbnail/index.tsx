@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import ThumbnailState from '../../enums/thumbnailState';
 import ThumbnailType from '../../enums/thumbnailType';
-import { getAvatarHeadshotThumbnail } from '../../services/thumbnailsService';
+import {
+  getAssetThumbnail,
+  getAvatarHeadshotThumbnail,
+} from '../../services/thumbnailsService';
 import Thumbnail from '../../types/thumbnail';
 
 type ThumbnailInput = {
@@ -28,6 +31,9 @@ export default function ({ targetId, type }: ThumbnailInput) {
     switch (type) {
       case ThumbnailType.AvatarHeadShot:
         getAvatarHeadshotThumbnail(targetId).then(setThumbnail).catch(setError);
+        return;
+      case ThumbnailType.Asset:
+        getAssetThumbnail(targetId).then(setThumbnail).catch(setError);
         return;
       default:
         setError('unrecognized thumbnail type');

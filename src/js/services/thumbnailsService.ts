@@ -46,6 +46,15 @@ const _getThumbnail = BatchedPromise<Thumbnail>(
   }
 );
 
+const getAssetThumbnail = (assetId: number) =>
+  _getThumbnail(
+    JSON.stringify({
+      type: ThumbnailType.Asset,
+      targetId: assetId,
+      size: '420x420',
+    })
+  );
+
 const getAvatarHeadshotThumbnail = (userId: number) =>
   _getThumbnail(
     JSON.stringify({
@@ -55,4 +64,4 @@ const getAvatarHeadshotThumbnail = (userId: number) =>
     })
   );
 
-export { getAvatarHeadshotThumbnail };
+export { getAssetThumbnail, getAvatarHeadshotThumbnail };

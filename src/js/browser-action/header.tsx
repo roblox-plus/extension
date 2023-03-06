@@ -7,17 +7,17 @@ import {
   List,
   ListItem,
   ListItemText,
-  Typography,
+  Toolbar,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
-import PresenceThumbnail from '../../components/presence-thumbnail';
-import PresenceType from '../../enums/presenceType';
-import { getLimitedInventory } from '../../services/inventoryService';
-import { getTranslationResource } from '../../services/localizationService';
-import { getUserPresence } from '../../services/presenceService';
-import User from '../../types/user';
-import UserPresence from '../../types/userPresence';
-import { getUserProfileLink } from '../../utils/linkify';
+import { Fragment, useEffect, useState } from 'react';
+import PresenceThumbnail from '../components/presence-thumbnail';
+import PresenceType from '../enums/presenceType';
+import { getLimitedInventory } from '../services/inventoryService';
+import { getTranslationResource } from '../services/localizationService';
+import { getUserPresence } from '../services/presenceService';
+import User from '../types/user';
+import UserPresence from '../types/userPresence';
+import { getUserProfileLink } from '../utils/linkify';
 
 type HeaderInput = {
   user: User;
@@ -29,7 +29,6 @@ export default function ({ user }: HeaderInput) {
   const [presence, setPresence] = useState<UserPresence>({
     type: PresenceType.Offline,
   });
-  const [error, setError] = useState<boolean>(false);
   const [joinGameText, setJoinGameText] = useState<string>('Join');
 
   useEffect(() => {
@@ -50,7 +49,6 @@ export default function ({ user }: HeaderInput) {
 
         setRAP(rap);
         setCollectibleCount(inventory.length);
-        setError(false);
       })
       .catch((err) => {
         if (cancel) {
@@ -58,7 +56,6 @@ export default function ({ user }: HeaderInput) {
         }
 
         console.error('Failed to load inventory', user, err);
-        setError(true);
       });
 
     getUserPresence(user.id)
@@ -95,41 +92,50 @@ export default function ({ user }: HeaderInput) {
   };
 
   return (
-    <AppBar className="browser-action-header" sx={{ flexDirection: 'row' }}>
-      <Box>
-        <PresenceThumbnail userId={user.id} />
-        {presence.location && presence.type === PresenceType.Experience && (
-          <Box sx={{ padding: 1 }}>
-            <Button
-              onClick={joinGame}
-              color="success"
-              variant="outlined"
-              fullWidth
-            >
-              {joinGameText}
-            </Button>
-          </Box>
-        )}
-      </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-        <Box sx={{ paddingTop: 2, textAlign: 'center' }}>
-          <Link
-            href={getUserProfileLink(user.id).href}
-            title={`@${user.name}`}
-            target="_blank"
-            underline="none"
-            color="inherit"
-          >
-            {user.displayName}
-          </Link>
+    <Fragment>
+      <AppBar
+        className="browser-action-header"
+        sx={{ flexDirection: 'row', marginBottom: 1 }}
+        position="static"
+      >
+        <Box>
+          <PresenceThumbnail userId={user.id} />
+          {presence.location && presence.type === PresenceType.Experience && (
+            <Box sx={{ padding: 1 }}>
+              <Button
+                onClick={joinGame}
+                color="success"
+                variant="contained"
+                fullWidth
+              >
+                <b>{joinGameText}</b>
+              </Button>
+            </Box>
+          )}
         </Box>
-        {!error && (
+        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+          <Box sx={{ paddingTop: 2, textAlign: 'center' }}>
+            <Link
+              href={getUserProfileLink(user.id).href}
+              title={`@${user.name}`}
+              target="_blank"
+              underline="none"
+              color="inherit"
+            >
+              <b>{user.displayName}</b>
+            </Link>
+          </Box>
           <List sx={{ display: 'flex', flexDirection: 'row' }}>
             {!isNaN(rap) && (
               <ListItem sx={{ paddingTop: 0, textAlign: 'center' }}>
                 <ListItemText
                   primary="RAP"
-                  secondary={`R\$${rap.toLocaleString()}`}
+                  secondary={
+                    <Fragment>
+                      <span className="roblox-plus-robux-icon"></span>
+                      {` ${rap.toLocaleString()}`}
+                    </Fragment>
+                  }
                 />
               </ListItem>
             )}
@@ -142,15 +148,8 @@ export default function ({ user }: HeaderInput) {
               </ListItem>
             )}
           </List>
-        )}
-        {error && (
-          <Alert severity="error">
-            Failed to load limited inventory.
-            <br />
-            The inventory may be private.
-          </Alert>
-        )}
-      </Box>
-    </AppBar>
+        </Box>
+      </AppBar>
+    </Fragment>
   );
 }

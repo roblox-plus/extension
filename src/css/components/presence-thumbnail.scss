@@ -1,3 +1,22 @@
+.roblox-plus-thumbnail-image {
+  display: block;
+}
+
+span.roblox-plus-thumbnail-image {
+  // https://images.rbxcdn.com/48557c5d1a3323e45b2bb315f07004cf-placeholder_10182018.svg
+  // modified to remove the full avatar placeholder, for convenience
+  background: url(../../images/roblox/thumbnail-placeholders.svg);
+  background-size: cover;
+
+  &.roblox-plus-placeholder-thumbnail-asset {
+    background-position-y: center;
+  }
+
+  &.roblox-plus-placeholder-thumbnail-avatarheadshot {
+    background-position-y: bottom;
+  }
+}
+
 .roblox-plus-presence-thumbnail {
   position: relative;
 
@@ -5,18 +24,6 @@
     width: 100%;
     height: 100%;
     border-radius: 100%;
-    display: block;
-  }
-
-  span.roblox-plus-thumbnail-image {
-    // https://images.rbxcdn.com/48557c5d1a3323e45b2bb315f07004cf-placeholder_10182018.svg
-    // modified to remove the full avatar placeholder, for convenience
-    background: url(../../images/roblox/thumbnail-placeholders.svg);
-    background-size: cover;
-
-    &.roblox-plus-placeholder-thumbnail-avatarheadshot {
-      background-position-y: bottom;
-    }
   }
 
   .roblox-plus-presence {

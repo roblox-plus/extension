@@ -8,6 +8,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Fragment, useEffect, useState } from 'react';
 import User from '../types/user';
 import Header from './header';
+import Inventory from './inventory';
 
 export default function () {
   const [loading, setLoading] = useState<boolean>(true);
@@ -47,9 +48,16 @@ export default function () {
       return (
         <Fragment>
           <Header user={user} />
+          <Inventory userId={user.id} />
         </Fragment>
       );
     }
+
+    return (
+      <Alert severity="warning">
+        No user selected.. how did you end up in this state?
+      </Alert>
+    );
   };
 
   return (

@@ -1,5 +1,6 @@
 @import './components/presence-thumbnail';
 
+/* root */
 body {
   margin: 0;
 
@@ -7,8 +8,8 @@ body {
     min-width: 384px;
     min-height: 512px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    flex-direction: column;
 
     .MuiAlert-root {
       align-items: center;
@@ -16,10 +17,75 @@ body {
   }
 }
 
+/* scroll bar */
+html {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: rgb(240, 240, 240);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(188, 188, 188);
+    border-radius: 3px;
+    transition: background-color 0.5s;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(169, 169, 169);
+  }
+}
+
+/* header */
 .browser-action-header {
   .roblox-plus-presence-thumbnail {
     width: 96px;
     height: 96px;
     margin: 8px;
+  }
+}
+
+/* inventory */
+.roblox-plus-limited-item-card {
+  width: 110px;
+  text-align: start;
+
+  .roblox-plus-thumbnail-image {
+    width: 110px;
+    height: 110px;
+  }
+}
+
+/* other? */
+.roblox-plus-robux-icon {
+  // modified: https://images.rbxcdn.com/e3fed0d20e85a51518b2756e66343a5e-economy_small_dark.svg
+  background: url(../images/roblox/robux-icons.svg);
+  background-size: cover;
+  background-position-y: center;
+  display: inline-block;
+  height: 1.25em;
+  aspect-ratio: 1/1;
+  vertical-align: -0.25em;
+}
+
+.roblox-plus-limited-indicator {
+  background: #656668;
+  border-radius: 16px;
+  padding: 2px 6px 0 6px;
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+
+  .roblox-plus-limited-icon {
+    // modified: https://images.rbxcdn.com/1d362fb5964aff8f81a0a166020d75d3-shop_dark.svg
+    background: url(../images/roblox/marketplace-icons.svg);
+    background-size: cover;
+    background-position-y: top;
+    display: inline-block;
+    height: 1.25em;
+    aspect-ratio: 1/1;
+    vertical-align: -0.25em;
   }
 }
