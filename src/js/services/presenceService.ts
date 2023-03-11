@@ -58,7 +58,11 @@ const getUserPresence = BatchedPromise<UserPresence>(
       (userPresence: any) => userPresence.userId,
       (presence: any): UserPresence => {
         const presenceType = getPresenceType(presence.userPresenceType);
-        if (presence.placeId) {
+        if (
+          presence.placeId &&
+          (presenceType === PresenceType.Experience ||
+            presenceType === PresenceType.Studio)
+        ) {
           return {
             type: presenceType,
             location: {
