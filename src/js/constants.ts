@@ -4,6 +4,9 @@ const isBackgroundServiceWorker =
   chrome.runtime.getURL(manifest.background?.service_worker || '') ===
   location.href;
 
+const isBrowserAction =
+  chrome.runtime.getURL(manifest.action?.default_popup || '') === location.href;
+
 if (!globalThis.manifest) {
   globalThis.manifest = manifest;
 
@@ -18,4 +21,4 @@ declare global {
   var manifest: any;
 }
 
-export { manifest, isBackgroundServiceWorker };
+export { manifest, isBackgroundServiceWorker, isBrowserAction };

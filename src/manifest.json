@@ -138,5 +138,5 @@
     "https://*.rbxcdn.com/*"
   ],
 
-  "permissions": ["contextMenus", "notifications", "storage", "tts"]
+  "permissions": ["storage", "declarativeNetRequest"]
 }

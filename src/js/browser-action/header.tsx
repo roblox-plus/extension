@@ -12,6 +12,7 @@ import {
 import { Fragment, useEffect, useState } from 'react';
 import PresenceThumbnail from '../components/presence-thumbnail';
 import PresenceType from '../enums/presenceType';
+import { followUser } from '../services/gameLaunchService';
 import { getLimitedInventory } from '../services/inventoryService';
 import { getTranslationResource } from '../services/localizationService';
 import { getUserPresence } from '../services/presenceService';
@@ -87,8 +88,12 @@ export default function ({ user }: HeaderInput) {
       });
   }, [presence.location]);
 
-  const joinGame = () => {
-    console.log('boop');
+  const joinGame = async () => {
+    try {
+      await followUser(user.id);
+    } catch (err) {
+      console.error('Failed to launch game', err);
+    }
   };
 
   return (
