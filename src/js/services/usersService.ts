@@ -19,6 +19,8 @@ const _getAuthenticatedUser = BatchedPromise<User | null>(
 
     if (response.status === 401) {
       return [null];
+    } else if (!response.ok) {
+      throw new Error('Failed to load authenticated user');
     }
 
     const result = await response.json();
@@ -51,6 +53,10 @@ const getUserById = BatchedPromise<User | null>(
         excludeBannedUsers: false,
       }),
     });
+
+    if (!response.ok) {
+      throw new Error('Failed to load users by IDs');
+    }
 
     const result = await response.json();
 
@@ -89,6 +95,10 @@ const _getUserByName = BatchedPromise<User | null>(
         }),
       }
     );
+
+    if (!response.ok) {
+      throw new Error('Failed to load users by name');
+    }
 
     const result = await response.json();
 

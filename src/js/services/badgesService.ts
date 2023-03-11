@@ -33,8 +33,12 @@ const _getBadgeAwardedDate = (
           ','
         )}`
       );
-      const result = await response.json();
 
+      if (!response.ok) {
+        throw new Error('Failed to load badge awarded dates');
+      }
+
+      const result = await response.json();
       return translateOutput(
         badgeIds,
         result.data,

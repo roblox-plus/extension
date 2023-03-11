@@ -27,6 +27,10 @@ const _getThumbnail = BatchedPromise<Thumbnail>(
       body: JSON.stringify(thumbnailRequests),
     });
 
+    if (!response.ok) {
+      throw new Error('Failed to load thumbnails');
+    }
+
     const result = await response.json();
     return translateOutput(
       thumbnailRequests.map((r) => r.requestId),

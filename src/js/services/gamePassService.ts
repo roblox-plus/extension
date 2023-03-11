@@ -9,6 +9,11 @@ const getGamePassSaleCount = BatchedPromise<number>(
     const response = await fetch(
       `https://economy.roblox.com/v1/game-pass/${gamePassIds[0]}/game-pass-product-info`
     );
+
+    if (!response.ok) {
+      throw new Error('Failed to load game pass product info');
+    }
+
     const result = await response.json();
     return [result.Sales || NaN];
   }
