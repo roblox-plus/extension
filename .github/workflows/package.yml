@@ -36,6 +36,10 @@ jobs:
       - name: bundle JavaScript
         run: npm run react
 
+      - name: '🏗️ Build'
+        run: |
+          npm run build
+
       # Attach build artifacts
       - name: Attach build artifacts
         uses: actions/upload-artifact@v2
