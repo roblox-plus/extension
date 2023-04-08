@@ -7,10 +7,7 @@ const pagesDirectory = './src/js/pages';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const getEntryFiles = () => {
-  const entryFiles = {
-    './service-worker.js': './src/js/service-worker/index.ts',
-    './browser-action.js': './src/js/browser-action/index.tsx',
-  };
+  const entryFiles = {};
 
   readdirSync(pagesDirectory).forEach((directory) => {
     entryFiles[
