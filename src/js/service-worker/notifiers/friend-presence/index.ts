@@ -3,6 +3,7 @@ import { getUserFriends } from '../../../services/friendsService';
 import { followUser } from '../../../services/gameLaunchService';
 import { getTranslationResource } from '../../../services/localizationService';
 import { getUserPresence } from '../../../services/presenceService';
+import { getSettingValue } from '../../../services/settingsService';
 import { getAvatarHeadshotThumbnail } from '../../../services/thumbnailsService';
 import { isAuthenticatedUserFollowing } from '../../../services/userFollowingsService';
 import { getAuthenticatedUser } from '../../../services/usersService';
@@ -176,6 +177,15 @@ export default async (previousStates: FriendPresenceMap | undefined) => {
         const title = getNotificationTitle(friend, presence, previousState);
         if (!title) {
           // We don't have a title for the notification, so don't show one.
+          chrome.notifications.clear(notificationId);
+          return;
+        }
+
+        const isEnabled = await getSettingValue(
+          `notifiers/friend-presence/${presence.type.toLowerCase()}`
+        );
+        if (!isEnabled) {
+          // The authenticated user does not want to know about these types of presence changes.
           chrome.notifications.clear(notificationId);
           return;
         }
