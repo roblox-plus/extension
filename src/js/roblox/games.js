@@ -100,10 +100,13 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
         Roblox.users
           .getAuthenticatedUser()
           .then((authenticatedUser) => {
-            $.get(`https://games.roblox.com/v1/games/${placeId}/servers/VIP`, {
-              limit: 100,
-              cursor: cursor || '',
-            })
+            $.get(
+              `https://games.roblox.com/v1/games/${placeId}/private-servers`,
+              {
+                limit: 100,
+                cursor: cursor || '',
+              }
+            )
               .done((r) => {
                 const vipServers = [];
                 const vipServerPromises = [];
