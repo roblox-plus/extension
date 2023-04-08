@@ -24,7 +24,7 @@ jobs:
         run: |
           jq '.+= { "version": "2.4.${{ github.run_number }}" }' manifest.json > tmp.$$.json && mv tmp.$$.json manifest.json
           cat manifest.json
-        working-directory: extension
+        working-directory: src
 
       # Bundling
       - name: npm install
@@ -41,4 +41,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: extension
-          path: extension/**
+          path: src/**
