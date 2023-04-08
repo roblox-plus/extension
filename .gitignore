@@ -243,5 +243,5 @@ ModelManifest.xml
 
 # Custom Ignore
 *.zip
-extension/js/output/react/
-extension/css/output/
+src/js/output/react/
+src/css/output/
