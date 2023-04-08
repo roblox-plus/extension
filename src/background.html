@@ -1,79 +1,81 @@
 ﻿<!DOCTYPE html>
 <!-- Roblox+ background page [02/26/2017] -->
 <html>
-<head>
-	<title>Roblox+</title>
-	<link href="/images/icons/favicon.ico" rel="icon" />
+  <head>
+    <title>Roblox+</title>
+    <link href="/images/icons/favicon.ico" rel="icon" />
 
-	<!-- Third party libraries -->
-	<script src="/js/vendors/jquery-3.4.1.min.js"></script>
-	<script src="/js/vendors/db.js-0.15.0.js"></script>
+    <!-- Future Service Worker -->
+    <script src="dist/service-worker.js"></script>
 
-	<!-- Personal Libraries -->
-	<script src="/js/vanilla/extension/extension.js"></script>
-	<script src="/js/vanilla/extension/messaging.js"></script>
-	<script src="/js/vanilla/extension/event.js"></script>
-	<script src="/js/vanilla/extension/backgroundService.js"></script>
-	<script src="/js/vanilla/extension/reload.js"></script>
-	<script src="/js/vanilla/extension/notificationService.js"></script>
-	<script src="/js/vanilla/extension/storage.js"></script>
-	<script src="/js/vanilla/queuedPromise.js"></script>
-	<script src="/js/vanilla/cachedPromise.js"></script>
-	<script src="/js/archive/global.js"></script>
+    <!-- Third party libraries -->
+    <script src="/js/vendors/jquery-3.4.1.min.js"></script>
+    <script src="/js/vendors/db.js-0.15.0.js"></script>
 
-	<script src="/js/vanilla/timedCache.js"></script>
-	<script src="/js/vanilla/batchItemProcessor.js"></script>
-	<script src="/js/vanilla/cursorPagination/cursorPaginationConstants.js"></script>
-	<script src="/js/vanilla/cursorPagination/PaginationCache.js"></script>
-	<script src="/js/vanilla/cursorPagination/CursorPager.js"></script>
+    <!-- Personal Libraries -->
+    <script src="/js/vanilla/extension/extension.js"></script>
+    <script src="/js/vanilla/extension/messaging.js"></script>
+    <script src="/js/vanilla/extension/event.js"></script>
+    <script src="/js/vanilla/extension/backgroundService.js"></script>
+    <script src="/js/vanilla/extension/reload.js"></script>
+    <script src="/js/vanilla/extension/notificationService.js"></script>
+    <script src="/js/vanilla/extension/storage.js"></script>
+    <script src="/js/vanilla/queuedPromise.js"></script>
+    <script src="/js/vanilla/cachedPromise.js"></script>
+    <script src="/js/archive/global.js"></script>
 
-	<!-- required mess -->
-	<script src="/js/archive/prefunc.js"></script>
+    <script src="/js/vanilla/timedCache.js"></script>
+    <script src="/js/vanilla/batchItemProcessor.js"></script>
+    <script src="/js/vanilla/cursorPagination/cursorPaginationConstants.js"></script>
+    <script src="/js/vanilla/cursorPagination/PaginationCache.js"></script>
+    <script src="/js/vanilla/cursorPagination/CursorPager.js"></script>
 
-	<!-- Roblox Libraries -->
-	<script src="/js/roblox/api.js"></script>
-	<script src="/js/roblox/xsrfHandler.js"></script>
-	<script src="/js/roblox/apiSiteContentHandler.js"></script>
-	<script src="/js/roblox/thumbnails.js"></script>
-	<script src="/js/roblox/users.js"></script>
-	<script src="/js/roblox/presence.js"></script>
-	<script src="/js/roblox/catalog.js"></script>
-	<script src="/js/roblox/inventory.js"></script>
-	<script src="/js/roblox/social.js"></script>
-	<script src="/js/roblox/gameBadges.js"></script>
-	<script src="/js/roblox/games.js"></script>
-	<script src="/js/roblox/content.js"></script>
-	<script src="/js/roblox/audio.js"></script>
-	<script src="/js/roblox/trades.js"></script>
-	<script src="/js/roblox/groups.js"></script>
-	<script src="/js/roblox/economy.js"></script>
-	<script src="/js/roblox/economyTransactions.js"></script>
-	<script src="/js/roblox/privateMessages.js"></script>
+    <!-- required mess -->
+    <script src="/js/archive/prefunc.js"></script>
 
-	<!-- Extension Libraries -->
-	<script src="/js/rplus/RobloxPlus.js"></script>
-	<script src="/js/rplus/settings.js"></script>
-	<script src="/js/rplus/sponsoredItems.js"></script>
-	<script src="/js/rplus/notifiers.js"></script>
-	<script src="/js/rplus/premium.js"></script>
-	<script src="/js/rplus/bucketedSales.js"></script>
-	<script src="/js/rplus/robuxHistory.js"></script>
+    <!-- Roblox Libraries -->
+    <script src="/js/roblox/api.js"></script>
+    <script src="/js/roblox/xsrfHandler.js"></script>
+    <script src="/js/roblox/apiSiteContentHandler.js"></script>
+    <script src="/js/roblox/thumbnails.js"></script>
+    <script src="/js/roblox/users.js"></script>
+    <script src="/js/roblox/presence.js"></script>
+    <script src="/js/roblox/catalog.js"></script>
+    <script src="/js/roblox/inventory.js"></script>
+    <script src="/js/roblox/social.js"></script>
+    <script src="/js/roblox/gameBadges.js"></script>
+    <script src="/js/roblox/games.js"></script>
+    <script src="/js/roblox/content.js"></script>
+    <script src="/js/roblox/audio.js"></script>
+    <script src="/js/roblox/trades.js"></script>
+    <script src="/js/roblox/groups.js"></script>
+    <script src="/js/roblox/economy.js"></script>
+    <script src="/js/roblox/economyTransactions.js"></script>
+    <script src="/js/roblox/privateMessages.js"></script>
 
-	<!-- Mess -->
-	<script src="/js/archive/preroblox.js"></script>
+    <!-- Extension Libraries -->
+    <script src="/js/rplus/RobloxPlus.js"></script>
+    <script src="/js/rplus/settings.js"></script>
+    <script src="/js/rplus/sponsoredItems.js"></script>
+    <script src="/js/rplus/notifiers.js"></script>
+    <script src="/js/rplus/premium.js"></script>
+    <script src="/js/rplus/bucketedSales.js"></script>
+    <script src="/js/rplus/robuxHistory.js"></script>
 
-	<!-- background scripts -->
-	<script src="/js/background/notifications.js"></script>
-	<script src="/js/background/background.js"></script>
-	<script src="/js/background/browserAction.js"></script>
-	<script src="/js/background/contextMenus.js"></script>
-	<script src="/js/background/catalogNotifier.js"></script>
-	<script src="/js/background/groupShoutNotifier.js"></script>
-	<script src="/js/background/tradeNotifier.js"></script>
-	<script src="/js/background/friendNotifier.js"></script>
-	<script src="/js/background/gameServerTracker.js"></script>
-</head>
-<body>
-</body>
+    <!-- Mess -->
+    <script src="/js/archive/preroblox.js"></script>
+
+    <!-- background scripts -->
+    <script src="/js/background/notifications.js"></script>
+    <script src="/js/background/background.js"></script>
+    <script src="/js/background/browserAction.js"></script>
+    <script src="/js/background/contextMenus.js"></script>
+    <script src="/js/background/catalogNotifier.js"></script>
+    <script src="/js/background/groupShoutNotifier.js"></script>
+    <script src="/js/background/tradeNotifier.js"></script>
+    <script src="/js/background/friendNotifier.js"></script>
+    <script src="/js/background/gameServerTracker.js"></script>
+  </head>
+  <body></body>
 </html>
 <!-- WebGL3D -->
