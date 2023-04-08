@@ -16,15 +16,21 @@ type SettingsMessage = {
 };
 
 const getSettingValue = (key: string): Promise<any> => {
+  const method = 'getSettingValue';
+  console.debug(`${messageDestination}.${method}`, key);
+
   return sendMessage(messageDestination, {
-    method: 'getSettingValue',
+    method,
     key,
   } as SettingsMessage);
 };
 
 const setSettingValue = (key: string, value: any): Promise<void> => {
+  const method = 'setSettingValue';
+  console.debug(`${messageDestination}.${method}`, key, value);
+
   return sendMessage(messageDestination, {
-    method: 'setSettingValue',
+    method,
     key,
     value,
   } as SettingsMessage);
@@ -89,7 +95,7 @@ addListener(messageDestination, (message: SettingsMessage): Promise<any> => {
         } else {
           chrome.storage.local.set(
             {
-              [message.key]: value,
+              [message.key]: message.value,
             },
             () => {
               localStorage.removeItem(message.key);

@@ -32,7 +32,15 @@ const sendMessage = async (
         if (listeners[destination]) {
           const message = JSON.parse(serializedMessage);
           const result = await listeners[destination](message);
-          const data = JSON.parse(result.data);
+
+          console.debug(
+            `Local listener response for '${destination}':`,
+            result,
+            message
+          );
+
+          const data =
+            result.data === undefined ? undefined : JSON.parse(result.data);
 
           if (result.success) {
             resolve(data);
@@ -62,6 +70,7 @@ const sendMessage = async (
 
         const data =
           result.data === undefined ? undefined : JSON.parse(result.data);
+
         if (result.success) {
           resolve(data);
         } else {
@@ -80,16 +89,35 @@ const addListener = (destination: string, listener: MessageListener): void => {
 
   listeners[destination] = async (message: object): Promise<MessageResult> => {
     try {
+      console.debug(`Processing message for '${destination}'`, message);
+
       const result = await listener(message);
-      return {
+      const response = {
         success: true,
         data: JSON.stringify(result),
       };
+
+      console.debug(
+        `Successful message result from '${destination}':`,
+        response,
+        message
+      );
+
+      return response;
     } catch (err) {
-      return {
+      const response = {
         success: false,
         data: JSON.stringify(err),
       };
+
+      console.debug(
+        `Failed message result from '${destination}':`,
+        response,
+        message,
+        err
+      );
+
+      return response;
     }
   };
 };
