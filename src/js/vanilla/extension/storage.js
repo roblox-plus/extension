@@ -7,7 +7,6 @@ Extension.Storage = class extends Extension.BackgroundService {
 
   get(key) {
     return new Promise((resolve, reject) => {
-      let value = null;
       try {
         settingsService
           .getSettingValue(key)
@@ -25,8 +24,6 @@ Extension.Storage = class extends Extension.BackgroundService {
         reject(e);
         return;
       }
-
-      resolve(value);
     });
   }
 
