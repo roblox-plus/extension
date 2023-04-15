@@ -18,7 +18,7 @@ RPlus.Pages.Catalog = function () {
 							if (blocked) {
 								var itemCard = creatorLabel.closest(".item-card");
 								console.log(creatorLabel.text(), "is blocked - hiding item", itemCard);
-								itemCard.addClass("creator-blocked");
+								itemCard.addClass("hidden");
 							}
 						}).catch(console.error);
 					}
