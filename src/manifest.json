@@ -33,7 +33,6 @@
     {
       "js": [
         "dist/pages/all.js",
-        "/js/vendors/twemoji.min.js",
 
         "/js/vanilla/extension/extension.js",
         "/js/vanilla/extension/messaging.js",

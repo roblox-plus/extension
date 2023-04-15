@@ -8,8 +8,11 @@ getToggleSettingValue('twemoji')
       return;
     }
 
-    setInterval(twemoji.parse, 500, document.body);
-    twemoji.parse(document.body);
+    setInterval(() => twemoji.parse(document.body), 500);
+
+    if (document.body) {
+      twemoji.parse(document.body);
+    }
   })
   .catch((err) => {
     console.warn('Failed to load twemoji setting preference', err);
