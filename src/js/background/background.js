@@ -111,19 +111,7 @@ Roblox.users
   .getAuthenticatedUser()
   .then(function (user) {
     if (user && user.id === 48103520) {
-      // I should release this for everyone but I don't want to risk it breaking someday and actually destroying the page.
-      chrome.webRequest.onBeforeRequest.addListener(
-        function (details) {
-          var match = details.url.match(/\/asset\/(.*)/i) || ['', ''];
-          console.log('redirect', match[1]);
-          return {
-            redirectUrl: 'https://assetgame.roblox.com/asset/' + match[1],
-          };
-        },
-        { urls: ['*://www.roblox.com/asset/*'] },
-        ['blocking']
-      );
-
+      // Ensure I don't get redirected back to the catalog for an unreleased item.
       chrome.webRequest.onHeadersReceived.addListener(
         function (details) {
           var id = Roblox.catalog.getIdFromUrl(details.url);
