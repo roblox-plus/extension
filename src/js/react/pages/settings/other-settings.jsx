@@ -64,18 +64,6 @@ class OtherSettings extends SettingsTab {
 				</div>
 				<div class="section">
 					<div class="container-header">
-						<h3>Catalog</h3>
-					</div>
-					<div class="section-content">
-						<span class="text-lead">Hide blocked users as sellers.</span>
-						<PillToggle getValue={this.getPillValue.bind(this, "catalog.hideBlockedSellers")}
-							onToggle={this.setPillValue.bind(this, "catalog.hideBlockedSellers")} />
-						<div class="rbx-divider"></div>
-						<span class="text-description">Users who you have blocked will not appear in catalog results.</span>
-					</div>
-				</div>
-				<div class="section">
-					<div class="container-header">
 						<h3>Money</h3>
 					</div>
 					<div class="section-content">
