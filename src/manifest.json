@@ -199,7 +199,7 @@
         "/js/output/react/components/bucketed-sales-chart.js",
         "/js/output/react/pages/configure-group/revenue.js"
       ],
-      "css": ["/css/output/components/bucketed-sales-chart.css"],
+      "css": ["dist/css/group-configuration.css"],
       "matches": ["*://*.roblox.com/groups/configure*"],
       "run_at": "document_end"
     },
