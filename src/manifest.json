@@ -25,6 +25,7 @@
         "/js/vendors/jquery-3.4.1.min.js",
         "/js/jquery/styleAfterJquery.js"
       ],
+      "css": ["dist/css/all.css"],
       "matches": ["*://*.roblox.com/*"],
       "all_frames": true,
       "run_at": "document_start"
@@ -122,7 +123,6 @@
 
         "/js/jquery/loadPages.js"
       ],
-      "css": ["/css/output/features/notification-stream-widget.css"],
       "matches": ["*://www.roblox.com/*", "*://web.roblox.com/*"],
       "run_at": "document_end"
     },
@@ -137,7 +137,6 @@
 
         "/js/jquery/quickInfoBox.js"
       ],
-      "css": ["/css/output/features/quick-info-widget.css"],
       "matches": ["*://www.roblox.com/*", "*://web.roblox.com/*"],
       "run_at": "document_end"
     },
@@ -154,6 +153,15 @@
     },
 
     {
+      "css": ["dist/css/games-list.css"],
+      "matches": [
+        "https://www.roblox.com/discover",
+        "https://web.roblox.com/discover"
+      ],
+      "run_at": "document_end"
+    },
+
+    {
       "js": [
         "/js/output/react/pages/settings/settings-tab.js",
         "/js/output/react/pages/settings/about.js",
@@ -162,20 +170,20 @@
         "/js/output/react/pages/settings/other-settings.js",
         "/js/output/react/pages/settings/settings.js"
       ],
-      "css": ["/css/output/pages/settings.css"],
+      "css": ["dist/css/account-settings.css"],
       "matches": ["*://*.roblox.com/my/account*"],
       "run_at": "document_end"
     },
 
     {
       "js": ["/js/output/react/pages/catalog/featuredItems.js"],
-      "css": ["/css/output/pages/catalog.css"],
+      "css": ["dist/css/catalog.css"],
       "matches": ["*://*.roblox.com/catalog/*"],
       "run_at": "document_end"
     },
 
     {
-      "css": ["/css/output/pages/groups.css"],
+      "css": ["dist/css/groups.css"],
       "matches": ["*://*.roblox.com/groups/*/*"],
       "run_at": "document_end"
     },
@@ -185,10 +193,7 @@
         "/js/output/react/components/bucketed-sales-chart.js",
         "/js/output/react/pages/item-configuration/item-sales.js"
       ],
-      "css": [
-        "/css/output/pages/item-configuration.css",
-        "/css/output/components/bucketed-sales-chart.css"
-      ],
+      "css": ["dist/css/item-configuration.css"],
       "matches": [
         "*://*.roblox.com/catalog/configure*",
         "*://*.roblox.com/library/configure*",
@@ -202,13 +207,13 @@
         "/js/output/react/components/bucketed-sales-chart.js",
         "/js/output/react/pages/configure-group/revenue.js"
       ],
-      "css": ["/css/output/components/bucketed-sales-chart.css"],
+      "css": ["dist/css/group-configuration.css"],
       "matches": ["*://*.roblox.com/groups/configure*"],
       "run_at": "document_end"
     },
 
     {
-      "css": ["/css/output/pages/game-details.css"],
+      "css": ["dist/css/game-details.css"],
       "matches": ["*://*.roblox.com/games/*/*"],
       "run_at": "document_end"
     },
@@ -219,7 +224,7 @@
         "/js/output/react/pages/item-details/linked-items.js",
         "/js/output/react/pages/item-details/item-owners.js"
       ],
-      "css": ["/css/output/pages/item-details.css"],
+      "css": ["dist/css/item-details.css"],
       "matches": [
         "*://*.roblox.com/catalog/*/*",
         "*://*.roblox.com/library/*/*"

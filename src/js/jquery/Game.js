@@ -94,14 +94,14 @@ RPlus.Pages.Game = function () {
 			});
 		};
 
-		Roblox.audio.getSoundUrl(2860310547).then(function (audioUrl) {
+		Roblox.audio.getSoundUrl(9180343981).then(function (audioUrl) {
 			audioTag.src = audioUrl;
 			forceLoad();
 		}).catch(function () {
 			console.error("no rockefeller today :(");
 		});
 
-		$("#MultiplayerVisitButton").on("mouseover", function () {
+		$("#game-details-play-button-container").on("mouseover", function () {
 			jplayer.animate({ volume: 0.05 }, 500);
 		}).on("mouseout", function () {
 			jplayer.animate({ volume: minimumVolume }, 500);
@@ -112,8 +112,6 @@ RPlus.Pages.Game = function () {
 		}).blur(function () {
 			jplayer.animate({ volume: 0 }, 500);
 		});
-
-		RPlus.style.loadStylesheet(Extension.Singleton.getUrl("/css/easterEggs/rockefellerStreet.css"));
 	}
 
 	$(".voting-panel.body").each(function () {

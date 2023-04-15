@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "webpack --mode development --progress",
-    "react": ".\\node_modules\\.bin\\babel src/js/react --out-dir src/js/output/react",
-    "scss": ".\\node_modules\\.bin\\node-sass src/css -o src/css/output"
+    "react": ".\\node_modules\\.bin\\babel src/js/react --out-dir src/js/output/react"
   },
   "devDependencies": {
     "@babel/cli": "^7.21.0",

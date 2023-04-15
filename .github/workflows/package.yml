@@ -30,9 +30,6 @@ jobs:
       - name: npm install
         run: npm ci
 
-      - name: bundle scss
-        run: npm run scss
-
       - name: bundle JavaScript
         run: npm run react
 

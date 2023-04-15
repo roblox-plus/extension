@@ -1,5 +1,6 @@
 import { getToggleSettingValue } from '../../services/settingsService';
 import twemoji from 'twemoji';
+import '../../../css/pages/all.scss';
 
 // twemojis
 getToggleSettingValue('twemoji')
