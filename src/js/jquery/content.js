@@ -7,35 +7,6 @@ fixCB(({
 	"text/html": function (subdomain, upath, list) {
 		if (document.querySelector("#navigation .rplus-icon") || (["help", "corp", "developer", "wiki", "devforum", "blog", "api", "m", "bloxcon", "setup", "content", "polls"]).indexOf(subdomain = subdomain[subdomain.length - 3]) >= 0) { return; }
 		
-		Extension.Storage.Singleton.get("twemoji").then(function (enabled) {
-			if (!enabled) {
-				return;
-			}
-
-			var emojiSelector = "h2,p,div";
-			var addEmojis = function (element) {
-				setTimeout(function () {
-					twemoji.parse(element);
-				}, 500);
-			};
-
-			$(emojiSelector).each(function () {
-				addEmojis(this);
-			});
-
-			var emojiObserver = new MutationObserver(function (records) {
-				records.forEach(function (record) {
-					record.addedNodes.forEach(function (e) {
-						if ($(e).is(emojiSelector)) {
-							addEmojis(e);
-						}
-					});
-				});
-			});
-
-			emojiObserver.observe(document.body, { childList: true, subtree: true });
-		}).catch(console.warn);
-
 		$("body").on("click", ".friend-status.icon-game", function (e) {
 			e.preventDefault();
 			var id = Roblox.users.getIdFromUrl($(this).parent().parent().find(">.friend-link").attr("href"));

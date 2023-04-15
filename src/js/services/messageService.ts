@@ -60,6 +60,8 @@ const sendMessage = async (
         message: serializedMessage,
       });
 
+      console.debug(`Sending message to '${destination}'`, serializedMessage);
+
       chrome.runtime.sendMessage(outboundMessage, (result: MessageResult) => {
         if (result === undefined) {
           reject(

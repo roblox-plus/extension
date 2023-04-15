@@ -1,13 +1,10 @@
 import { sendMessage, addListener } from './messageService';
 
 // Destination to be used with messaging.
-const messageDestination = 'settingsService';
+const messageDestinationPrefix = 'settingsService';
 
 // The message that actually gets sent to the background page.
 type SettingsMessage = {
-  // The names of the methods that can be RPC'd.
-  method: 'getSettingValue' | 'setSettingValue';
-
   // The setting key.
   key: string;
 
@@ -15,22 +12,22 @@ type SettingsMessage = {
   value?: any;
 };
 
+// Fetches a locally stored setting value by its key.
 const getSettingValue = (key: string): Promise<any> => {
-  const method = 'getSettingValue';
-  console.debug(`${messageDestination}.${method}`, key);
-
-  return sendMessage(messageDestination, {
-    method,
+  return sendMessage(`${messageDestinationPrefix}.getSettingValue`, {
     key,
   } as SettingsMessage);
 };
 
-const setSettingValue = (key: string, value: any): Promise<void> => {
-  const method = 'setSettingValue';
-  console.debug(`${messageDestination}.${method}`, key, value);
+// Gets a boolean setting value, toggled to false by default.
+const getToggleSettingValue = async (key: string): Promise<boolean> => {
+  const value = await getSettingValue(key);
+  return !!value;
+};
 
-  return sendMessage(messageDestination, {
-    method,
+// Locally stores a setting value.
+const setSettingValue = (key: string, value: any): Promise<void> => {
+  return sendMessage(`${messageDestinationPrefix}.setSettingValue`, {
     key,
     value,
   } as SettingsMessage);
@@ -62,54 +59,56 @@ const getValueFromLocalStorage = (key: string): any => {
   }
 };
 
-addListener(messageDestination, (message: SettingsMessage): Promise<any> => {
-  return new Promise((resolve, reject) => {
-    // chrome.storage APIs are callback-based until manifest V3.
-    // Currently in migration phase, to migrate settings from localStorage -> chrome.storage.local
-    switch (message.method) {
-      case 'getSettingValue':
-        const value = getValueFromLocalStorage(message.key);
-        if (value !== undefined) {
-          chrome.storage.local.set(
-            {
-              [message.key]: value,
-            },
-            () => {
-              localStorage.removeItem(message.key);
-              resolve(value);
-            }
-          );
-        } else {
-          chrome.storage.local.get(message.key, (values) => {
-            resolve(values[message.key]);
-          });
-        }
+addListener(
+  `${messageDestinationPrefix}.getSettingValue`,
+  ({ key }: SettingsMessage): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      // chrome.storage APIs are callback-based until manifest V3.
+      // Currently in migration phase, to migrate settings from localStorage -> chrome.storage.local
+      const value = getValueFromLocalStorage(key);
+      if (value !== undefined) {
+        chrome.storage.local.set(
+          {
+            [key]: value,
+          },
+          () => {
+            localStorage.removeItem(key);
+            resolve(value);
+          }
+        );
+      } else {
+        chrome.storage.local.get(key, (values) => {
+          resolve(values[key]);
+        });
+      }
+    });
+  }
+);
 
-        return;
-      case 'setSettingValue':
-        if (message.value === undefined) {
-          chrome.storage.local.remove(message.key, () => {
-            localStorage.removeItem(message.key);
+addListener(
+  `${messageDestinationPrefix}.setSettingValue`,
+  ({ key, value }: SettingsMessage): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      // chrome.storage APIs are callback-based until manifest V3.
+      // Currently in migration phase, to migrate settings from localStorage -> chrome.storage.local
+      if (value === undefined) {
+        chrome.storage.local.remove(key, () => {
+          localStorage.removeItem(key);
+          resolve(undefined);
+        });
+      } else {
+        chrome.storage.local.set(
+          {
+            [key]: value,
+          },
+          () => {
+            localStorage.removeItem(key);
             resolve(undefined);
-          });
-        } else {
-          chrome.storage.local.set(
-            {
-              [message.key]: message.value,
-            },
-            () => {
-              localStorage.removeItem(message.key);
-              resolve(undefined);
-            }
-          );
-        }
+          }
+        );
+      }
+    });
+  }
+);
 
-        return;
-      default:
-        reject(`Unknown settings method: ${message.method}`);
-        return;
-    }
-  });
-});
-
-export { getSettingValue, setSettingValue };
+export { getSettingValue, getToggleSettingValue, setSettingValue };
