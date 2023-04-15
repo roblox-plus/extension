@@ -104,5 +104,4 @@ dist
 .tern-port
 
 # Custom
-src/css/output/
 src/js/output/
