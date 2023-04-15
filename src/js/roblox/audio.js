@@ -11,6 +11,12 @@ Roblox.Services.Audio = class extends Extension.BackgroundService {
   }
 
   getSoundUrl(assetId) {
+    if (assetId === 9180343981) {
+      return Promise.resolve(
+        'https://c7.rbxcdn.com/d544cebf46a9785f460363ad80cc47be'
+      );
+    }
+
     return CachedPromise(
       `${this.serviceId}.getSoundUrl`,
       (resolve, reject) => {
