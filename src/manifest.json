@@ -208,7 +208,7 @@
     },
 
     {
-      "css": ["/css/output/pages/game-details.css"],
+      "css": ["dist/css/game-details.css"],
       "matches": ["*://*.roblox.com/games/*/*"],
       "run_at": "document_end"
     },
