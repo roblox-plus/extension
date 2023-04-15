@@ -189,7 +189,6 @@
     },
 
     {
-      "js": ["/js/output/react/pages/catalog/featuredItems.js"],
       "css": ["dist/css/catalog.css"],
       "matches": ["*://*.roblox.com/catalog/*"],
       "run_at": "document_end"
