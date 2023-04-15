@@ -107,7 +107,6 @@
         "/js/output/react/features/notification-stream/notification-stream-widget.js",
         "/js/jquery/notificationStream.js",
 
-        "/js/jquery/Inventory.js",
         "/js/jquery/Profile.js",
         "/js/jquery/Game.js",
         "/js/jquery/Item.js",
@@ -151,6 +150,16 @@
       "matches": [
         "https://www.roblox.com/my/avatar",
         "https://web.roblox.com/my/avatar"
+      ],
+      "run_at": "document_end"
+    },
+
+    {
+      "css": ["./dist/css/inventory.css"],
+      "js": ["./dist/pages/inventory.js"],
+      "matches": [
+        "https://www.roblox.com/users/*/inventory",
+        "https://web.roblox.com/users/*/inventory"
       ],
       "run_at": "document_end"
     },

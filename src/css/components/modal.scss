@@ -1,0 +1,7 @@
+.rplus-modal {
+  .modal {
+    // modals are hidden by default, and displayted with in-line styling
+    // this ensures the modals for this extension are shown by default
+    display: block;
+  }
+}
