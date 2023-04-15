@@ -14,17 +14,6 @@
 		},
 		{
 			"type": "npm",
-			"script": "scss",
-			"problemMatcher": [
-				"$node-sass"
-			],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
-		},
-		{
-			"type": "npm",
 			"script": "install"
 		}
 	]
