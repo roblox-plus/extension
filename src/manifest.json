@@ -185,10 +185,7 @@
         "/js/output/react/components/bucketed-sales-chart.js",
         "/js/output/react/pages/item-configuration/item-sales.js"
       ],
-      "css": [
-        "/css/output/pages/item-configuration.css",
-        "/css/output/components/bucketed-sales-chart.css"
-      ],
+      "css": ["dist/css/item-configuration.css"],
       "matches": [
         "*://*.roblox.com/catalog/configure*",
         "*://*.roblox.com/library/configure*",
