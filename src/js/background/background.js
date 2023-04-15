@@ -23,7 +23,6 @@ foreach(
       messages: 0,
       groupShout: 0,
     },
-    changedLogin: Extension.Singleton.isIncognito,
     groupShoutNotifierList: { 2518656: 'Roblox+ Fan Group' },
     navigation: {
       sideOpen: false,
