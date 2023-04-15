@@ -109,7 +109,6 @@
         "/js/jquery/notificationStream.js",
 
         "/js/jquery/Login.js",
-        "/js/jquery/GroupV2.js",
         "/js/jquery/Inventory.js",
         "/js/jquery/Friends.js",
         "/js/jquery/Profile.js",
@@ -191,8 +190,12 @@
     },
 
     {
-      "css": ["dist/css/groups.css"],
-      "matches": ["*://*.roblox.com/groups/*/*"],
+      "js": ["./dist/pages/groups.js"],
+      "css": ["./dist/css/groups.css"],
+      "matches": [
+        "https://www.roblox.com/groups/*/*",
+        "https://web.roblox.com/groups/*/*"
+      ],
       "run_at": "document_end"
     },
 
