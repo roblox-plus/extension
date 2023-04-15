@@ -108,7 +108,6 @@
         "/js/jquery/notificationStream.js",
 
         "/js/jquery/Inventory.js",
-        "/js/jquery/Friends.js",
         "/js/jquery/Profile.js",
         "/js/jquery/Game.js",
         "/js/jquery/Item.js",
