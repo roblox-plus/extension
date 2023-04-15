@@ -175,7 +175,7 @@
     },
 
     {
-      "css": ["/css/output/pages/groups.css"],
+      "css": ["dist/css/groups.css"],
       "matches": ["*://*.roblox.com/groups/*/*"],
       "run_at": "document_end"
     },
