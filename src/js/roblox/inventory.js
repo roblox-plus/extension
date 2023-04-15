@@ -9,7 +9,6 @@ Roblox.Services.Inventory = class extends Extension.BackgroundService {
 
 		this.register([
 			this.getCollectibles,
-			this.delete,
 			this.getAssetOwners,
 			this.getPlayerBadges
 		]);
@@ -70,24 +69,6 @@ Roblox.Services.Inventory = class extends Extension.BackgroundService {
 			rejectExpiry: 10 * 1000,
 			resolveExpiry: 5 * 60 * 1000,
 			queued: true
-		});
-	}
-
-	delete(assetId) {
-		return new Promise((resolve, reject) => {
-			if (typeof (assetId) != "number" || assetId <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid assetId"
-				}]);
-				return;
-			}
-
-			$.post("https://assetgame.roblox.com/asset/delete-from-inventory", {
-				assetId: assetId
-			}).done(function () {
-				resolve({});
-			}).fail(Roblox.api.$reject(reject));
 		});
 	}
 

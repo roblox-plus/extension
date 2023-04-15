@@ -7,12 +7,6 @@ Roblox.Services.UI = class {
 	constructor() {
 		this.modalBackdrop = null;
 		this.toggleCalls = 0;
-
-		this.feedbackTypes = {
-			success: "success",
-			warning: "warning",
-			info: "loading"
-		};
 	}
 
 	toggleBackdrop(isEnabled) {
@@ -28,54 +22,6 @@ Roblox.Services.UI = class {
 		}
 
 		this.modalBackdrop.toggleClass("out", !isEnabled).toggleClass("in", isEnabled);
-	}
-
-	feedback(text, type, expiry, isTextHtml) {
-		return QueuedPromise(`Roblox.ui.feedback`, (resolve, reject) => {
-			if (typeof (type) != "string" || !this.feedbackTypes.hasOwnProperty(type)) {
-				reject([{
-					code: 0,
-					message: "type is invalid"
-				}]);
-				return;
-			}
-
-			if (typeof (text) == "string") {
-				text = text.trim();
-			}
-
-			type = this.feedbackTypes[type];
-			let feedbackWrapper = $("<div class=\"sg-system-feedback\">");
-			let feedbackContainer = $("<div class=\"alert-system-feedback\">");
-			let feedbackInner = $("<div>").attr("class", `alert alert-${type}`);
-			let feedbackText = $("<span class=\"alert-context\">");
-
-			if (isTextHtml) {
-				feedbackText.html(text);
-			} else {
-				feedbackText.text(text);
-			}
-
-			$("body").append(feedbackWrapper.append(feedbackContainer.append(feedbackInner.append(feedbackText))));
-
-			const closeFeedback = () => {
-				feedbackInner.removeClass("on");
-				setTimeout(() => feedbackContainer.remove(), 5000);
-				resolve();
-			};
-
-			setTimeout(() => {
-				feedbackInner.addClass("on");
-
-				if (typeof (expiry) == "number" && expiry > 0) {
-					setTimeout(closeFeedback, expiry);
-				} else {
-					let closeButton = $("<span class=\"icon-close-white\">");
-					closeButton.click(closeFeedback);
-					feedbackInner.append(closeButton);
-				}
-			}, 100);
-		});
 	}
 
 	confirm(details) {

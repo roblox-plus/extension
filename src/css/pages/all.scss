@@ -1,5 +1,17 @@
+// New stuff
+@import '../components/modal';
+
+// Old stuff
 @import '../features/notification-stream-widget.scss';
 @import '../features/quick-info-widget.scss';
 @import '../themes/dark-theme.scss';
 @import '../rplus/images.scss';
 @import '../customIcon.scss';
+
+// twemojis
+img.emoji {
+  height: 1em;
+  width: 1em;
+  margin: 0 0.05em 0 0.1em;
+  vertical-align: -0.1em;
+}
