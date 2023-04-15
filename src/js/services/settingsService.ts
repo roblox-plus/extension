@@ -19,6 +19,12 @@ const getSettingValue = (key: string): Promise<any> => {
   } as SettingsMessage);
 };
 
+// Gets a boolean setting value, toggled to false by default.
+const getToggleSettingValue = async (key: string): Promise<boolean> => {
+  const value = await getSettingValue(key);
+  return !!value;
+};
+
 // Locally stores a setting value.
 const setSettingValue = (key: string, value: any): Promise<void> => {
   return sendMessage(`${messageDestinationPrefix}.setSettingValue`, {
@@ -105,4 +111,4 @@ addListener(
   }
 );
 
-export { getSettingValue, setSettingValue };
+export { getSettingValue, getToggleSettingValue, setSettingValue };
