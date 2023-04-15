@@ -153,6 +153,15 @@
     },
 
     {
+      "css": ["dist/css/games-list.css"],
+      "matches": [
+        "https://www.roblox.com/discover",
+        "https://web.roblox.com/discover"
+      ],
+      "run_at": "document_end"
+    },
+
+    {
       "js": [
         "/js/output/react/pages/settings/settings-tab.js",
         "/js/output/react/pages/settings/about.js",
