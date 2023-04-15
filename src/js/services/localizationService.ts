@@ -105,4 +105,13 @@ addListener(messageDestination, async () => {
   }));
 });
 
+setTimeout(async () => {
+  // Preload translation resources, for use later.
+  getTranslationResources()
+    .then()
+    .catch((err) => {
+      console.warn('Failed to preload translation resources', err);
+    });
+}, 0);
+
 export { getTranslationResource };
