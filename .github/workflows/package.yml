@@ -1,0 +1,48 @@
+name: Package Extension
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Setup
+      - uses: actions/checkout@v1
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Extension Versioning
+      - name: Set manifest version
+        run: |
+          jq '.+= { "version": "2.4.${{ github.run_number }}" }' manifest.json > tmp.$$.json && mv tmp.$$.json manifest.json
+          cat manifest.json
+        working-directory: src
+
+      # Bundling
+      - name: npm install
+        run: npm ci
+
+      - name: bundle scss
+        run: npm run scss
+
+      - name: bundle JavaScript
+        run: npm run react
+
+      - name: '🏗️ Build'
+        run: |
+          npm run build
+
+      # Attach build artifacts
+      - name: Attach build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: extension
+          path: src/**
