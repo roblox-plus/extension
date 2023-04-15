@@ -189,12 +189,6 @@
     },
 
     {
-      "css": ["dist/css/catalog.css"],
-      "matches": ["*://*.roblox.com/catalog/*"],
-      "run_at": "document_end"
-    },
-
-    {
       "js": ["./dist/pages/groups.js"],
       "css": ["./dist/css/groups.css"],
       "matches": [
