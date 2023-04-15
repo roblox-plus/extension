@@ -95,7 +95,8 @@
         "/css/style.css",
 
         "/css/roblox/itemCards.css",
-        "/css/roblox/icons.css"
+        "/css/roblox/icons.css",
+        "dist/css/all.css"
       ],
       "matches": ["*://*.roblox.com/*"],
       "run_at": "document_start"
@@ -122,7 +123,6 @@
 
         "/js/jquery/loadPages.js"
       ],
-      "css": ["/css/output/features/notification-stream-widget.css"],
       "matches": ["*://www.roblox.com/*", "*://web.roblox.com/*"],
       "run_at": "document_end"
     },
@@ -137,7 +137,6 @@
 
         "/js/jquery/quickInfoBox.js"
       ],
-      "css": ["/css/output/features/quick-info-widget.css"],
       "matches": ["*://www.roblox.com/*", "*://web.roblox.com/*"],
       "run_at": "document_end"
     },
