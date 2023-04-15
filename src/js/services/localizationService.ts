@@ -67,51 +67,49 @@ const getTranslationResource = async (
 };
 
 // Listener to ensure these always happen in the background, for strongest caching potential.
-addListener(messageDestination, async () => {
-  if (translationResourceCache.length > 0) {
-    return translationResourceCache;
-  }
+addListener(
+  messageDestination,
+  async () => {
+    if (translationResourceCache.length > 0) {
+      return translationResourceCache;
+    }
 
-  const locale = await getAuthenticatedUserLocale();
-  const response = await fetch(
-    `https://translations.roblox.com/v1/translations?consumerType=Web`
-  );
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to load translation resources (${response.status})`
+    const locale = await getAuthenticatedUserLocale();
+    const response = await fetch(
+      `https://translations.roblox.com/v1/translations?consumerType=Web`
     );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to load translation resources (${response.status})`
+      );
+    }
+
+    const result = await response.json();
+    const resourcesUrl =
+      result.data.find((r: any) => r.locale === locale) ||
+      result.data.find((r: any) => r.locale === englishLocale);
+
+    if (!resourcesUrl) {
+      throw new Error(
+        `Failed to find translation resources for locale (${locale})`
+      );
+    }
+
+    const resources = await fetch(resourcesUrl.url);
+    const resourcesJson = await resources.json();
+    return (translationResourceCache = resourcesJson.contents.map((r: any) => {
+      return {
+        namespace: r.namespace,
+        key: r.key,
+        value: r.translation || r.english,
+      };
+    }));
+  },
+  {
+    // Ensure that multiple requests for this information can't be processed at once.
+    levelOfParallelism: 1,
   }
-
-  const result = await response.json();
-  const resourcesUrl =
-    result.data.find((r: any) => r.locale === locale) ||
-    result.data.find((r: any) => r.locale === englishLocale);
-
-  if (!resourcesUrl) {
-    throw new Error(
-      `Failed to find translation resources for locale (${locale})`
-    );
-  }
-
-  const resources = await fetch(resourcesUrl.url);
-  const resourcesJson = await resources.json();
-  return (translationResourceCache = resourcesJson.contents.map((r: any) => {
-    return {
-      namespace: r.namespace,
-      key: r.key,
-      value: r.translation || r.english,
-    };
-  }));
-});
-
-setTimeout(async () => {
-  // Preload translation resources, for use later.
-  getTranslationResources()
-    .then()
-    .catch((err) => {
-      console.warn('Failed to preload translation resources', err);
-    });
-}, 0);
+);
 
 export { getTranslationResource };

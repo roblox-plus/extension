@@ -9,6 +9,13 @@ type MessageResult = {
   data: string;
 };
 
+// Message listener options about how to handle messages.
+type MessageListenerOptions = {
+  // How many messages can be processed in parallel.
+  // When set to -1, all messages can processed in parallel.
+  levelOfParallelism: -1 | 1;
+};
+
 // All the listeners, set in the background page.
 const listeners: {
   [destination: string]: (message: object) => Promise<MessageResult>;
@@ -84,12 +91,18 @@ const sendMessage = async (
 };
 
 // Listen for messages at a specific destination.
-const addListener = (destination: string, listener: MessageListener): void => {
+const addListener = (
+  destination: string,
+  listener: MessageListener,
+  options: MessageListenerOptions = {
+    levelOfParallelism: -1,
+  }
+): void => {
   if (listeners[destination]) {
     throw new Error(`${destination} already has message listener attached`);
   }
 
-  listeners[destination] = async (message: object): Promise<MessageResult> => {
+  const processMessage = async (message: object): Promise<MessageResult> => {
     try {
       console.debug(`Processing message for '${destination}'`, message);
 
@@ -121,6 +134,27 @@ const addListener = (destination: string, listener: MessageListener): void => {
 
       return response;
     }
+  };
+
+  listeners[destination] = (message: object): Promise<MessageResult> => {
+    if (options.levelOfParallelism !== 1) {
+      return processMessage(message);
+    }
+
+    return new Promise(async (resolve, reject) => {
+      // https://stackoverflow.com/a/73482349/1663648
+      await navigator.locks.request(
+        `messageService:${destination}`,
+        async () => {
+          try {
+            const result = await processMessage(message);
+            resolve(result);
+          } catch (e) {
+            reject(e);
+          }
+        }
+      );
+    });
   };
 };
 
