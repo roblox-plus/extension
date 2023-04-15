@@ -161,7 +161,7 @@
         "/js/output/react/pages/settings/other-settings.js",
         "/js/output/react/pages/settings/settings.js"
       ],
-      "css": ["/css/output/pages/settings.css"],
+      "css": ["dist/css/account-settings.css"],
       "matches": ["*://*.roblox.com/my/account*"],
       "run_at": "document_end"
     },
