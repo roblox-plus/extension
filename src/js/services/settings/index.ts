@@ -1,4 +1,4 @@
-import { sendMessage, addListener } from './messageService';
+import { sendMessage, addListener } from '../message';
 
 // Destination to be used with messaging.
 const messageDestinationPrefix = 'settingsService';

@@ -1,4 +1,4 @@
-import { getToggleSettingValue } from '../../services/settingsService';
+import { getToggleSettingValue } from '../../services/settings';
 import twemoji from 'twemoji';
 import '../../../css/pages/all.scss';
 

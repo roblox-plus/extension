@@ -1,6 +1,6 @@
 // Features for the group Trade.
 // https://www.roblox.com/groups/650266/Trade
-import { getTranslationResource } from '../../services/localizationService';
+import { getTranslationResource } from '../../services/localization';
 import { getIdFromUrl } from '../../utils/linkify';
 
 const tradeGroupId = 650266;

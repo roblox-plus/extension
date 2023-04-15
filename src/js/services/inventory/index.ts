@@ -1,4 +1,4 @@
-import xsrfFetch from '../utils/xsrfFetch';
+import xsrfFetch from '../../utils/xsrfFetch';
 
 // Removes an asset from the authenticated user's inventory.
 const deleteAsset = async (assetId: number) => {

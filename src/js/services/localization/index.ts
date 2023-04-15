@@ -1,5 +1,5 @@
-import TranslationResource from '../types/translationResource';
-import { addListener, sendMessage } from './messageService';
+import TranslationResource from '../../types/translationResource';
+import { addListener, sendMessage } from '../message';
 
 const englishLocale = 'en_us';
 const messageDestination = 'localizationService.getTranslationResources';
