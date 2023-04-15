@@ -1,6 +1,7 @@
 const headerName = 'X-CSRF-Token';
 let xsrfToken = '';
 
+// A fetch request which will attach an X-CSRF-Token in all outbound requests.
 const xsrfFetch = async (
   url: URL,
   requestDetails: RequestInit

@@ -61,7 +61,7 @@ filterInput.addEventListener('change', filterAllItems);
 filterInput.addEventListener('keyup', filterAllItems);
 
 setInterval(() => {
-  const tabHeader = document.querySelector('div[avatar-tab-content-header');
+  const tabHeader = document.querySelector('div[avatar-tab-content-header]');
   const breadcrumbs = tabHeader?.querySelector('.breadcrumb-container');
   if (tabHeader?.contains(filterInput) || !breadcrumbs) {
     return;

@@ -43,10 +43,12 @@ const showBanner = (text: string, bannerType: BannerType, timeout: number) => {
   }, 100);
 };
 
+// Renders an error feedback banner on the web page, temporarily.
 const showErrorBanner = (text: string, timeout: number) => {
   showBanner(text, 'warning', timeout);
 };
 
+// Renders a success feedback banner on the web page, temporarily.
 const showSuccessBanner = (text: string, timeout: number) => {
   showBanner(text, 'success', timeout);
 };

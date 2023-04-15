@@ -1,6 +1,6 @@
 import authenticatedUser from '../../utils/authenticatedUser';
 import '../../../css/pages/inventory.scss';
-import showDeleteItemModal from './showDeleteItemModal';
+import showDeleteItemModal from './delete-modal';
 
 const inventoryData = document.querySelector('inventory');
 const userId = Number(inventoryData?.getAttribute('user-id'));

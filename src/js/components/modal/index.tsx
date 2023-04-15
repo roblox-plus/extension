@@ -14,13 +14,15 @@ type ConfirmationModalInput = {
   cancelText: string;
 };
 
+// Renders a confirmation modal onto the web page.
+// The returned promise will return whether or not the user accepted the confirmation (true = confirmed, false = cancelled).
 const showConfirmationModal = ({
   title,
   body,
   confirmText,
   confirmClass,
   cancelText,
-}: ConfirmationModalInput) => {
+}: ConfirmationModalInput): Promise<boolean> => {
   const modalContainer = document.createElement('div');
   modalContainer.setAttribute('class', 'rplus-modal');
   const root = ReactDOM.createRoot(modalContainer);
