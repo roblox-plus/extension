@@ -4,12 +4,14 @@
     position: absolute;
     top: 4px;
     right: 4px;
-    padding: 4px;
+    padding: 6px;
     aspect-ratio: 1 / 1;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
     background: rgba(32, 32, 32, 0.5);
     border-radius: 100%;
+    font-size: 80%;
   }
 
   &:hover {

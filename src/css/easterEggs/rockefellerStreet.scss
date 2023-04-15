@@ -1,0 +1,28 @@
+#game-detail-page[data-place-id='2117000638'] {
+  #game-details-play-button-container:hover button {
+    background: linear-gradient(
+      124deg,
+      #99027f,
+      #009bbd,
+      #6aab1f,
+      #005c9f,
+      #b4200e
+    );
+    background-size: 1800% 1800%;
+    animation: rainbow 4s ease infinite;
+  }
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 82%;
+  }
+
+  50% {
+    background-position: 100% 19%;
+  }
+
+  100% {
+    background-position: 0% 82%;
+  }
+}
