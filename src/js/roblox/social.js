@@ -9,7 +9,6 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 
 		this.register([
 			this.getFriendRequestCount,
-			this.getBlockedUsers,
 			this.followUser,
 			this.unfollowUser,
 			this.unfriendUser,
@@ -25,38 +24,6 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 			}).fail(Roblox.api.$reject(reject));
 		}, [], {
 			resolveExpiry: 30 * 1000
-		});
-	}
-
-	getBlockedUsers() {
-		return CachedPromise(`${this.serviceId}.getBlockedUsers`, (resolve, reject) => {
-			$.get("https://www.roblox.com/my/settings/json").done((r) => {
-				let users = r.BlockedUsersModel.BlockedUsers.map(user => {
-					return {
-						id: user.uid,
-						username: user.Name
-					};
-				});
-
-				resolve(users);
-			}).fail(Roblox.api.$reject(reject));
-		}, [], {
-			resolveExpiry: 60 * 1000
-		});
-	}
-
-	isBlocked(userId) {
-		return new Promise((resolve, reject) => {
-			this.getBlockedUsers().then((blockedUsers) => {
-				for (let n in blockedUsers) {
-					if (blockedUsers[n].id === userId) {
-						resolve(true);
-						return;
-					}
-				}
-
-				resolve(false);
-			}).catch(reject);
 		});
 	}
 
