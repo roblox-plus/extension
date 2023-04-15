@@ -114,7 +114,6 @@
         "/js/jquery/Friends.js",
         "/js/jquery/Profile.js",
         "/js/jquery/Game.js",
-        "/js/jquery/Games.js",
         "/js/jquery/Item.js",
         "/js/jquery/Avatar.js",
         "/js/jquery/Catalog.js",
@@ -153,7 +152,8 @@
     },
 
     {
-      "css": ["dist/css/games-list.css"],
+      "js": ["./dist/pages/games-list.js"],
+      "css": ["./dist/css/games-list.css"],
       "matches": [
         "https://www.roblox.com/discover",
         "https://web.roblox.com/discover"
