@@ -84,7 +84,6 @@
 
         "/js/rplus/RobloxPlus.js",
         "/js/rplus/settings.js",
-        "/js/rplus/sponsoredItems.js",
         "/js/rplus/premium.js",
         "/js/rplus/bucketedSales.js",
         "/js/rplus/robuxHistory.js",
@@ -108,9 +107,7 @@
         "/js/output/react/features/notification-stream/notification-stream-widget.js",
         "/js/jquery/notificationStream.js",
 
-        "/js/jquery/Login.js",
         "/js/jquery/Inventory.js",
-        "/js/jquery/Friends.js",
         "/js/jquery/Profile.js",
         "/js/jquery/Game.js",
         "/js/jquery/Item.js",
