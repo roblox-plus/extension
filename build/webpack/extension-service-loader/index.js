@@ -25,6 +25,12 @@ globalThis.${serviceName} = ${exportMatch[1]};
   );
 };
 
+const camelFromKebab = (name) => {
+  return name.replace(/-\w/g, (c) => {
+    return c.charAt(1).toUpperCase();
+  });
+};
+
 module.exports = function (source) {
   if (
     path.basename(path.dirname(path.dirname(this.resourcePath))) ===
@@ -32,7 +38,8 @@ module.exports = function (source) {
     path.basename(this.resourcePath, '.ts') === 'index'
   ) {
     const serviceName =
-      path.basename(path.dirname(this.resourcePath)) + 'Service';
+      camelFromKebab(path.basename(path.dirname(this.resourcePath))) +
+      'Service';
     return declareGlobal(source, serviceName);
   }
 
