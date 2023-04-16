@@ -8,7 +8,7 @@
     "react": ".\\node_modules\\.bin\\babel src/js/react --out-dir src/js/output/react"
   },
   "dependencies": {
-    "@tix-factory/batch": "^1.0.1",
+    "@tix-factory/batch": "^1.0.3",
     "twemoji": "^14.0.2"
   },
   "devDependencies": {

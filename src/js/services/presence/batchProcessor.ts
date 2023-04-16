@@ -33,6 +33,7 @@ class PresenceBatchProcessor extends Batch<number, UserPresence> {
       levelOfParallelism: 1,
       maxSize: 100,
       minimumDelay: 10 * 1000,
+      enqueueDeferDelay: 10,
     });
   }
 
