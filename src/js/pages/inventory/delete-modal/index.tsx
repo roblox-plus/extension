@@ -3,8 +3,8 @@ import {
   showErrorBanner,
   showSuccessBanner,
 } from '../../../components/system-feedback';
-import { deleteAsset } from '../../../services/inventoryService';
-import { getTranslationResource } from '../../../services/localizationService';
+import { deleteAsset } from '../../../services/inventory';
+import { getTranslationResource } from '../../../services/localization';
 import { getLibraryLink } from '../../../utils/linkify';
 
 export default async (assetId: number, itemName: string): Promise<boolean> => {

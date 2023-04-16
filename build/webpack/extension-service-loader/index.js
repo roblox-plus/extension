@@ -25,9 +25,21 @@ globalThis.${serviceName} = ${exportMatch[1]};
   );
 };
 
+const camelFromKebab = (name) => {
+  return name.replace(/-\w/g, (c) => {
+    return c.charAt(1).toUpperCase();
+  });
+};
+
 module.exports = function (source) {
-  const serviceName = path.basename(this.resourcePath, '.ts');
-  if (serviceName.endsWith('Service')) {
+  if (
+    path.basename(path.dirname(path.dirname(this.resourcePath))) ===
+      'services' &&
+    path.basename(this.resourcePath, '.ts') === 'index'
+  ) {
+    const serviceName =
+      camelFromKebab(path.basename(path.dirname(this.resourcePath))) +
+      'Service';
     return declareGlobal(source, serviceName);
   }
 
@@ -36,11 +48,11 @@ module.exports = function (source) {
     // And just.. be available.
     const services = fs.readdirSync('./src/js/services');
     const serviceExports = services.map(
-      (serviceFileName) =>
+      (serviceName) =>
         `export * as ${path.basename(
-          serviceFileName,
+          serviceName,
           '.ts'
-        )} from '../services/${path.basename(serviceFileName, '.ts')}'`
+        )} from '../services/${serviceName}'`
     );
 
     return serviceExports.join('\n') + '\n' + source;

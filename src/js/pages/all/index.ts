@@ -1,4 +1,4 @@
-import { getToggleSettingValue } from '../../services/settingsService';
+import { getToggleSettingValue } from '../../services/settings';
 import twemoji from 'twemoji';
 import '../../../css/pages/all.scss';
 
@@ -18,3 +18,6 @@ getToggleSettingValue('twemoji')
   .catch((err) => {
     console.warn('Failed to load twemoji setting preference', err);
   });
+
+// Exports for compatibility, while existing JavaScript doesn't use imports.
+export { getUserPresence } from '../../services/presence';
