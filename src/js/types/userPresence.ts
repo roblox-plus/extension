@@ -6,6 +6,9 @@ type PresenceLocation = {
 
   // The name of the location where the user currently is.
   name: string;
+
+  // The ID of the server the user is currently in.
+  serverId?: string;
 };
 
 type UserPresence = {

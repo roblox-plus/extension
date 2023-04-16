@@ -73,6 +73,7 @@ class PresenceBatchProcessor extends Batch<number, UserPresence> {
             location: {
               id: presence.placeId,
               name: getLocationName(presenceType, presence.lastLocation),
+              serverId: presence.gameId,
             },
           });
         } else {
