@@ -141,19 +141,18 @@ const addListener = (
       return processMessage(message);
     }
 
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       // https://stackoverflow.com/a/73482349/1663648
-      await navigator.locks.request(
-        `messageService:${destination}`,
-        async () => {
+      navigator.locks
+        .request(`messageService:${destination}`, async () => {
           try {
             const result = await processMessage(message);
             resolve(result);
           } catch (e) {
             reject(e);
           }
-        }
-      );
+        })
+        .catch(reject);
     });
   };
 };

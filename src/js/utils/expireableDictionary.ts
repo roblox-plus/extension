@@ -24,27 +24,29 @@ class ExpirableDictionary<T> {
       return Promise.resolve(item);
     }
 
-    return new Promise(async (resolve, reject) => {
-      await navigator.locks.request(`${this.lockKey}:${key}`, async () => {
-        // It's possible the item was added since we requested the lock, check again.
-        const item = this.items[key];
-        if (item !== undefined) {
-          resolve(item);
-          return;
-        }
+    return new Promise((resolve, reject) => {
+      navigator.locks
+        .request(`${this.lockKey}:${key}`, async () => {
+          // It's possible the item was added since we requested the lock, check again.
+          const item = this.items[key];
+          if (item !== undefined) {
+            resolve(item);
+            return;
+          }
 
-        try {
-          const value = (this.items[key] = await valueFactory());
+          try {
+            const value = (this.items[key] = await valueFactory());
 
-          setTimeout(() => {
-            delete this.items[key];
-          }, this.expirationInMilliseconds);
+            setTimeout(() => {
+              delete this.items[key];
+            }, this.expirationInMilliseconds);
 
-          resolve(value);
-        } catch (e) {
-          reject(e);
-        }
-      });
+            resolve(value);
+          } catch (e) {
+            reject(e);
+          }
+        })
+        .catch(reject);
     });
   }
 }
