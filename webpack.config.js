@@ -38,6 +38,13 @@ export default {
   module: {
     rules: [
       {
+        // Ensure that dependencies don't have to fully specify their file names/extensions.
+        test: /node_modules[\/\\]@tix-factory[\/\\]/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
+      {
         test: /\.tsx?$/,
         exclude: /node_modules/,
         use: ['ts-loader', 'extension-service-loader'],
