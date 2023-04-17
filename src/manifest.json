@@ -223,13 +223,19 @@
     {
       "js": ["./dist/pages/game-details.js"],
       "css": ["./dist/css/game-details.css"],
-      "matches": ["*://*.roblox.com/games/*/*"],
+      "matches": [
+        "https://www.roblox.com/games/*/*",
+        "https://web.roblox.com/games/*/*"
+      ],
       "run_at": "document_end"
     },
 
     {
       "js": ["./dist/pages/badge-details.js"],
-      "matches": ["*://*.roblox.com/badges/*/*"],
+      "matches": [
+        "https://www.roblox.com/badges/*/*",
+        "https://web.roblox.com/badges/*/*"
+      ],
       "run_at": "document_end"
     },
 
