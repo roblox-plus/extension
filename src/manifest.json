@@ -229,6 +229,12 @@
     },
 
     {
+      "js": ["./dist/pages/badge-details.js"],
+      "matches": ["*://*.roblox.com/badges/*/*"],
+      "run_at": "document_end"
+    },
+
+    {
       "js": [
         "/js/output/react/pages/item-details/item-details-tabs.js",
         "/js/output/react/pages/item-details/linked-items.js",

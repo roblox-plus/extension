@@ -1,5 +1,5 @@
 import { getBadgeAwardDate } from '../../services/badges';
-import { getSettingValue } from '../../services/settings';
+import { getToggleSettingValue } from '../../services/settings';
 import authenticatedUser from '../../utils/authenticatedUser';
 
 const addBadgeAwardedDates = async () => {
@@ -7,7 +7,7 @@ const addBadgeAwardedDates = async () => {
     return;
   }
 
-  const enabled = await getSettingValue('badgeAchievementDatesEnabled');
+  const enabled = await getToggleSettingValue('badgeAchievementDatesEnabled');
   if (!enabled) {
     return;
   }
