@@ -33,7 +33,7 @@ const loadUnreadMessageCount = async (userId: number): Promise<number> => {
   }
 
   const result = await response.json();
-  return result.robux;
+  return result.count;
 };
 
 // Listen for messages sent to the service worker.
