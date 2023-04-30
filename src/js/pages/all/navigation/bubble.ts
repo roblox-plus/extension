@@ -70,7 +70,6 @@ const setBubbleValue = async (
 
   const abbreviatedAt = await getAbbreviateAtValue();
   if (setText(bubble, abbreviateNumber(value, abbreviatedAt))) {
-    bubble.setAttribute('count', `${value}`);
     bubble.setAttribute('title', value.toLocaleString());
     bubble.classList.toggle('hidden', value <= 0);
   }
