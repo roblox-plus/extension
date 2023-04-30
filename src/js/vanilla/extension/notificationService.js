@@ -182,8 +182,6 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 		let notification = this.notifications[id];
 		if (notification) {
 			return this.onNotificationClicked.dispatchEvent(notification);
-		} else {
-			return Promise.reject("Notification does not exist");
 		}
 	}
 
@@ -194,8 +192,6 @@ Extension.NotificationService = class extends Extension.BackgroundService {
 				notification: notification,
 				buttonIndex: buttonIndex
 			});
-		} else {
-			return Promise.reject("Notification does not exist");
 		}
 	}
 
