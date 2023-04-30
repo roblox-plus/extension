@@ -54,7 +54,7 @@ RPlus.Services.RobuxHistory = class extends Extension.BackgroundService {
 		this.register([
 			this.getRobuxHistory,
 			this.recordRobuxHistory,
-			this.recordAuthenticatedUserRobux
+			this.recordUserRobux
 		]);
 	}
 	
@@ -104,7 +104,7 @@ RPlus.Services.RobuxHistory = class extends Extension.BackgroundService {
 		});
 	}
 
-	recordAuthenticatedUserRobux(robux) {
+	recordUserRobux(userId, robux) {
 		return new Promise((resolve, reject) => {
 			this.isEnabled().then((enabled) => {
 				if (!enabled) {
@@ -112,10 +112,8 @@ RPlus.Services.RobuxHistory = class extends Extension.BackgroundService {
 					return;
 				}
 	
-				Roblox.users.getAuthenticatedUser().then((user) => {
-					this.recordRobuxHistory(this.currencyHolderTypes.User, user.id, robux).then(() => {
-						resolve(true);
-					}).catch(reject);
+				this.recordRobuxHistory(this.currencyHolderTypes.User, userId, robux).then(() => {
+					resolve(true);
 				}).catch(reject);
 			}).catch(reject);
 		});

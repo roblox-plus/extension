@@ -101,7 +101,7 @@ RPlus.notifiers.catalog = (function () {
 							return;
 						}
 
-						Roblox.social.isFollowing(user.id, creatorId).then(function(following) {
+						followingsService.isAuthenticatedUserFollowing(creatorId).then(function(following) {
 							if (!following) {
 								console.log("Skipping notification because user does not follow creator", notification);
 								return;

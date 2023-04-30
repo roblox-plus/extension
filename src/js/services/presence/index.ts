@@ -20,7 +20,7 @@ const getUserPresence = (userId: number): Promise<UserPresence> => {
   return sendMessage(messageDestination, { userId } as PresenceMessage);
 };
 
-// Listen for messages of things trying to fetch presence.
+// Listen for messages sent to the service worker.
 addListener(messageDestination, (message: PresenceMessage) => {
   // Check the cache
   return presenceCache.getOrAdd(`${message.userId}`, () =>

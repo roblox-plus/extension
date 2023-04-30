@@ -8,37 +8,13 @@ Roblox.Services.Economy = class extends Extension.BackgroundService {
 		super("Roblox.economy");
 
 		this.register([
-			this.getCurrencyBalance,
 			this.purchaseProduct,
 			this.getPremiumPayouts
 		]);
 	}
 
-	getCurrencyBalance() {
-		return CachedPromise(`${this.serviceId}.getCurrencyBalance`, (resolve, reject) => {
-			Roblox.users.getAuthenticatedUser().then((user) => {
-				if (!user) {
-					reject([Roblox.api.errorCodes.generic.unauthorized]);
-					return;
-				}
 
-				$.get(`https://economy.roblox.com/v1/users/${user.id}/currency`).done((r) => {
-					let robuxHistory = window.RPlus && window.RPlus.robuxHistory;
-					if (robuxHistory) {
-						robuxHistory.recordAuthenticatedUserRobux(r.robux).then((recorded) => {
-							// Robux recorded pretty much
-						}).catch(e => {
-							console.warn("recordAuthenticatedUserRobux failure", e);
-						});
-					}
 
-					resolve({
-						robux: r.robux
-					});
-				}).fail(Roblox.api.$reject(reject));
-			}).catch(reject);
-		}, [], {});
-	}
 
 	purchaseProduct(productId, expectedPrice) {
 		return QueuedPromise(`${this.serviceId}.purchaseProduct`, (resolve, reject) => {

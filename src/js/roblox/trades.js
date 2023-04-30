@@ -14,7 +14,6 @@ Roblox.Services.Trades = class extends Extension.BackgroundService {
 			this.get,
 			this.getTradesPaged,
 			this.canTradeWithUser,
-			this.getTradeCount
 		]);
 	}
 
@@ -186,18 +185,6 @@ Roblox.Services.Trades = class extends Extension.BackgroundService {
 				}).fail(Roblox.api.$reject(reject));
 			}).catch(reject);
 		}, [userId], {
-			queued: true,
-			resolveExpiry: 15 * 1000,
-			rejectExpiry: 15 * 1000
-		});
-	}
-
-	getTradeCount(tradeType) {
-		return CachedPromise(`${this.serviceId}.getTradeCount`, (resolve, reject) => {
-			$.get(`https://trades.roblox.com/v1/trades/${tradeType}/count`).done((r) => {
-				resolve(r.count);
-			}).fail(Roblox.api.$reject(reject));
-		}, [tradeType], {
 			queued: true,
 			resolveExpiry: 15 * 1000,
 			rejectExpiry: 15 * 1000

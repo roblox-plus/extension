@@ -18,7 +18,7 @@ const isAuthenticatedUserFollowing = (userId: number): Promise<boolean> => {
   } as BackgroundMessage);
 };
 
-// Listen for messages of things trying to fetch presence.
+// Listen for messages sent to the service worker.
 addListener(messageDestination, (message: BackgroundMessage) => {
   // Check the cache
   return cache.getOrAdd(`${message.userId}`, () =>
