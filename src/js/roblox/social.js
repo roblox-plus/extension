@@ -8,23 +8,12 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 		super("Roblox.social");
 
 		this.register([
-			this.getFriendRequestCount,
 			this.followUser,
 			this.unfollowUser,
 			this.unfriendUser,
 			this.isFollowing,
 			this.getFriends
 		]);
-	}
-
-	getFriendRequestCount() {
-		return CachedPromise(`${this.serviceId}.getFriendRequestCount`, (resolve, reject) => {
-			$.get("https://friends.roblox.com/v1/user/friend-requests/count").done((r) => {
-				resolve(r.count);
-			}).fail(Roblox.api.$reject(reject));
-		}, [], {
-			resolveExpiry: 30 * 1000
-		});
 	}
 
 	followUser(userId) {
