@@ -42,25 +42,28 @@ const getDevExRateElement = (
 
 // Fetches the Robux from the navigation bar, if possible.
 // Otherwise, fetches the Robux from the API.
-const getRobux = async (): Promise<number> => {
+const getRobux = async (mustLoad: boolean): Promise<number> => {
   const authenticatedUser = parseAuthenticatedUser();
   if (!authenticatedUser) {
     return 0;
   }
 
-  // Adding a count attribute on the element to cache the value.
   const countElement = document.getElementById('navbar-robux');
-  const count = Number(countElement?.getAttribute('count') || NaN);
-  if (!isNaN(count)) {
-    return count;
-  }
 
-  const element = document.getElementById('nav-robux-balance');
-  if (element) {
-    const textCount = parseNumber(element?.innerText);
-    countElement?.setAttribute('count', `${textCount}`);
+  if (!mustLoad) {
+    // Adding a count attribute on the element to cache the value.
+    const count = Number(countElement?.getAttribute('count') || NaN);
+    if (!isNaN(count)) {
+      return count;
+    }
 
-    return textCount;
+    const element = document.getElementById('nav-robux-balance');
+    if (element) {
+      const textCount = parseNumber(element?.innerText);
+      countElement?.setAttribute('count', `${textCount}`);
+
+      return textCount;
+    }
   }
 
   const loadedCount = await getRobuxBalance(authenticatedUser.id);

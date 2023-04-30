@@ -1,15 +1,4 @@
 RPlus.navigation = RPlus.navigation || (function () {
-	let thousand = 1000;
-	let million = 1000000;
-	let billion = 1000000000;
-	let trillion = 1000000000000;
-	let suffixes = {};
-
-	suffixes[thousand] = "K";
-	suffixes[million] = "M";
-	suffixes[billion] = "B";
-	suffixes[trillion] = "T";
-
 	let getNavigationSettings = function (callBack) {
 		Extension.Storage.Singleton.get("navigation").then(navigation => {
 			Extension.Storage.Singleton.get("navcounter").then(navcounter => {
@@ -22,18 +11,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 				callBack(navigation);
 			}).catch(console.warn);
 		}).catch(console.warn);
-	};
-
-	let getRobux = function () {
-		return navigationBar.getRobux();
-	};
-
-	let setRobux = function (robux) {
-		if (isNaN(robux) || robux < 0) {
-			robux = 0;
-		}
-
-		navigationBar.setRobux(robux);
 	};
 
 	let getTradeCount = function () {
@@ -144,14 +121,8 @@ RPlus.navigation = RPlus.navigation || (function () {
 							tryLoop();
 						}).catch(tryLoop);
 
-						maxLoops++;
 						Roblox.social.getFriendRequestCount().then((count) => {
 							RPlus.navigation.setFriendRequestCount(count);
-							tryLoop();
-						}).catch(tryLoop);
-
-						Roblox.economy.getCurrencyBalance().then(function (currency) {
-							RPlus.navigation.setRobux(currency.robux);
 							tryLoop();
 						}).catch(tryLoop);
 					}).catch(tryLoop);
@@ -159,11 +130,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 					// If Roblox updates the counters, re-update them to set the suffix according to R+ settings.
 					// Check for zeros to see if Roblox has loaded any counters at all.
 					// Race condition valid if we update the counters while Roblox is still loading them.
-					let robux = RPlus.navigation.getRobux();
-					if (robux > 0) {
-						RPlus.navigation.setRobux(robux);
-					}
-
 					let tradeCount = RPlus.navigation.getTradeCount();
 					if (tradeCount > 0) {
 						RPlus.navigation.setTradeCount(tradeCount);
@@ -194,9 +160,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 	});
 
 	return {
-		getRobux: getRobux,
-		setRobux: setRobux,
-
 		getTradeCount: getTradeCount,
 		setTradeCount: setTradeCount,
 
