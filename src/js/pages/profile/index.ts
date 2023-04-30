@@ -52,8 +52,7 @@ getToggleSettingValue('profileRAP')
         event.preventDefault();
 
         try {
-          console.log('bloop', user);
-          //await viewUser(user);
+          window.RPlus.quickInfo.trigger(location.href);
         } catch (err) {
           console.error('Failed to open browser action', err, user);
         }
@@ -77,3 +76,7 @@ getToggleSettingValue('profileRAP')
   .catch((err) => {
     console.error('Failed to check RAP setting.', err);
   });
+
+declare global {
+  var RPlus: any;
+}
