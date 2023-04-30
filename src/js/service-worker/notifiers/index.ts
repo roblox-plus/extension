@@ -4,6 +4,9 @@ import FriendPresenceNotifier from './friend-presence';
 const notifiers: { [name: string]: (state: any) => Promise<any> } = {};
 notifiers['notifiers/friend-presence'] = FriendPresenceNotifier;
 
+// TODO: Update to use chrome.storage.session for manifest V3
+const notifierStates: { [name: string]: any } = {};
+
 // Execute a notifier by name.
 const executeNotifier = async (name: string) => {
   const notifier = notifiers[name];
@@ -13,16 +16,16 @@ const executeNotifier = async (name: string) => {
 
   try {
     // Fetch the state from the last time the notifier ran.
-    const notifierStates = await chrome.storage.session.get(name);
+    // ...
 
     // Run the notifier.
     const newState = await notifier(notifierStates[name]);
 
     // Save the state for the next time the notifier runs.
     if (newState) {
-      await chrome.storage.session.set({ [name]: newState });
+      notifierStates[name] = newState;
     } else {
-      await chrome.storage.session.remove(name);
+      delete notifierStates[name];
     }
   } catch (err) {
     console.error(name, 'failed to run', err);
