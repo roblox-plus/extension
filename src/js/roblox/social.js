@@ -12,7 +12,6 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 			this.unfollowUser,
 			this.unfriendUser,
 			this.isFollowing,
-			this.getFriends
 		]);
 	}
 
@@ -112,29 +111,6 @@ Roblox.Services.Social = class extends Extension.BackgroundService {
 			queued: true,
 			resolveExpiry: 60 * 1000,
 			rejectExpiry: 15 * 1000
-		});
-	}
-
-	getFriends(userId) {
-		return CachedPromise(`${this.serviceId}.getFriends`, (resolve, reject) => {
-			if (typeof (userId) != "number" || userId <= 0) {
-				reject([Roblox.api.errorCodes.friends.invalidUserId]);
-				return;
-			}
-
-			$.get(`https://friends.roblox.com/v1/users/${userId}/friends`).done((r) => {
-				let users = r.data.map(user => {
-					return {
-						id: user.id,
-						username: user.name
-					};
-				});
-				
-				resolve(users);
-			}).fail(Roblox.api.$reject(reject));
-		}, [userId], {
-			resolveExpiry: 60 * 1000,
-			queued: true
 		});
 	}
 };
