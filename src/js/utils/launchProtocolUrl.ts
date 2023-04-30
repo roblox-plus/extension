@@ -1,5 +1,10 @@
 import { isBackgroundPage } from '../constants';
-import { addListener, sendMessage } from '../services/message';
+import {
+  addListener,
+  getWorkerTab,
+  sendMessage,
+  sendMessageToTab,
+} from '../services/message';
 
 const messageDestination = 'launchProtocolUrl';
 
@@ -12,8 +17,40 @@ type BackgroundMessage = {
 let previousTab: chrome.tabs.Tab | undefined = undefined;
 let protocolLauncherTab: chrome.tabs.Tab | undefined = undefined;
 
+// Attempt to launch the protocol URL in the current tab.
+const tryDirectLaunch = (protocolUrl: string): boolean => {
+  if (!isBackgroundPage && location) {
+    location.href = protocolUrl;
+    return true;
+  }
+
+  return false;
+};
+
 // Launch the protocol URL from a service worker.
 const launchProtocolUrl = (protocolUrl: string): Promise<void> => {
+  if (tryDirectLaunch(protocolUrl)) {
+    // We were able to directly launch the protocol URL.
+    // Nothing more to do.
+    return Promise.resolve();
+  }
+
+  const workerTab = getWorkerTab();
+  if (workerTab) {
+    // If we're in the background, and we have a tab that can process the protocol URL, use that instead.
+    // This will ensure that when we use the protocol launcher to launch Roblox, that they have the highest
+    // likihood of already having accepted the protocol launcher permission.
+    sendMessageToTab(
+      messageDestination,
+      {
+        protocolUrl,
+      } as BackgroundMessage,
+      workerTab
+    );
+
+    return Promise.resolve();
+  }
+
   // TODO: Convert to promise signatures when moving to manifest V3.
   chrome.tabs.query(
     {
@@ -70,11 +107,11 @@ addListener(messageDestination, (message: BackgroundMessage) =>
 
 // Launches a protocol URL, using the most user-friendly method.
 export default async (protocolUrl: string) => {
-  if (!isBackgroundPage && location) {
-    // If we're in a tab, we can launch the URL directly.
-    location.href = protocolUrl;
-  } else {
-    // Otherwise, try to send it to the background to be launched in a tab.
-    await sendMessage(messageDestination, { protocolUrl });
+  if (tryDirectLaunch(protocolUrl)) {
+    // If we can directly launch the protocol URL, there's nothing left to do.
+    return;
   }
+
+  // Otherwise, we have to send a message out and try some nonsense.
+  await sendMessage(messageDestination, { protocolUrl });
 };
