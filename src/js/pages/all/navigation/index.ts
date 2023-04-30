@@ -1,6 +1,7 @@
 import { getFriendRequestCount } from '../../../services/friends';
 import { getUnreadMessageCount } from '../../../services/private-messages';
 import { getToggleSettingValue } from '../../../services/settings';
+import { getTradeCount } from '../../../services/trades';
 import { parseAuthenticatedUser } from '../../../utils/authenticatedUser';
 import { getBubbleValue, setBubbleValue } from './bubble';
 import { getRobux, setRobux } from './robux';
@@ -42,6 +43,16 @@ const getPrivateMessageBubbleCount = async (
   return getBubbleValue('nav-message');
 };
 
+// Fetches the count of inbound trades
+const getTradeBubbleCount = async (refresh: boolean): Promise<number> => {
+  const authenticatedUser = parseAuthenticatedUser();
+  if (refresh && authenticatedUser) {
+    return await getTradeCount('inbound');
+  }
+
+  return getBubbleValue('nav-trade');
+};
+
 // Update the navigation bar, periodically.
 setInterval(async () => {
   const shouldRefresh = await refreshEnabled();
@@ -59,6 +70,10 @@ setInterval(async () => {
     shouldRefresh
   );
   setBubbleValue('nav-message', unreadPrivateMessages);
+
+  // Update the trade count.
+  const trades = await getTradeBubbleCount(shouldRefresh);
+  setBubbleValue('nav-trade', trades);
 }, 500);
 
 // Export to window, for debugging purposes.

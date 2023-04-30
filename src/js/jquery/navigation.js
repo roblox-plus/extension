@@ -89,7 +89,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 				let maxLoops = 1;
 				let tryLoop = function () {
 					if (++loops === maxLoops) {
-						setTimeout(updateLoop, 250);
 					}
 				};
 
@@ -100,31 +99,8 @@ RPlus.navigation = RPlus.navigation || (function () {
 						RPlus.navigation.setButtonTextAndLink(CN + 2, button.text, button.href);
 					}
 				}
-
-				// Navigation counters
-				if (navigationSettings.liveNavigationCounters) {
-					Roblox.users.getAuthenticatedUser().then(function (user) {
-						if (!user) {
-							tryLoop();
-							return;
-						}
-
-						Roblox.trades.getTradeCount("Inbound").then(function (count) {
-							RPlus.navigation.setTradeCount(count);
-							tryLoop();
-						}).catch(tryLoop);
-					}).catch(tryLoop);
-				} else {
-					// If Roblox updates the counters, re-update them to set the suffix according to R+ settings.
-					// Check for zeros to see if Roblox has loaded any counters at all.
-					// Race condition valid if we update the counters while Roblox is still loading them.
-					let tradeCount = RPlus.navigation.getTradeCount();
-					if (tradeCount > 0) {
-						RPlus.navigation.setTradeCount(tradeCount);
-					}
-
-					tryLoop();
-				}
+				
+						setTimeout(updateLoop, 250);
 			});
 		};
 
