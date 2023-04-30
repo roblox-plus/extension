@@ -35,18 +35,6 @@ RPlus.Pages.Profile = function () {
 	}, 250);
 	//*/
 
-	Extension.Storage.Singleton.get("profileRAP").then(function(profileRAP) {
-		if (profileRAP) {
-			let rapLabel= $("<li><div class=\"text-label font-caption-header\">RAP</div><a userid=\"" + id + "\" class=\"rplusinventory text-name\" href=\"javascript:/* Roblox+ */;\"><span class=\"font-header-2\">...</span></a></li>");
-			$(".header-details>.details-info").append(rapLabel);
-
-			Roblox.inventory.getCollectibles(id).then(function (inv) {
-				rapLabel.find("span").text(global.addCommas(inv.combinedValue));
-			}, function () {
-				rapLabel.hide();
-			});
-		}
-	}).catch(console.warn);
 
 	if (($(".btn-friends:not([rplus])>button").text() || "").trim() == "Unfriend") {
 		Extension.Storage.Singleton.get("friendNotifier").then(function (notifier) {

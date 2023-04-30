@@ -24,7 +24,6 @@ toNumber = function (n) {
 };
 
 isCB = function (a) { return typeof (a) == "function"; };
-fixCB = function (a) { return isCB(a) ? a : function () { }; };
 
 foreach = function (a, c) { if (isCB(c)) { for (var n in typeof (a) == "object" ? a : {}) { if (c(n, a[n])) { return true; } } } };
 

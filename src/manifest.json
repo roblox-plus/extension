@@ -102,7 +102,6 @@
 
     {
       "js": [
-        "/js/jquery/content.js",
         "/js/output/react/features/notification-stream/notification-stream-widget.js",
         "/js/jquery/notificationStream.js",
 
@@ -264,6 +263,15 @@
     {
       "js": ["/js/output/react/pages/money/robux-history-chart.js"],
       "matches": ["*://*.roblox.com/transactions*"],
+      "run_at": "document_end"
+    },
+
+    {
+      "js": ["./dist/pages/profile.js"],
+      "matches": [
+        "https://www.roblox.com/users/*/profile*",
+        "https://web.roblox.com/users/*/profile*"
+      ],
       "run_at": "document_end"
     }
   ],

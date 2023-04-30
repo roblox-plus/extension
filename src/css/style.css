@@ -91,13 +91,6 @@ textarea,code{
 	height: 16px;
 }
 
-
-.rplusinventory[userid]{
-	cursor: pointer;
-}
-
-
-
 /* Slider */
 input.rplusslider[type='range']{
 	width: 130px;
