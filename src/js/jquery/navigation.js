@@ -154,48 +154,28 @@ RPlus.navigation = RPlus.navigation || (function () {
 		});
 	};
 
-	let getBubbleCount = function (bubble) {
-		var tradeCountText = bubble.attr("title") || bubble.text();
-		return Number(tradeCountText.replace(/\D+/g, "")) || 0;
-	};
-
-	let setBubbleCount = function (bubbleKey, bubble, count) {
-		requiresUpdate(bubbleKey, bubble, getBubbleCount(bubble), count, function (requiresUpdate) {
-			if (!requiresUpdate) {
-				return;
-			}
-
-			abbreviateNumber(count, function (abbreviatedCount) {
-				bubble.attr({
-					title: global.addCommas(count),
-					count: count
-				}).text(count > 0 ? abbreviatedCount : "").removeClass("hide");
-			});
-		});
-	};
-
 	let getTradeCount = function () {
-		return getBubbleCount($("#nav-trade .notification-blue"));
+		return navigationBar.getBubbleValue('nav-trade');
 	};
 
 	let setTradeCount = function (tradeCount) {
-		setBubbleCount("trade", $("#nav-trade .notification-blue"), tradeCount);
+		navigationBar.setBubbleValue('nav-trade', tradeCount);
 	};
 
 	let getMessagesCount = function () {
-		return getBubbleCount($("#nav-message .notification-blue"));
+		return navigationBar.getBubbleValue('nav-message');
 	};
 
 	let setMessagesCount = function (messageCount) {
-		setBubbleCount("messages", $("#nav-message .notification-blue"), messageCount);
+		navigationBar.setBubbleValue('nav-message', messageCount);
 	};
 
 	let getFriendRequestCount = function () {
-		return getBubbleCount($("#nav-friends .notification-blue"));
+		return navigationBar.getBubbleValue('nav-friends');
 	};
 
 	let setFriendRequestCount = function (friendRequestCount) {
-		setBubbleCount("friends", $("#nav-friends .notification-blue"), friendRequestCount);
+		navigationBar.setBubbleValue('nav-friends', friendRequestCount);
 	};
 
 	let isSideOpen = function () {
