@@ -13,6 +13,9 @@ type OwnedLimitedAsset = {
 
   // The recent average price of the item.
   recentAveragePrice: number;
+
+  // How many of this limited item were sold from the original seller.
+  stock?: number;
 };
 
 export default OwnedLimitedAsset;

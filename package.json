@@ -7,7 +7,7 @@
     "build": "webpack --mode development --progress"
   },
   "dependencies": {
-    "@tix-factory/batch": "^1.0.3",
+    "@tix-factory/batch": "^1.1.0",
     "twemoji": "^14.0.2"
   },
   "devDependencies": {
