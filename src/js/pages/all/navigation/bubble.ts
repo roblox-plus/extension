@@ -8,11 +8,26 @@ const getOrCreateBubble = (
   navigationBarItem: NavigationBarItem,
   allowCreate: boolean
 ): HTMLSpanElement | undefined => {
-  let bubble = document.querySelector(
-    `#${navigationBarItem} .notification-blue`
-  ) as HTMLSpanElement;
+  const selector = `#${navigationBarItem} .notification-blue`;
+  let bubble = document.querySelector(selector) as HTMLSpanElement;
   if (bubble) {
-    return bubble;
+    // it's possible that Roblox could have created a bubble after we did
+    // validate that, and if they did, prefer theirs.
+    const allBubbles = document.querySelectorAll(selector);
+    if (allBubbles.length > 1) {
+      const ourBubble = document.querySelector(
+        `#${navigationBarItem} div[rplus] .notification-blue`
+      );
+      if (ourBubble) {
+        ourBubble.parentElement?.remove();
+      }
+
+      bubble = document.querySelector(selector) as HTMLSpanElement;
+    }
+
+    if (bubble) {
+      return bubble;
+    }
   }
 
   if (allowCreate) {
@@ -27,6 +42,7 @@ const getOrCreateBubble = (
     if (!container) {
       container = document.createElement('div');
       container.setAttribute('class', 'dynamic-width-item align-right');
+      container.setAttribute('rplus', `${+new Date()}`);
       navigationItem?.appendChild(container);
     }
 
