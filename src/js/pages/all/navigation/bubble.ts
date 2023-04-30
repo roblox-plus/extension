@@ -76,11 +76,7 @@ const setBubbleValue = async (
 ): Promise<void> => {
   const bubble = getOrCreateBubble(navigationBarItem, true);
   if (!bubble) {
-    console.warn(
-      'Failed to set the value to a navigation bubble - create failed.',
-      navigationBarItem,
-      value
-    );
+    // It's possible the navigation bar item doesn't exist yet.
     return;
   }
 

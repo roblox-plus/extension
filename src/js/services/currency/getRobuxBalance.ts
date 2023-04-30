@@ -32,6 +32,14 @@ const loadRobuxBalance = async (userId: number): Promise<number> => {
   }
 
   const result = await response.json();
+
+  try {
+    // HACK: Continue recording Robux history to not impact current functionality.
+    window.RPlus.robuxHistory?.recordUserRobux(userId, result.robux);
+  } catch (err) {
+    console.warn('Failed to record robuxHistory');
+  }
+
   return result.robux;
 };
 
