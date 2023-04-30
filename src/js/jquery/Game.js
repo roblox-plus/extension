@@ -156,25 +156,6 @@ RPlus.Pages.Game = function () {
 				}
 			});
 		}).catch(console.error);
-
-		if (Roblox.users.authenticatedUserId) { 
-			Extension.Storage.Singleton.get("badgeAchievementDatesEnabled").then(function(enabled) {
-				if (enabled) {
-					$(".badge-image:not([rplus-awarded-date])").each(function() {
-						var badgeImage = $(this);
-						var badgeId = Roblox.gameBadges.getIdFromUrl(badgeImage.find("a").attr("href"));
-						if (badgeId > 0) {
-							Roblox.gameBadges.getBadgeAwardedDate(Roblox.users.authenticatedUserId, badgeId).then(function(awardedDate) {
-								if (awardedDate) {
-									var date = new Date(awardedDate);
-									badgeImage.append($("<div class=\"achievement-date\">").text(date.toLocaleDateString()).attr("title", `Achieved on ${date.toLocaleString()}`));
-								}
-							}).catch(console.error.bind(console, Roblox.users.authenticatedUserId, badgeId));
-						}
-					}).attr("rplus-awarded-date", +new Date);
-				}
-			}).catch(console.warn);
-		}
 	}, 250);
 
 	return {};

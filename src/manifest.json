@@ -70,7 +70,6 @@
         "/js/roblox/catalog.js",
         "/js/roblox/inventory.js",
         "/js/roblox/social.js",
-        "/js/roblox/gameBadges.js",
         "/js/roblox/games.js",
         "/js/roblox/content.js",
         "/js/roblox/audio.js",
@@ -222,8 +221,21 @@
     },
 
     {
-      "css": ["dist/css/game-details.css"],
-      "matches": ["*://*.roblox.com/games/*/*"],
+      "js": ["./dist/pages/game-details.js"],
+      "css": ["./dist/css/game-details.css"],
+      "matches": [
+        "https://www.roblox.com/games/*/*",
+        "https://web.roblox.com/games/*/*"
+      ],
+      "run_at": "document_end"
+    },
+
+    {
+      "js": ["./dist/pages/badge-details.js"],
+      "matches": [
+        "https://www.roblox.com/badges/*/*",
+        "https://web.roblox.com/badges/*/*"
+      ],
       "run_at": "document_end"
     },
 
