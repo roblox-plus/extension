@@ -38,12 +38,18 @@ const loadUserFriends = async (userId: number): Promise<User[]> => {
 };
 
 // Listen for messages of things trying to fetch presence.
-addListener(messageDestination, (message: BackgroundMessage) => {
-  // Check the cache
-  return cache.getOrAdd(`${message.userId}`, () =>
-    // Queue up the fetch request, when not in the cache
-    loadUserFriends(message.userId)
-  );
-});
+addListener(
+  messageDestination,
+  (message: BackgroundMessage) => {
+    // Check the cache
+    return cache.getOrAdd(`${message.userId}`, () =>
+      // Queue up the fetch request, when not in the cache
+      loadUserFriends(message.userId)
+    );
+  },
+  {
+    levelOfParallelism: 1,
+  }
+);
 
 export default getUserFriends;
