@@ -1,8 +1,11 @@
 import PresenceType from '../enums/presenceType';
 
 type PresenceLocation = {
-  // The ID of the location where the user currently is.
-  id: number;
+  // The place ID of the location where the user currently is.
+  placeId: number;
+
+  // The universe ID of the location where the user currently is.
+  universeId: number;
 
   // The name of the location where the user currently is.
   name: string;

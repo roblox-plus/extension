@@ -18,5 +18,5 @@ const deleteAsset = async (assetId: number) => {
   }
 };
 
-// To ensure the webpack service loader can discover getLimitedInventory, we import it, then export it again.
+// To ensure the webpack service loader can discover the methods: import it, then export it again.
 export { deleteAsset, getLimitedInventory };

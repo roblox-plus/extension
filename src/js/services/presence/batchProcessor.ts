@@ -71,7 +71,8 @@ class PresenceBatchProcessor extends Batch<number, UserPresence> {
           item.resolve({
             type: presenceType,
             location: {
-              id: presence.placeId,
+              placeId: presence.placeId || undefined,
+              universeId: presence.universeId || undefined,
               name: getLocationName(presenceType, presence.lastLocation),
               serverId: presence.gameId,
             },

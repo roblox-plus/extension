@@ -21,3 +21,4 @@ getToggleSettingValue('twemoji')
 
 // Exports for compatibility, while existing JavaScript doesn't use imports.
 export { getUserPresence } from '../../services/presence';
+export { followUser } from '../../services/game-launch';

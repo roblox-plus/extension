@@ -36,10 +36,7 @@ class ExpirableDictionary<T> {
 
           try {
             const value = (this.items[key] = await valueFactory());
-
-            setTimeout(() => {
-              delete this.items[key];
-            }, this.expirationInMilliseconds);
+            setTimeout(() => this.evict(key), this.expirationInMilliseconds);
 
             resolve(value);
           } catch (e) {
@@ -48,6 +45,10 @@ class ExpirableDictionary<T> {
         })
         .catch(reject);
     });
+  }
+
+  evict(key: string) {
+    delete this.items[key];
   }
 }
 

@@ -65,7 +65,7 @@ Roblox.Services.Presence = class extends Extension.BackgroundService {
             game: presence.location
               ? {
                   name: presence.location.name,
-                  placeId: presence.location.id,
+                  placeId: presence.location.placeId,
                   serverId: presence.location.serverId,
                 }
               : null,

@@ -21,6 +21,9 @@ const listeners: {
   [destination: string]: (message: object) => Promise<MessageResult>;
 } = {};
 
+// All the tabs actively connected to the message service.
+const tabs: { [key: string]: chrome.runtime.Port } = {};
+
 // An identifier that tells us which version of the messaging service we're using,
 // to ensure we don't try to process a message not intended for us.
 const version = 2.5;
@@ -88,6 +91,34 @@ const sendMessage = async (
       });
     }
   });
+};
+
+// Fetches a tab that we can send a message to, for work processing.
+const getWorkerTab = (): chrome.runtime.Port | undefined => {
+  const keys = Object.keys(tabs);
+  return keys.length > 0 ? tabs[keys[0]] : undefined;
+};
+
+// Sends a message to a tab.
+const sendMessageToTab = async (
+  destination: string,
+  message: object,
+  tab: chrome.runtime.Port
+): Promise<void> => {
+  const serializedMessage = JSON.stringify(message);
+  const outboundMessage = JSON.stringify({
+    version,
+    destination,
+    message: serializedMessage,
+  });
+
+  console.debug(
+    `Sending message to '${destination}' in tab`,
+    serializedMessage,
+    tab
+  );
+
+  tab.postMessage(outboundMessage);
 };
 
 // Listen for messages at a specific destination.
@@ -210,11 +241,70 @@ if (isBackgroundPage) {
     // https://stackoverflow.com/a/20077854/1663648
     return true;
   });
+
+  chrome.runtime.onConnect.addListener((port) => {
+    const id = crypto.randomUUID();
+    console.debug('Tab connected', id, port);
+    tabs[id] = port;
+
+    port.onDisconnect.addListener(() => {
+      console.debug('Disconnecting tab', id, port);
+      delete tabs[id];
+    });
+  });
 } else {
   console.debug(
     `Not attaching listener for messages, because we're not in the background.`
   );
+
+  if (!window.messageServiceConnection) {
+    const port = (window.messageServiceConnection = chrome.runtime.connect(
+      chrome.runtime.id,
+      {
+        name: 'messageService',
+      }
+    ));
+
+    port.onMessage.addListener((rawMessage) => {
+      if (typeof rawMessage !== 'string') {
+        // Not for us.
+        return;
+      }
+
+      const fullMessage = JSON.parse(rawMessage);
+      if (
+        fullMessage.version !== version ||
+        !fullMessage.destination ||
+        !fullMessage.message
+      ) {
+        // Not for us.
+        return;
+      }
+
+      const listener = listeners[fullMessage.destination];
+      if (!listener) {
+        // No listener in this tab for this message.
+        return;
+      }
+
+      // We don't really have a way to communicate the response back to the service worker.
+      // So we just... do nothing with it.
+      const message = JSON.parse(fullMessage.message);
+      listener(message).catch((err) => {
+        console.error(
+          'Unhandled error processing message in tab',
+          fullMessage,
+          err
+        );
+      });
+    });
+  }
+}
+
+// Ensures that the same tab won't connect multiple times.
+declare global {
+  var messageServiceConnection: chrome.runtime.Port;
 }
 
 export type { MessageListener };
-export { sendMessage, addListener };
+export { sendMessage, addListener, getWorkerTab, sendMessageToTab };

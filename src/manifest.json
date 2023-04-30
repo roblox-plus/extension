@@ -4,7 +4,7 @@
   "short_name": "Roblox+",
   "description": "Adds features and notifiers made by WebGL3D to the Roblox website",
 
-  "minimum_chrome_version": "74.0.0",
+  "minimum_chrome_version": "100.0.0",
 
   "icons": {
     "128": "/images/icons/icon_128x128.png",
@@ -285,10 +285,12 @@
 
   "homepage_url": "https://www.roblox.com/my/account?tab=rplus",
   "permissions": [
+    "alarms",
     "gcm",
     "contextMenus",
     "webRequest",
     "webRequestBlocking",
+    "declarativeNetRequest",
     "tts",
     "notifications",
     "storage",

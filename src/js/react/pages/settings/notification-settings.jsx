@@ -305,7 +305,6 @@ class NotificationSettings extends SettingsTab {
 							onToggle={this.setPillValue.bind(this, "friendNotifier.on")} />
 						<div class="rbx-divider"></div>
 						<span class="text-description">On/off switch for all the options for friends below.</span>
-						<a class="icon-Musical" onClick={this.promptChangeNotifierSound.bind(this, "friend")}></a>
 					</div>
 					<div class="section-content">
 						<span class="text-lead">Notify when your friends come online</span>
