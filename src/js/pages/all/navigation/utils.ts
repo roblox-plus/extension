@@ -26,8 +26,8 @@ const getAbbreviateAtValue = async (): Promise<number> => {
   let abbreviation: number | null = null;
   try {
     const setting = await getSettingValue('navigation');
-    if (typeof setting?.counterCommas === 'number') {
-      abbreviation = setting.counterCommas;
+    if (setting?.counterCommas) {
+      abbreviation = Number(setting.counterCommas);
     }
   } catch (err) {
     console.warn('Failed to determine abbreviation value', err);
