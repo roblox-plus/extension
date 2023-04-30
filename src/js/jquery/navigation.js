@@ -1,11 +1,9 @@
 RPlus.navigation = RPlus.navigation || (function () {
-	let devexRate = 0.0035;
 	let thousand = 1000;
 	let million = 1000000;
 	let billion = 1000000000;
 	let trillion = 1000000000000;
 	let suffixes = {};
-	let bubbleAbbreviations = {};
 
 	suffixes[thousand] = "K";
 	suffixes[million] = "M";
@@ -26,103 +24,8 @@ RPlus.navigation = RPlus.navigation || (function () {
 		}).catch(console.warn);
 	};
 
-	let getDivider = function (number) {
-		if (number >= trillion) {
-			return trillion;
-		} else if (number >= billion) {
-			return billion;
-		} else if (number >= million) {
-			return million;
-		}
-
-		return thousand;
-	};
-
-	let getAbbreviationSuffix = function (number) {
-		var divider = getDivider(number);
-		if (number < divider) {
-			return "";
-		}
-
-		var suffix = suffixes[divider];
-		if (number % divider === 0) {
-			return suffix;
-		}
-
-		return suffix + "+";
-	};
-
-	let abbreviateNumberAt = function (number, roundAt) {
-		if (number < roundAt) {
-			return global.addCommas(number);
-		}
-
-		var divideBy = getDivider(number);
-		return global.addCommas(Math.floor(number / divideBy) + getAbbreviationSuffix(number));
-	};
-
-	let abbreviateNumber = function (number, callBack) {
-		getNavigationSettings(function (navigationSettings) {
-			var roundAt = Math.max(thousand, Number(navigationSettings.counterCommas) || thousand);
-			callBack(abbreviateNumberAt(number, roundAt));
-		});
-	};
-
-	let shouldUpdateByAbbreviation = function (key, callBack) {
-		getNavigationSettings(function (navigationSettings) {
-			var roundAt = Math.max(thousand, Number(navigationSettings.counterCommas) || thousand);
-			var requiresAbbreviationUpdate = bubbleAbbreviations[key] !== roundAt;
-			bubbleAbbreviations[key] = roundAt;
-
-			callBack(requiresAbbreviationUpdate);
-		});
-	};
-
-	let hasDevexRate = function () {
-		return $("#rplus-devex-rate").length > 0;
-	};
-
-	let requiresUpdate = function (key, element, currentCount, newCount, callBack) {
-		if (currentCount !== newCount) {
-			callBack(true);
-			return;
-		}
-
-		if (!element.attr("count")) {
-			callBack(true);
-			return;
-		}
-
-		shouldUpdateByAbbreviation(key, function (requiresAbbreviationUpdate) {
-			if (requiresAbbreviationUpdate) {
-				callBack(true);
-				return;
-			}
-
-			getNavigationSettings(function (navigationSettings) {
-				if (key === "robux") {
-					if ((hasDevexRate() && !navigationSettings.showDevexRate) || (navigationSettings.showDevexRate && !hasDevexRate())) {
-						callBack(true);
-						return;
-					}
-				}
-
-				callBack(false);
-			});
-		});
-	};
-
 	let getRobux = function () {
-		var balanceTag = $("#nav-robux-balance");
-		var robuxAttr = Number(balanceTag.attr("count"));
-
-		if (!isNaN(robuxAttr)) {
-			return robuxAttr;
-		}
-
-		var robuxMatch = (balanceTag.text().match(/([\d,]+)/) || ["", ""])[1];
-		var robuxText = robuxMatch.replace(/\D+/g, "");
-		return Number(robuxText);
+		return navigationBar.getRobux();
 	};
 
 	let setRobux = function (robux) {
@@ -130,28 +33,7 @@ RPlus.navigation = RPlus.navigation || (function () {
 			robux = 0;
 		}
 
-		var robuxBalance = $("#nav-robux-balance");
-		requiresUpdate("robux", robuxBalance, getRobux(), robux, function (requiresUpdate) {
-			if (!requiresUpdate) {
-				return;
-			}
-
-			getNavigationSettings(function (navigationSettings) {
-				abbreviateNumber(robux, function (abbreviatedRobux) {
-					var robuxSpan = $("<span>").text(abbreviateNumberAt(robux, billion) + " Robux");
-					robuxBalance.attr({
-						title: global.addCommas(robux),
-						count: robux
-					}).html(robuxSpan);
-
-					if (navigationSettings.showDevexRate) {
-						robuxSpan.after($("<br>"), $("<span class=\"text-secondary\" id=\"rplus-devex-rate\">").text("USD $" + global.addCommas((robux * devexRate).toFixed(2))));
-					}
-
-					$("#nav-robux-amount").text(abbreviatedRobux);
-				});
-			});
-		});
+		navigationBar.setRobux(robux);
 	};
 
 	let getTradeCount = function () {
@@ -314,7 +196,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 	return {
 		getRobux: getRobux,
 		setRobux: setRobux,
-		hasDevexRate: hasDevexRate,
 
 		getTradeCount: getTradeCount,
 		setTradeCount: setTradeCount,

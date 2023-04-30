@@ -1,4 +1,5 @@
 import { getBubbleValue, setBubbleValue } from './bubble';
+import { getRobux, setRobux } from './robux';
 
 // Export to window, for debugging purposes.
 declare global {
@@ -6,6 +7,8 @@ declare global {
 }
 
 window.navigationBar = {
+  getRobux,
+  setRobux,
   getBubbleValue,
   setBubbleValue,
 };
