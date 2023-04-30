@@ -7,10 +7,9 @@ foreach(
   {
     friendNotifier: {
       on: false,
-      online: true,
-      offline: true,
+      online: false,
+      offline: false,
       game: true,
-      blocked: [],
     },
     notificationVolume: 0.5,
     notifierSounds: {
