@@ -11,7 +11,7 @@ const badgeAwardCache = new ExpirableDictionary<number | undefined>(
   60 * 1000
 );
 
-// Fetches the presence for a user.
+// Fetches the date when a badge was awarded to the specified user.
 const getBadgeAwardDate = async (
   userId: number,
   badgeId: number

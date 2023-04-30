@@ -28,7 +28,7 @@ class BadgeAwardBatchProcessor extends Batch<
     );
 
     if (!response.ok) {
-      throw new Error('Failed to load user presence');
+      throw new Error('Failed to load badge award statuses');
     }
 
     const result = await response.json();
