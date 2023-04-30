@@ -13,17 +13,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 		}).catch(console.warn);
 	};
 
-	let isSideOpen = function () {
-		return $("#navigation").is(":visible") && $("#navigation").width() > 0;
-	};
-
-	let setSideNavigationOpen = function (open) {
-		var button = $(".rbx-nav-collapse")[0];
-		if (isSideOpen() !== open && button) {
-			button.click();
-		}
-	};
-
 	let getButtonTextAndLink = function (buttonIndex) {
 		var button = $("ul.nav.rbx-navbar").first().find(">li>a")[buttonIndex];
 		if (button) {
@@ -73,19 +62,10 @@ RPlus.navigation = RPlus.navigation || (function () {
 			});
 		};
 
-		RPlus.navigation.getNavigationSettings(function (navigationSettings) {
-			if (navigationSettings.sideOpen) {
-				RPlus.navigation.setSideNavigationOpen(true);
-			}
-		});
-
 		updateLoop();
 	});
 
 	return {
-		isSideOpen: isSideOpen,
-		setSideNavigationOpen: setSideNavigationOpen,
-
 		setButtonTextAndLink: setButtonTextAndLink,
 		getButtonTextAndLink: getButtonTextAndLink,
 
