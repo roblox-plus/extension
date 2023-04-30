@@ -4,15 +4,6 @@
 var Roblox = Roblox || {};
 Roblox.Services = Roblox.Services || {};
 Roblox.Services.Inventory = class extends Extension.BackgroundService {
-	constructor() {
-		super("Roblox.inventory");
-
-		this.register([
-			this.getCollectibles,
-			this.getAssetOwners,
-			this.getPlayerBadges
-		]);
-	}
 
 	loadUserCollectibleAssets(userId, cursor) {
 		return new Promise((resolve, reject) => {
@@ -129,41 +120,12 @@ Roblox.Services.Inventory = class extends Extension.BackgroundService {
 		});
 	}
 
-	getPlayerBadges(userId, cursor) {
-		return CachedPromise(`${this.serviceId}.getPlayerBadges`, (resolve, reject) => {
-			// TODO: Audit Api for error codes
-			if (typeof (userId) != "number" || userId <= 0) {
-				reject([{
-					code: 0,
-					message: "Invalid userId"
-				}]);
-				return;
-			}
+  constructor() {
+    super('Roblox.inventory');
 
-			$.get(`https://badges.roblox.com/v1/users/${userId}/badges`, {
-				limit: 100,
-				sortOrder: "Desc",
-				cursor: cursor || ""
-			}).done(function (r) {
-				let response = {
-					previousPageCursor: r.previousPageCursor,
-					nextPageCursor: r.nextPageCursor,
-					data: r.data.map(badge => {
-						return {
-							id: badge.id,
-							name: badge.name
-						};
-					})
-				};
+    this.register([this.getCollectibles, this.getAssetOwners]);
+  }
 
-				resolve(response);
-			}).fail(Roblox.api.$reject(reject));
-		}, [userId, cursor], {
-			resolveExpiry: 15 * 1000,
-			rejectExpiry: 15 * 1000,
-			queued: true
-		});
-	}
 };
 
 Roblox.inventory = new Roblox.Services.Inventory();
