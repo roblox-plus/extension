@@ -62,6 +62,7 @@ const loadLimitedInventory = async (
           ? Number(item.recentAveragePrice)
           : NaN,
         serialNumber: item.serialNumber ? Number(item.serialNumber) : NaN,
+        stock: item.assetStock === 0 ? 0 : item.assetStock || undefined,
       });
     });
   } while (nextPageCursor);
