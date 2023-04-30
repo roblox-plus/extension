@@ -24,7 +24,7 @@ const getBadgeAwardDate = async (
   return date ? new Date(date) : undefined;
 };
 
-// Listen for messages of things trying to fetch presence.
+// Listen for messages sent to the service worker.
 addListener(messageDestination, (message: BadgeAwardBatchItem) => {
   // Check the cache
   return badgeAwardCache.getOrAdd(

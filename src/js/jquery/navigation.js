@@ -115,14 +115,8 @@ RPlus.navigation = RPlus.navigation || (function () {
 							tryLoop();
 						}).catch(tryLoop);
 
-						maxLoops++;
 						Roblox.privateMessages.getUnreadMessageCount().then((count) => {
 							RPlus.navigation.setMessagesCount(count);
-							tryLoop();
-						}).catch(tryLoop);
-
-						Roblox.social.getFriendRequestCount().then((count) => {
-							RPlus.navigation.setFriendRequestCount(count);
 							tryLoop();
 						}).catch(tryLoop);
 					}).catch(tryLoop);
@@ -138,11 +132,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 					let messageCount = RPlus.navigation.getMessagesCount();
 					if (messageCount > 0) {
 						RPlus.navigation.setMessagesCount(messageCount);
-					}
-
-					let friendRequestCount = RPlus.navigation.getFriendRequestCount();
-					if (friendRequestCount > 0) {
-						RPlus.navigation.setFriendRequestCount(friendRequestCount);
 					}
 
 					tryLoop();

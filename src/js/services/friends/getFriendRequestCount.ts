@@ -2,7 +2,7 @@ import ExpirableDictionary from '../../utils/expireableDictionary';
 import wait from '../../utils/wait';
 import { addListener, sendMessage } from '../message';
 
-const messageDestination = 'currencyService.getRobuxBalance';
+const messageDestination = 'friendsService.getFriendRequestCount';
 const cache = new ExpirableDictionary<number>(messageDestination, 30 * 1000);
 const failureDelay = 5 * 1000;
 
@@ -12,14 +12,15 @@ type BackgroundMessage = {
 };
 
 // Fetches the Robux balance of the currently authenticated user.
-const getRobuxBalance = (userId: number): Promise<number> => {
+const getFriendRequestCount = (userId: number): Promise<number> => {
   return sendMessage(messageDestination, { userId } as BackgroundMessage);
 };
 
 // Loads the currently authenticated user.
-const loadRobuxBalance = async (userId: number): Promise<number> => {
+const loadFriendRequestCount = async (userId: number): Promise<number> => {
+  // User ID is used as a cache buster.
   const response = await fetch(
-    `https://economy.roblox.com/v1/users/${userId}/currency`
+    `https://friends.roblox.com/v1/user/friend-requests/count`
   );
 
   // If we fail to send the request, delay the response to ensure we don't spam the API.
@@ -28,7 +29,7 @@ const loadRobuxBalance = async (userId: number): Promise<number> => {
     throw 'User is unauthenticated';
   } else if (!response.ok) {
     await wait(failureDelay);
-    throw 'Failed to load Robux balance';
+    throw 'Failed to load friend request count';
   }
 
   const result = await response.json();
@@ -42,7 +43,7 @@ addListener(
     // Check the cache
     return cache.getOrAdd(`${message.userId}`, () =>
       // Queue up the fetch request, when not in the cache
-      loadRobuxBalance(message.userId)
+      loadFriendRequestCount(message.userId)
     );
   },
   {
@@ -50,4 +51,4 @@ addListener(
   }
 );
 
-export default getRobuxBalance;
+export default getFriendRequestCount;

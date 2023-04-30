@@ -23,7 +23,7 @@ const getAvatarHeadshotThumbnail = (userId: number): Promise<Thumbnail> => {
   } as BackgroundMessage);
 };
 
-// Listen for messages of things trying to fetch presence.
+// Listen for messages sent to the service worker.
 addListener(messageDestination, async (message: BackgroundMessage) => {
   // Check the cache
   const thumbnail = await cache.getOrAdd(`${message.userId}`, () =>

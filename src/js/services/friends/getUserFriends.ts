@@ -37,7 +37,7 @@ const loadUserFriends = async (userId: number): Promise<User[]> => {
   });
 };
 
-// Listen for messages of things trying to fetch presence.
+// Listen for messages sent to the service worker.
 addListener(
   messageDestination,
   (message: BackgroundMessage) => {
