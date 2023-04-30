@@ -1,4 +1,5 @@
-import { parseNumber, setText } from './utils';
+import abbreviateNumber from '../../../utils/abbreviateNumber';
+import { getAbbreviateAtValue, parseNumber, setText } from './utils';
 
 type NavigationBarItem = 'nav-trade' | 'nav-friends' | 'nav-message';
 
@@ -53,10 +54,10 @@ const getBubbleValue = (navigationBarItem: NavigationBarItem): number => {
 };
 
 // Attempts to set the value in a navigation bar bubble.
-const setBubbleValue = (
+const setBubbleValue = async (
   navigationBarItem: NavigationBarItem,
   value: number
-): void => {
+): Promise<void> => {
   const bubble = getOrCreateBubble(navigationBarItem, true);
   if (!bubble) {
     console.warn(
@@ -67,9 +68,11 @@ const setBubbleValue = (
     return;
   }
 
-  if (setText(bubble, value.toLocaleString())) {
+  const abbreviatedAt = await getAbbreviateAtValue();
+  if (setText(bubble, abbreviateNumber(value, abbreviatedAt))) {
     bubble.setAttribute('count', `${value}`);
     bubble.setAttribute('title', value.toLocaleString());
+    bubble.classList.toggle('hidden', value <= 0);
   }
 };
 
