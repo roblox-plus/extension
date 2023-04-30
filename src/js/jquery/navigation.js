@@ -13,30 +13,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 		}).catch(console.warn);
 	};
 
-	let getTradeCount = function () {
-		return navigationBar.getBubbleValue('nav-trade');
-	};
-
-	let setTradeCount = function (tradeCount) {
-		navigationBar.setBubbleValue('nav-trade', tradeCount);
-	};
-
-	let getMessagesCount = function () {
-		return navigationBar.getBubbleValue('nav-message');
-	};
-
-	let setMessagesCount = function (messageCount) {
-		navigationBar.setBubbleValue('nav-message', messageCount);
-	};
-
-	let getFriendRequestCount = function () {
-		return navigationBar.getBubbleValue('nav-friends');
-	};
-
-	let setFriendRequestCount = function (friendRequestCount) {
-		navigationBar.setBubbleValue('nav-friends', friendRequestCount);
-	};
-
 	let isSideOpen = function () {
 		return $("#navigation").is(":visible") && $("#navigation").width() > 0;
 	};
@@ -85,13 +61,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 			}
 	
 			getNavigationSettings(function (navigationSettings) {
-				let loops = 0;
-				let maxLoops = 1;
-				let tryLoop = function () {
-					if (++loops === maxLoops) {
-					}
-				};
-
 				// Navigation buttons
 				for (var CN = 0; CN < Math.min(2, navigationSettings.buttons.length); CN++) {
 					let button = navigationSettings.buttons[CN];
@@ -99,8 +68,8 @@ RPlus.navigation = RPlus.navigation || (function () {
 						RPlus.navigation.setButtonTextAndLink(CN + 2, button.text, button.href);
 					}
 				}
-				
-						setTimeout(updateLoop, 250);
+
+				setTimeout(updateLoop, 250);
 			});
 		};
 
@@ -114,15 +83,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 	});
 
 	return {
-		getTradeCount: getTradeCount,
-		setTradeCount: setTradeCount,
-
-		getMessagesCount: getMessagesCount,
-		setMessagesCount: setMessagesCount,
-
-		getFriendRequestCount: getFriendRequestCount,
-		setFriendRequestCount: setFriendRequestCount,
-
 		isSideOpen: isSideOpen,
 		setSideNavigationOpen: setSideNavigationOpen,
 
