@@ -245,10 +245,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 				$("#navigation .rbx-upgrade-now").before(navigationItem);
 			}
 	
-			// Allow messages button in navigation bar to refresh the page while on the messages page
-			// TODO: Investigate what's overriding this (it doesn't work)
-			$("#nav-message").attr("href", "/my/messages");
-
 			getNavigationSettings(function (navigationSettings) {
 				let loops = 0;
 				let maxLoops = 1;
