@@ -109,14 +109,8 @@ RPlus.navigation = RPlus.navigation || (function () {
 							return;
 						}
 
-						maxLoops++;
 						Roblox.trades.getTradeCount("Inbound").then(function (count) {
 							RPlus.navigation.setTradeCount(count);
-							tryLoop();
-						}).catch(tryLoop);
-
-						Roblox.privateMessages.getUnreadMessageCount().then((count) => {
-							RPlus.navigation.setMessagesCount(count);
 							tryLoop();
 						}).catch(tryLoop);
 					}).catch(tryLoop);
@@ -127,11 +121,6 @@ RPlus.navigation = RPlus.navigation || (function () {
 					let tradeCount = RPlus.navigation.getTradeCount();
 					if (tradeCount > 0) {
 						RPlus.navigation.setTradeCount(tradeCount);
-					}
-
-					let messageCount = RPlus.navigation.getMessagesCount();
-					if (messageCount > 0) {
-						RPlus.navigation.setMessagesCount(messageCount);
 					}
 
 					tryLoop();

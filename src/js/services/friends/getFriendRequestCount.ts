@@ -11,12 +11,12 @@ type BackgroundMessage = {
   userId: number;
 };
 
-// Fetches the Robux balance of the currently authenticated user.
+// Fetches the inbound friend request count for the currently authenticated user.
 const getFriendRequestCount = (userId: number): Promise<number> => {
   return sendMessage(messageDestination, { userId } as BackgroundMessage);
 };
 
-// Loads the currently authenticated user.
+// Loads the inbound friend request count for the currently authenticated user.
 const loadFriendRequestCount = async (userId: number): Promise<number> => {
   // User ID is used as a cache buster.
   const response = await fetch(
