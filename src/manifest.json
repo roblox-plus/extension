@@ -285,6 +285,7 @@
 
   "homepage_url": "https://www.roblox.com/my/account?tab=rplus",
   "permissions": [
+    "alarms",
     "gcm",
     "contextMenus",
     "webRequest",
