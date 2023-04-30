@@ -49,9 +49,8 @@ module.exports = function (source) {
     const services = fs.readdirSync('./src/js/services');
     const serviceExports = services.map(
       (serviceName) =>
-        `export * as ${path.basename(
-          serviceName,
-          '.ts'
+        `export * as ${camelFromKebab(
+          path.basename(serviceName, '.ts')
         )} from '../services/${serviceName}'`
     );
 

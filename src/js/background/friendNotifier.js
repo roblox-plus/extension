@@ -48,9 +48,7 @@ RPlus.notifiers.friends = (function () {
 
 	Extension.NotificationService.Singleton.onNotificationButtonClicked.addEventListener(e => {
 		if (e.notification.metadata.followGameUserId) {
-			Roblox.games.launch({
-				followUserId: e.notification.metadata.followGameUserId
-			});
+			gameLaunchService.followUser(e.notification.metadata.followGameUserId);
 		}
 	});
 
