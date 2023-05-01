@@ -274,6 +274,12 @@
         "https://web.roblox.com/users/*/profile*"
       ],
       "run_at": "document_end"
+    },
+
+    {
+      "js": ["./dist/pages/creator-dashboard.js"],
+      "matches": ["https://create.roblox.com/*"],
+      "run_at": "document_end"
     }
   ],
 
