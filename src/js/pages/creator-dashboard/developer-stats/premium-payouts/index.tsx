@@ -2,8 +2,6 @@ import ReactDOM from 'react-dom/client';
 import PremiumPayoutsSummary from './app';
 
 export default (container: HTMLElement, universeId: number): ReactDOM.Root => {
-  console.log('Hello, world!', container, universeId);
-
   const summaryContaienr = document.createElement('div');
   summaryContaienr.setAttribute('class', 'rplus-premium-payouts-summary');
   container.appendChild(summaryContaienr);
