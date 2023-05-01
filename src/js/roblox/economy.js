@@ -8,13 +8,9 @@ Roblox.Services.Economy = class extends Extension.BackgroundService {
 		super("Roblox.economy");
 
 		this.register([
-			this.purchaseProduct,
-			this.getPremiumPayouts
+			this.purchaseProduct
 		]);
 	}
-
-
-
 
 	purchaseProduct(productId, expectedPrice) {
 		return QueuedPromise(`${this.serviceId}.purchaseProduct`, (resolve, reject) => {
@@ -78,34 +74,6 @@ Roblox.Services.Economy = class extends Extension.BackgroundService {
 					}]);
 				});
 			}, reject);
-		});
-	}
-
-	getPremiumPayouts(universeId, startDate, endDate) {
-		return CachedPromise(`${this.serviceId}.getPremiumPayouts`, (resolve, reject) => {
-			$.get("https://engagementpayouts.roblox.com/v1/universe-payout-history", {
-				startDate: startDate,
-				endDate: endDate,
-				universeId: universeId
-			}).done(data => {
-				let results = [];
-				for (let date in data) {
-					if (data[date].eligibilityType !== "Eligible") {
-						continue;
-					}
-
-					results.push({
-						date: date,
-						payoutInRobux: data[date].payoutInRobux,
-						type: data[date].payoutType
-					});
-				}
-
-				resolve(results);
-			}).catch(Roblox.api.$reject(reject));
-		}, [universeId, startDate, endDate], {
-			rejectExpiry: 15 * 1000,
-			resolveExpiry: 60 * 1000
 		});
 	}
 };
