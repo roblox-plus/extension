@@ -7,13 +7,12 @@ RPlus.Services.SponsoredItems = class extends Extension.BackgroundService {
 		this.knownPremiums = {};
 
 		this.register([
-			this.getPremium,
-			this.isPremium
+			this.getPremium
 		]);
 	}
 
 	getPremium(userId) {
-		return CachedPromise(`${this.serviceId}.getPremium`, (resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			if (typeof (userId) !== "number") {
 				reject([{
 					code: 0,
@@ -25,60 +24,25 @@ RPlus.Services.SponsoredItems = class extends Extension.BackgroundService {
 			if (userId <= 0) {
 				resolve(null);
 				return;
-			} else if (this.knownPremiums.hasOwnProperty(userId)) {
-				resolve(this.knownPremiums[userId]);
-				return;
 			}
 
-			const premiumBackup = () => {
-				return new Promise((resolve, reject) => {
-					$.get(`https://api.roblox.plus/v1/rpluspremium/${userId}`).done((data) => {
-						if (data.data) {
-							this.knownPremiums[userId] = {
-								expiration: data.data.expiration ? new Date(data.data.expiration).getTime() : null
-							};
-							resolve(this.knownPremiums[userId]);
-							RPlus.notifiers.catalog.updateToken();
-						} else {
-							resolve(null);
-						}
-					}).fail(Roblox.api.$reject(reject));
-				});
-			};
-
-			Roblox.games.getVipServers(258257446).then((vipServers) => {
-				var currentDateTime = +new Date;
-				for (var n = 0; n < vipServers.length; n++) {
-					const vipServer = vipServers[n];
-					if (vipServer.owner.id === userId && vipServer.expirationDate && vipServer.expirationDate >= currentDateTime) {
-						this.knownPremiums[userId] = {
-							expiration: vipServer.expirationDate
-						};
-						resolve(this.knownPremiums[userId]);
-						return;
-					}
+			premiumService.getPremiumExpirationDate(userId).then((expiration) => {
+				if (expiration === null || expiration) {
+					resolve({
+						expiration: expiration ? expiration.getTime() : null
+					});
+				} else {
+					resolve(null);
 				}
-
-				premiumBackup().then(resolve).catch(reject);
-			}).catch(() => {
-				premiumBackup().then(resolve).catch(reject);
-			});
-		}, [userId], {
-			resolveExpiry: 15 * 1000,
-			rejectExpiry: 10 * 1000,
-			queued: true
+			}).catch(reject);
 		});
 	}
 
 	isPremium(userId) {
-		return CachedPromise(`${this.serviceId}.isPremium`, (resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			this.getPremium(userId).then((premium) => {
 				resolve(premium ? true : false);
 			}).catch(reject);
-		}, [userId], {
-			resolveExpiry: 15 * 1000,
-			rejectExpiry: 10 * 1000,
-			queued: true
 		});
 	}
 };
