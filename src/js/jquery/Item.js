@@ -121,29 +121,6 @@ RPlus.Pages.Item = function () {
 		ReactDOM.render(itemDetailsTabs, container[0]);
 	}
 
-	if (item.limited) {
-		var answerSpan = $("<span class=\"text-robux\">...</span>");
-		var rap = 0;
-		var lowestPrice = $("#item-container").data("expected-price");
-		function recalc() {
-			if (!rap) {
-				rap = pround($("#item-average-price").text());
-			}
-			answerSpan.text(addComma(Roblox.catalog.calculateAveragePriceAfterSale(rap, lowestPrice)));
-		}
-		answerSpan.click(function () {
-			var newPrice = pround(prompt("What price would you like to input to calculate future RAP?"));
-			if (newPrice) {
-				lowestPrice = newPrice;
-				recalc();
-			}
-		});
-		setTimeout(function() {
-			$(".price-chart-info-container").last().after($("<div class=\"price-chart-info-container clearfix\">").append($("<div class=\"text-label\">").text("RAP After Sale"), $("<div class=\"info-content\"><span class=\"icon-robux-20x20\"></span></div>").append(answerSpan)));
-			recalc();
-		}, 1000);
-	}
-	
 	return {
 		item: item
 	};

@@ -93,21 +93,9 @@ Roblox.Services.Catalog = class extends Extension.BackgroundService {
 		return `https://www.roblox.com/bundles/${bundleId}/${bundleName}`;
 	}
 
-	calculateAveragePriceAfterSale(currentAveragePrice, priceToSellFor) {
-		if (typeof (currentAveragePrice) != "number" || typeof (priceToSellFor) != "number" || priceToSellFor <= 0) {
-			return 0;
-		}
 
-		if (currentAveragePrice == priceToSellFor) {
-			return currentAveragePrice;
-		}
 
-		if (currentAveragePrice <= 0) {
-			return priceToSellFor;
-		}
 
-		return (currentAveragePrice > priceToSellFor ? Math.floor : Math.ceil)((currentAveragePrice * .9) + (priceToSellFor * .1));
-	}
 
 	getAssetBundles(assetId) {
 		return CachedPromise(`${this.serviceId}.getAssetBundles`, (resolve, reject) => {
