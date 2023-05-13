@@ -7,13 +7,6 @@ RPlus.Pages.Game = function () {
 		return;
 	}
 
-	var gameCreatorId = $(".game-creator a").attr("href");
-	if (gameCreatorId.indexOf("group") >= 0) {
-		gameCreatorId = 0;
-	} else {
-		gameCreatorId = Roblox.users.getIdFromUrl(gameCreatorId);
-	}
-	console.log("Game creator id", gameCreatorId);
 
 	if (placeId === 258257446) {
 		$(".create-server-banner-text").text("Purchasing a VIP server in this place will activate Roblox+ Premium!\nRoblox+ currently only expands the Roblox dark theme onto pages unsupported by Roblox.\n\tThere are plans to expand Roblox+ Premium in the future, but not in the short term.");
