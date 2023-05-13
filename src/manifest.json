@@ -101,7 +101,6 @@
         "/js/output/react/features/notification-stream/notification-stream-widget.js",
         "/js/jquery/notificationStream.js",
 
-        "/js/jquery/Profile.js",
         "/js/jquery/Item.js",
 
         "/js/jquery/loadPages.js"
