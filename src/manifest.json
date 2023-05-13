@@ -103,7 +103,6 @@
 
         "/js/jquery/Profile.js",
         "/js/jquery/Item.js",
-        "/js/jquery/Messages.js",
 
         "/js/jquery/loadPages.js"
       ],
@@ -141,6 +140,15 @@
       "matches": [
         "https://www.roblox.com/my/avatar",
         "https://web.roblox.com/my/avatar"
+      ],
+      "run_at": "document_end"
+    },
+
+    {
+      "js": ["./dist/pages/messages.js"],
+      "matches": [
+        "https://www.roblox.com/my/messages*",
+        "https://web.roblox.com/my/messages*"
       ],
       "run_at": "document_end"
     },
