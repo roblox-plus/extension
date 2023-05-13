@@ -6,6 +6,7 @@ import wait from '../../utils/wait';
 import { assetId, isLimited, isOwnCreatedItem } from './details';
 import { createStat } from './stats';
 import calculateRecentAveragePriceAfterSale from './calculate-rap-after-sale';
+import { initializeContextMenu } from './context-menu';
 
 if (isOwnCreatedItem && !isLimited) {
   getToggleSettingValue('itemSalesCounter')
@@ -81,3 +82,25 @@ if (isLimited) {
       });
   }, 1000);
 }
+
+// Listen for the context menu to open
+window.addEventListener('DOMNodeInserted', async (event) => {
+  if (!(event.target instanceof HTMLElement)) {
+    return;
+  }
+
+  if (
+    event.target.classList.contains('popover') &&
+    event.target.parentElement?.id === 'item-context-menu'
+  ) {
+    const contextMenu =
+      event.target.parentElement.querySelector('ul.dropdown-menu');
+    if (contextMenu instanceof HTMLElement) {
+      try {
+        await initializeContextMenu(contextMenu);
+      } catch (e) {
+        console.warn('Unexpected error opening context menu', e);
+      }
+    }
+  }
+});

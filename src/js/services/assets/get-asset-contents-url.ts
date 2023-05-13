@@ -71,10 +71,14 @@ const assetContentsCache = new ExpirableDictionary<string>(
 );
 
 // Fetches the date when a badge was awarded to the specified user.
-const getAssetContentsUrl = (assetId: number): Promise<string> => {
-  return sendMessage(messageDestination, {
+const getAssetContentsUrl = async (
+  assetId: number
+): Promise<URL | undefined> => {
+  const url = await sendMessage(messageDestination, {
     assetId,
   } as BackgroundMessage);
+
+  return url ? new URL(url) : undefined;
 };
 
 // Listen for messages sent to the service worker.

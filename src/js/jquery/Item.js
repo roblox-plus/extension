@@ -28,16 +28,6 @@ RPlus.Pages.Item = function () {
 	// TODO: Update price button on private sales
 	// TODO: Multi-private selling support
 
-	if ((item.assetTypeId == 1 || item.assetTypeId == 4) && item.creator.id == 1) {
-		Roblox.content.getAssetContentUrl(id).then(function (contentUrl) {
-			$("#item-details .action-button>button").replaceWith($("<a>").attr({ "class": "btn-primary-lg", "download": item.name, href: contentUrl }).text("Download"));
-		}).catch(function (e) {
-			console.warn("Failed to load asset content url", e);
-		});
-	} else if (id == 375602203) {
-		//$("#ItemContainer").prepend("<span class=\"status-confirm\" style=\"display: block;width: 81%;text-align: center;font-weight: bold;\">"+($("#ctl00_cphRoblox_btnDelete.invisible").length?"Earn this badge to unlock the Easter theme for Roblox+":"By earning this you've unlocked the Easter theme for Roblox+")+"</span><br>");
-	}
-
 	function isAuthenticatedUserCreator() {
 		return Roblox.users.authenticatedUserId === item.creator.id && item.creator.type === "User";
 	}
