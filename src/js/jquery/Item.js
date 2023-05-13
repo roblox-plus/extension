@@ -62,21 +62,6 @@ RPlus.Pages.Item = function () {
 		return false;
 	};
 
-	var canViewSales = function(callBack) {
-		if (item.assetTypeId === 1 || item.assetTypeId === 4) {
-			// TODO: Make more accurate of asset types that can be sold.
-			callBack(false);
-			return;
-		}
-
-		if (canAuthenticatedUserEdit()) {
-			callBack(true);
-			return;
-		}
-
-		callBack(false);
-	};
-
 	var canViewAssetContents = function() {
 		if (Roblox.users.authenticatedUserId === 48103520) {
 			// I'm the creator of the extension, sometimes I need to view specific asset contents to debug.
