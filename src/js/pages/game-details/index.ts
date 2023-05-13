@@ -1,5 +1,6 @@
 import { addBadgeAwardedDates } from './badgeAwardDates';
 import updateVoteTitle from './vote-percentage';
+import './premium-notice';
 import '../../../css/pages/game-details.scss';
 
 setInterval(async () => {
