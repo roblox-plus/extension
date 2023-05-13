@@ -157,24 +157,6 @@ RPlus.Pages.Item = function () {
 			$(".price-chart-info-container").last().after($("<div class=\"price-chart-info-container clearfix\">").append($("<div class=\"text-label\">").text("RAP After Sale"), $("<div class=\"info-content\"><span class=\"icon-robux-20x20\"></span></div>").append(answerSpan)));
 			recalc();
 		}, 1000);
-
-		Extension.Storage.Singleton.get("remainingCounter").then(function (loop) {
-			var spans = $(".item-note.has-price-label>span");
-			if (spans.length == 2 && loop) {
-				loop = function () {
-					Roblox.catalog.getAssetInfo(id).then(function (asset) {
-						spans.first().text("Limited quantity: " + global.addCommas(asset.sales) + " ");
-						spans.last().text("/ " + global.addCommas(asset.stock));
-						if (asset.remaining > 0) {
-							setTimeout(loop, 2500);
-						}
-					}, function () {
-						setTimeout(loop, 2500);
-					});
-				};
-				loop();
-			}
-		}).catch(console.warn);
 	}
 	
 	return {
