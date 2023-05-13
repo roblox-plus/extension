@@ -249,6 +249,15 @@
     },
 
     {
+      "js": ["./dist/pages/game-pass-details.js"],
+      "matches": [
+        "https://www.roblox.com/game-pass/*/*",
+        "https://web.roblox.com/game-pass/*/*"
+      ],
+      "run_at": "document_end"
+    },
+
+    {
       "js": [
         "/js/output/react/pages/item-details/item-details-tabs.js",
         "/js/output/react/pages/item-details/linked-items.js",
