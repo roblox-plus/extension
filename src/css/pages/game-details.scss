@@ -1,4 +1,16 @@
-@import '../easterEggs/rockefellerStreet.scss';
+.vote-summary {
+  .upvote {
+    width: 28px;
+  }
+
+  .count-middle {
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    top: -20px;
+    left: 0;
+  }
+}
 
 game-badges-list {
   .badge-image {

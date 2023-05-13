@@ -11,8 +11,6 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
       this.getVipServerById,
       this.getVipServers,
       this.getGroupGames,
-      this.hasJoinedServer,
-      this.trackJoinedServer,
     ]);
   }
 
@@ -153,47 +151,6 @@ Roblox.Services.Games = class extends Extension.BackgroundService {
         queued: true,
       }
     );
-  }
-
-  isGameServerTrackingEnabled() {
-    return new Promise((resolve, reject) => {
-      Extension.Storage.Singleton.get('gameServerTracker')
-        .then((gameServerTrackerSettings) => {
-          if (gameServerTrackerSettings && gameServerTrackerSettings.on) {
-            Roblox.users
-              .getAuthenticatedUser()
-              .then((authenticatedUser) => {
-                if (authenticatedUser) {
-                  RPlus.premium
-                    .isPremium(authenticatedUser.id)
-                    .then(resolve)
-                    .catch(reject);
-                } else {
-                  resolve(false);
-                }
-              })
-              .catch(reject);
-          } else {
-            resolve(false);
-          }
-        })
-        .catch(reject);
-    });
-  }
-
-  hasJoinedServer(gameServerId) {
-    return new Promise((resolve, reject) => {
-      var cache = RPlus.notifiers.gameServerTracker.getCache();
-      resolve(cache.hasOwnProperty(gameServerId));
-    });
-  }
-
-  trackJoinedServer(gameServerId) {
-    return new Promise((resolve, reject) => {
-      var cache = RPlus.notifiers.gameServerTracker.getCache();
-      cache[gameServerId] = +new Date();
-      resolve({});
-    });
   }
 };
 
