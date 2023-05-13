@@ -59,14 +59,6 @@ RPlus.Pages.Game = function () {
 		});
 	}
 
-	RPlus.settings.get().then(settings => {
-		if (settings.gameServerCap) {
-			// Roblox is treating game servers like the catalog... it doesn't matter if there are more results
-			// the remaining servers get cut off after x amount of them... :(
-			$("#rbx-running-games").attr("data-max-servers", settings.gameServerCap);
-		}
-	}).catch(console.error);
-
 	setInterval(function() {
 		Roblox.games.isGameServerTrackingEnabled().then(function(gameServerTrackingEnabled) {
 			if (!gameServerTrackingEnabled) {
