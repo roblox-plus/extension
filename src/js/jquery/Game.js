@@ -57,33 +57,6 @@ RPlus.Pages.Game = function () {
 		});
 	}
 
-	setInterval(function() {
-		Roblox.games.isGameServerTrackingEnabled().then(function(gameServerTrackingEnabled) {
-			if (!gameServerTrackingEnabled) {
-				return;
-			}
-			
-			$(".rbx-game-status").each(function() {
-				var gameServerId = $(this).closest("li[data-gameinstance-id]").attr("data-gameinstance-id") || $(this).closest("li[data-gameid]").attr("data-gameid");
-				if (gameServerId) {
-					var playedLabel = $(this).find(".rplus-gameserver-played");
-					if (playedLabel.length <= 0) {
-						playedLabel = $("<span class=\"text-secondary rplus-gameserver-played\">").text("Played").hide();
-						$(this).append($("<br>"), playedLabel);
-					}
-
-					Roblox.games.hasJoinedServer(gameServerId).then(function(played) {
-						if (played) {
-							playedLabel.show();
-						} else {
-							playedLabel.hide();
-						}
-					}).catch(console.error);
-				}
-			});
-		}).catch(console.error);
-	}, 250);
-
 	return {};
 };
 
