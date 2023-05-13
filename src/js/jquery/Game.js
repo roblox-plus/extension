@@ -114,15 +114,6 @@ RPlus.Pages.Game = function () {
 		});
 	}
 
-	$(".voting-panel.body").each(function () {
-		var up = Number($(this).attr("data-total-up-votes")) || 0;
-		var down = Number($(this).attr("data-total-down-votes")) || 0;
-		if (up || down) {
-			var p = (!down ? 100 : (100 / (down + up)) * up).toFixed(3);
-			$(this).attr("title", p + "% of voters recommend this game");
-		}
-	});
-
 	RPlus.settings.get().then(settings => {
 		if (settings.gameServerCap) {
 			// Roblox is treating game servers like the catalog... it doesn't matter if there are more results
