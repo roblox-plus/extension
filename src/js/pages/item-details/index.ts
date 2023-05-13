@@ -8,6 +8,7 @@ import { createStat } from './stats';
 import calculateRecentAveragePriceAfterSale from './calculate-rap-after-sale';
 import { initializeContextMenu } from './context-menu';
 
+// Add sales counter onto the page.
 if (isOwnCreatedItem && !isLimited) {
   getToggleSettingValue('itemSalesCounter')
     .then(async (enabled) => {
@@ -46,6 +47,7 @@ if (isOwnCreatedItem && !isLimited) {
     });
 }
 
+// Add features for limited items.
 if (isLimited) {
   setInterval(() => {
     const currentAveragePrice = Number(
@@ -83,7 +85,7 @@ if (isLimited) {
   }, 1000);
 }
 
-// Listen for the context menu to open
+// Listen for the context menu to open.
 window.addEventListener('DOMNodeInserted', async (event) => {
   if (!(event.target instanceof HTMLElement)) {
     return;

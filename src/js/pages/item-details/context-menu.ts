@@ -1,5 +1,11 @@
+import AssetType from '../../enums/assetType';
+import authenticatedUser from '../../utils/authenticatedUser';
+import { initializeContextMenu } from './avatar';
 import {
+  assetId,
+  assetType,
   isOwnCreatedItem,
+  isOwnedAvatarAsset,
   isOwnedStudioItem,
 } from './details';
 import { createDownloadLink } from './download';
@@ -23,6 +29,18 @@ const createContextMenuButton = (
 
 // Any option that needs to be added to the context menu should exist in here.
 const addContextMenuOptions = async (contextMenu: HTMLElement) => {
+  // If the item is an owned avatar asset, attempt to add the wear + remove button to the context menu, when it opens.
+  if (
+    isOwnedAvatarAsset() &&
+    assetType !== AssetType.Emote &&
+    !isNaN(assetId) &&
+    authenticatedUser
+  ) {
+    initializeContextMenu((text: string) =>
+      createContextMenuButton(contextMenu, text)
+    );
+  }
+
   // Add download button when the item is made by the authenticated user.
   if (isOwnCreatedItem || isOwnedStudioItem) {
     const downloadLink = await createDownloadLink();

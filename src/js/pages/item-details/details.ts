@@ -30,9 +30,26 @@ const assetType = Number(
   itemContainer?.getAttribute('data-asset-type-id')
 ) as AssetType;
 
-const isOwnedAvatarAsset = !!document.querySelector(
-  '#sell,#take-off-sale,#edit-avatar-button'
-);
+// These elements aren't guaranteed to be on the page when it loads.
+const isOwnedAvatarAsset = (): boolean => {
+  if (document.querySelector('#edit-avatar-button')) {
+    // option to edit avatar, we definitely own this one
+    return true;
+  }
+
+  if (
+    document.querySelectorAll(
+      '#item-details-limited-inventory-container .resale-button'
+    ).length > 0
+  ) {
+    // it's a limited, and we own a copy
+    // and all limiteds are avatar assets
+    return true;
+  }
+
+  // nope.
+  return false;
+};
 
 const isOwnCreatedItem = !!document.querySelector('#configure-item');
 const isOwnedStudioItem = !!document.querySelector('#try-in-studio-button');
