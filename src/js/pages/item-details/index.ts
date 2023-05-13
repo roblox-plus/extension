@@ -2,14 +2,20 @@ import '../../../css/pages/item-details.scss';
 import { getAssetSalesCount } from '../../services/assets';
 import { getTranslationResource } from '../../services/localization';
 import { getToggleSettingValue } from '../../services/settings';
+import wait from '../../utils/wait';
 import { assetId, isLimited, isOwnCreatedItem } from './details';
 import { createStat } from './stats';
 
 if (isOwnCreatedItem && !isLimited) {
   getToggleSettingValue('itemSalesCounter')
-    .then((enabled) => {
+    .then(async (enabled) => {
       if (!enabled) {
         return;
+      }
+
+      while (!document.getElementById('item-details')) {
+        // Wait until the item details container is loaded.
+        await wait(250);
       }
 
       getAssetSalesCount(assetId)

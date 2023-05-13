@@ -258,6 +258,17 @@
     },
 
     {
+      "js": ["./dist/pages/item-details.js"],
+      "matches": [
+        "https://www.roblox.com/catalog/*/*",
+        "https://web.roblox.com/catalog/*/*",
+        "https://www.roblox.com/library/*/*",
+        "https://web.roblox.com/library/*/*"
+      ],
+      "run_at": "document_end"
+    },
+
+    {
       "js": [
         "/js/output/react/pages/item-details/item-details-tabs.js",
         "/js/output/react/pages/item-details/linked-items.js",
