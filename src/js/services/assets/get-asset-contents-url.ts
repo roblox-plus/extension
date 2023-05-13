@@ -48,9 +48,9 @@ class AssetContentsBatchProcessor extends Batch<number, string> {
 
     const result = await response.json();
     items.forEach((item) => {
-      const asset = result.data.find((a: any) => a.RequestId === item.key);
+      const asset = result.find((a: any) => a.requestId === item.key);
 
-      const location = asset?.Locations[0];
+      const location = asset?.locations[0];
       if (location?.location) {
         item.resolve(location.location);
       } else {
