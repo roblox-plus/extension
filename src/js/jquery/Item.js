@@ -28,25 +28,6 @@ RPlus.Pages.Item = function () {
 	// TODO: Update price button on private sales
 	// TODO: Multi-private selling support
 
-	var commentButton = $(".rbx-post-comment");
-	if (commentButton.length) {
-		setInterval(function () {
-			Extension.Storage.Singleton.get("commentTimer").then(function (commentTimer) {
-				if (!commentTimer) {
-					return;
-				}
-
-				var waitTime = 60 * 1000; // floodcheck time
-				var remaining = commentTimer[Roblox.users.authenticatedUserId] && commentTimer[Roblox.users.authenticatedUserId].hasOwnProperty(id) ? waitTime - (getMil() - commentTimer[Roblox.users.authenticatedUserId][id]) : 0;
-				if (commentTimer.last && getMil() < commentTimer.last + (60 * 1000)) {
-					remaining = Math.max(remaining, (60 * 1000) - (getMil() - commentTimer.last));
-				}
-				commentButton.prop("disabled", remaining > 0).html(remaining ? "Post Comment<br>(" + Math.ceil(remaining / 1000) + ")" : "Post Comment");
-				$(".rbx-comment-input").prop("disabled", remaining > 0);
-			}).catch(console.warn);
-		}, 1000);
-	}
-
 	if ((item.assetTypeId == 1 || item.assetTypeId == 4) && item.creator.id == 1) {
 		Roblox.content.getAssetContentUrl(id).then(function (contentUrl) {
 			$("#item-details .action-button>button").replaceWith($("<a>").attr({ "class": "btn-primary-lg", "download": item.name, href: contentUrl }).text("Download"));

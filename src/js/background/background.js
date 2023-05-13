@@ -46,65 +46,6 @@ foreach(
   }
 );
 
-/* Comment Timer */
-Extension.Storage.Singleton.get('commentTimer')
-  .then((commentTimer) => {
-    commentTimer = commentTimer || {};
-
-    chrome.webRequest.onBeforeRequest.addListener(
-      function (details) {
-        commentTimer.last = getMil();
-        Roblox.catalog
-          .getAssetInfo(Number(details.requestBody.formData.assetId[0]))
-          .then(function (asset) {
-            Roblox.users.getCurrentUserId().then(function (uid) {
-              if (uid > 0 && uid != asset.creator.id) {
-                commentTimer[uid] = commentTimer[uid] || {};
-                commentTimer.last = getMil();
-                commentTimer[uid][asset.id] = getMil();
-              }
-            });
-          });
-      },
-      { urls: ['*://*.roblox.com/comments/post'] },
-      ['requestBody']
-    );
-
-    setInterval(function () {
-      foreach(commentTimer, function (n, o) {
-        if (n != 'last') {
-          foreach(o, function (i, v) {
-            if (v + 60 * 60 * 1000 < getMil()) {
-              delete o[i];
-            }
-          });
-          if (!Object.keys(o).length) {
-            delete commentTimer[n];
-          }
-        }
-
-        Extension.Storage.Singleton.get('commentTimer')
-          .then((v) => {
-            if (JSON.stringify(commentTimer) != JSON.stringify(v)) {
-              Extension.Storage.Singleton.blindSet(
-                'commentTimer',
-                commentTimer
-              );
-            }
-          })
-          .catch((e) => {
-            console.warn('could not read commentTimer', e);
-          });
-      });
-    }, 5000);
-  })
-  .catch((err) => {
-    console.warn(
-      'Failed to load commentTimer, this feature will be disabled.',
-      err
-    );
-  });
-
 /* Some garbage that shouldn't be in this extension */
 Roblox.users
   .getAuthenticatedUser()
