@@ -1,8 +1,25 @@
-const createStat = (label: string, value: string) => {
+const getItemTypeStat = (): HTMLElement | null => {
+  // Game pass details page has this format.
   const itemTypeStat = document.querySelector(
     '.item-details .item-type-field-container'
   );
-  if (!(itemTypeStat instanceof HTMLElement)) {
+
+  if (itemTypeStat instanceof HTMLElement) {
+    return itemTypeStat;
+  }
+
+  // Item details page has this format sometimes.
+  const itemTypeSpan = document.querySelector('#type-content:last');
+  if (itemTypeSpan instanceof HTMLElement) {
+    return itemTypeSpan.parentElement;
+  }
+
+  return null;
+};
+
+const createStat = (label: string, value: string) => {
+  const itemTypeStat = getItemTypeStat();
+  if (!itemTypeStat) {
     return;
   }
 

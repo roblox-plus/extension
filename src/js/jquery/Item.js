@@ -176,26 +176,6 @@ RPlus.Pages.Item = function () {
 			}
 		}).catch(console.warn);
 	}
-
-	Extension.Storage.Singleton.get("itemSalesCounter").then(function(itemSalesCounterEnabled) {
-		if (!itemSalesCounterEnabled) {
-			return;
-		}
-
-		canViewSales(function(canView) {
-			if (!canView) {
-				return;
-			}
-	
-			Roblox.catalog.getAssetSalesCount(item.id).then(function(sales) {
-				var container = $("<div class=\"item-field-container\">");
-				var label = $("<div class=\"text-label field-label text-overflow\">").text("Sales");
-				var count = $("<span>").text(global.addCommas(sales));
-	
-				$(".item-type-field-container").after(container.append(label, count));
-			}).catch(console.error);
-		});
-	}).catch(console.warn);
 	
 	return {
 		item: item
