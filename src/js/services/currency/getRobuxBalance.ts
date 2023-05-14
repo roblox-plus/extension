@@ -1,6 +1,7 @@
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import wait from '../../utils/wait';
 import { addListener, sendMessage } from '../message';
+import { recordUserRobux } from './history';
 
 const messageDestination = 'currencyService.getRobuxBalance';
 const cache = new ExpirableDictionary<number>(messageDestination, 30 * 1000);
@@ -34,10 +35,9 @@ const loadRobuxBalance = async (userId: number): Promise<number> => {
   const result = await response.json();
 
   try {
-    // HACK: Continue recording Robux history to not impact current functionality.
-    window.RPlus.robuxHistory?.recordUserRobux(userId, result.robux);
+    await recordUserRobux(userId, result.robux);
   } catch (err) {
-    console.warn('Failed to record robuxHistory');
+    console.warn('Failed to record Robux history');
   }
 
   return result.robux;
