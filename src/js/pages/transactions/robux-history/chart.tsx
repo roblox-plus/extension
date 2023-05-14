@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import RobuxHistory from '../../../types/robux-history';
 import { getUserRobuxHistory } from '../../../services/currency';
 import LoadingState from '../../../enums/loadingState';
-import { Alert, CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { HighchartsReact } from 'highcharts-react-official';
 
 type ChartInput = {
@@ -110,9 +110,9 @@ export default function Chart({ userId, startDate, endDate }: ChartInput) {
 
   if (loadingState === LoadingState.Error) {
     return (
-      <Alert severity="error">
+      <div className="section-content-off">
         Failed to load Robux history, refresh the page to try again.
-      </Alert>
+      </div>
     );
   }
 
