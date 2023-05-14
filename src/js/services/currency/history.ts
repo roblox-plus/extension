@@ -2,6 +2,7 @@ import { open } from 'db.js';
 import { isBackgroundPage } from '../../constants';
 import { addListener, sendMessage } from '../message';
 import { getToggleSettingValue } from '../settings';
+import RobuxHistory from '../../types/robux-history';
 
 const messageDestination = 'currencyService.history.';
 
@@ -42,7 +43,7 @@ if (isBackgroundPage) {
       setInterval(async () => {
         try {
           const now = +new Date();
-          const purgeDate = new Date(now - 366 * 24 * 60 * 60 * 1000);
+          const purgeDate = new Date(now - 32 * 12 * 24 * 60 * 60 * 1000);
           const robuxHistory = await database.robuxHistory
             .query('robuxDate')
             .range({ lte: purgeDate.getTime() })
@@ -93,12 +94,22 @@ const getUserRobuxHistory = async (
   userId: number,
   startDateTime: Date,
   endDateTime: Date
-) => {
-  return sendMessage(messageDestination + 'getUserRobuxHistory', {
-    userId,
-    startDateTime: startDateTime.getTime(),
-    endDateTime: endDateTime.getTime(),
-  } as GetRobuxHistoryMessage);
+): Promise<RobuxHistory[]> => {
+  const robuxHistory = await sendMessage(
+    messageDestination + 'getUserRobuxHistory',
+    {
+      userId,
+      startDateTime: startDateTime.getTime(),
+      endDateTime: endDateTime.getTime(),
+    } as GetRobuxHistoryMessage
+  );
+
+  return robuxHistory.map((h: any) => {
+    return {
+      value: h.robux,
+      date: new Date(h.robuxDate),
+    } as RobuxHistory;
+  });
 };
 
 addListener(

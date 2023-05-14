@@ -10,6 +10,8 @@
   "dependencies": {
     "@tix-factory/batch": "^1.1.0",
     "db.js": "^0.15.0",
+    "highcharts": "^11.0.1",
+    "highcharts-react-official": "^3.2.0",
     "twemoji": "^14.0.2"
   },
   "devDependencies": {

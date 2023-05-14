@@ -285,7 +285,7 @@
     },
 
     {
-      "js": ["/js/output/react/pages/money/robux-history-chart.js"],
+      "js": ["./dist/pages/transactions.js"],
       "matches": [
         "https://www.roblox.com/transactions*",
         "https://web.roblox.com/transactions*"
