@@ -4,25 +4,17 @@ import { getIdFromUrl } from '../../utils/linkify';
 const itemContainer = document.querySelector('#item-container');
 
 const parseCreatorId = () => {
-  const creatorId = Number(
-    itemContainer?.getAttribute('data-expected-seller-id')
-  );
-
-  if (creatorId) {
-    return creatorId;
-  }
-
+  // It's possible this won't exist when the page loads.
   const creatorUrl = document
     .querySelector('.item-name-container a.text-name')
     ?.getAttribute('href');
+
   if (creatorUrl) {
     return getIdFromUrl(new URL(creatorUrl));
   }
 
   return NaN;
 };
-
-const creatorId = parseCreatorId();
 
 const assetId = Number(itemContainer?.getAttribute('data-item-id'));
 
@@ -58,7 +50,7 @@ const isLimited = !!document.querySelector('asset-resale-pane');
 export {
   assetId,
   assetType,
-  creatorId,
+  parseCreatorId,
   isOwnCreatedItem,
   isOwnedAvatarAsset,
   isOwnedStudioItem,

@@ -41,67 +41,6 @@ Roblox.Services.AssetContent = class extends Extension.BackgroundService {
 		}, [assetId], {});
 	}
 
-	getDependentAssetIds(assetId) {
-		return new Promise((resolve, reject) => {
-			let contentRegexes = [
-				/"TextureI?d?".*=\s*(\d+)/gi,
-				/"TextureI?d?".*rbxassetid:\/\/(\d+)/gi,
-				/"MeshId".*=\s*(\d+)/gi,
-				/MeshId.*rbxassetid:\/\/(\d+)/gi,
-				/asset\/?\?\s*id\s*=\s*(\d+)/gi,
-				/rbxassetid:\/\/(\d+)/gi,
-				/:LoadAsset\((\d+)\)/gi,
-				/require\((\d+)\)/gi
-			];
-
-			this.getAssetContents(assetId).then((r) => {
-				let assetIds = [];
-
-				contentRegexes.forEach(regex => {
-					let match = r.match(regex) || [];
-					match.forEach((m) => {
-						let id = Number((m.match(/(\d+)/) || [])[1]);
-						if (id && !isNaN(id) && !assetIds.includes(id)) {
-							assetIds.push(id);
-						}
-					});
-				});
-
-				resolve(assetIds);
-			}).catch(reject);
-		});
-	}
-
-	getDependentAssets(assetId) {
-		return new Promise((resolve, reject) => {
-			this.getDependentAssetIds(assetId).then(assetIds => {
-				let assets = [];
-				let loaded = 0;
-
-				if (assetIds.length <= 0) {
-					resolve(assets);
-					return;
-				}
-
-				assetIds.forEach(id => {
-					Roblox.catalog.getAssetInfo(id).then((asset) => {
-						assets.push(asset);
-
-						if (++loaded === assetIds.length) {
-							resolve(assets);
-						}
-					}).catch((err) => {
-						console.warn(`Roblox.content.getDependentAssets(${assetId}) - ${id}`, err);
-
-						if (++loaded === assetIds.length) {
-							resolve(assets);
-						}
-					});
-				});
-			}).catch(reject);
-		});
-	}
-
 	processAssetContentUrls(assetIds) {
 		return new Promise((resolve, reject) => {
 			$.ajax({
