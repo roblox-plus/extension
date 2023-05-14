@@ -82,8 +82,7 @@
         "/js/rplus/RobloxPlus.js",
         "/js/rplus/settings.js",
         "/js/rplus/premium.js",
-        "/js/rplus/bucketedSales.js",
-        "/js/rplus/robuxHistory.js"
+        "/js/rplus/bucketedSales.js"
       ],
       "css": [
         "/css/icons.css",
