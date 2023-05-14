@@ -1,7 +1,7 @@
 import AssetType from '../../enums/assetType';
 import { getAssetContentsUrl } from '../../services/assets';
 import { getTranslationResource } from '../../services/localization';
-import { assetId, assetType, creatorId } from './details';
+import { assetId, assetType, parseCreatorId } from './details';
 
 const createDownloadLink = async (): Promise<HTMLAnchorElement | undefined> => {
   const downloadUrl = await getAssetContentsUrl(assetId);
@@ -22,7 +22,7 @@ const createDownloadLink = async (): Promise<HTMLAnchorElement | undefined> => {
   return downloadLink;
 };
 
-if (creatorId === 1) {
+if (parseCreatorId() === 1) {
   switch (assetType) {
     case AssetType.Image:
     case AssetType.Mesh:
