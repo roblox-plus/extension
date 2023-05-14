@@ -35,13 +35,12 @@ class OtherSettings extends SettingsTab {
 						<h3>Item Details Page</h3>
 					</div>
 					<div class="section-content">
-						<span class="text-lead">Live number remaining counter for limiteds.</span>
-						<PillToggle getValue={this.getPillValue.bind(this, "remainingCounter")}
-							onToggle={this.setPillValue.bind(this, "remainingCounter")} />
-						<div class="rbx-divider"></div>
-						<span class="text-lead">Sales counter on created items.</span>
+						<span class="text-lead">Created Items Sales Counter</span>
 						<PillToggle getValue={this.getPillValue.bind(this, "itemSalesCounter")}
-							onToggle={this.setPillValue.bind(this, "itemSalesCounter")} />
+							onToggle={this.setPillValue.bind(this, "itemSalesCounter")}
+							disabled={!this.state.isPremium} />
+						<div class="rbx-divider"></div>
+						<span class="text-description">Adds a sales count label on item details pages for items that you created. This feature is for Roblox+ Premium users only.</span>
 					</div>
 				</div>
 				<div class="section">

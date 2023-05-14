@@ -343,11 +343,6 @@ input.rplusslider[type='range']::-webkit-slider-thumb{
 }
 
 
-#price-chart .price-chart-info-container{
-	width: 25%;
-}
-
-
 #owners .pager{
 	float: right;
 	margin: 0px;

@@ -28,35 +28,6 @@ RPlus.Pages.Item = function () {
 	// TODO: Update price button on private sales
 	// TODO: Multi-private selling support
 
-	var commentButton = $(".rbx-post-comment");
-	if (commentButton.length) {
-		setInterval(function () {
-			Extension.Storage.Singleton.get("commentTimer").then(function (commentTimer) {
-				if (!commentTimer) {
-					return;
-				}
-
-				var waitTime = 60 * 1000; // floodcheck time
-				var remaining = commentTimer[Roblox.users.authenticatedUserId] && commentTimer[Roblox.users.authenticatedUserId].hasOwnProperty(id) ? waitTime - (getMil() - commentTimer[Roblox.users.authenticatedUserId][id]) : 0;
-				if (commentTimer.last && getMil() < commentTimer.last + (60 * 1000)) {
-					remaining = Math.max(remaining, (60 * 1000) - (getMil() - commentTimer.last));
-				}
-				commentButton.prop("disabled", remaining > 0).html(remaining ? "Post Comment<br>(" + Math.ceil(remaining / 1000) + ")" : "Post Comment");
-				$(".rbx-comment-input").prop("disabled", remaining > 0);
-			}).catch(console.warn);
-		}, 1000);
-	}
-
-	if ((item.assetTypeId == 1 || item.assetTypeId == 4) && item.creator.id == 1) {
-		Roblox.content.getAssetContentUrl(id).then(function (contentUrl) {
-			$("#item-details .action-button>button").replaceWith($("<a>").attr({ "class": "btn-primary-lg", "download": item.name, href: contentUrl }).text("Download"));
-		}).catch(function (e) {
-			console.warn("Failed to load asset content url", e);
-		});
-	} else if (id == 375602203) {
-		//$("#ItemContainer").prepend("<span class=\"status-confirm\" style=\"display: block;width: 81%;text-align: center;font-weight: bold;\">"+($("#ctl00_cphRoblox_btnDelete.invisible").length?"Earn this badge to unlock the Easter theme for Roblox+":"By earning this you've unlocked the Easter theme for Roblox+")+"</span><br>");
-	}
-
 	function isAuthenticatedUserCreator() {
 		return Roblox.users.authenticatedUserId === item.creator.id && item.creator.type === "User";
 	}
@@ -79,21 +50,6 @@ RPlus.Pages.Item = function () {
 		}
 
 		return false;
-	};
-
-	var canViewSales = function(callBack) {
-		if (item.assetTypeId === 1 || item.assetTypeId === 4) {
-			// TODO: Make more accurate of asset types that can be sold.
-			callBack(false);
-			return;
-		}
-
-		if (canAuthenticatedUserEdit()) {
-			callBack(true);
-			return;
-		}
-
-		callBack(false);
 	};
 
 	var canViewAssetContents = function() {
@@ -155,67 +111,6 @@ RPlus.Pages.Item = function () {
 		ReactDOM.render(itemDetailsTabs, container[0]);
 	}
 
-	if (item.limited) {
-		var answerSpan = $("<span class=\"text-robux\">...</span>");
-		var rap = 0;
-		var lowestPrice = $("#item-container").data("expected-price");
-		function recalc() {
-			if (!rap) {
-				rap = pround($("#item-average-price").text());
-			}
-			answerSpan.text(addComma(Roblox.catalog.calculateAveragePriceAfterSale(rap, lowestPrice)));
-		}
-		answerSpan.click(function () {
-			var newPrice = pround(prompt("What price would you like to input to calculate future RAP?"));
-			if (newPrice) {
-				lowestPrice = newPrice;
-				recalc();
-			}
-		});
-		setTimeout(function() {
-			$(".price-chart-info-container").last().after($("<div class=\"price-chart-info-container clearfix\">").append($("<div class=\"text-label\">").text("RAP After Sale"), $("<div class=\"info-content\"><span class=\"icon-robux-20x20\"></span></div>").append(answerSpan)));
-			recalc();
-		}, 1000);
-
-		Extension.Storage.Singleton.get("remainingCounter").then(function (loop) {
-			var spans = $(".item-note.has-price-label>span");
-			if (spans.length == 2 && loop) {
-				loop = function () {
-					Roblox.catalog.getAssetInfo(id).then(function (asset) {
-						spans.first().text("Limited quantity: " + global.addCommas(asset.sales) + " ");
-						spans.last().text("/ " + global.addCommas(asset.stock));
-						if (asset.remaining > 0) {
-							setTimeout(loop, 2500);
-						}
-					}, function () {
-						setTimeout(loop, 2500);
-					});
-				};
-				loop();
-			}
-		}).catch(console.warn);
-	}
-
-	Extension.Storage.Singleton.get("itemSalesCounter").then(function(itemSalesCounterEnabled) {
-		if (!itemSalesCounterEnabled) {
-			return;
-		}
-
-		canViewSales(function(canView) {
-			if (!canView) {
-				return;
-			}
-	
-			Roblox.catalog.getAssetSalesCount(item.id).then(function(sales) {
-				var container = $("<div class=\"item-field-container\">");
-				var label = $("<div class=\"text-label field-label text-overflow\">").text("Sales");
-				var count = $("<span>").text(global.addCommas(sales));
-	
-				$(".item-type-field-container").after(container.append(label, count));
-			}).catch(console.error);
-		});
-	}).catch(console.warn);
-	
 	return {
 		item: item
 	};

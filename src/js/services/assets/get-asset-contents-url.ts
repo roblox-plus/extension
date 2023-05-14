@@ -48,9 +48,9 @@ class AssetContentsBatchProcessor extends Batch<number, string> {
 
     const result = await response.json();
     items.forEach((item) => {
-      const asset = result.data.find((a: any) => a.RequestId === item.key);
+      const asset = result.find((a: any) => a.requestId === item.key);
 
-      const location = asset?.Locations[0];
+      const location = asset?.locations[0];
       if (location?.location) {
         item.resolve(location.location);
       } else {
@@ -71,10 +71,14 @@ const assetContentsCache = new ExpirableDictionary<string>(
 );
 
 // Fetches the date when a badge was awarded to the specified user.
-const getAssetContentsUrl = (assetId: number): Promise<string> => {
-  return sendMessage(messageDestination, {
+const getAssetContentsUrl = async (
+  assetId: number
+): Promise<URL | undefined> => {
+  const url = await sendMessage(messageDestination, {
     assetId,
   } as BackgroundMessage);
+
+  return url ? new URL(url) : undefined;
 };
 
 // Listen for messages sent to the service worker.
