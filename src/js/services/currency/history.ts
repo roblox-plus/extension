@@ -121,7 +121,7 @@ addListener(
       currencyHolderType: 'User',
       currencyHolderId: message.userId,
       robux: message.robux,
-      robuxDate: robuxDateTime,
+      robuxDate: robuxDateTime.getTime(),
     });
   },
   {
