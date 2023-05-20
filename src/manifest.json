@@ -66,7 +66,6 @@
 
         "/js/roblox/thumbnails.js",
         "/js/roblox/users.js",
-        "/js/roblox/presence.js",
         "/js/roblox/catalog.js",
         "/js/roblox/inventory.js",
         "/js/roblox/games.js",
@@ -112,8 +111,7 @@
       "js": [
         "/js/output/react/components/vertical-tabs.js",
         "/js/output/react/components/pill-toggle.js",
-        "/js/output/react/components/thumbnail.js",
-        "/js/output/react/components/thumbnail-presence.js"
+        "/js/output/react/components/thumbnail.js"
       ],
       "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
       "run_at": "document_start"
