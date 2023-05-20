@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import Thumbnail from '../../../../../components/thumbnail';
-import ThumbnailType from '../../../../../enums/thumbnailType';
 import User from '../../../../../types/user';
 import { getUserProfileLink } from '../../../../../utils/linkify';
 import LoadingState from '../../../../../enums/loadingState';
 import { getLimitedInventory } from '../../../../../services/inventory';
 import OwnedLimitedAsset from '../../../../../types/ownedLimitedAsset';
+import PresenceThumbnail from '../../../../../components/presence-thumbnail';
 
 type UserCardInput = {
   user: User;
@@ -63,10 +62,7 @@ export default function UserCard({ user }: UserCardInput) {
         <div className="avatar avatar-card-fullbody">
           <a href={profileUrl} className="avatar-card-link">
             <div className="avatar-card-image">
-              <Thumbnail
-                type={ThumbnailType.AvatarHeadShot}
-                targetId={user.id}
-              />
+              <PresenceThumbnail userId={user.id} />
             </div>
           </a>
         </div>
