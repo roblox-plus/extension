@@ -110,20 +110,6 @@
 
     {
       "js": [
-        "/js/output/react/features/quick-info/quick-info-widget.js",
-        "/js/output/react/features/quick-info/user-info/user-info-widget.js",
-        "/js/output/react/features/quick-info/user-info/user-card.js",
-        "/js/output/react/features/quick-info/user-info/user-inventory.js",
-        "/js/output/react/features/quick-info/user-info/inventory-item-card.js",
-
-        "/js/jquery/quickInfoBox.js"
-      ],
-      "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
-      "run_at": "document_end"
-    },
-
-    {
-      "js": [
         "/js/output/react/components/vertical-tabs.js",
         "/js/output/react/components/pill-toggle.js",
         "/js/output/react/components/thumbnail.js",

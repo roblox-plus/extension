@@ -3,7 +3,7 @@ import panel, { openClassName } from './panel';
 const widgetButton = document.createElement('button');
 widgetButton.setAttribute('type', 'button');
 widgetButton.setAttribute('class', 'rbx-menu-icon rplus-icon-32x32');
-widgetButton.setAttribute('id', 'navbar-rplus-widget');
+widgetButton.setAttribute('id', 'navbar-rplus');
 
 widgetButton.addEventListener('dragover', (e) => {
   // This to allow things to be dropped on the button itself.
