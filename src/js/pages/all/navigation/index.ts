@@ -7,6 +7,7 @@ import { parseAuthenticatedUser } from '../../../utils/authenticatedUser';
 import { getBubbleValue, setBubbleValue } from './bubble';
 import { getLinkOverrides, updateNavigationLink } from './links';
 import { getRobux, setRobux } from './robux';
+import { button as widgetButton } from './widget';
 
 // Check if we should be refreshing the counter values.
 const refreshEnabled = async (): Promise<boolean> => {
@@ -134,6 +135,12 @@ setInterval(async () => {
 
     // The finale
     upgradeButton.before(container);
+  }
+
+  const settingsButton = document.getElementById('navbar-settings');
+  let widgetButtonContainer = document.getElementById(widgetButton.id);
+  if (!widgetButtonContainer && settingsButton) {
+    settingsButton.append(widgetButton);
   }
 }, 500);
 
