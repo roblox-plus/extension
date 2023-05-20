@@ -5,6 +5,7 @@ import LoadingState from '../../../../../enums/loadingState';
 import { getLimitedInventory } from '../../../../../services/inventory';
 import OwnedLimitedAsset from '../../../../../types/ownedLimitedAsset';
 import PresenceThumbnail from '../../../../../components/presence-thumbnail';
+import UserActions from './actions';
 
 type UserCardInput = {
   user: User;
@@ -93,6 +94,7 @@ export default function UserCard({ user }: UserCardInput) {
           </span>
         </div>
       </div>
+      <UserActions user={user} />
     </div>
   );
 }
