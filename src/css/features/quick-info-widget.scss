@@ -1,3 +1,5 @@
+$default-margin: 4px;
+
 #navbar-settings {
   display: flex;
   justify-content: space-evenly;
@@ -9,7 +11,7 @@
     background-color: transparent;
     background-size: 80%;
     border: none;
-    margin-left: 4px;
+    margin-left: $default-margin;
   }
 }
 
@@ -20,9 +22,32 @@
   float: right;
   overflow: hidden;
   transition: height 0.2s, padding 0.2s;
+  border-radius: 8px;
 
   &.rplus-widget-open {
     height: 600px;
+  }
+
+  .form-group {
+    margin-bottom: $default-margin;
+
+    .input-field {
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+  }
+}
+
+.dark-theme {
+  #rplus-widget {
+    background-color: #191b1d;
+  }
+}
+
+.light-theme {
+  #rplus-widget {
+    background-color: #dee1e3;
   }
 }
 

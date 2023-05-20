@@ -7,7 +7,7 @@ const root = ReactDOM.createRoot(panel);
 
 const render = (header: HTMLElement) => {
   header.append(panel);
-  root.render(<App />);
+  root.render(<App button={button} panel={panel} />);
 };
 
 export { render, button };
