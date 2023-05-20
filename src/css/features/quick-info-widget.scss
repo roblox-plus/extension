@@ -1,4 +1,6 @@
 $default-margin: 4px;
+$large-margin: 8px;
+$scroll-width: 6px;
 
 #navbar-settings {
   display: flex;
@@ -17,10 +19,12 @@ $default-margin: 4px;
 
 #rplus-widget {
   height: 0;
-  width: 418px;
-  margin-right: 8px;
+  width: 420px;
+  margin-right: $large-margin;
   float: right;
   overflow: hidden;
+  display: flex;
+  flex-flow: column;
   transition: height 0.2s, padding 0.2s;
   border-radius: 8px;
 
@@ -43,7 +47,13 @@ $default-margin: 4px;
   }
 
   .rplus-user-widget {
-    padding: $default-margin;
+    padding: 0 0 $default-margin $scroll-width;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
 
     .avatar-card-container {
       .avatar-card-image {
@@ -73,6 +83,29 @@ $default-margin: 4px;
         position: absolute;
         top: $default-margin;
         right: $default-margin;
+      }
+    }
+
+    .list-item.item-card {
+      width: auto;
+      height: 220px;
+
+      .item-card-link {
+        overflow: hidden;
+        border-radius: 8px;
+      }
+
+      .limited-number {
+        margin: 0 2px 0 2px;
+      }
+
+      .item-card-price {
+        position: absolute;
+        bottom: $large-margin;
+
+        .text-robux {
+          margin-left: $default-margin;
+        }
       }
     }
   }
