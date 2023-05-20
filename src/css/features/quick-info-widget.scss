@@ -41,6 +41,35 @@ $default-margin: 4px;
   .spinner {
     margin-top: 16px;
   }
+
+  .rplus-user-widget {
+    padding: $default-margin;
+
+    .avatar-card-container {
+      .avatar-card-image {
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .avatar-card-label {
+        .text-subheader {
+          margin-right: $default-margin;
+        }
+
+        &.rplus-stat-label {
+          width: 75%;
+
+          .rplus-value-label {
+            float: right;
+          }
+        }
+      }
+    }
+  }
 }
 
 .dark-theme {

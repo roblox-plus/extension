@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
 import User from '../../../../../types/user';
+import UserCard from './card';
+import UserInventory from './inventory';
 
 type UserInfoInput = {
   user: User;
@@ -7,8 +9,9 @@ type UserInfoInput = {
 
 export default function UserInfo({ user }: UserInfoInput) {
   return (
-    <Fragment>
-      user: {user.name} ({user.id})
-    </Fragment>
+    <div className="rplus-user-widget">
+      <UserCard user={user} />
+      <UserInventory user={user} />
+    </div>
   );
 }
