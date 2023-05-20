@@ -9,9 +9,9 @@ type UserInfoInput = {
 
 export default function UserInfo({ user }: UserInfoInput) {
   return (
-    <div className="rplus-user-widget">
+    <Fragment>
       <UserCard user={user} />
       <UserInventory user={user} />
-    </div>
+    </Fragment>
   );
 }

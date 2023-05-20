@@ -50,7 +50,9 @@ export default function UserInventory({ user }: UserInventoryInput) {
   if (loadingState === LoadingState.Error) {
     return (
       <div className="section-content-off">
-        Failed to load user inventory. The inventory may be private.
+        Failed to load user inventory.
+        <br />
+        The inventory may be private.
       </div>
     );
   }

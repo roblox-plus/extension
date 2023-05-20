@@ -61,6 +61,7 @@ export default function App({ button, panel }: AppInput) {
 
     let cancelled = false;
     setLoadingState(LoadingState.Loading);
+    setUser(null);
 
     loadUser(searchValue)
       .then((user) => {
@@ -88,10 +89,20 @@ export default function App({ button, panel }: AppInput) {
   return (
     <Fragment>
       <Search value={searchValue} setValue={setSearchValue} />
-      {user && <UserInfo user={user} />}
-      {loadingState === LoadingState.Loading && (
-        <div className="spinner spinner-default" />
-      )}
+      <div className="rplus-user-widget">
+        {user && <UserInfo user={user} />}
+        {loadingState === LoadingState.Loading && (
+          <div className="spinner spinner-default" />
+        )}
+        {loadingState === LoadingState.Error && (
+          <div className="section-content-off">
+            Failed to lookup user. Please refresh and try again.
+          </div>
+        )}
+        {loadingState === LoadingState.Success && !user && searchValue && (
+          <div className="section-content-off">User does not exist.</div>
+        )}
+      </div>
     </Fragment>
   );
 }
