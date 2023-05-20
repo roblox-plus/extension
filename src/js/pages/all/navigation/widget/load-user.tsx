@@ -1,5 +1,6 @@
-import { getUserByName } from '../../../../services/users';
+import { getUserById, getUserByName } from '../../../../services/users';
 import User from '../../../../types/user';
+import { getIdFromUrl } from '../../../../utils/linkify';
 
 const userSearchPrefix = 'user:';
 
@@ -12,5 +13,20 @@ export default async (searchValue: string): Promise<User | null> => {
     return await getUserByName(searchValue.substring(userSearchPrefix.length));
   }
 
-  return null;
+  try {
+    const url = new URL(searchValue);
+    if (!url.pathname.startsWith('/users/')) {
+      return null;
+    }
+
+    const id = getIdFromUrl(url);
+    if (!id) {
+      return null;
+    }
+
+    return await getUserById(id);
+  } catch {
+    // failed to parse URL, that's ok
+    return null;
+  }
 };
