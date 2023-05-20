@@ -1,6 +1,10 @@
 import { Fragment, useEffect, useState } from 'react';
 import Search from './search';
 import { getIdFromUrl } from '../../../../utils/linkify';
+import UserInfo from './user';
+import LoadingState from '../../../../enums/loadingState';
+import User from '../../../../types/user';
+import loadUser from './load-user';
 
 type AppInput = {
   button: HTMLButtonElement;
@@ -9,6 +13,10 @@ type AppInput = {
 
 export default function App({ button, panel }: AppInput) {
   const [searchValue, setSearchValue] = useState<string>('');
+  const [loadingState, setLoadingState] = useState<LoadingState>(
+    LoadingState.Success
+  );
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const ondrop = (e: DragEvent) => {
@@ -45,9 +53,45 @@ export default function App({ button, panel }: AppInput) {
     };
   }, [panel, button, setSearchValue]);
 
+  useEffect(() => {
+    if (!searchValue?.trim()) {
+      setUser(null);
+      return;
+    }
+
+    let cancelled = false;
+    setLoadingState(LoadingState.Loading);
+
+    loadUser(searchValue)
+      .then((user) => {
+        if (cancelled) {
+          return;
+        }
+
+        setUser(user);
+        setLoadingState(LoadingState.Success);
+      })
+      .catch((err) => {
+        if (cancelled) {
+          return;
+        }
+
+        console.warn('Failed to load user info', searchValue, err);
+        setLoadingState(LoadingState.Error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [searchValue]);
+
   return (
     <Fragment>
       <Search value={searchValue} setValue={setSearchValue} />
+      {user && <UserInfo user={user} />}
+      {loadingState === LoadingState.Loading && (
+        <div className="spinner spinner-default" />
+      )}
     </Fragment>
   );
 }
