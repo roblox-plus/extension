@@ -19,7 +19,3 @@ getToggleSettingValue('twemoji')
   .catch((err) => {
     console.warn('Failed to load twemoji setting preference', err);
   });
-
-// Exports for compatibility, while existing JavaScript doesn't use imports.
-export { getUserPresence } from '../../services/presence';
-export { followUser } from '../../services/game-launch';
