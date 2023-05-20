@@ -6,12 +6,16 @@ import { getLimitedInventory } from '../../../../../services/inventory';
 import OwnedLimitedAsset from '../../../../../types/ownedLimitedAsset';
 import PresenceThumbnail from '../../../../../components/presence-thumbnail';
 import UserActions from './actions';
+import { getPremiumExpirationDate } from '../../../../../services/premium';
 
 type UserCardInput = {
   user: User;
 };
 
 export default function UserCard({ user }: UserCardInput) {
+  const [premiumExpiration, setPremiumExpiration] = useState<
+    Date | null | undefined
+  >(undefined);
   const [inventory, setInventory] = useState<OwnedLimitedAsset[]>([]);
   const [loadingState, setLoadingState] = useState<LoadingState>(
     LoadingState.Success
@@ -32,6 +36,7 @@ export default function UserCard({ user }: UserCardInput) {
 
   useEffect(() => {
     setLoadingState(LoadingState.Loading);
+    setPremiumExpiration(undefined);
     setInventory([]);
 
     let cancelled = false;
@@ -50,6 +55,22 @@ export default function UserCard({ user }: UserCardInput) {
         }
 
         // do nothing, the inventory widget will log this
+      });
+
+    getPremiumExpirationDate(user.id)
+      .then((expiration) => {
+        if (cancelled) {
+          return;
+        }
+
+        setPremiumExpiration(expiration);
+      })
+      .catch((err) => {
+        if (cancelled) {
+          return;
+        }
+
+        console.warn('Failed to check premium status', user, err);
       });
 
     return () => {
@@ -93,6 +114,14 @@ export default function UserCard({ user }: UserCardInput) {
             )}
           </span>
         </div>
+        {premiumExpiration !== undefined ? (
+          <div
+            className="rplus-premium-indicator rplus-icon-32x32"
+            title={`Expiration: ${
+              premiumExpiration?.toLocaleDateString() || 'never'
+            }`}
+          />
+        ) : null}
       </div>
       <UserActions user={user} />
     </div>

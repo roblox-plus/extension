@@ -68,6 +68,12 @@ $default-margin: 4px;
           }
         }
       }
+
+      .rplus-premium-indicator {
+        position: absolute;
+        top: $default-margin;
+        right: $default-margin;
+      }
     }
   }
 }
