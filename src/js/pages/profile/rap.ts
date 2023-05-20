@@ -28,11 +28,10 @@ getToggleSettingValue('profileRAP')
       async (event) => {
         event.preventDefault();
 
-        try {
-          window.RPlus.quickInfo.trigger(location.href);
-        } catch (err) {
-          console.error('Failed to open browser action', err, user);
-        }
+        window.postMessage({
+          messageType: 'open-roblox-plus-widget',
+          searchValue: location.href,
+        });
       }
     );
 

@@ -5,6 +5,7 @@ import UserInfo from './user';
 import LoadingState from '../../../../enums/loadingState';
 import User from '../../../../types/user';
 import loadUser from './load-user';
+import { openClassName } from './panel';
 
 type AppInput = {
   button: HTMLButtonElement;
@@ -17,6 +18,25 @@ export default function App({ button, panel }: AppInput) {
     LoadingState.Success
   );
   const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const openWidget = (e: MessageEvent<any>) => {
+      if (
+        e.data &&
+        e.data.messageType === 'open-roblox-plus-widget' &&
+        e.data.searchValue
+      ) {
+        panel.classList.add(openClassName);
+        setSearchValue(e.data.searchValue);
+      }
+    };
+
+    window.addEventListener('message', openWidget);
+
+    return () => {
+      window.removeEventListener('message', openWidget);
+    };
+  }, [setSearchValue]);
 
   useEffect(() => {
     const ondrop = (e: DragEvent) => {
