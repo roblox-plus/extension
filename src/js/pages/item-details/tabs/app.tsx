@@ -12,24 +12,12 @@ import AssetDependencies, {
   disabledAssetTypes as assetDependenciesDisabledAssetTypes,
 } from '../asset-dependencies';
 import { getTranslationResourceWithFallback } from '../../../services/localization';
-import { getToggleSettingValue } from '../../../services/settings';
 import AssetOwners from '../owners';
 import authenticatedUser from '../../../utils/authenticatedUser';
 
 const assetResellersTab = document.querySelector('asset-resale-pane');
 
 const isAssetDependenciesEnabled = async (): Promise<boolean> => {
-  try {
-    const enabled = await getToggleSettingValue('asset-dependency-list');
-    if (!enabled) {
-      // Feature is not enabled.
-      return false;
-    }
-  } catch (err) {
-    console.warn('Failed to check asset dependencies enabled setting.');
-    return false;
-  }
-
   if (assetDependenciesDisabledAssetTypes.includes(assetType)) {
     // This asset type doesn't have dependencies.
     return false;
