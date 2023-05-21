@@ -123,6 +123,10 @@ export default function AssetOwners({ assetId }: AssetOwnersInput) {
                       ? `#${r.serialNumber.toLocaleString()}`
                       : 'N/A'}
                   </span>
+                  <br />
+                  <span className="font-caption-body">
+                    Owner since {r.updated.toLocaleString()}
+                  </span>
                 </div>
               </li>
             );
