@@ -1,5 +1,6 @@
 import xsrfFetch from '../../utils/xsrfFetch';
-import { default as getLimitedInventory } from './limitedInventory';
+import getLimitedInventory from './limitedInventory';
+import getAssetOwners from './get-asset-owners';
 
 // Removes an asset from the authenticated user's inventory.
 const deleteAsset = async (assetId: number) => {
@@ -19,4 +20,4 @@ const deleteAsset = async (assetId: number) => {
 };
 
 // To ensure the webpack service loader can discover the methods: import it, then export it again.
-export { deleteAsset, getLimitedInventory };
+export { deleteAsset, getLimitedInventory, getAssetOwners };

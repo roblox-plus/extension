@@ -13,6 +13,8 @@ import AssetDependencies, {
 } from '../asset-dependencies';
 import { getTranslationResourceWithFallback } from '../../../services/localization';
 import { getToggleSettingValue } from '../../../services/settings';
+import AssetOwners from '../owners';
+import authenticatedUser from '../../../utils/authenticatedUser';
 
 const assetResellersTab = document.querySelector('asset-resale-pane');
 
@@ -83,21 +85,21 @@ export default function ItemDetailsTabs() {
           });
         }
 
-        const assetDependenciesEnabled = await isAssetDependenciesEnabled();
-        if (assetDependenciesEnabled) {
-          tabs.push({
-            label: 'Dependencies',
-            value: ItemDetailsTab.Dependencies,
-          });
-        }
+        if (authenticatedUser) {
+          const assetDependenciesEnabled = await isAssetDependenciesEnabled();
+          if (assetDependenciesEnabled) {
+            tabs.push({
+              label: 'Dependencies',
+              value: ItemDetailsTab.Dependencies,
+            });
+          }
 
-        if ((itemDetails.creatorId === 1 && isLimited) || isOwnCreatedItem) {
-          /*
-          tabs.push({
-            label: 'Owners',
-            value: ItemDetailsTab.Owners,
-          });
-          */
+          if ((itemDetails.creatorId === 1 && isLimited) || isOwnCreatedItem) {
+            tabs.push({
+              label: 'Owners',
+              value: ItemDetailsTab.Owners,
+            });
+          }
         }
 
         setAvailableTabs(tabs);
@@ -162,6 +164,9 @@ export default function ItemDetailsTabs() {
       </div>
       {activeTab === ItemDetailsTab.Dependencies ? (
         <AssetDependencies assetId={assetId} />
+      ) : null}
+      {activeTab === ItemDetailsTab.Owners ? (
+        <AssetOwners assetId={assetId} />
       ) : null}
     </Fragment>
   );

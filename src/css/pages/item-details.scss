@@ -18,6 +18,58 @@
       }
     }
   }
+
+  .rplus-owners-list {
+    .container-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      h2 {
+        text-align: left;
+      }
+
+      > * {
+        flex-grow: 1;
+      }
+
+      .rplus-hide-private-inventories {
+        text-align: center;
+
+        label {
+          margin-left: 4px;
+        }
+      }
+
+      .btn-control-sm {
+        // HACK: This whole block.
+        transform: rotate(90deg);
+        float: right;
+        padding: 4px;
+        margin-top: 4px;
+        margin-bottom: -16px;
+      }
+    }
+
+    .list-item {
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+
+      .separator {
+        margin-left: 8px;
+        margin-right: 8px;
+      }
+
+      &:first-child {
+        border-top: none;
+      }
+    }
+
+    .btn-control-md {
+      width: 100%;
+    }
+  }
 }
 
 .rplus-item-details-tabs {
