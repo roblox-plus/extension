@@ -13,25 +13,6 @@ textarea,code{
 	display: inline-block;
 }
 
-
-/* Notification Stream */
-.notification-stream-header > span.text-label {
-	margin-left: 3px;
-	margin-right: 3px;
-}
-
-.notification-stream-header > span.text-link {
-	float: left;
-	cursor: pointer;
-}
-
-.rplus-stream-list .message-preview {
-	max-height: 16px;
-	overflow: hidden;
-	white-space: pre-wrap;
-}
-
-
 /* Basic */
 .notification-blue:empty, .notification-red:empty {
 	display: none;
