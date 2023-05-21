@@ -2,6 +2,11 @@ const updateVoteTitle = (
   upvoteSpan: Element | null,
   downvoteSpan: Element | null
 ) => {
+  if (document.querySelector('.rplus-vote-percentage-label')) {
+    // Label already exists, do nothing.
+    return;
+  }
+
   const upvoteCount = Number(upvoteSpan?.getAttribute('title'));
   const downvoteCount = Number(downvoteSpan?.getAttribute('title'));
   if (
@@ -23,6 +28,7 @@ const updateVoteTitle = (
   if (upvoteSpan?.parentElement?.parentElement) {
     const percentageSpan = document.createElement('span');
     percentageSpan.classList.add('count-middle');
+    percentageSpan.classList.add('rplus-vote-percentage-label');
     percentageSpan.setAttribute(
       'title',
       `${
