@@ -32,7 +32,7 @@ const getUserProfileLink = (userId: number): URL => {
 const getIdFromUrl = (url: URL): number => {
   const match =
     url.pathname.match(
-      /^\/(badges|games|game-pass|groups|catalog|library|users)\/(\d+)\//i
+      /^\/(badges|games|game-pass|groups|catalog|library|users)\/(\d+)\/?/i
     ) || [];
 
   // Returns NaN if the URL doesn't match.

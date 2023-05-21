@@ -53,9 +53,6 @@
 
         "/js/vanilla/timedCache.js",
         "/js/vanilla/batchItemProcessor.js",
-        "/js/vanilla/cursorPagination/cursorPaginationConstants.js",
-        "/js/vanilla/cursorPagination/PaginationCache.js",
-        "/js/vanilla/cursorPagination/CursorPager.js",
 
         "/js/vendors/react.production.min.js",
         "/js/vendors/react-dom.production.min.js",
@@ -95,7 +92,7 @@
     },
 
     {
-      "js": ["/js/jquery/Item.js", "/js/jquery/loadPages.js"],
+      "js": ["/js/jquery/loadPages.js"],
       "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
       "run_at": "document_end"
     },
@@ -103,8 +100,7 @@
     {
       "js": [
         "/js/output/react/components/vertical-tabs.js",
-        "/js/output/react/components/pill-toggle.js",
-        "/js/output/react/components/thumbnail.js"
+        "/js/output/react/components/pill-toggle.js"
       ],
       "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
       "run_at": "document_start"
@@ -235,20 +231,6 @@
 
     {
       "js": ["./dist/pages/item-details.js"],
-      "matches": [
-        "https://www.roblox.com/catalog/*/*",
-        "https://web.roblox.com/catalog/*/*",
-        "https://www.roblox.com/library/*/*",
-        "https://web.roblox.com/library/*/*"
-      ],
-      "run_at": "document_end"
-    },
-
-    {
-      "js": [
-        "/js/output/react/pages/item-details/item-details-tabs.js",
-        "/js/output/react/pages/item-details/item-owners.js"
-      ],
       "css": ["dist/css/item-details.css"],
       "matches": [
         "https://www.roblox.com/catalog/*/*",
@@ -256,7 +238,7 @@
         "https://www.roblox.com/library/*/*",
         "https://web.roblox.com/library/*/*"
       ],
-      "run_at": "document_start"
+      "run_at": "document_end"
     },
 
     {

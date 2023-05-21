@@ -66,6 +66,24 @@ const getTranslationResource = async (
   return resource?.value || '';
 };
 
+const getTranslationResourceWithFallback = async (
+  namespace: string,
+  key: string,
+  defaultValue: string
+) => {
+  try {
+    const value = await getTranslationResource(namespace, key);
+    if (!value) {
+      return defaultValue;
+    }
+
+    return value;
+  } catch (e) {
+    console.warn('Failed to load translation resource', namespace, key, e);
+    return defaultValue;
+  }
+};
+
 // Listener to ensure these always happen in the background, for strongest caching potential.
 addListener(
   messageDestination,
@@ -112,4 +130,4 @@ addListener(
   }
 );
 
-export { getTranslationResource };
+export { getTranslationResource, getTranslationResourceWithFallback };

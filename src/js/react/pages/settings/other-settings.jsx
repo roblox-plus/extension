@@ -42,13 +42,6 @@ class OtherSettings extends SettingsTab {
 						<div class="rbx-divider"></div>
 						<span class="text-description">Adds a sales count label on item details pages for items that you created. This feature is for Roblox+ Premium users only.</span>
 					</div>
-					<div class="section-content">
-						<span class="text-lead">Asset Dependencies</span>
-						<PillToggle getValue={this.getPillValue.bind(this, "asset-dependency-list")}
-							onToggle={this.setPillValue.bind(this, "asset-dependency-list")} />
-						<div class="rbx-divider"></div>
-						<span class="text-description">Shows the assets that an item depends on, on the item details page.</span>
-					</div>
 				</div>
 				<div class="section">
 					<div class="container-header">
