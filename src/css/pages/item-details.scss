@@ -4,6 +4,22 @@
   }
 }
 
+#rplus-item-details-tabs {
+  margin-bottom: 8px;
+
+  ul.nav-tabs {
+    display: flex;
+
+    li.rbx-tab {
+      flex-grow: 1;
+
+      .rbx-tab-heading {
+        width: 100%;
+      }
+    }
+  }
+}
+
 .rplus-item-details-tabs {
   .rbx-tabs-horizontal {
     margin-bottom: 12px;

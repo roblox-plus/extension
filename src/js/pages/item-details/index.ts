@@ -3,23 +3,11 @@ import { getAssetSalesCount } from '../../services/assets';
 import { getTranslationResource } from '../../services/localization';
 import { getToggleSettingValue } from '../../services/settings';
 import wait from '../../utils/wait';
-import {
-  assetId,
-  parseCreatorId,
-  isLimited,
-  isOwnCreatedItem,
-  isOwnedAvatarAsset,
-  assetType,
-} from './details';
+import { assetId, isLimited, isOwnCreatedItem } from './details';
 import { createStat } from './stats';
 import calculateRecentAveragePriceAfterSale from './calculate-rap-after-sale';
 import { initializeContextMenu } from './context-menu';
-import {
-  disabledAssetTypes as assetDependenciesDisabledAssetTypes,
-  render as renderAssetDependencies,
-} from './asset-dependencies';
-import authenticatedUser from '../../utils/authenticatedUser';
-import { isOwnedStudioItem } from './details';
+import { render as renderTabs } from './tabs';
 
 // Add sales counter onto the page.
 if (isOwnCreatedItem && !isLimited) {
@@ -98,53 +86,16 @@ if (isLimited) {
   }, 1000);
 }
 
-// Asset Dependencies
-if (!assetDependenciesDisabledAssetTypes.includes(assetType)) {
-  getToggleSettingValue('asset-dependency-list')
-    .then(async (enabled) => {
-      const allowed = async (): Promise<boolean> => {
-        if (isOwnCreatedItem || isOwnedStudioItem) {
-          return true;
-        }
+// Tabbed content
+const tabsContainerAfter = document.querySelectorAll(
+  '#item-container>.section-content'
+);
 
-        while (true) {
-          const creatorId = parseCreatorId();
-          if (isNaN(creatorId)) {
-            await wait(500);
-            continue;
-          }
-
-          return creatorId === 1;
-        }
-      };
-
-      const parentContainer = document.getElementById('item-container');
-      if (!parentContainer || !enabled) {
-        return;
-      }
-
-      const isAllowed = await allowed();
-      if (!isAllowed) {
-        return;
-      }
-
-      const container = document.createElement('div');
-      container.setAttribute('id', 'rplus-asset-dependencies');
-
-      const commentsContainer = document.getElementById(
-        'AjaxCommentsContainer'
-      );
-      if (commentsContainer?.parentElement) {
-        commentsContainer.parentElement.before(container);
-      } else {
-        parentContainer.appendChild(container);
-      }
-
-      renderAssetDependencies(container, assetId);
-    })
-    .catch((err) => {
-      console.error('Failed to render asset dependency list', err);
-    });
+if (tabsContainerAfter.length > 0) {
+  const tabsContainer = document.createElement('div');
+  tabsContainer.setAttribute('id', 'rplus-item-details-tabs');
+  tabsContainerAfter[0].after(tabsContainer);
+  renderTabs(tabsContainer);
 }
 
 // Listen for the context menu to open.

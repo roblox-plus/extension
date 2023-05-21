@@ -1,7 +1,12 @@
 import AssetType from '../../enums/assetType';
 import { getIdFromUrl } from '../../utils/linkify';
+import wait from '../../utils/wait';
 
 const itemContainer = document.querySelector('#item-container');
+
+type ItemDetails = {
+  creatorId: number;
+};
 
 const parseCreatorId = () => {
   // It's possible this won't exist when the page loads.
@@ -14,6 +19,26 @@ const parseCreatorId = () => {
   }
 
   return NaN;
+};
+
+const waitForCreatorId = async () => {
+  while (true) {
+    const creatorId = parseCreatorId();
+    if (creatorId) {
+      return creatorId;
+    }
+
+    await wait(500);
+  }
+};
+
+const getDetails = (): Promise<ItemDetails> => {
+  return new Promise(async (resolve, reject) => {
+    const creatorId = await waitForCreatorId();
+    resolve({
+      creatorId,
+    });
+  });
 };
 
 const assetId = Number(itemContainer?.getAttribute('data-item-id'));
@@ -51,6 +76,7 @@ export {
   assetId,
   assetType,
   parseCreatorId,
+  getDetails,
   isOwnCreatedItem,
   isOwnedAvatarAsset,
   isOwnedStudioItem,
