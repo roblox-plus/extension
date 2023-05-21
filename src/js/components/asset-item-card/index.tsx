@@ -4,7 +4,6 @@ import AssetDetails from '../../types/asset-details';
 import { getAssetDetails } from '../../services/assets';
 import Thumbnail from '../thumbnail';
 import ThumbnailType from '../../enums/thumbnailType';
-import { CircularProgress } from '@mui/material';
 
 type AssetItemCardInput = {
   assetId: number;
@@ -24,7 +23,11 @@ export default function AssetItemCard({ assetId }: AssetItemCardInput) {
   }, [assetId]);
 
   if (assetDetails === undefined) {
-    return <CircularProgress />;
+    return (
+      <div className="list-item item-card">
+        <div className="spinner spinner-default" />
+      </div>
+    );
   }
 
   if (!assetDetails) {

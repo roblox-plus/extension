@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import RobuxHistory from '../../../types/robux-history';
 import { getUserRobuxHistory } from '../../../services/currency';
 import LoadingState from '../../../enums/loadingState';
-import { CircularProgress } from '@mui/material';
 import { HighchartsReact } from 'highcharts-react-official';
 
 type ChartInput = {
@@ -105,7 +104,7 @@ export default function Chart({ userId, startDate, endDate }: ChartInput) {
   }, [userId, startDate, endDate]);
 
   if (loadingState === LoadingState.Loading) {
-    return <CircularProgress />;
+    return <div className="spinner spinner-default" />;
   }
 
   if (loadingState === LoadingState.Error) {
