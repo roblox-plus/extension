@@ -2,18 +2,6 @@
 	let audioPlayers = {};
 	let speaking = "";
 
-	const setNotificationCount = () => {
-		if (Extension.Singleton.isIncognito) {
-			return;
-		}
-
-		Extension.NotificationService.Singleton.getNotifications().then(notifications => {
-			chrome.browserAction.setBadgeText({
-				text: notifications.length > 0 ? notifications.length.toString() : ""
-			});
-		}).catch(console.warn);
-	};
-
 	const audioStopped = (notificationId) => {
 		delete audioPlayers[notificationId];
 	};
@@ -57,8 +45,6 @@
 		}).catch(err => {
 			console.warn(notification, err);
 		});
-
-		setNotificationCount();
 	});
 
 	Extension.NotificationService.Singleton.onNotificationClosed.addEventListener(notification => {
@@ -71,7 +57,6 @@
 		}
 
 		delete audioPlayers[notification.id];
-		setNotificationCount();
 	});
 
 	Extension.NotificationService.Singleton.onNotificationClicked.addEventListener(notification => {
