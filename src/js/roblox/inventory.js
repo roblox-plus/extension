@@ -7,7 +7,7 @@ Roblox.Services.Inventory = class extends Extension.BackgroundService {
   constructor() {
     super('Roblox.inventory');
 
-    this.register([this.getCollectibles, this.getAssetOwners]);
+    this.register([this.getCollectibles]);
   }
 
   getCollectibles(userId) {
@@ -47,75 +47,6 @@ Roblox.Services.Inventory = class extends Extension.BackgroundService {
         })
         .catch(reject);
     });
-  }
-
-  getAssetOwners(assetId, cursor, sortOrder) {
-    return CachedPromise(
-      `${this.serviceId}.getAssetOwners`,
-      (resolve, reject) => {
-        // TODO: Audit Api for error codes
-        if (typeof assetId != 'number' || assetId <= 0) {
-          reject([
-            {
-              code: 0,
-              message: 'Invalid assetId',
-            },
-          ]);
-          return;
-        }
-
-        $.get(`https://inventory.roblox.com/v2/assets/${assetId}/owners`, {
-          cursor: cursor || '',
-          sortOrder: sortOrder || 'Asc',
-          limit: 100,
-        })
-          .done((data) => {
-            var dcb = -1;
-            const fcb = () => {
-              if (++dcb === data.data.length) {
-                resolve(data);
-              }
-            };
-
-            data.data.forEach((record, index) => {
-              var translatedRecord = {
-                userAssetId: record.id,
-                serialNumber: record.serialNumber,
-                owner: null,
-                created: record.created,
-                updated: record.updated,
-              };
-
-              if (record.owner) {
-                Roblox.users
-                  .getByUserId(record.owner.id)
-                  .then((user) => {
-                    translatedRecord.owner = {
-                      userId: user.id,
-                      username: user.username,
-                    };
-
-                    data.data[index] = translatedRecord;
-                    fcb();
-                  })
-                  .catch(fcb);
-              } else {
-                data.data[index] = translatedRecord;
-                fcb();
-              }
-            });
-
-            fcb();
-          })
-          .fail(Roblox.api.$reject(reject));
-      },
-      [assetId, cursor, sortOrder],
-      {
-        queued: true,
-        resolveExpiry: 30 * 1000,
-        rejectExpiry: 10 * 1000,
-      }
-    );
   }
 };
 
