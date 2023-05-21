@@ -95,14 +95,7 @@
     },
 
     {
-      "js": [
-        "/js/output/react/features/notification-stream/notification-stream-widget.js",
-        "/js/jquery/notificationStream.js",
-
-        "/js/jquery/Item.js",
-
-        "/js/jquery/loadPages.js"
-      ],
+      "js": ["/js/jquery/Item.js", "/js/jquery/loadPages.js"],
       "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
       "run_at": "document_end"
     },
