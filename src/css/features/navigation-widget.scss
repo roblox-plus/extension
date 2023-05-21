@@ -1,0 +1,151 @@
+$default-margin: 4px;
+$large-margin: 8px;
+$scroll-width: 6px;
+
+#navbar-settings {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  button#navbar-rplus {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    background-size: 80%;
+    border: none;
+    margin-left: $default-margin;
+  }
+}
+
+#rplus-widget {
+  height: 0;
+  width: 420px;
+  margin-right: $large-margin;
+  float: right;
+  overflow: hidden;
+  display: flex;
+  flex-flow: column;
+  transition: height 0.2s, padding 0.2s;
+  border-radius: 8px;
+
+  &.rplus-widget-open {
+    height: 600px;
+  }
+
+  .form-group {
+    margin-bottom: $default-margin;
+
+    .input-field {
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      width: 100%;
+    }
+  }
+
+  .spinner {
+    margin-top: 16px;
+  }
+
+  .rplus-user-widget {
+    padding: 0 0 $default-margin $scroll-width;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .avatar-card-container {
+      .avatar-card-image {
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .avatar-card-label {
+        .text-subheader {
+          margin-right: $default-margin;
+        }
+
+        &.rplus-stat-label {
+          width: 75%;
+
+          .rplus-value-label {
+            float: right;
+          }
+        }
+      }
+
+      .rplus-premium-indicator {
+        position: absolute;
+        top: $default-margin;
+        right: $default-margin;
+      }
+    }
+
+    .list-item.item-card {
+      width: auto;
+      height: 220px;
+
+      .item-card-link {
+        overflow: hidden;
+        border-radius: 8px;
+      }
+
+      .limited-number {
+        margin: 0 2px 0 2px;
+      }
+
+      .item-card-price {
+        position: absolute;
+        bottom: $large-margin;
+
+        .text-robux {
+          margin-left: $default-margin;
+        }
+      }
+    }
+  }
+}
+
+.dark-theme {
+  #rplus-widget {
+    background-color: #191b1d;
+  }
+}
+
+.light-theme {
+  #rplus-widget {
+    background-color: #dee1e3;
+  }
+}
+
+/* Handle legacy pages */
+body:not(.rbx-body) {
+  #rplus-widget {
+    * {
+      box-sizing: border-box;
+    }
+
+    ul.item-cards {
+      padding: 0;
+
+      li {
+        float: left;
+
+        .item-card {
+          .limited-icon-container {
+            border-radius: 12px;
+            padding: 2px 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* WebGL3D */
