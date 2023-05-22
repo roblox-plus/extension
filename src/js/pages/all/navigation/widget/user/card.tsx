@@ -13,9 +13,7 @@ type UserCardInput = {
 };
 
 export default function UserCard({ user }: UserCardInput) {
-  const [premiumExpiration, setPremiumExpiration] = useState<
-    Date | null | undefined
-  >(undefined);
+  const [premiumExpiration, setPremiumExpiration] = useState<string>('');
   const [inventory, setInventory] = useState<OwnedLimitedAsset[]>([]);
   const [loadingState, setLoadingState] = useState<LoadingState>(
     LoadingState.Success
@@ -36,7 +34,7 @@ export default function UserCard({ user }: UserCardInput) {
 
   useEffect(() => {
     setLoadingState(LoadingState.Loading);
-    setPremiumExpiration(undefined);
+    setPremiumExpiration('');
     setInventory([]);
 
     let cancelled = false;
@@ -63,7 +61,13 @@ export default function UserCard({ user }: UserCardInput) {
           return;
         }
 
-        setPremiumExpiration(expiration);
+        if (expiration) {
+          setPremiumExpiration(expiration.toLocaleDateString());
+        } else if (expiration === null) {
+          setPremiumExpiration('never');
+        } else {
+          setPremiumExpiration('');
+        }
       })
       .catch((err) => {
         if (cancelled) {
@@ -114,12 +118,10 @@ export default function UserCard({ user }: UserCardInput) {
             )}
           </span>
         </div>
-        {premiumExpiration !== undefined ? (
+        {premiumExpiration ? (
           <div
             className="rplus-premium-indicator rplus-icon-32x32"
-            title={`Expiration: ${
-              premiumExpiration?.toLocaleDateString() || 'never'
-            }`}
+            title={`Expiration: ${premiumExpiration}`}
           />
         ) : null}
       </div>
