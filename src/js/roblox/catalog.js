@@ -243,14 +243,6 @@ Roblox.Services.Catalog = class extends Extension.BackgroundService {
 			rejectExpiry: 5 * 1000
 		});
 	}
-
-	getAssetSalesCount(assetId) {
-		return new Promise((resolve, reject) => {
-			this.getAssetInfo(assetId).then((asset) => {
-				resolve(asset.sales);
-			}).catch(reject);
-		});
-	}
 };
 
 Roblox.catalog = new Roblox.Services.Catalog();
