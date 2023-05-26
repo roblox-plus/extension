@@ -1,0 +1,33 @@
+# https://docs.digitalocean.com/glossary/app-spec
+# https://docs.digitalocean.com/products/app-platform/reference/app-spec/
+# The app spec, is a YAML manifest that declaratively states everything about your app.
+# Including each resource and all of your app’s environment variables and configuration variables.
+name: 'roblox-plus'
+
+# The domain names where the app is accessible on the public internet.
+domains:
+  - domain: 'roblox.plus'
+    type: 'PRIMARY'
+
+# The region to deploy the app into.
+# See also: https://docs.digitalocean.com/products/platform/availability-matrix/#app-platform-availability
+region: sfo
+
+# Get alerts when things go horribly wrong.
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+
+static_sites:
+  # This is the app that the humans interact with in their web browsers.
+  - name: 'app'
+    github:
+      branch: 'master'
+      deploy_on_push: true
+      repo: 'roblox-plus/extension'
+    source_dir: 'services/web-app'
+    output_dir: '/app/build'
+    dockerfile_path: 'services/web-app/Dockerfile'
+    routes:
+      - path: /
+    catchall_document: index.html

@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: './services/web-app'
+      dockerfile: 'Dockerfile'
+
+    container_name: 'app'
+
+    ports:
+      - '${ROBLOX_PLUS_APP_PORT:-}:3000'
+
+    restart: 'always'
+
+networks:
+  default:
+    name: 'roblox-plus'
+    external: true
