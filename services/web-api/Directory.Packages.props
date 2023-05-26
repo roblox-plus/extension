@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <!-- Internal Packages -->
+    <PackageVersion Include="Roblox" Version="1.18.0" />
     <PackageVersion Include="TixFactory.Http.Service" Version="$(TixFactoryVersion)" />
 
     <!-- External Packages -->
