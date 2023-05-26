@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <TixFactoryVersion>3.17.0</TixFactoryVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Internal Packages -->
+    <PackageVersion Include="TixFactory.Http.Service" Version="$(TixFactoryVersion)" />
+
+    <!-- External Packages -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageVersion Include="NUnit" Version="3.13.3" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="4.4.2" />
+  </ItemGroup>
+</Project>

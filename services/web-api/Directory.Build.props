@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup Label="AssemblyMetadata">
+    <Company>Tix Factory</Company>
+    <RepositoryUrl>https://github.com/tix-factory/caltrain</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Label="TestsProperties" Condition="$(MSBuildProjectName.Contains('.Tests'))">
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <PropertyGroup Label="AssemblyProperties" Condition="'$(IsTestProject)' != 'true'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+</Project>
