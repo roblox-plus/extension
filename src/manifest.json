@@ -18,6 +18,12 @@
 
   "content_scripts": [
     {
+      "js": ["./dist/pages/roblox-plus.js"],
+      "matches": ["https://roblox.plus/*"],
+      "run_at": "document_start"
+    },
+
+    {
       "js": [
         "/js/jquery/style.js",
         "/js/jquery/loadStylesheets.js",

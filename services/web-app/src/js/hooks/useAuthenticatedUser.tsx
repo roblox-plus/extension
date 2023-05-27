@@ -16,6 +16,9 @@ function useAuthenticatedUser(): AuthenticatedUser {
     state: ThumbnailState.Pending,
     imageUrl: '',
   });
+  const [premiumExpiration, setPremiumExpiration] = useState<
+    Date | null | undefined
+  >();
   const [loadingState, setLoadingState] = useState<LoadingState>(
     LoadingState.Loading
   );
@@ -29,7 +32,20 @@ function useAuthenticatedUser(): AuthenticatedUser {
     getAuthenticatedUser()
       .then((u) => {
         setUser(u);
-        setLoadingState(LoadingState.Success);
+
+        const rawPremiumExpiration =
+          document.body.dataset.userPremiumExpiration;
+        if (rawPremiumExpiration === 'null') {
+          setPremiumExpiration(null);
+        } else if (rawPremiumExpiration && rawPremiumExpiration !== 'error') {
+          setPremiumExpiration(new Date(rawPremiumExpiration));
+        }
+
+        setLoadingState(
+          rawPremiumExpiration === 'error'
+            ? LoadingState.Error
+            : LoadingState.Success
+        );
       })
       .catch((err) => {
         console.error('Failed to load authenticated user', err);
@@ -50,6 +66,7 @@ function useAuthenticatedUser(): AuthenticatedUser {
   return {
     user,
     thumbnail,
+    premiumExpiration,
     loadingState,
   };
 }
