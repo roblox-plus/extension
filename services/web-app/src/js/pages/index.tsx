@@ -1,11 +1,11 @@
-import { Fragment } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Login from './login';
-import { loginPath } from '../constants';
+import { loginPath, settingsPath } from '../constants';
 import useAuthenticatedUser from '../hooks/useAuthenticatedUser';
 import LoadingState from '../enums/loadingState';
 import { Alert, CircularProgress } from '@mui/material';
 import Settings from './settings';
+import Transactions from './transactions';
 
 export default function Pages() {
   const location = useLocation();
@@ -34,8 +34,9 @@ export default function Pages() {
 
   return (
     <Routes>
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/settings/:tab" element={<Settings />} />
+      <Route path={settingsPath} element={<Settings />} />
+      <Route path={`${settingsPath}/:tab`} element={<Settings />} />
+      <Route path="/transactions" element={<Transactions />} />
     </Routes>
   );
 }

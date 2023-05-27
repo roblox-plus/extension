@@ -16,7 +16,15 @@ const apiBaseUrl = new URL(
   }/api/`
 );
 
-// The path for the login page.
+// Page paths
 const loginPath = '/login';
+const settingsPath = '/settings';
 
-export { clientId, extensionId, requestedScopes, apiBaseUrl, loginPath };
+export {
+  clientId,
+  extensionId,
+  requestedScopes,
+  apiBaseUrl,
+  loginPath,
+  settingsPath,
+};
