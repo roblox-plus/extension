@@ -30,7 +30,7 @@ jobs:
       - name: '📂 Setup Files'
         run: |
           touch secrets.env
-        working-directory: services/web-app
+        working-directory: services/web-api
 
       - name: '🏗️ Build'
         run: >-
