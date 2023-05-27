@@ -63,7 +63,7 @@ public class Startup : TixFactory.Http.Service.Startup
             .SetApplicationName(ApplicationContext.Singleton.Name)
             .AddKeyManagementOptions(options =>
             {
-                //options.XmlRepository = new AuthenticationKeyStore(_Configuration);
+                options.XmlRepository = new AuthenticationKeyStore(_Configuration);
             });
 
         services.AddAuthentication(options =>

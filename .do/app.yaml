@@ -31,6 +31,14 @@ services:
     http_port: 80
     instance_count: 1
     instance_size_slug: 'basic-xxs'
+    envs:
+      # This should be safe to commit to source control, it's encrypted?
+      # https://www.digitalocean.com/community/questions/what-are-app-spec-best-practices-for-keeping-env-secrets-secret?comment=193546
+      - key: 'AUTHENTICATION_KEYS_JSON'
+        scope: 'RUN_TIME'
+        type: 'SECRET'
+        value: |
+          EV[1:rdg/MVMQsHfFy2xrNFDZXgGFwonJOlX6:2Yw3s9npC+4ROhcdIVEETdT0BLF75J7eWXqxmlMO7a5NmVQEOUT+ITOw0Ke4c9Ww9mrSSytVyu1C4zg8Dkb427qx4ZJsgIy4M+A6GDkjXZhH8eyKGSabY/j1mqEfTXe6Z0gzbkinEzVHu/4ptoPuTEiElupEiMarauC+jYpKqaWksmTi7hVJM54DMD/q3rNVEVTbVL5fy/fhx56pw5wPtuIxD9SXGWLEkxOmCNneiRz2qbkSYvVEixz77JsNQ2vtJz1MCn4I5fQnl1wEYbasIu9TmyIdVvoPC8ViusmQ/ENOwanY3U3ihedzA/q09mwp7W5i7bppZWGLnvkyisp26ls1bC3m5zRmMyCF7MDq2zEz8xyKNe7QQdt3zH5ohC+fvUBuDIxsDnA/uaNj/ZI/LTYUZlIqS0LRKoy/WsbRb1femPLOTEgu/ggb+QtmaMxgUej6U4y1w6G2AhQh6MwMQcaArnpz8G3p7tAE0epR/DiStnD+3NbFZZMgYAPNGJjSlx/Ek8UfGWHei+0eno5wnEo4OE9zB1ESCIcawJrTDIdaChBVvs3G5BNFk96+9Nw2OFZSoG99pETX+4+OOG0X69ABFNF5koIxQtV1H4Upfd19mFEIzwKQI8SmJgga5S7/udcpyphkUaD4k72/NXlDtgaPLofiba1WvXhY+rj/klZqB9T6t3ZiaNCGqbqn8wL/P80Po3u2RtYYuN474gvXrEbFbnkMXVq1iL4AbXftxnLAfvNSznHvXKAeOU9bDu7zK+ilY/drXtCBYCLTHDCSr/nk75As9LmuM8uBsBha8xGKGc/Tzqc6QodzXp0IBMnN1DNtiGnPpb2ckxMTDCZfKgE5YtuDArgMGitRouMN68ClpYNX+nGQlpfAEVORcr1by/gTm6JwMPxeLJTJTtAXLAc5f1PcGe8COwDxgf1n2zjNY5mXVFBbv99+BGZ6nbWvh4G6VH5g6RGsIGsvRaflwtpEwLMvmPYD+LKXAWyl0dLpDnzwVBhCcZJd20CmOZ3SymkACDLypfRgsxFesNO8CknIunqXFlMs095/Fy9zmc5wulpUL6YN0opYmT1zwOKYKAf0CDpp3+8FNeCYUMNiXh0TJrNfnx85meOU2xKafCUcKR9L7yUVm4CHqRUB+5kvgCn2ZVxiZRhlUcmeHXT5gboCYhA8RpJe1XRbpovFL0tmUYygPNyDycHLFm2t3CP0oHu3lZBJ31N5B8Y2ulwBH1hBJnCMgGqIkALDFZN0Bw3NqYa9sDqb2lW8SBxCFfH8sTgYlP/GvSybrg6AIXElw0stce3jlLTkjCr175iI/FiiZWT0OtANXtq/GMj0ZUODUhmvATu4WOqx20cOqyEOmPqnBLiWosrFo/2saTPGoSbJrLlRejIYmC3bBURTV6p4bEp8RUzMtJEGAbXpSYV++RvTE5L68joHQaGtkFwHHr5JnTZ5B/ddNif1eAmAaIxaaUl3iRU1CbMEZRBQpoAXI0DIlOwUu9mkM/s2plv6h5rtHK7eJq4A0jtshFr62WDNEhFGXpMzvJ/rCnfc8dfPVvIAoXmoVB0lnVgBm3t8UElPPsGQyjUeSx6UBxq65yfQGh9CwIBkPOuyHBd1T6aqWU0Htbc0CZenMmgO2bI/91yhEKIXjzblmg/7VM0ZmM8=]
     routes:
       - path: /api
         preserve_path_prefix: true
