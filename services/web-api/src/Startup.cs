@@ -1,20 +1,17 @@
 using System;
-using Microsoft.AspNetCore.Authentication;
-using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Converters;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
-using TixFactory.ApplicationContext;
 using Roblox.Api;
+using TixFactory.ApplicationContext;
 
 namespace RobloxPlus.Main.Api;
 
@@ -83,15 +80,12 @@ public class Startup : TixFactory.Http.Service.Startup
             options.ExpireTimeSpan = _CookieExpiry;
             options.LoginPath = "/login";
             options.LogoutPath = "/logout";
-            options.Events.OnRedirectToLogin = RejectWithUnauthorizedAsync;
-            options.Events.OnRedirectToAccessDenied = RejectWithUnauthorizedAsync;
-
-            var authenticator = new Authenticator(_Configuration);
-            options.Events.OnValidatePrincipal = authenticator.ValidateCookieAsync;
+            options.EventsType = typeof(Authenticator);
 
             options.Validate();
         });
 
+        services.AddSingleton<Authenticator>();
         services.AddAuthorization();
 
         // Dependencies
@@ -130,12 +124,5 @@ public class Startup : TixFactory.Http.Service.Startup
     protected override void ConfigureJson(MvcNewtonsoftJsonOptions options)
     {
         options.SerializerSettings.Converters.Add(new StringEnumConverter());
-    }
-
-    private Task RejectWithUnauthorizedAsync(RedirectContext<CookieAuthenticationOptions> redirectContext)
-    {
-        // https://stackoverflow.com/a/65388846/1663648
-        redirectContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-        return redirectContext.Response.CompleteAsync();
     }
 }

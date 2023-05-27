@@ -1,8 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Roblox.Authentication;
 using Roblox.Users;
 using TixFactory.Operations;
 
@@ -15,6 +19,8 @@ public class LoginOperation : IAsyncOperation<string, UserResult>
 {
     private readonly IAuthenticationService _AuthenticationService;
     private readonly IHttpContextAccessor _HttpContextAccessor;
+    private readonly IAuthenticationClient _AuthenticationClient;
+    private readonly Authenticator _Authenticator;
 
     /// <summary>
     /// Initializes a new <see cref="LoginOperation"/>.
@@ -25,37 +31,32 @@ public class LoginOperation : IAsyncOperation<string, UserResult>
     /// - <paramref name="authenticationService"/>
     /// - <paramref name="httpContextAccessor"/>
     /// </exception>
-    public LoginOperation(IAuthenticationService authenticationService, IHttpContextAccessor httpContextAccessor)
+    public LoginOperation(
+        IAuthenticationService authenticationService,
+        IHttpContextAccessor httpContextAccessor,
+        IAuthenticationClient authenticationClient,
+        Authenticator authenticator)
     {
         _AuthenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
         _HttpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        _AuthenticationClient = authenticationClient ?? throw new ArgumentNullException(nameof(authenticationClient));
+        _Authenticator = authenticator ?? throw new ArgumentNullException(nameof(authenticator));
     }
 
     /// <inheritdoc cref="IAsyncOperation{TInput,TOutput}.ExecuteAsync"/>
     public async Task<(UserResult Output, OperationError Error)> ExecuteAsync(string code, CancellationToken cancellationToken)
     {
-        /*
-        var user = await LoginAsync(code, cancellationToken);
+        var loginResult = await _AuthenticationClient.LoginAsync(code, cancellationToken);
 
-        var claimsIdentity = new ClaimsIdentity(new[]
-        {
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-        }, CookieAuthenticationDefaults.AuthenticationScheme);
-
-        var authenticationProperties = new AuthenticationProperties(new Dictionary<string, string>
-        {
-            [nameof(UserResult.DisplayName)] = user.DisplayName
-        });
+        var authenticationProperties = new AuthenticationProperties();
+        _Authenticator.PopulateAuthenticationProperties(authenticationProperties, loginResult);
 
         await _AuthenticationService.SignInAsync(
             _HttpContextAccessor.HttpContext,
             CookieAuthenticationDefaults.AuthenticationScheme,
-            new ClaimsPrincipal(claimsIdentity),
+            _Authenticator.CreateClaims(loginResult),
             authenticationProperties);
 
-        return (user, null);
-        */
-        throw new NotImplementedException();
+        return (loginResult.User, null);
     }
 }

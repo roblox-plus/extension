@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Roblox.Authentication;
 using Roblox.Users;
 using TixFactory.Operations;
 
@@ -31,7 +32,7 @@ public class GetAuthenticatedUserOperation : IAsyncOperation<UserResult>
     public async Task<(UserResult Output, OperationError Error)> ExecuteAsync(CancellationToken cancellationToken)
     {
         var httpContext = _HttpContextAccessor.HttpContext;
-        if (httpContext?.Items.TryGetValue(nameof(AuthenticationSessionResult.User), out var rawUser) != true
+        if (httpContext?.Items.TryGetValue(nameof(LoginResult.User), out var rawUser) != true
             || !(rawUser is UserResult user))
         {
             if (httpContext != null)

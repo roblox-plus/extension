@@ -1,11 +1,13 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Extensions.Configuration;
+using Roblox.Api;
+using Roblox.Authentication;
 using Roblox.Users;
 
 namespace RobloxPlus.Main.Api;
@@ -13,80 +15,135 @@ namespace RobloxPlus.Main.Api;
 /// <summary>
 /// Middleware for ensuring we keep our user data up-to-date with Roblox.
 /// </summary>
-public class Authenticator
+public class Authenticator : CookieAuthenticationEvents
 {
-    private readonly IConfiguration _Configuration;
+    /// <summary>
+    /// Time to take away from the access token expiration, before renewing.
+    /// </summary>
+    /// <remarks>
+    /// This ensures the access token gets renewed early, so that it won't expire in the middle of the request.
+    /// </remarks>
+    private static readonly TimeSpan _AccessTokenExpirationLeeway = TimeSpan.FromMinutes(2);
+    private readonly IAuthenticationClient _AuthenticationClient;
 
     /// <summary>
     /// Initializes a new <see cref="Authenticator" />.
     /// </summary>
-    /// <param name="configuration">The <see cref="IConfiguration"/>.</param>
-    /// <param name="httpClient">An <see cref="IHttpClient"/>.</param>
+    /// <param name="authenticationClient">An <see cref="IAuthenticationClient"/>.</param>
     /// <exception cref="ArgumentNullException">
-    /// - <paramref name="configuration" />
-    /// - <paramref name="httpClient" />
+    /// - <paramref name="authenticationClient" />
     /// </exception>
-    public Authenticator(IConfiguration configuration)
+    public Authenticator(IAuthenticationClient authenticationClient)
     {
-        _Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _AuthenticationClient = authenticationClient ?? throw new ArgumentNullException(nameof(authenticationClient));
+        OnRedirectToLogin = RejectWithUnauthorizedAsync;
+        OnRedirectToAccessDenied = RejectWithUnauthorizedAsync;
     }
 
     /// <summary>
     /// Validates if the authentication session is still valid with Roblox.
     /// </summary>
-    /// <param name="cookieValidation">The <see cref="CookieValidatePrincipalContext"/>.</param>
-    public async Task ValidateCookieAsync(CookieValidatePrincipalContext cookieValidation)
+    /// <remarks>
+    /// https://learn.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-7.0
+    /// </remarks>
+    /// <param name="cookieValidationContext">The <see cref="CookieValidatePrincipalContext"/>.</param>
+    public override async Task ValidatePrincipal(CookieValidatePrincipalContext cookieValidationContext)
     {
-        // I have no idea if this is the best or proper way to accomplish this.
-        // I have no idea how I even figured out to try this method. Google? Look for posts until one looks "close enough"?
-        // https://stackoverflow.com/a/38893778/1663648
-        var authenticationSession = await GetAuthenticationSessionAsync(cookieValidation.Principal, cookieValidation.Properties, CancellationToken.None);
-        if (authenticationSession == null)
+        var username = cookieValidationContext.Principal?.Identity?.Name;
+        if (string.IsNullOrWhiteSpace(username)
+            || !TryGetClaim(cookieValidationContext.Principal, ClaimTypes.NameIdentifier, out var rawUserId)
+            || !long.TryParse(rawUserId, out var userId)
+            || !cookieValidationContext.Properties.Items.TryGetValue(nameof(UserResult.DisplayName), out var displayName)
+            || !cookieValidationContext.Properties.Items.TryGetValue(nameof(LoginResult.AccessToken), out var accessToken)
+            || !cookieValidationContext.Properties.Items.TryGetValue(nameof(LoginResult.RefreshToken), out var refreshToken)
+            || !cookieValidationContext.Properties.Items.TryGetValue(nameof(LoginResult.AccessTokenExpiration), out var rawAccessTokenExpiration)
+            || !DateTime.TryParse(rawAccessTokenExpiration, out var accessTokenExpiration))
         {
-            cookieValidation.RejectPrincipal();
-            await cookieValidation.HttpContext.SignOutAsync();
+            await Logout(cookieValidationContext);
             return;
         }
 
-        var currentUsername = cookieValidation.Principal?.Identity?.Name;
-        cookieValidation.Properties.Items.TryGetValue(nameof(UserResult.DisplayName), out var currentDisplayName);
-        cookieValidation.HttpContext.Items[nameof(AuthenticationSessionResult.User)] = authenticationSession.User;
-
-        if (currentUsername != authenticationSession.User.Name)
+        if (accessTokenExpiration - _AccessTokenExpirationLeeway < DateTime.UtcNow)
         {
-            var claimsIdentity = new ClaimsIdentity(new[]
+            // Access token needs to be refreshed.
+            try
             {
-                new Claim(ClaimTypes.Name, authenticationSession.User.Name),
-                new Claim(ClaimTypes.NameIdentifier, authenticationSession.User.Id.ToString())
-            }, CookieAuthenticationDefaults.AuthenticationScheme);
+                // Refresh required.
+                var refreshResult = await _AuthenticationClient.RefreshAsync(refreshToken, CancellationToken.None);
 
-            cookieValidation.ReplacePrincipal(new ClaimsPrincipal(claimsIdentity));
-            cookieValidation.ShouldRenew = true;
+                // Update cookie
+                PopulateAuthenticationProperties(cookieValidationContext.Properties, refreshResult);
+                cookieValidationContext.ReplacePrincipal(CreateClaims(refreshResult));
+                cookieValidationContext.ShouldRenew = true;
+
+                // Ensure the user information is available for the running request.
+                cookieValidationContext.HttpContext.Items[nameof(LoginResult.User)] = refreshResult.User;
+            }
+            catch (RobloxUnauthenticatedException)
+            {
+                // User could have denied access to the app externally.
+                await Logout(cookieValidationContext);
+            }
         }
-
-        if (currentDisplayName != authenticationSession.User.DisplayName)
+        else
         {
-            cookieValidation.Properties.Items[nameof(UserResult.DisplayName)] = currentDisplayName;
-            cookieValidation.ShouldRenew = true;
-        }
-
-        if (!cookieValidation.Properties.Items.TryGetValue(nameof(AuthenticationSessionResult.Created), out _))
-        {
-            // Cheap hack to make sure the created date gets added to the cookie.. this should really be on login, but... whatever.
-            cookieValidation.Properties.Items[nameof(AuthenticationSessionResult.Created)] = authenticationSession.Created.ToString("o");
-            cookieValidation.ShouldRenew = true;
+            // Nothing to refresh right now, just ensure the user information is available for the running request.
+            cookieValidationContext.HttpContext.Items[nameof(LoginResult.User)] = new UserResult
+            {
+                Id = userId,
+                Name = username,
+                DisplayName = displayName
+            };
         }
     }
 
-    private async Task<AuthenticationSessionResult> GetAuthenticationSessionAsync(ClaimsPrincipal claimsPrincipal, AuthenticationProperties authenticationProperties, CancellationToken cancellationToken)
+    /// <summary>
+    /// Creates a <see cref="ClaimsPrincipal"/> from a <see cref="LoginResult"/>.
+    /// </summary>
+    /// <param name="loginResult">The <see cref="LoginResult"/>.</param>
+    /// <returns>The <see cref="ClaimsPrincipal"/>.</returns>
+    public ClaimsPrincipal CreateClaims(LoginResult loginResult)
     {
-        var userIdClaim = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-        if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out var userId))
+        var claims = new ClaimsIdentity(new[]
         {
-            return null;
-        }
+            new Claim(ClaimTypes.Name, loginResult.User.Name),
+            new Claim(ClaimTypes.NameIdentifier, loginResult.User.Id.ToString())
+        }, CookieAuthenticationDefaults.AuthenticationScheme);
 
-        // TODO: Actually validate the authentication session.
-        return null;
+        return new ClaimsPrincipal(claims);
+    }
+
+    /// <summary>
+    /// Populates an <see cref="AuthenticationProperties"/> based on a <see cref="LoginResult"/>.
+    /// </summary>
+    /// <param name="authenticationProperties">The <see cref="AuthenticationProperties"/>.</param>
+    /// <param name="loginResult">The <see cref="LoginResult"/>.</param>
+    public void PopulateAuthenticationProperties(AuthenticationProperties authenticationProperties, LoginResult loginResult)
+    {
+        authenticationProperties.Items[nameof(UserResult.DisplayName)] = loginResult.User.DisplayName;
+        authenticationProperties.Items[nameof(LoginResult.AccessToken)] = loginResult.AccessToken;
+        authenticationProperties.Items[nameof(LoginResult.RefreshToken)] = loginResult.RefreshToken;
+        authenticationProperties.Items[nameof(LoginResult.AccessTokenExpiration)] = loginResult.AccessTokenExpiration.ToString("o");
+        authenticationProperties.Items[nameof(LoginResult.Scopes)] = loginResult.RawScopes;
+    }
+
+    private Task Logout(CookieValidatePrincipalContext cookieValidationContext)
+    {
+        cookieValidationContext.RejectPrincipal();
+        return cookieValidationContext.HttpContext.SignOutAsync();
+    }
+
+    private bool TryGetClaim(ClaimsPrincipal claimsPrincipal, string claimType, out string value)
+    {
+        var claim = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == claimType);
+        value = claim?.Value;
+        return !string.IsNullOrWhiteSpace(value);
+    }
+
+    private Task RejectWithUnauthorizedAsync(RedirectContext<CookieAuthenticationOptions> redirectContext)
+    {
+        // https://stackoverflow.com/a/65388846/1663648
+        redirectContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+        return redirectContext.Response.CompleteAsync();
     }
 }
