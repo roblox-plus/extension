@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup Label="AssemblyMetadata">
-    <Company>Tix Factory</Company>
-    <RepositoryUrl>https://github.com/tix-factory/caltrain</RepositoryUrl>
+    <Company>Roblox+</Company>
+    <RepositoryUrl>https://github.com/roblox-plus/extension</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
