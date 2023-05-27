@@ -19,7 +19,8 @@ const getAuthenticatedUser = (): Promise<User | null> => {
 
         switch (response.status) {
           case 200:
-            resolve(await response.json());
+            const result = await response.json();
+            resolve(result.data);
             return;
           case 401:
             resolve(null);

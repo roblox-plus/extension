@@ -3,6 +3,7 @@ import { AppBar, Box, Button, Link, Toolbar } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { loginPath } from '../constants';
 import { Fragment } from 'react';
+import NavigationAvatar from './navigationAvatar';
 
 export default function Navigation() {
   const location = useLocation();
@@ -21,6 +22,7 @@ export default function Navigation() {
             <Button startIcon={<ArrowBack />}>Roblox Settings</Button>
           </Link>
         </Box>
+        <NavigationAvatar />
       </Toolbar>
     </AppBar>
   );
