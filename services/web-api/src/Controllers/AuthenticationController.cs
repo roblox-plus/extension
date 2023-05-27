@@ -39,6 +39,7 @@ public class AuthenticationController : ControllerBase
         _LogoutOperation = logoutOperation ?? throw new ArgumentNullException(nameof(logoutOperation));
         _GetAuthenticatedUserOperation = getAuthenticatedUserOperation ?? throw new ArgumentNullException(nameof(getAuthenticatedUserOperation));
     }
+
     /// <summary>
     /// Log into Roblox+ using Roblox OAuth.
     /// </summary>
