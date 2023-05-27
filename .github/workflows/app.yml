@@ -1,0 +1,66 @@
+name: 'roblox.plus'
+
+on:
+  # Ensure the build runs on pull requests.
+  pull_request:
+
+  # Ensure the build runs when pushed to the main branch.
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+
+    env:
+      ROBLOX_PLUS_APP_PORT: 3000
+      ROBLOX_PLUS_API_PORT: 5000
+
+    steps:
+      - name: '📥 Clone Repository'
+        uses: actions/checkout@v3
+
+      - name: '🌐 Setup Network'
+        run: >-
+          docker network create roblox-plus
+        continue-on-error: true
+
+      - name: '📂 Setup Files'
+        run: |
+          touch secrets.env
+        working-directory: services/web-api
+
+      - name: '🏗️ Build'
+        run: >-
+          docker-compose build
+
+      - name: '🐳 Run'
+        run: |
+          docker-compose up -d
+          sleep 15
+
+      - name: '🔌 Ensure Connectivity (api)'
+        run: >-
+          curl -v --fail http://localhost:${{ env.ROBLOX_PLUS_API_PORT }}/application-metadata
+
+      - name: '🔌 Ensure Connectivity (app)'
+        run: >-
+          curl -v --fail http://localhost:${{ env.ROBLOX_PLUS_APP_PORT }}
+
+      - name: '🪵 Logs (api)'
+        if: ${{ always() }}
+        run: >-
+          docker-compose logs api
+
+      - name: '🪵 Logs (app)'
+        if: ${{ always() }}
+        run: >-
+          docker-compose logs app
+
+      - name: '🛑 Stop Containers'
+        run: >-
+          docker-compose rm
+          --stop
+          --force

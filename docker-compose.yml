@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: './services/web-api'
+      dockerfile: 'Dockerfile'
+
+    container_name: 'api'
+
+    ports:
+      - '${ROBLOX_PLUS_API_PORT:-}:80'
+
+    environment:
+      ROBLOX__AUTHENTICATION__CLIENTID: '2147861207470534820'
+
+    env_file: './services/web-api/secrets.env'
+
+    restart: 'always'
+
+  app:
+    build:
+      context: './services/web-app'
+      dockerfile: 'Dockerfile'
+
+    container_name: 'app'
+
+    ports:
+      - '${ROBLOX_PLUS_APP_PORT:-}:3000'
+
+    restart: 'always'
+
+networks:
+  default:
+    name: 'roblox-plus'
+    external: true

@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node-terminal",
+      "name": "Launch roblox.plus",
+      "request": "launch",
+      "command": "npm run start",
+      "env": {
+        "HTTPS": "true",
+        "SSL_CRT_FILE": "./secrets/localhost.crt",
+        "SSL_KEY_FILE": "./secrets/localhost.key"
+      },
+      "cwd": "${workspaceFolder}/services/web-app"
+    }
+  ]
+}

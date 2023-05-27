@@ -1,0 +1,8 @@
+# Don't put this in the build image either
+.vs/
+
+# Don't copy the bin/obj directories into the build image
+src/bin/
+src/obj/
+tests/bin/
+tests/obj/
