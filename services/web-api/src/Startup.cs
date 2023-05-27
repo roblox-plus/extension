@@ -96,6 +96,7 @@ public class Startup : TixFactory.Http.Service.Startup
         services.AddTransient<LoginOperation>();
         services.AddTransient<LogoutOperation>();
         services.AddTransient<GetAuthenticatedUserOperation>();
+        services.AddTransient<GetAuthenticatedUserThumbnailOperation>();
     }
 
     /// <inheritdoc cref="TixFactory.Http.Service.Startup.ConfigureMvc"/>
