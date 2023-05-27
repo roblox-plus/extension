@@ -27,6 +27,11 @@ jobs:
           docker network create roblox-plus
         continue-on-error: true
 
+      - name: '📂 Setup Files'
+        run: |
+          touch secrets.env
+        working-directory: services/web-app
+
       - name: '🏗️ Build'
         run: >-
           docker-compose build
