@@ -27,9 +27,13 @@ public class LoginOperation : IAsyncOperation<string, UserResult>
     /// </summary>
     /// <param name="authenticationService">The <see cref="IAuthenticationService"/>.</param>
     /// <param name="httpContextAccessor">The <see cref="IHttpContextAccessor"/>.</param>
+    /// <param name="authenticationClient">The <see cref="IAuthenticationClient"/>.</param>
+    /// <param name="authenticator">The <see cref="Authenticator"/>.</param>
     /// <exception cref="ArgumentNullException">
     /// - <paramref name="authenticationService"/>
     /// - <paramref name="httpContextAccessor"/>
+    /// - <paramref name="authenticationClient"/>
+    /// - <paramref name="authenticator"/>
     /// </exception>
     public LoginOperation(
         IAuthenticationService authenticationService,

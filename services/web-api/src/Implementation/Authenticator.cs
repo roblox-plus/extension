@@ -127,13 +127,13 @@ public class Authenticator : CookieAuthenticationEvents
         authenticationProperties.Items[nameof(LoginResult.Scopes)] = loginResult.RawScopes;
     }
 
-    private Task Logout(CookieValidatePrincipalContext cookieValidationContext)
+    private static Task Logout(CookieValidatePrincipalContext cookieValidationContext)
     {
         cookieValidationContext.RejectPrincipal();
         return cookieValidationContext.HttpContext.SignOutAsync();
     }
 
-    private bool TryGetClaim(ClaimsPrincipal claimsPrincipal, string claimType, out string value)
+    private static bool TryGetClaim(ClaimsPrincipal claimsPrincipal, string claimType, out string value)
     {
         var claim = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == claimType);
         value = claim?.Value;

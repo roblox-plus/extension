@@ -71,8 +71,9 @@ public class AuthenticationKeyStore : IXmlRepository
 
             return storedKeys;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.Error.WriteLine($"Failed to load authentication keys: {ex}");
             return ImmutableDictionary<string, XElement>.Empty;
         }
     }

@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using TixFactory.Http.Service;
 
 namespace RobloxPlus.Main.Api;
 

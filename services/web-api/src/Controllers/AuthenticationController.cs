@@ -54,7 +54,6 @@ public class AuthenticationController : ControllerBase
     /// <summary>
     /// Logs out of Roblox+.
     /// </summary>
-    /// <param name="disconnect">Whether or not to revoke the OAuth tokens for the authenticated account.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/>.</param>
     [HttpPost, Route("v1/logout")]
     public Task<IActionResult> LogoutAsync(CancellationToken cancellationToken)

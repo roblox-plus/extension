@@ -111,13 +111,13 @@ public class Startup : TixFactory.Http.Service.Startup
     }
 
     /// <inheritdoc cref="TixFactory.Http.Service.Startup.ConfigureEndpoints"/>
-    protected override void ConfigureEndpoints(IEndpointRouteBuilder endpointBuilder)
+    protected override void ConfigureEndpoints(IEndpointRouteBuilder endpointRouteBuilder)
     {
         _App.UseCors();
         _App.UseAuthentication();
         _App.UseAuthorization();
 
-        base.ConfigureEndpoints(endpointBuilder);
+        base.ConfigureEndpoints(endpointRouteBuilder);
     }
 
     /// <inheritdoc cref="TixFactory.Http.Service.Startup.ConfigureJson"/>

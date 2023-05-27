@@ -32,13 +32,23 @@ services:
     instance_count: 1
     instance_size_slug: 'basic-xxs'
     envs:
+      - key: 'ROBLOX__AUTHENTICATION__CLIENTID'
+        scope: 'RUN_TIME'
+        value: '2147861207470534820'
+
       # This should be safe to commit to source control, it's encrypted?
       # https://www.digitalocean.com/community/questions/what-are-app-spec-best-practices-for-keeping-env-secrets-secret?comment=193546
       - key: 'AUTHENTICATION_KEYS_JSON'
         scope: 'RUN_TIME'
         type: 'SECRET'
         value: |
-          EV[1:rdg/MVMQsHfFy2xrNFDZXgGFwonJOlX6:2Yw3s9npC+4ROhcdIVEETdT0BLF75J7eWXqxmlMO7a5NmVQEOUT+ITOw0Ke4c9Ww9mrSSytVyu1C4zg8Dkb427qx4ZJsgIy4M+A6GDkjXZhH8eyKGSabY/j1mqEfTXe6Z0gzbkinEzVHu/4ptoPuTEiElupEiMarauC+jYpKqaWksmTi7hVJM54DMD/q3rNVEVTbVL5fy/fhx56pw5wPtuIxD9SXGWLEkxOmCNneiRz2qbkSYvVEixz77JsNQ2vtJz1MCn4I5fQnl1wEYbasIu9TmyIdVvoPC8ViusmQ/ENOwanY3U3ihedzA/q09mwp7W5i7bppZWGLnvkyisp26ls1bC3m5zRmMyCF7MDq2zEz8xyKNe7QQdt3zH5ohC+fvUBuDIxsDnA/uaNj/ZI/LTYUZlIqS0LRKoy/WsbRb1femPLOTEgu/ggb+QtmaMxgUej6U4y1w6G2AhQh6MwMQcaArnpz8G3p7tAE0epR/DiStnD+3NbFZZMgYAPNGJjSlx/Ek8UfGWHei+0eno5wnEo4OE9zB1ESCIcawJrTDIdaChBVvs3G5BNFk96+9Nw2OFZSoG99pETX+4+OOG0X69ABFNF5koIxQtV1H4Upfd19mFEIzwKQI8SmJgga5S7/udcpyphkUaD4k72/NXlDtgaPLofiba1WvXhY+rj/klZqB9T6t3ZiaNCGqbqn8wL/P80Po3u2RtYYuN474gvXrEbFbnkMXVq1iL4AbXftxnLAfvNSznHvXKAeOU9bDu7zK+ilY/drXtCBYCLTHDCSr/nk75As9LmuM8uBsBha8xGKGc/Tzqc6QodzXp0IBMnN1DNtiGnPpb2ckxMTDCZfKgE5YtuDArgMGitRouMN68ClpYNX+nGQlpfAEVORcr1by/gTm6JwMPxeLJTJTtAXLAc5f1PcGe8COwDxgf1n2zjNY5mXVFBbv99+BGZ6nbWvh4G6VH5g6RGsIGsvRaflwtpEwLMvmPYD+LKXAWyl0dLpDnzwVBhCcZJd20CmOZ3SymkACDLypfRgsxFesNO8CknIunqXFlMs095/Fy9zmc5wulpUL6YN0opYmT1zwOKYKAf0CDpp3+8FNeCYUMNiXh0TJrNfnx85meOU2xKafCUcKR9L7yUVm4CHqRUB+5kvgCn2ZVxiZRhlUcmeHXT5gboCYhA8RpJe1XRbpovFL0tmUYygPNyDycHLFm2t3CP0oHu3lZBJ31N5B8Y2ulwBH1hBJnCMgGqIkALDFZN0Bw3NqYa9sDqb2lW8SBxCFfH8sTgYlP/GvSybrg6AIXElw0stce3jlLTkjCr175iI/FiiZWT0OtANXtq/GMj0ZUODUhmvATu4WOqx20cOqyEOmPqnBLiWosrFo/2saTPGoSbJrLlRejIYmC3bBURTV6p4bEp8RUzMtJEGAbXpSYV++RvTE5L68joHQaGtkFwHHr5JnTZ5B/ddNif1eAmAaIxaaUl3iRU1CbMEZRBQpoAXI0DIlOwUu9mkM/s2plv6h5rtHK7eJq4A0jtshFr62WDNEhFGXpMzvJ/rCnfc8dfPVvIAoXmoVB0lnVgBm3t8UElPPsGQyjUeSx6UBxq65yfQGh9CwIBkPOuyHBd1T6aqWU0Htbc0CZenMmgO2bI/91yhEKIXjzblmg/7VM0ZmM8=]
+          EV[1:f86FR1X/vf5cm+17HwT7gWbL8bhV2MaA:xpUQo/Wmzzav0/FQapgmdYVChwJmIqSb9b38GkzoZTu8mhP5ijJbVUgPwRPubFpyPq9iWyqum0snlGCSO91g+Z2RoHjEaOFt5JPMJ+GgK7+dH1Ec6BxFgtDUaTjlYcsb/D5tNn5MWobcvj0e/mlj6/FM1aZmyna6ldwHjLFTZQu3Goqulm3djzKgmzR5n0uM/q3/ZAN8FaEFh0v0ytPG2mzAIWUrU6NVaFEhGXdUMhZGiSTHkXcvifX33cF9cPTJHSZ07Y+xeC+/JCfOTCGNXuQY8YDbUTj0Zx1v+Xe32oe9yfoAi9ULuIS7y++nh163wL+ejCVNh5wA3tx3h7XzIypxKLd2qCdEY9PgfgVBLxZCDOCzOAQVqVdEMJCfngjlI6BKUofdOfhNJ9doEvkb1iOWRwnnrKMiJT7Np6rEjgM6D4qhGqPU5jSbDAw//DV1+xmthQQj/Ap3+86lRPeJJPVCAXVgPzFCSy1tT7vjXDa8kla7wRW3AuvRdiwiXkFfdx/aTTNjBCQcO0OrZ36jIXimiLRwvp0Wc9IjTykx9SnW1YCFSadj+Bh47iGhDEARA7DJFoz5A42wtD+ghmEjxaLias8otKzGX+Q+Agk0RtHxUf3SDe1xpxVTXPEp2ud5CVoGz0WehUncVnsmF5+GKLUMcyITwLaMAiAeeSGIclY2942vPX68ZH7QY7rdXGA12WkEuvNAWLC/iG8sy0+9YI17b/9unyPMv0n2HxPUUAjqIPsbSQCuYeoqkESCNSqv1xzy6nZpq5uxJYaqgthlb0BLBvE5PoZjMu5O9SPE7jWFiSrVkeIl2gi4z8V8G3e4Ud2wBIy5X1b+VE4HTd99++B2FsumGmy5sLvm7zXMrvcFyqEyIKg9TktULWO7WTWwsgSxXGSo+elJCZ8M39OczZkv73JBuvH0SU2SEIE6zwfmiSbgNBjvTqpMrXJyFQ9S5QrLjfxpA76aD2xot1PrtFebIhRyNglufOPUbGgtAiQzXdSQj0/9L90rgfKjmmSYeTvENswNNQbfbucnUYp3hW0SZunB2kxs2ZqQ7dQaDVVRoyrsO0REfcEfKBPm4FLG6DMHm8yEc3gHmTCYFeR0sHk4C/3vXvMgjhatPAk7uGfBDk0FBOi9sH6qnnBH/6qm4iCRQ+NGEJ1w40xnBkOW0N6sLUNcKPiSiShBJvP2OTLFML6G489X/wIxlrQk6jEJGnWneadUTgaWANnBY6lMJM0d6CpjBDJbkuQMeT/DwQAMtNiTjz9Km7lBwiE3Gq+cjnSJ0BLhHRW1dWulcZ2+KOsmsKai6efjvJfT9/cNAjXw1d/gSEBQyh7q13e1+wgOCpyPdOC+spVLL1LupzI5qkGTKVox7w0gTDYsyAtBpDon5ct3rdTxTfNtGkhioTCQaA4Q/DnQiO7X4C5kNS3zmz4Nop1KKBGS24k9lxwM4tJStwEaTBhEN865VfFuaPFRIZ3NnrT3vheJ5MLf+ugzGtctmhLPJGctc5Dj+3VlGA/cvfYirUxttb4jR4/jxoYfMerJ4chlq5tyqEtRL2S9HQpBS3gRE6st9r0HrpQQatsvwBc9JQ1tCgeNF5bgthvFCJBq9yV/LfpQRgU0HsY8otJY9xC5lYvtXb0XM6S3kMsY5yNW7XnwQUYdoB7jWUE=]
+
+      - key: 'ROBLOX__AUTHENTICATION__CLIENTSECRET'
+        scope: 'RUN_TIME'
+        type: 'SECRET'
+        value: |
+          EV[1:LZ/by9DvU7HPk7+yrPgyafjmY+t0fRiG:u98Py25ywo9MJGq0Pb6on6+rJD34ivb0bsl7MxHqSN9Z+SpiCDh4slrDpJITw6Ks3TxMIsBwUy1y6xUc/BwjChiqrqyfS5ZiPbn/NGIlU1Q0wqQU]
     routes:
       - path: /api
         preserve_path_prefix: true

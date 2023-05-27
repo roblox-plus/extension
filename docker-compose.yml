@@ -11,6 +11,8 @@ services:
     ports:
       - '${ROBLOX_PLUS_API_PORT:-}:80'
 
+    environment:
+      ROBLOX__AUTHENTICATION__CLIENTID: '2147861207470534820'
     restart: 'always'
 
   app:
