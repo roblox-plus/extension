@@ -13,6 +13,9 @@ services:
 
     environment:
       ROBLOX__AUTHENTICATION__CLIENTID: '2147861207470534820'
+
+    env_file: './services/web-api/secrets.env'
+
     restart: 'always'
 
   app:

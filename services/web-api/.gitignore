@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 # Repository Specific
 launchSettings.json
+secrets.env
