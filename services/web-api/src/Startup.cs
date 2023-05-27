@@ -88,18 +88,6 @@ public class Startup : TixFactory.Http.Service.Startup
         services.AddSingleton<Authenticator>();
         services.AddAuthorization();
 
-        // CORS
-        services.AddCors(options =>
-        {
-            options.AddDefaultPolicy(policyBuilder =>
-            {
-                policyBuilder.AllowAnyMethod();
-                policyBuilder.AllowCredentials();
-                policyBuilder.WithHeaders("Content-Type");
-                policyBuilder.WithOrigins("https://roblox.plus", "https://localhost:3000", "http://localhost:3000");
-            });
-        });
-
         // Dependencies
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddRobloxClients();

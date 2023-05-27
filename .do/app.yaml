@@ -51,8 +51,12 @@ services:
       - path: /api
         preserve_path_prefix: true
     cors:
+      allow_credentials: true
+      allow_headers:
+        - Content-Type
       allow_methods:
         - GET
+        - POST
       allow_origins:
         - exact: http://localhost:3000
         - exact: https://localhost:3000
