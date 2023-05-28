@@ -24,6 +24,10 @@ const load = async () => {
     const user = await getAuthenticatedUser();
     if (!user) {
       document.body.setAttribute('data-user-id', '0');
+      document.body.setAttribute(
+        'data-user-thumbnail-state',
+        ThumbnailState.Blocked
+      );
       return;
     }
 
@@ -87,8 +91,8 @@ const load = async () => {
     document.body.setAttribute('data-user-display-name', user.displayName);
 
     const thumbnail = await getAvatarHeadshotThumbnail(user.id);
-    document.body.setAttribute('data-user-thumbnail-state', thumbnail.state);
     document.body.setAttribute('data-user-thumbnail-image', thumbnail.imageUrl);
+    document.body.setAttribute('data-user-thumbnail-state', thumbnail.state);
   } catch (err) {
     console.error('Failed to load page data from extension', err);
   }

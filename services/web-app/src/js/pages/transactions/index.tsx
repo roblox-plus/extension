@@ -3,8 +3,9 @@ import useAuthenticatedUser from '../../hooks/useAuthenticatedUser';
 import LoadingState from '../../enums/loadingState';
 import LoginRedirect from '../login/redirect';
 import CreatorTabs from './creator-tabs';
-import { Box } from '@mui/material';
+import { Alert, Box, Link } from '@mui/material';
 import TransactionsHeader from './header';
+import { extensionId } from '../../constants';
 
 export default function Transactions() {
   const authenticatedUser = useAuthenticatedUser();
@@ -20,6 +21,20 @@ export default function Transactions() {
 
     // This page requires you to be logged in first.
     return <LoginRedirect />;
+  } else if (
+    authenticatedUser.premiumExpiration === undefined ||
+    !extensionId
+  ) {
+    return (
+      <Alert severity="warning">
+        You must have a private server created under{' '}
+        <Link href="https://www.roblox.com/games/258257446/Roblox-Hub">
+          this place
+        </Link>
+        , and have <Link href="https://roblox.plus">the extension</Link>{' '}
+        installed to use this page.
+      </Alert>
+    );
   }
 
   return (

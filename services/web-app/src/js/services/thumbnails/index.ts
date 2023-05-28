@@ -14,17 +14,14 @@ const getAuthenticatedUserThumbnail = (): Promise<Thumbnail> => {
       async (resolve, reject) => {
         if (extensionId) {
           // The chrome extension is running, load the thumbnail from that.
-          while (
-            !document.body.dataset.userThumbnailState ||
-            !document.body.dataset.userThumbnailImage
-          ) {
+          while (!document.body.dataset.userThumbnailState) {
             await wait(100);
           }
 
           // The extension has loaded the thumbnail, yay
           resolve({
             state: document.body.dataset.userThumbnailState as ThumbnailState,
-            imageUrl: document.body.dataset.userThumbnailImage,
+            imageUrl: document.body.dataset.userThumbnailImage || '',
           });
 
           return;

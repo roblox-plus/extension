@@ -30,9 +30,12 @@ function useAuthenticatedUser(): AuthenticatedUser {
     }
 
     getAuthenticatedUser()
-      .then((u) => {
-        setUser(u);
-
+      .then(setUser)
+      .catch((err) => {
+        console.error('Failed to load authenticated user', err);
+        setLoadingState(LoadingState.Error);
+      })
+      .finally(() => {
         getAuthenticatedUserThumbnail()
           .then(setThumbnail)
           .catch((err) => {
@@ -62,10 +65,6 @@ function useAuthenticatedUser(): AuthenticatedUser {
                 : LoadingState.Success
             );
           });
-      })
-      .catch((err) => {
-        console.error('Failed to load authenticated user', err);
-        setLoadingState(LoadingState.Error);
       });
   }, [location.pathname]);
 
