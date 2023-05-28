@@ -18,7 +18,8 @@ export default function Transactions() {
     return <Fragment />;
   } else if (!authenticatedUser.user) {
     console.warn(
-      'Transactions page: We finished loading, and there was no authenticated user. Must be time to redirect.'
+      'Transactions page: We finished loading, and there was no authenticated user. Must be time to redirect.',
+      authenticatedUser
     );
 
     // This page requires you to be logged in first.

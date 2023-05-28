@@ -13,7 +13,8 @@ export default function Settings() {
     return <Fragment />;
   } else if (!authenticatedUser.user) {
     console.warn(
-      'Settings page: We finished loading, and there was no authenticated user. Must be time to redirect.'
+      'Settings page: We finished loading, and there was no authenticated user. Must be time to redirect.',
+      authenticatedUser
     );
 
     // This page requires you to be logged in first.
