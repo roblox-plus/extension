@@ -1,7 +1,7 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
 import { Fragment, useEffect, useState } from 'react';
-import LoadingState from '../../enums/loadingState';
-import { importTransactions } from '../../services/transactions';
+import LoadingState from '../../../enums/loadingState';
+import { importTransactions } from '../../../services/transactions';
 
 type TransactionUploaderInput = {
   files: File[];

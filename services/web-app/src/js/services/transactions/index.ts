@@ -190,12 +190,21 @@ const getTransactionCountByOwner = async (
   ownerType: AgentType,
   ownerId: number
 ): Promise<number> => {
+  if (isNaN(ownerId)) {
+    return 0;
+  }
+
   const database = await transactionDatabase;
-  return await database.countFromIndex(
-    tableName,
-    'owner',
-    IDBKeyRange.only([ownerType, ownerId])
-  );
+  try {
+    return await database.countFromIndex(
+      tableName,
+      'owner',
+      IDBKeyRange.only([ownerType, ownerId])
+    );
+  } catch (e) {
+    console.error('Failed to load transaction count', ownerType, ownerId, e);
+    return 0;
+  }
 };
 
 export { importTransactions, getTransactionCountByOwner };

@@ -3,12 +3,12 @@ import { Box, useTheme } from '@mui/material';
 import { HighchartsReact } from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import TransactionUploader from './transaction-uploader';
-import { getTransactionCountByOwner } from '../../services/transactions';
+import { getTransactionCountByOwner } from '../../../services/transactions';
 import { useNavigate } from 'react-router-dom';
-import AgentType from '../../enums/agentType';
-import { transactionsPath } from '../../constants';
-import useSelectedCreator from './hooks/useSelectedCreator';
-import useCreators from './hooks/useCreators';
+import AgentType from '../../../enums/agentType';
+import { transactionsPath } from '../../../constants';
+import useSelectedCreator from '../hooks/useSelectedCreator';
+import useCreators from '../hooks/useCreators';
 
 type TransactionsPieChartInput = {
   files: File[];
