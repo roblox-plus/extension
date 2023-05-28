@@ -19,6 +19,7 @@ const apiBaseUrl = new URL(
 // Page paths
 const loginPath = '/login';
 const settingsPath = '/settings';
+const transactionsPath = '/transactions';
 
 export {
   clientId,
@@ -27,4 +28,5 @@ export {
   apiBaseUrl,
   loginPath,
   settingsPath,
+  transactionsPath,
 };

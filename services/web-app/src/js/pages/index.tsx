@@ -1,6 +1,6 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Login from './login';
-import { loginPath, settingsPath } from '../constants';
+import { loginPath, settingsPath, transactionsPath } from '../constants';
 import useAuthenticatedUser from '../hooks/useAuthenticatedUser';
 import LoadingState from '../enums/loadingState';
 import { Alert, CircularProgress } from '@mui/material';
@@ -47,7 +47,8 @@ export default function Pages() {
     <Routes>
       <Route path={settingsPath} element={<Settings />} />
       <Route path={`${settingsPath}/:tab`} element={<Settings />} />
-      <Route path="/transactions" element={<Transactions />} />
+      <Route path={transactionsPath} element={<Transactions />} />
+      <Route path={`${transactionsPath}/:groupId`} element={<Transactions />} />
     </Routes>
   );
 }

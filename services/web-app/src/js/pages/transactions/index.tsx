@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import useAuthenticatedUser from '../../hooks/useAuthenticatedUser';
 import LoadingState from '../../enums/loadingState';
 import LoginRedirect from '../login/redirect';
+import CreatorTabs from './creator-tabs';
 
 export default function Transactions() {
   const authenticatedUser = useAuthenticatedUser();
@@ -14,5 +15,9 @@ export default function Transactions() {
     return <LoginRedirect />;
   }
 
-  return <Fragment />;
+  return (
+    <Fragment>
+      <CreatorTabs />
+    </Fragment>
+  );
 }
