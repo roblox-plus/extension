@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Logging;
 using Roblox.Api;
 using Roblox.Authentication;
 using Roblox.Users;
@@ -25,17 +26,21 @@ public class Authenticator : CookieAuthenticationEvents
     /// </remarks>
     private static readonly TimeSpan _AccessTokenExpirationLeeway = TimeSpan.FromMinutes(2);
     private readonly IAuthenticationClient _AuthenticationClient;
+    private readonly ILogger<Authenticator> _Logger;
 
     /// <summary>
     /// Initializes a new <see cref="Authenticator" />.
     /// </summary>
     /// <param name="authenticationClient">An <see cref="IAuthenticationClient"/>.</param>
+    /// <param name="logger">An <see cref="ILogger{TCategory}"/></param>
     /// <exception cref="ArgumentNullException">
     /// - <paramref name="authenticationClient" />
+    /// - <paramref name="logger" />
     /// </exception>
-    public Authenticator(IAuthenticationClient authenticationClient)
+    public Authenticator(IAuthenticationClient authenticationClient, ILogger<Authenticator> logger)
     {
         _AuthenticationClient = authenticationClient ?? throw new ArgumentNullException(nameof(authenticationClient));
+        _Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         OnRedirectToLogin = RejectWithUnauthorizedAsync;
         OnRedirectToAccessDenied = RejectWithUnauthorizedAsync;
     }
@@ -69,7 +74,7 @@ public class Authenticator : CookieAuthenticationEvents
             try
             {
                 // Refresh required.
-                var refreshResult = await _AuthenticationClient.RefreshAsync(refreshToken, CancellationToken.None);
+                var refreshResult = await RefreshAsync(refreshToken, CancellationToken.None);
 
                 // Update cookie
                 PopulateAuthenticationProperties(cookieValidationContext.Properties, refreshResult);
@@ -125,6 +130,26 @@ public class Authenticator : CookieAuthenticationEvents
         authenticationProperties.Items[nameof(LoginResult.RefreshToken)] = loginResult.RefreshToken;
         authenticationProperties.Items[nameof(LoginResult.AccessTokenExpiration)] = loginResult.AccessTokenExpiration.ToString("o");
         authenticationProperties.Items[nameof(LoginResult.Scopes)] = loginResult.RawScopes;
+    }
+
+    private async Task<LoginResult> RefreshAsync(string refreshToken, CancellationToken cancellationToken)
+    {
+        for (var i = 0; i < 3; i++)
+        {
+            try
+            {
+                return await _AuthenticationClient.RefreshAsync(refreshToken, cancellationToken);
+            }
+            catch (RobloxApiException e) when (e.ErrorCode == "server_error")
+            {
+                // This happens so frequently that I thought it was best to add retry logic for it.
+                // Nice.
+                _Logger.LogWarning(e, $"Failed to refresh access token on attempt {i + 1}, but this will be retried.");
+                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+            }
+        }
+
+        return await _AuthenticationClient.RefreshAsync(refreshToken, cancellationToken);
     }
 
     private static Task Logout(CookieValidatePrincipalContext cookieValidationContext)
