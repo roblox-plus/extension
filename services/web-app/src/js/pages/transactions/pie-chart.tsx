@@ -5,6 +5,9 @@ import Highcharts from 'highcharts';
 import TransactionUploader from './transaction-uploader';
 import TransactionOwner from '../../types/transaction-owner';
 import { getTransactionCountByOwner } from '../../services/transactions';
+import { useNavigate, useParams } from 'react-router-dom';
+import AgentType from '../../enums/agentType';
+import { transactionsPath } from '../../constants';
 
 type TransactionsPieChartInput = {
   files: File[];
@@ -16,16 +19,39 @@ export default function TransactionsPieChart({
   transactionOwners,
 }: TransactionsPieChartInput) {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const { groupId } = useParams();
+
   const [transactionCounts, setTransactionCounts] = useState<{
-    [name: string]: number;
+    [name: string]: [TransactionOwner, number];
   }>({});
+
   const chartData = useMemo<Highcharts.Options>(() => {
     const series: Highcharts.PointOptionsObject[] = [];
 
     for (let name in transactionCounts) {
-      const y = transactionCounts[name];
-      if (y) {
-        series.push({ name, y });
+      const value = transactionCounts[name];
+      if (value) {
+        const owner = value[0];
+        const selected =
+          (!groupId && owner.type === AgentType.User) ||
+          (Number(groupId) === owner.id && owner.type === AgentType.Group);
+
+        series.push({
+          name,
+          y: value[1],
+          selected,
+          sliced: selected,
+          events: {
+            click: () => {
+              if (owner.type === AgentType.User) {
+                navigate(transactionsPath);
+              } else {
+                navigate(`${transactionsPath}/${owner.id}`);
+              }
+            },
+          },
+        });
       }
     }
 
@@ -61,18 +87,16 @@ export default function TransactionsPieChart({
     };
 
     return result;
-  }, [transactionCounts, theme.palette]);
+  }, [transactionCounts, theme.palette, groupId, navigate]);
 
   useEffect(() => {
     let cancelled = false;
-    const counts: { [name: string]: number } = {};
+    const counts: { [name: string]: [TransactionOwner, number] } = {};
 
     Promise.all(
       transactionOwners.map(async (owner) => {
-        counts[owner.name] = await getTransactionCountByOwner(
-          owner.type,
-          owner.id
-        );
+        const count = await getTransactionCountByOwner(owner.type, owner.id);
+        counts[owner.name] = [owner, count];
       })
     )
       .then(() => {

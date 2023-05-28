@@ -38,6 +38,13 @@ export default function Pages() {
     document.body.dataset.userId &&
     `${authenticatedUser.user.id}` !== document.body.dataset.userId
   ) {
+    console.warn(
+      'Redirecting to login because',
+      document.body.dataset.userId,
+      `doesn't match`,
+      authenticatedUser.user.id
+    );
+
     // If the extension is enabled, and gives us a user ID, and the user isn't the same
     // as the currently logged in Roblox+ user.. send them to the login page to reauthenticate.
     return <LoginRedirect />;

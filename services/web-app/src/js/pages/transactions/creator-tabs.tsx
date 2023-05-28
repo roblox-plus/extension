@@ -35,7 +35,9 @@ export default function CreatorTabs({
     }
 
     getAuthenticatedUserGroups()
-      .then(setGroups)
+      .then((g) => {
+        setGroups(g.filter((a) => a.manager));
+      })
       .catch((err) => {
         console.warn('Failed to load authenticated user groups', err);
       });
@@ -126,11 +128,9 @@ export default function CreatorTabs({
         authenticatedUser.thumbnail.imageUrl,
         0
       )}
-      {groups
-        .filter((g) => g.manager)
-        .map((g, i) => {
-          return renderTab(g.id, g.name, g.icon.imageUrl, i + 1);
-        })}
+      {groups.map((g, i) => {
+        return renderTab(g.id, g.name, g.icon.imageUrl, i + 1);
+      })}
     </Tabs>
   );
 }
