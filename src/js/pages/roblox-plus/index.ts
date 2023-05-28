@@ -10,6 +10,7 @@ import {
   getGroupIcon,
 } from '../../services/thumbnails';
 import { getAuthenticatedUser } from '../../services/users';
+export * from './transactions';
 
 const load = async () => {
   if (!document.body) {
