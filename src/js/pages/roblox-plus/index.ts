@@ -1,5 +1,10 @@
+import ThumbnailState from '../../enums/thumbnailState';
+import { getCreatorGroups, getUserGroups } from '../../services/groups';
 import { getPremiumExpirationDate } from '../../services/premium';
-import { getAvatarHeadshotThumbnail } from '../../services/thumbnails';
+import {
+  getAvatarHeadshotThumbnail,
+  getGroupIcon,
+} from '../../services/thumbnails';
 import { getAuthenticatedUser } from '../../services/users';
 
 const load = async () => {
@@ -16,6 +21,40 @@ const load = async () => {
     if (!user) {
       document.body.setAttribute('data-user-id', '0');
       return;
+    }
+
+    try {
+      const userGroups = await getUserGroups(user.id);
+      const creatorGroups = await getCreatorGroups(user.id);
+      const creatorGroupIds = creatorGroups.map((g) => g.id);
+
+      const groupsContainer = document.createElement('div');
+      groupsContainer.setAttribute('id', 'rplus-groups');
+      groupsContainer.style.display = 'hidden';
+
+      userGroups.forEach(async (group) => {
+        const groupMeta = document.createElement('meta');
+        groupMeta.setAttribute('data-group-id', `${group.id}`);
+        groupMeta.setAttribute('data-group-name', group.name);
+        groupMeta.setAttribute(
+          'data-group-manager',
+          `${creatorGroupIds.includes(group.id)}`
+        );
+        groupsContainer.append(groupMeta);
+
+        try {
+          const groupIcon = await getGroupIcon(group.id);
+          if (groupIcon.state === ThumbnailState.Completed) {
+            groupMeta.setAttribute('data-group-icon', groupIcon.imageUrl);
+          }
+        } catch (e) {
+          console.warn('Failed to load group icon', group, e);
+        }
+      });
+
+      document.body.append(groupsContainer);
+    } catch (e) {
+      console.warn('Failed to load creator groups', e);
     }
 
     try {

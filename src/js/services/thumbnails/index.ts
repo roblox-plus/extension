@@ -33,6 +33,14 @@ const getAssetThumbnail = (assetId: number): Promise<Thumbnail> => {
   } as BackgroundMessage);
 };
 
+// Fetches an asset thumbnail, for the given asset ID.
+const getGroupIcon = (groupId: number): Promise<Thumbnail> => {
+  return sendMessage(messageDestination, {
+    type: ThumbnailType.GroupIcon,
+    targetId: groupId,
+  } as BackgroundMessage);
+};
+
 // Listen for messages sent to the service worker.
 addListener(messageDestination, async (message: BackgroundMessage) => {
   const cacheKey = `${message.type}:${message.targetId}`;
@@ -57,4 +65,4 @@ addListener(messageDestination, async (message: BackgroundMessage) => {
   return thumbnail;
 });
 
-export { getAvatarHeadshotThumbnail, getAssetThumbnail };
+export { getAvatarHeadshotThumbnail, getAssetThumbnail, getGroupIcon };
