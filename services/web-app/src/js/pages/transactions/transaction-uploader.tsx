@@ -19,13 +19,18 @@ export default function TransactionUploader({
 
     const upload = async (): Promise<void> => {
       try {
+        let failed = false;
+
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
           try {
             await importTransactions(file);
           } catch (err) {
+            failed = true;
+
             if (typeof err === 'string') {
               setMessage(err);
+              setLoadingState(LoadingState.Error);
             } else {
               console.warn('Failed to import file', files[i], err);
               setMessage(`Failed to import transactions from ${file.name}`);
@@ -33,6 +38,10 @@ export default function TransactionUploader({
           }
 
           setFilesImported(i + 1);
+        }
+
+        if (!failed) {
+          setMessage(`${files.length} transaction files uploaded successfully`);
         }
       } catch (e) {
         console.error(
@@ -53,8 +62,6 @@ export default function TransactionUploader({
     if (files.length > 0) {
       setLoadingState(LoadingState.Loading);
       upload().then(() => {
-        setMessage(`${files.length} transaction files uploaded successfully`);
-
         setTimeout(() => {
           if (cancelled) {
             return;

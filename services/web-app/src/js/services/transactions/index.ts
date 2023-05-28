@@ -1,5 +1,110 @@
+import { openDB } from 'idb';
+
+const tableName = 'transactions';
+
+type TransactionColumn = {
+  // The name as determined by the CSV.
+  csvName: string;
+
+  // The name of the column as should be specified in the database.
+  // If empty, column will not be put into the database.
+  columnName: string;
+
+  // Translates the value from the CSV into its expected format.
+  translate?: (value: string) => any;
+};
+
+const expectedColumns: TransactionColumn[] = [
+  // Id,Buyer User Id,Date and Time,Location,Location Id,Universe Id,Universe,Asset Id,Asset Name,Asset Type,Hold Status,Revenue,Price
+  {
+    csvName: 'Id',
+    columnName: 'id',
+  },
+  {
+    csvName: 'Buyer User Id',
+    columnName: 'buyer_user_id',
+    translate: (value) => Number(value),
+  },
+  {
+    csvName: 'Date and Time',
+    columnName: 'created',
+    translate: (value) => new Date(value),
+  },
+  {
+    csvName: 'Location',
+    columnName: '',
+  },
+  {
+    csvName: 'Location Id',
+    // TODO: Is this universe ID, or place ID?
+    columnName: 'seller_place_id',
+    translate: (value) => Number(value),
+  },
+  {
+    csvName: 'Universe Id',
+    columnName: 'universe_id',
+    translate: (value) => Number(value),
+  },
+  {
+    csvName: 'Universe',
+    columnName: 'universe_name',
+  },
+  {
+    csvName: 'Asset Id',
+    columnName: 'item_id',
+    translate: (value) => Number(value),
+  },
+  {
+    csvName: 'Asset Name',
+    columnName: 'item_name',
+  },
+  {
+    csvName: 'Asset Type',
+    columnName: 'item_type',
+  },
+  {
+    csvName: 'Hold Status',
+    columnName: 'hold_status',
+  },
+  {
+    csvName: 'Revenue',
+    columnName: 'net_revenue',
+    translate: (value) => Number(value),
+  },
+  {
+    csvName: 'Price',
+    columnName: 'gross_revenue',
+    translate: (value) => Number(value),
+  },
+];
+
+const transactionDatabase = openDB('transactions', 1, {
+  upgrade: (db) => {
+    const store = db.createObjectStore(tableName, {
+      autoIncrement: false,
+      keyPath: 'id',
+    });
+
+    store.createIndex('owner', ['owner_type', 'owner_id'], {
+      unique: false,
+    });
+
+    store.createIndex('item', ['item_type', 'item_id'], {
+      unique: false,
+    });
+
+    store.createIndex('created', 'created', {
+      unique: false,
+    });
+
+    store.createIndex('hold_status', 'hold_status', {
+      unique: false,
+    });
+  },
+});
+
 const importTransactions = (csv: File): Promise<void> => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (csv.type !== 'text/csv') {
       reject('Only CSV files are accepted.');
       return;
@@ -10,7 +115,7 @@ const importTransactions = (csv: File): Promise<void> => {
       return;
     }
 
-    const match = csv.name.match(/^\w+_(User|Group)(\d+)_/);
+    const match = csv.name.match(/^\w+_(User|Group)(\d+)_/i);
     if (!match) {
       reject('Transactions CSV expected to contain user/group ID.');
       return;
@@ -23,11 +128,63 @@ const importTransactions = (csv: File): Promise<void> => {
       return;
     }
 
-    console.log(ownerType, ownerId);
+    try {
+      const csvText = await csv.text();
+      const csvLines = csvText.trim().split('\n');
+      if (
+        csvLines[0].trim() !== expectedColumns.map((c) => c.csvName).join(',')
+      ) {
+        reject('CSV contains unexpected columns');
+        return;
+      }
 
-    setTimeout(() => {
+      console.log('what');
+      const database = await transactionDatabase;
+      console.log('got the db', csvLines.length);
+      const transactions: any[] = [];
+
+      for (let i = 1; i < csvLines.length; i++) {
+        const line = csvLines[i].split(',');
+        if (line.length !== expectedColumns.length) {
+          reject(
+            `Line ${i + 1} contains invalid number of columns - aborting.`
+          );
+          return;
+        }
+
+        const transaction: any = {
+          owner_id: ownerId,
+          owner_type: ownerType,
+        };
+
+        expectedColumns.forEach((c, columnIndex) => {
+          if (c.columnName) {
+            transaction[c.columnName] = c.translate
+              ? c.translate(line[columnIndex])
+              : line[columnIndex];
+          }
+        });
+
+        transactions.push(transaction);
+      }
+
+      const databaseTransaction = await database.transaction(
+        tableName,
+        'readwrite'
+      );
+      await Promise.all(
+        transactions.map((transaction) => {
+          return databaseTransaction.store.put(transaction);
+        })
+      );
+
+      await databaseTransaction.done;
+
       resolve();
-    }, 100);
+    } catch (err) {
+      console.warn('oof', err);
+      reject(err);
+    }
   });
 };
 

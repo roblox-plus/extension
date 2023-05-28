@@ -15,6 +15,7 @@
     "emojilib": "^3.0.10",
     "highcharts": "^11.0.1",
     "highcharts-react-official": "^3.2.0",
+    "idb": "^7.1.1",
     "node-sass": "^8.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
