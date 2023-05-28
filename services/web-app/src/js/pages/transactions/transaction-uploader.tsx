@@ -55,9 +55,6 @@ export default function TransactionUploader({
           setMessage('An unknown error occurred, please try again.');
           setLoadingState(LoadingState.Error);
         }
-      } finally {
-        // When we're done with them, clear the files.
-        setFiles([]);
       }
     };
 
@@ -72,8 +69,8 @@ export default function TransactionUploader({
             return;
           }
 
-          setMessage('');
-          setLoadingState(undefined);
+          // When we're done with them, clear the files.
+          setFiles([]);
         }, 10 * 1000);
       });
     } else {
@@ -83,7 +80,7 @@ export default function TransactionUploader({
     return () => {
       cancelled = true;
     };
-  }, [files]);
+  }, [files, setFiles]);
 
   if (files.length < 1 || !loadingState) {
     return <Fragment />;
