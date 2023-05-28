@@ -12,6 +12,7 @@
     "@types/node": "^16.18.14",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "csv-parse": "^5.4.0",
     "emojilib": "^3.0.10",
     "highcharts": "^11.0.1",
     "highcharts-react-official": "^3.2.0",

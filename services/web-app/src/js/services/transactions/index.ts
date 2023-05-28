@@ -1,4 +1,5 @@
 import { openDB } from 'idb';
+import { parseCsv } from './read-csv';
 
 const tableName = 'transactions';
 
@@ -129,23 +130,13 @@ const importTransactions = (csv: File): Promise<void> => {
     }
 
     try {
-      const csvText = await csv.text();
-      const csvLines = csvText.trim().split('\n');
-      if (
-        csvLines[0].trim() !== expectedColumns.map((c) => c.csvName).join(',')
-      ) {
-        reject('CSV contains unexpected columns');
-        return;
-      }
-
-      console.log('what');
+      const csvResults = await parseCsv(csv);
       const database = await transactionDatabase;
-      console.log('got the db', csvLines.length);
       const transactions: any[] = [];
 
-      for (let i = 1; i < csvLines.length; i++) {
-        const line = csvLines[i].split(',');
-        if (line.length !== expectedColumns.length) {
+      for (let i = 1; i < csvResults.length; i++) {
+        const record = csvResults[i];
+        if (Object.keys(record).length !== expectedColumns.length) {
           reject(
             `Line ${i + 1} contains invalid number of columns - aborting.`
           );
@@ -157,11 +148,11 @@ const importTransactions = (csv: File): Promise<void> => {
           owner_type: ownerType,
         };
 
-        expectedColumns.forEach((c, columnIndex) => {
+        expectedColumns.forEach((c) => {
           if (c.columnName) {
             transaction[c.columnName] = c.translate
-              ? c.translate(line[columnIndex])
-              : line[columnIndex];
+              ? c.translate(record[c.csvName])
+              : record[c.csvName];
           }
         });
 
