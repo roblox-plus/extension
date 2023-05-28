@@ -111,7 +111,7 @@ const transactionDatabase = openDB('transactions', 1, {
 
 const importTransactions = (csv: File): Promise<void> => {
   return new Promise(async (resolve, reject) => {
-    if (csv.type !== 'text/csv') {
+    if (csv.type !== 'text/csv' && !csv.type.includes('zip')) {
       reject('Only CSV files are accepted.');
       return;
     }

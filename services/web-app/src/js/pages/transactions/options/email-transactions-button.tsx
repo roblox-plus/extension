@@ -115,8 +115,8 @@ export default function EmailTransactionsButton() {
             </Typography>
             <br />
             <Typography>
-              Once you receive the email, download the file, unzip it, and
-              upload the CSV to this page - to visualize the transactions.
+              Once you receive the email, download the file, and upload it to
+              this page - to visualize the transactions.
             </Typography>
           </Fragment>
         );

@@ -29,7 +29,7 @@ export default function UploadTransactionsButton({
         id="transactions-csv"
         type="file"
         sx={{ display: 'none' }}
-        inputProps={{ accept: 'text/csv', multiple: true }}
+        inputProps={{ accept: 'text/csv,application/zip', multiple: true }}
         ref={fileInputRef}
         onChange={(e) => {
           if (e.target instanceof HTMLInputElement && e.target.files) {

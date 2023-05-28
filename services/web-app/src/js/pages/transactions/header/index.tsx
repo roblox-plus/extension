@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import TransactionsPieChart from './pie-chart';
 import TransactionOptions from '../options';
 
@@ -8,9 +8,9 @@ export default function TransactionsHeader() {
   const [draggerEnabled, setDraggerEnabled] = useState<boolean>(false);
 
   const getFiles = (event: React.DragEvent) => {
-    return Array.from(event.dataTransfer.files).filter(
-      (f) => f.type === 'text/csv'
-    );
+    return Array.from(event.dataTransfer.files).filter((f) => {
+      return f.type === 'text/csv' || f.type.includes('zip');
+    });
   };
 
   const allowDragAndDrop = (event: React.DragEvent) => {
