@@ -17,6 +17,7 @@ export default function TransactionsHeader({
     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
       <TransactionsPieChart
         files={files}
+        setFiles={setFiles}
         transactionOwners={transactionOwners}
       />
       <Box>
