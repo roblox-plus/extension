@@ -6,6 +6,7 @@ import LoadingState from '../enums/loadingState';
 import { Alert, CircularProgress } from '@mui/material';
 import Settings from './settings';
 import Transactions from './transactions';
+import LoginRedirect from './login/redirect';
 
 export default function Pages() {
   const location = useLocation();
@@ -30,6 +31,16 @@ export default function Pages() {
         Failed to load user data. Please refresh the page to try again.
       </Alert>
     );
+  }
+
+  if (
+    authenticatedUser.user &&
+    document.body.dataset.userId &&
+    `${authenticatedUser.user.id}` !== document.body.dataset.userId
+  ) {
+    // If the extension is enabled, and gives us a user ID, and the user isn't the same
+    // as the currently logged in Roblox+ user.. send them to the login page to reauthenticate.
+    return <LoginRedirect />;
   }
 
   return (
