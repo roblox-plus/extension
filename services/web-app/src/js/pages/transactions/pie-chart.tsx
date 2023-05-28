@@ -1,18 +1,34 @@
-import { useMemo } from 'react';
-import { Box, LinearProgress, useTheme } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
+import { Box, useTheme } from '@mui/material';
 import { HighchartsReact } from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import TransactionUploader from './transaction-uploader';
+import TransactionOwner from '../../types/transaction-owner';
+import { getTransactionCountByOwner } from '../../services/transactions';
 
 type TransactionsPieChartInput = {
   files: File[];
+  transactionOwners: TransactionOwner[];
 };
 
 export default function TransactionsPieChart({
   files,
+  transactionOwners,
 }: TransactionsPieChartInput) {
   const theme = useTheme();
+  const [transactionCounts, setTransactionCounts] = useState<{
+    [name: string]: number;
+  }>({});
   const chartData = useMemo<Highcharts.Options>(() => {
+    const series: Highcharts.PointOptionsObject[] = [];
+
+    for (let name in transactionCounts) {
+      const y = transactionCounts[name];
+      if (y) {
+        series.push({ name, y });
+      }
+    }
+
     const result: Highcharts.Options = {
       chart: {
         //plotShadow: false,
@@ -36,16 +52,7 @@ export default function TransactionsPieChart({
         {
           name: 'Transactions',
           type: 'pie',
-          data: [
-            {
-              name: 'Roblox+',
-              y: 1,
-            },
-            {
-              name: 'Trade.',
-              y: 2,
-            },
-          ],
+          data: series,
         },
       ],
       credits: {
@@ -54,7 +61,33 @@ export default function TransactionsPieChart({
     };
 
     return result;
-  }, []);
+  }, [transactionCounts, theme.palette]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const counts: { [name: string]: number } = {};
+
+    Promise.all(
+      transactionOwners.map(async (owner) => {
+        counts[owner.name] = await getTransactionCountByOwner(
+          owner.type,
+          owner.id
+        );
+      })
+    )
+      .then(() => {
+        if (!cancelled) {
+          setTransactionCounts(counts);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to update transaction counts', err);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [transactionOwners, files]);
 
   return (
     <Box>

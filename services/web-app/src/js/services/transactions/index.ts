@@ -1,5 +1,6 @@
 import { openDB } from 'idb';
 import { parseCsv } from './read-csv';
+import AgentType from '../../enums/agentType';
 
 const tableName = 'transactions';
 
@@ -179,4 +180,16 @@ const importTransactions = (csv: File): Promise<void> => {
   });
 };
 
-export { importTransactions };
+const getTransactionCountByOwner = async (
+  ownerType: AgentType,
+  ownerId: number
+): Promise<number> => {
+  const database = await transactionDatabase;
+  return await database.countFromIndex(
+    tableName,
+    'owner',
+    IDBKeyRange.only([ownerType, ownerId])
+  );
+};
+
+export { importTransactions, getTransactionCountByOwner };

@@ -5,8 +5,16 @@ import Group from '../../types/group';
 import { getAuthenticatedUserGroups } from '../../services/groups';
 import { useNavigate, useParams } from 'react-router-dom';
 import { transactionsPath } from '../../constants';
+import TransactionOwner from '../../types/transaction-owner';
+import AgentType from '../../enums/agentType';
 
-export default function CreatorTabs() {
+type CreatorTabsInput = {
+  setTransactionOwners: (transactionOwners: TransactionOwner[]) => void;
+};
+
+export default function CreatorTabs({
+  setTransactionOwners,
+}: CreatorTabsInput) {
   const navigate = useNavigate();
   const authenticatedUser = useAuthenticatedUser();
   const { groupId } = useParams();
@@ -32,6 +40,30 @@ export default function CreatorTabs() {
         console.warn('Failed to load authenticated user groups', err);
       });
   }, [authenticatedUser.user]);
+
+  useEffect(() => {
+    if (!authenticatedUser.user) {
+      return;
+    }
+
+    setTransactionOwners(
+      [
+        {
+          type: AgentType.User,
+          id: authenticatedUser.user.id,
+          name: `@${authenticatedUser.user.name}`,
+        },
+      ].concat(
+        groups.map((g) => {
+          return {
+            type: AgentType.Group,
+            id: g.id,
+            name: g.name,
+          };
+        })
+      )
+    );
+  }, [authenticatedUser.user, groups, setTransactionOwners]);
 
   if (!authenticatedUser.user) {
     return <Fragment />;
