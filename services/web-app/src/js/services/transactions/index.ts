@@ -87,6 +87,10 @@ const transactionDatabase = openDB('transactions', 1, {
       keyPath: 'id',
     });
 
+    store.createIndex('transaction_type', 'transaction_type', {
+      unique: false,
+    });
+
     store.createIndex('owner', ['owner_type', 'owner_id'], {
       unique: false,
     });
@@ -117,14 +121,15 @@ const importTransactions = (csv: File): Promise<void> => {
       return;
     }
 
-    const match = csv.name.match(/^\w+_(User|Group)(\d+)_/i);
+    const match = csv.name.match(/^(\w+)_(User|Group)(\d+)_/i);
     if (!match) {
       reject('Transactions CSV expected to contain user/group ID.');
       return;
     }
 
-    const ownerType = match[1];
-    const ownerId = Number(match[2]);
+    const transactionType = match[1];
+    const ownerType = match[2];
+    const ownerId = Number(match[3]);
     if (isNaN(ownerId)) {
       reject('Failed to determine transaction owner');
       return;
@@ -145,6 +150,7 @@ const importTransactions = (csv: File): Promise<void> => {
         }
 
         const transaction: any = {
+          transaction_type: transactionType,
           owner_id: ownerId,
           owner_type: ownerType,
         };
