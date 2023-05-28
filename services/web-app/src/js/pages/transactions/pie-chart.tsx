@@ -22,39 +22,11 @@ export default function TransactionsPieChart({
   const navigate = useNavigate();
   const { groupId } = useParams();
 
-  const [transactionCounts, setTransactionCounts] = useState<{
-    [name: string]: [TransactionOwner, number];
-  }>({});
+  const [chartSeries, setChartSeries] = useState<
+    Highcharts.PointOptionsObject[]
+  >([]);
 
   const chartData = useMemo<Highcharts.Options>(() => {
-    const series: Highcharts.PointOptionsObject[] = [];
-
-    for (let name in transactionCounts) {
-      const value = transactionCounts[name];
-      if (value) {
-        const owner = value[0];
-        const selected =
-          (!groupId && owner.type === AgentType.User) ||
-          (Number(groupId) === owner.id && owner.type === AgentType.Group);
-
-        series.push({
-          name,
-          y: value[1],
-          selected,
-          sliced: selected,
-          events: {
-            click: () => {
-              if (owner.type === AgentType.User) {
-                navigate(transactionsPath);
-              } else {
-                navigate(`${transactionsPath}/${owner.id}`);
-              }
-            },
-          },
-        });
-      }
-    }
-
     const result: Highcharts.Options = {
       chart: {
         //plotShadow: false,
@@ -78,7 +50,7 @@ export default function TransactionsPieChart({
         {
           name: 'Transactions',
           type: 'pie',
-          data: series,
+          data: chartSeries,
         },
       ],
       credits: {
@@ -87,22 +59,44 @@ export default function TransactionsPieChart({
     };
 
     return result;
-  }, [transactionCounts, theme.palette, groupId, navigate]);
+  }, [chartSeries, theme.palette]);
 
   useEffect(() => {
     let cancelled = false;
-    const counts: { [name: string]: [TransactionOwner, number] } = {};
+    const series: Highcharts.PointOptionsObject[] = [];
 
     Promise.all(
       transactionOwners.map(async (owner) => {
+        const selected =
+          (!groupId && owner.type === AgentType.User) ||
+          (Number(groupId) === owner.id && owner.type === AgentType.Group);
+
         const count = await getTransactionCountByOwner(owner.type, owner.id);
-        counts[owner.name] = [owner, count];
+        if (count > 0) {
+          series.push({
+            name: owner.name,
+            y: count,
+            selected,
+            sliced: selected,
+            events: {
+              click: () => {
+                if (owner.type === AgentType.User) {
+                  navigate(transactionsPath);
+                } else {
+                  navigate(`${transactionsPath}/${owner.id}`);
+                }
+              },
+            },
+          });
+        }
       })
     )
       .then(() => {
-        if (!cancelled) {
-          setTransactionCounts(counts);
+        if (cancelled) {
+          return;
         }
+
+        setChartSeries(series);
       })
       .catch((err) => {
         console.error('Failed to update transaction counts', err);
@@ -111,7 +105,7 @@ export default function TransactionsPieChart({
     return () => {
       cancelled = true;
     };
-  }, [transactionOwners, files]);
+  }, [transactionOwners, files, groupId, navigate]);
 
   return (
     <Box>
