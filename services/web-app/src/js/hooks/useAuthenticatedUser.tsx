@@ -30,23 +30,7 @@ function useAuthenticatedUser(): AuthenticatedUser {
     }
 
     getAuthenticatedUser()
-      .then((u) => {
-        setUser(u);
-
-        const rawPremiumExpiration =
-          document.body.dataset.userPremiumExpiration;
-        if (rawPremiumExpiration === 'null') {
-          setPremiumExpiration(null);
-        } else if (rawPremiumExpiration && rawPremiumExpiration !== 'error') {
-          setPremiumExpiration(new Date(rawPremiumExpiration));
-        }
-
-        setLoadingState(
-          rawPremiumExpiration === 'error'
-            ? LoadingState.Error
-            : LoadingState.Success
-        );
-      })
+      .then(setUser)
       .catch((err) => {
         console.error('Failed to load authenticated user', err);
         setLoadingState(LoadingState.Error);
@@ -60,6 +44,23 @@ function useAuthenticatedUser(): AuthenticatedUser {
           state: ThumbnailState.Error,
           imageUrl: '',
         });
+      })
+      .finally(() => {
+        // HACK: Ensure the thumbnail is set as the last piece of data on the page
+        // to ensure the premium information is on the page when we go to look for it.
+        const rawPremiumExpiration =
+          document.body.dataset.userPremiumExpiration;
+        if (rawPremiumExpiration === 'null') {
+          setPremiumExpiration(null);
+        } else if (rawPremiumExpiration && rawPremiumExpiration !== 'error') {
+          setPremiumExpiration(new Date(rawPremiumExpiration));
+        }
+
+        setLoadingState(
+          rawPremiumExpiration === 'error'
+            ? LoadingState.Error
+            : LoadingState.Success
+        );
       });
   }, [location.pathname]);
 

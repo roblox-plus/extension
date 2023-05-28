@@ -1,5 +1,9 @@
 import ThumbnailState from '../../enums/thumbnailState';
-import { getCreatorGroups, getUserGroups } from '../../services/groups';
+import {
+  getCreatorGroups,
+  getUserGroups,
+  getUserPrimaryGroup,
+} from '../../services/groups';
 import { getPremiumExpirationDate } from '../../services/premium';
 import {
   getAvatarHeadshotThumbnail,
@@ -24,6 +28,7 @@ const load = async () => {
     }
 
     try {
+      const primaryGroup = await getUserPrimaryGroup(user.id);
       const userGroups = await getUserGroups(user.id);
       const creatorGroups = await getCreatorGroups(user.id);
       const creatorGroupIds = creatorGroups.map((g) => g.id);
@@ -40,6 +45,11 @@ const load = async () => {
           'data-group-manager',
           `${creatorGroupIds.includes(group.id)}`
         );
+        groupMeta.setAttribute(
+          'data-group-primary',
+          `${primaryGroup?.id === group.id}`
+        );
+
         groupsContainer.append(groupMeta);
 
         try {
