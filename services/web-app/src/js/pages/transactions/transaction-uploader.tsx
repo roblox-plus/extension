@@ -5,10 +5,12 @@ import { importTransactions } from '../../services/transactions';
 
 type TransactionUploaderInput = {
   files: File[];
+  setFiles: (files: File[]) => void;
 };
 
 export default function TransactionUploader({
   files,
+  setFiles,
 }: TransactionUploaderInput) {
   const [loadingState, setLoadingState] = useState<LoadingState | undefined>();
   const [message, setMessage] = useState<string>('');
@@ -53,6 +55,9 @@ export default function TransactionUploader({
           setMessage('An unknown error occurred, please try again.');
           setLoadingState(LoadingState.Error);
         }
+      } finally {
+        // When we're done with them, clear the files.
+        setFiles([]);
       }
     };
 

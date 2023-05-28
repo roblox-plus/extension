@@ -11,11 +11,13 @@ import { transactionsPath } from '../../constants';
 
 type TransactionsPieChartInput = {
   files: File[];
+  setFiles: (files: File[]) => void;
   transactionOwners: TransactionOwner[];
 };
 
 export default function TransactionsPieChart({
   files,
+  setFiles,
   transactionOwners,
 }: TransactionsPieChartInput) {
   const theme = useTheme();
@@ -110,7 +112,7 @@ export default function TransactionsPieChart({
   return (
     <Box>
       <HighchartsReact highcharts={Highcharts} options={chartData} />
-      <TransactionUploader files={files} />
+      <TransactionUploader files={files} setFiles={setFiles} />
     </Box>
   );
 }
