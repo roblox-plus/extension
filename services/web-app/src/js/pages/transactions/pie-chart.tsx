@@ -3,26 +3,26 @@ import { Box, useTheme } from '@mui/material';
 import { HighchartsReact } from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import TransactionUploader from './transaction-uploader';
-import TransactionOwner from '../../types/transaction-owner';
 import { getTransactionCountByOwner } from '../../services/transactions';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AgentType from '../../enums/agentType';
 import { transactionsPath } from '../../constants';
+import useSelectedCreator from './hooks/useSelectedCreator';
+import useCreators from './hooks/useCreators';
 
 type TransactionsPieChartInput = {
   files: File[];
   setFiles: (files: File[]) => void;
-  transactionOwners: TransactionOwner[];
 };
 
 export default function TransactionsPieChart({
   files,
   setFiles,
-  transactionOwners,
 }: TransactionsPieChartInput) {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { groupId } = useParams();
+  const [selectedCreator] = useSelectedCreator();
+  const creators = useCreators();
 
   const [chartSeries, setChartSeries] = useState<
     Highcharts.PointOptionsObject[]
@@ -68,12 +68,12 @@ export default function TransactionsPieChart({
     const series: Highcharts.PointOptionsObject[] = [];
 
     Promise.all(
-      transactionOwners.map(async (owner) => {
+      creators.map(async (owner) => {
         const selected =
-          (!groupId && owner.type === AgentType.User) ||
-          (Number(groupId) === owner.id && owner.type === AgentType.Group);
-
+          owner.type === selectedCreator.type &&
+          owner.id === selectedCreator.id;
         const count = await getTransactionCountByOwner(owner.type, owner.id);
+
         if (count > 0) {
           series.push({
             name: owner.name,
@@ -107,7 +107,7 @@ export default function TransactionsPieChart({
     return () => {
       cancelled = true;
     };
-  }, [transactionOwners, files, groupId, navigate]);
+  }, [creators, files, selectedCreator, navigate]);
 
   return (
     <Box>

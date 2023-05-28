@@ -5,13 +5,9 @@ import LoginRedirect from '../login/redirect';
 import CreatorTabs from './creator-tabs';
 import { Box } from '@mui/material';
 import TransactionsHeader from './header';
-import TransactionOwner from '../../types/transaction-owner';
 
 export default function Transactions() {
   const authenticatedUser = useAuthenticatedUser();
-  const [transactionOwners, setTransactionOwners] = useState<
-    TransactionOwner[]
-  >([]);
 
   if (authenticatedUser.loadingState !== LoadingState.Success) {
     // Loading and failure states are handled by the parent.
@@ -28,9 +24,9 @@ export default function Transactions() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-      <CreatorTabs setTransactionOwners={setTransactionOwners} />
+      <CreatorTabs />
       <Box sx={{ p: 1 }}>
-        <TransactionsHeader transactionOwners={transactionOwners} />
+        <TransactionsHeader />
       </Box>
     </Box>
   );

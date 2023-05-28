@@ -1,28 +1,15 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
-import UploadTransactionsButton from './upload-transactions-button';
 import TransactionsPieChart from './pie-chart';
-import TransactionOwner from '../../types/transaction-owner';
+import TransactionOptions from './options';
 
-type TransactionHeaderInput = {
-  transactionOwners: TransactionOwner[];
-};
-
-export default function TransactionsHeader({
-  transactionOwners,
-}: TransactionHeaderInput) {
+export default function TransactionsHeader() {
   const [files, setFiles] = useState<File[]>([]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-      <TransactionsPieChart
-        files={files}
-        setFiles={setFiles}
-        transactionOwners={transactionOwners}
-      />
-      <Box>
-        <UploadTransactionsButton setFiles={setFiles} />
-      </Box>
+      <TransactionsPieChart files={files} setFiles={setFiles} />
+      <TransactionOptions setFiles={setFiles} />
     </Box>
   );
 }
