@@ -3,6 +3,8 @@ import useAuthenticatedUser from '../../hooks/useAuthenticatedUser';
 import LoadingState from '../../enums/loadingState';
 import LoginRedirect from '../login/redirect';
 import CreatorTabs from './creator-tabs';
+import { Box } from '@mui/material';
+import TransactionsHeader from './header';
 
 export default function Transactions() {
   const authenticatedUser = useAuthenticatedUser();
@@ -16,8 +18,11 @@ export default function Transactions() {
   }
 
   return (
-    <Fragment>
+    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
       <CreatorTabs />
-    </Fragment>
+      <Box sx={{ p: 1 }}>
+        <TransactionsHeader />
+      </Box>
+    </Box>
   );
 }
