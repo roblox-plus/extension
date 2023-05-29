@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import useAuthenticatedUser from '../../hooks/useAuthenticatedUser';
 import LoadingState from '../../enums/loadingState';
 import LoginRedirect from '../login/redirect';
@@ -6,6 +6,7 @@ import CreatorTabs from './creator-tabs';
 import { Alert, Box, Link } from '@mui/material';
 import TransactionsHeader from './header';
 import { extensionId } from '../../constants';
+import '../../../css/transactions.scss';
 
 export default function Transactions() {
   const authenticatedUser = useAuthenticatedUser();
@@ -38,9 +39,9 @@ export default function Transactions() {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+    <Box id="transactions-page" sx={{ display: 'flex', flexDirection: 'row' }}>
       <CreatorTabs />
-      <Box sx={{ p: 1 }}>
+      <Box sx={{ p: 1, flexGrow: 1, flexWrap: 'wrap' }}>
         <TransactionsHeader />
       </Box>
     </Box>

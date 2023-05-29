@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Typography } from '@mui/material';
+import { Box, Divider, LinearProgress, Typography } from '@mui/material';
 import { Fragment, useEffect, useState } from 'react';
 import LoadingState from '../../../enums/loadingState';
 import { importTransactions } from '../../../services/transactions';
@@ -87,7 +87,8 @@ export default function TransactionUploader({
   }
 
   return (
-    <Box>
+    <Fragment>
+      <Divider sx={{ marginTop: 1, marginBottom: 1 }} />
       {message ? (
         <Typography
           color={loadingState === LoadingState.Error ? 'error' : 'success'}
@@ -101,6 +102,6 @@ export default function TransactionUploader({
         variant={isNaN(filesImported) ? 'indeterminate' : 'determinate'}
         color={loadingState === LoadingState.Error ? 'error' : 'success'}
       />
-    </Box>
+    </Fragment>
   );
 }

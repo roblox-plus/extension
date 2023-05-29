@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Box } from '@mui/material';
-import TransactionsPieChart from './pie-chart';
-import TransactionOptions from '../options';
+import { Box, Paper, Typography } from '@mui/material';
+import TransactionUploader from './transaction-uploader';
+import UploadTransactionsButton from './upload-transactions-button';
+import EmailTransactionsButton from './email-transactions-button';
 
 export default function TransactionsHeader() {
   const [files, setFiles] = useState<File[]>([]);
@@ -31,15 +32,39 @@ export default function TransactionsHeader() {
   };
 
   return (
-    <Box
-      sx={{ display: 'flex', flexDirection: 'row' }}
+    <Paper
+      className="transactions-panel"
       onDragOver={allowDragAndDrop}
       onDragEnd={() => setDraggerEnabled(false)}
       onDragLeave={() => setDraggerEnabled(false)}
       onDrop={dropFiles}
+      sx={{
+        margin: 1,
+        padding: 1,
+        border: draggerEnabled ? 'dotted' : 'none',
+        flexDirection: 'column',
+        maxWidth: '600px',
+      }}
     >
-      <TransactionsPieChart files={files} setFiles={setFiles} />
-      <TransactionOptions setFiles={setFiles} draggerEnabled={draggerEnabled} />
-    </Box>
+      <Typography variant="h4">Transactions</Typography>
+      <Typography variant="body2">
+        This page will visualize your transactions from your user, or groups.
+        Drag and drop transaction CSV files from that Roblox emails you here, to
+        visualize your revenue data.
+      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          background: 'transparent',
+          marginTop: 2,
+        }}
+      >
+        <UploadTransactionsButton setFiles={setFiles} />
+        <EmailTransactionsButton />
+      </Box>
+      <TransactionUploader files={files} setFiles={setFiles} />
+    </Paper>
   );
 }
