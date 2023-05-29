@@ -14,20 +14,10 @@ import useTransactionItems from '../hooks/useTransactionItems';
 import LoadingState from '../../../enums/loadingState';
 import { useMemo } from 'react';
 import TransactionDatePicker from './date-picker';
+import useDateRange from '../hooks/useDateRange';
 
-type TransactionsSummaryInput = {
-  startDate: Date;
-  endDate: Date;
-  setStartDate: (date: Date) => void;
-  setEndDate: (date: Date) => void;
-};
-
-export default function TransactionsSummary({
-  startDate,
-  endDate,
-  setStartDate,
-  setEndDate,
-}: TransactionsSummaryInput) {
+export default function TransactionsSummary() {
+  const [startDate, endDate, setStartDate, setEndDate] = useDateRange();
   const [transactionItems, loadingState] = useTransactionItems(
     startDate,
     endDate

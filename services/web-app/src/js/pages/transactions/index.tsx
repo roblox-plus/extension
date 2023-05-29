@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import useAuthenticatedUser from '../../hooks/useAuthenticatedUser';
 import LoadingState from '../../enums/loadingState';
 import LoginRedirect from '../login/redirect';
@@ -12,8 +12,6 @@ import TransactionsSummary from './summary';
 
 export default function Transactions() {
   const authenticatedUser = useAuthenticatedUser();
-  const [startDate, setStartDate] = useState<Date>(new Date('1/1/2021'));
-  const [endDate, setEndDate] = useState<Date>(new Date());
 
   if (authenticatedUser.loadingState !== LoadingState.Success) {
     // Loading and failure states are handled by the parent.
@@ -47,13 +45,8 @@ export default function Transactions() {
       <CreatorTabs />
       <Box sx={{ p: 1, flexGrow: 1, flexWrap: 'wrap' }}>
         <TransactionsHeader />
-        <TransactionsSummary
-          startDate={startDate}
-          endDate={endDate}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-        />
-        <TransactionsList startDate={startDate} endDate={endDate} />
+        <TransactionsSummary />
+        <TransactionsList />
       </Box>
     </Box>
   );

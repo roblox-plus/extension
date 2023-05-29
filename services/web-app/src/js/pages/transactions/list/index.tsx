@@ -13,16 +13,10 @@ import { Fragment } from 'react';
 import LoadingState from '../../../enums/loadingState';
 import TransactionCardContainer from './card';
 import useTransactionItems from '../hooks/useTransactionItems';
+import useDateRange from '../hooks/useDateRange';
 
-type TransactionsListInput = {
-  startDate: Date;
-  endDate: Date;
-};
-
-export default function TransactionsList({
-  startDate,
-  endDate,
-}: TransactionsListInput) {
+export default function TransactionsList() {
+  const [startDate, endDate] = useDateRange();
   const [items, loadingState] = useTransactionItems(startDate, endDate);
 
   return (
