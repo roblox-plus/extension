@@ -1,85 +1,17 @@
 import { openDB } from 'idb';
 import { parseCsv } from './read-csv';
 import AgentType from '../../enums/agentType';
+import Transaction from '../../types/transaction';
 
+// The first line from the Roblox transactions download.
+// If this changes.. the database may need to be updated.
+const expectedColumns =
+  'Id,Buyer User Id,Date and Time,Location,Location Id,Universe Id,Universe,Asset Id,Asset Name,Asset Type,Hold Status,Revenue,Price'.split(
+    ','
+  );
+
+// Opens the actual database connection.
 const tableName = 'transactions';
-
-type TransactionColumn = {
-  // The name as determined by the CSV.
-  csvName: string;
-
-  // The name of the column as should be specified in the database.
-  // If empty, column will not be put into the database.
-  columnName: string;
-
-  // Translates the value from the CSV into its expected format.
-  translate?: (value: string) => any;
-};
-
-const expectedColumns: TransactionColumn[] = [
-  // Id,Buyer User Id,Date and Time,Location,Location Id,Universe Id,Universe,Asset Id,Asset Name,Asset Type,Hold Status,Revenue,Price
-  {
-    csvName: 'Id',
-    columnName: 'id',
-  },
-  {
-    csvName: 'Buyer User Id',
-    columnName: 'buyer_user_id',
-    translate: (value) => Number(value),
-  },
-  {
-    csvName: 'Date and Time',
-    columnName: 'created',
-    translate: (value) => new Date(value),
-  },
-  {
-    csvName: 'Location',
-    columnName: '',
-  },
-  {
-    csvName: 'Location Id',
-    // TODO: Is this universe ID, or place ID?
-    columnName: 'seller_place_id',
-    translate: (value) => Number(value),
-  },
-  {
-    csvName: 'Universe Id',
-    columnName: 'universe_id',
-    translate: (value) => Number(value),
-  },
-  {
-    csvName: 'Universe',
-    columnName: 'universe_name',
-  },
-  {
-    csvName: 'Asset Id',
-    columnName: 'item_id',
-    translate: (value) => Number(value),
-  },
-  {
-    csvName: 'Asset Name',
-    columnName: 'item_name',
-  },
-  {
-    csvName: 'Asset Type',
-    columnName: 'item_type',
-  },
-  {
-    csvName: 'Hold Status',
-    columnName: 'hold_status',
-  },
-  {
-    csvName: 'Revenue',
-    columnName: 'net_revenue',
-    translate: (value) => Number(value),
-  },
-  {
-    csvName: 'Price',
-    columnName: 'gross_revenue',
-    translate: (value) => Number(value),
-  },
-];
-
 const transactionDatabase = openDB('transactions', 1, {
   upgrade: (db) => {
     const store = db.createObjectStore(tableName, {
@@ -109,6 +41,7 @@ const transactionDatabase = openDB('transactions', 1, {
   },
 });
 
+// Imports a CSV file of transactions into the database.
 const importTransactions = (csv: File): Promise<void> => {
   return new Promise(async (resolve, reject) => {
     if (csv.type !== 'text/csv' && !csv.type.includes('zip')) {
@@ -138,7 +71,7 @@ const importTransactions = (csv: File): Promise<void> => {
     try {
       const csvResults = await parseCsv(csv);
       const database = await transactionDatabase;
-      const transactions: any[] = [];
+      const transactions: Transaction[] = [];
 
       for (let i = 1; i < csvResults.length; i++) {
         const record = csvResults[i];
@@ -149,21 +82,24 @@ const importTransactions = (csv: File): Promise<void> => {
           return;
         }
 
-        const transaction: any = {
+        const universeId = Number(record['Universe Id']);
+        transactions.push({
+          id: record['Id'],
           transaction_type: transactionType,
+          buyer_user_id: Number(record['Buyer User Id']),
           owner_id: ownerId,
           owner_type: ownerType,
-        };
-
-        expectedColumns.forEach((c) => {
-          if (c.columnName) {
-            transaction[c.columnName] = c.translate
-              ? c.translate(record[c.csvName])
-              : record[c.csvName];
-          }
+          item_id: Number(record['Asset Id']),
+          item_name: record['Asset Name'],
+          item_type: record['Asset Type'],
+          created: new Date(record['Date and Time']),
+          net_revenue: Number(record['Revenue']),
+          gross_revenue: Number(record['Price']),
+          hold_status: record['Hold Status'],
+          universe_id: universeId,
+          universe_name: universeId ? record['Universe'] : '',
+          seller_place_id: Number(record['Location Id']),
         });
-
-        transactions.push(transaction);
       }
 
       const databaseTransaction = await database.transaction(
@@ -171,9 +107,9 @@ const importTransactions = (csv: File): Promise<void> => {
         'readwrite'
       );
       await Promise.all(
-        transactions.map((transaction) => {
-          return databaseTransaction.store.put(transaction);
-        })
+        transactions.map((transaction) =>
+          databaseTransaction.store.put(transaction)
+        )
       );
 
       await databaseTransaction.done;
@@ -186,25 +122,23 @@ const importTransactions = (csv: File): Promise<void> => {
   });
 };
 
-const getTransactionCountByOwner = async (
+// Pulls transactions from the database, by owner.
+// Filtering down to transactions within a specified start and end date.
+const getTransactionsByOwner = async (
   ownerType: AgentType,
-  ownerId: number
-): Promise<number> => {
-  if (isNaN(ownerId)) {
-    return 0;
-  }
-
+  ownerId: number,
+  startDate: Date,
+  endDate: Date
+): Promise<Transaction[]> => {
   const database = await transactionDatabase;
-  try {
-    return await database.countFromIndex(
-      tableName,
-      'owner',
-      IDBKeyRange.only([ownerType, ownerId])
-    );
-  } catch (e) {
-    console.error('Failed to load transaction count', ownerType, ownerId, e);
-    return 0;
-  }
+  const rows = await database.getAllFromIndex(
+    tableName,
+    'owner',
+    IDBKeyRange.only([ownerType, ownerId])
+  );
+  return rows.filter(
+    (row: Transaction) => row.created >= startDate && row.created <= endDate
+  );
 };
 
-export { importTransactions, getTransactionCountByOwner };
+export { importTransactions, getTransactionsByOwner };

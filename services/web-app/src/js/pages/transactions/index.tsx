@@ -7,9 +7,11 @@ import { Alert, Box, Link } from '@mui/material';
 import TransactionsHeader from './header';
 import { extensionId } from '../../constants';
 import '../../../css/transactions.scss';
+import TransactionsList from './transactions-list';
 
 export default function Transactions() {
   const authenticatedUser = useAuthenticatedUser();
+  const [startDate, endDate] = [new Date('1/1/2021'), new Date()];
 
   if (authenticatedUser.loadingState !== LoadingState.Success) {
     // Loading and failure states are handled by the parent.
@@ -43,6 +45,7 @@ export default function Transactions() {
       <CreatorTabs />
       <Box sx={{ p: 1, flexGrow: 1, flexWrap: 'wrap' }}>
         <TransactionsHeader />
+        <TransactionsList startDate={startDate} endDate={endDate} />
       </Box>
     </Box>
   );

@@ -18,6 +18,7 @@ export default function CreatorTabs() {
     <Tabs
       orientation="vertical"
       value={creatorIndex}
+      sx={{ minWidth: '256px' }}
       onChange={(_, i) => {
         if (i > 0 && creators[i]) {
           navigate(`${transactionsPath}/${creators[i].id}`);
