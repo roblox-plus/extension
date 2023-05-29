@@ -1,3 +1,6 @@
+import AssetType from '../../../enums/assetType';
+import ThumbnailState from '../../../enums/thumbnailState';
+import { getAssetThumbnail } from '../../../services/thumbnails';
 import {
   emailGroupTransactionSales,
   emailUserTransactionSales,
@@ -70,3 +73,42 @@ window.addEventListener('message', (event) => {
     }
   }
 });
+
+setInterval(() => {
+  document
+    .querySelectorAll('.rplus-item-card-media:not([rplus])')
+    .forEach((element) => {
+      if (!(element instanceof HTMLElement)) {
+        return;
+      }
+
+      element.setAttribute('rplus', `${+new Date()}`);
+
+      const itemType = element.dataset.itemType;
+      const itemId = Number(element.dataset.itemId);
+      if (typeof itemType !== 'string' || !itemType || !itemId) {
+        return;
+      }
+
+      if (Object.keys(AssetType).includes(itemType)) {
+        getAssetThumbnail(itemId)
+          .then((assetThumbnail) => {
+            if (assetThumbnail.state !== ThumbnailState.Completed) {
+              return;
+            }
+
+            const img = document.createElement('img');
+            img.src = assetThumbnail.imageUrl;
+            element.appendChild(img);
+          })
+          .catch((err) => {
+            console.warn(
+              'Failed to load image for transaction card',
+              itemType,
+              itemId,
+              err
+            );
+          });
+      }
+    });
+}, 500);

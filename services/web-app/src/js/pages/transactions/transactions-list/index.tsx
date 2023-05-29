@@ -149,11 +149,13 @@ export default function TransactionsList({
             className="rplus-item-card"
           >
             <CardMedia
+              className="rplus-item-card-media"
               data-item-type={item.type}
               data-item-id={item.id}
               sx={{
                 height: '128px',
                 width: '128px',
+                p: 1,
               }}
             />
             <CardContent
