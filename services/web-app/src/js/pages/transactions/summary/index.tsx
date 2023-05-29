@@ -1,7 +1,7 @@
+import { ArrowRightAlt } from '@mui/icons-material';
 import {
   Alert,
   Box,
-  Button,
   CircularProgress,
   Divider,
   List,
@@ -13,6 +13,7 @@ import {
 import useTransactionItems from '../hooks/useTransactionItems';
 import LoadingState from '../../../enums/loadingState';
 import { useMemo } from 'react';
+import TransactionDatePicker from './date-picker';
 
 type TransactionsSummaryInput = {
   startDate: Date;
@@ -92,6 +93,22 @@ export default function TransactionsSummary({
         </List>
       )}
       <Divider sx={{ m: 1 }} />
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      >
+        <TransactionDatePicker
+          date={startDate}
+          setDate={setStartDate}
+          maxDate={endDate}
+        />
+        <ArrowRightAlt sx={{ m: 1 }} />
+        <TransactionDatePicker
+          date={endDate}
+          setDate={setEndDate}
+          minDate={startDate}
+          maxDate={new Date()}
+        />
+      </Box>
     </Paper>
   );
 }
