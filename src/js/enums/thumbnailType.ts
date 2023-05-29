@@ -8,6 +8,15 @@ enum ThumbnailType {
 
   // The icon for a group.
   GroupIcon = 'GroupIcon',
+
+  // The icon for a game pass.
+  GamePass = 'GamePass',
+
+  // The icon for a developer product.
+  DeveloperProduct = 'DeveloperProduct',
+
+  // The icon for a game.
+  GameIcon = 'GameIcon',
 }
 
 export default ThumbnailType;

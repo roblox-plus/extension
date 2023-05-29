@@ -6,7 +6,7 @@ import ThumbnailState from '../../enums/thumbnailState';
 type ThumbnailBatchItem = {
   type: ThumbnailType;
   targetId: number;
-  size: '420x420';
+  size: '150x150' | '256x256' | '420x420';
 };
 
 class ThumbnailBatchProcessor extends Batch<ThumbnailBatchItem, Thumbnail> {

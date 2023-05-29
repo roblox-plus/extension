@@ -1,10 +1,16 @@
 import AssetType from '../../../enums/assetType';
 import ThumbnailState from '../../../enums/thumbnailState';
-import { getAssetThumbnail } from '../../../services/thumbnails';
+import {
+  getAssetThumbnail,
+  getDeveloperProductIcon,
+  getGameIcon,
+  getGamePassIcon,
+} from '../../../services/thumbnails';
 import {
   emailGroupTransactionSales,
   emailUserTransactionSales,
 } from '../../../services/transactions';
+import Thumbnail from '../../../types/thumbnail';
 
 const respond = (success: boolean, message: string) => {
   window.postMessage({
@@ -90,25 +96,35 @@ setInterval(() => {
         return;
       }
 
-      if (Object.keys(AssetType).includes(itemType)) {
-        getAssetThumbnail(itemId)
-          .then((assetThumbnail) => {
-            if (assetThumbnail.state !== ThumbnailState.Completed) {
-              return;
-            }
+      const thumbnailLoaded = (thumbnail: Thumbnail) => {
+        if (thumbnail.state !== ThumbnailState.Completed) {
+          return;
+        }
 
-            const img = document.createElement('img');
-            img.src = assetThumbnail.imageUrl;
-            element.appendChild(img);
-          })
-          .catch((err) => {
-            console.warn(
-              'Failed to load image for transaction card',
-              itemType,
-              itemId,
-              err
-            );
-          });
+        const img = document.createElement('img');
+        img.src = thumbnail.imageUrl;
+        element.appendChild(img);
+      };
+
+      const thumbnailFailed = (err: any) => {
+        console.warn(
+          'Failed to load image for transaction card',
+          itemType,
+          itemId,
+          err
+        );
+      };
+
+      if (itemType === 'Game Pass') {
+        getGamePassIcon(itemId).then(thumbnailLoaded).catch(thumbnailFailed);
+      } else if (itemType === 'Developer Product') {
+        getDeveloperProductIcon(itemId)
+          .then(thumbnailLoaded)
+          .catch(thumbnailFailed);
+      } else if (itemType === 'Private Server Product') {
+        getGameIcon(itemId).then(thumbnailLoaded).catch(thumbnailFailed);
+      } else if (Object.keys(AssetType).includes(itemType)) {
+        getAssetThumbnail(itemId).then(thumbnailLoaded).catch(thumbnailFailed);
       }
     });
 }, 500);

@@ -1,21 +1,22 @@
 import {
   Alert,
   Box,
-  Card,
   CardContent,
   CardMedia,
   CircularProgress,
-  Link,
   List,
   ListItem,
   ListItemText,
   Typography,
 } from '@mui/material';
 import useSelectedCreator from '../hooks/useSelectedCreator';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getTransactionsByOwner } from '../../../services/transactions';
 import LoadingState from '../../../enums/loadingState';
 import Transaction from '../../../types/transaction';
+import TransactionCardContainer from './card';
+import AssetType from '../../../enums/assetType';
+import { getCatalogLink, getGamePassLink } from '../../../utils/linkify';
 
 type TransactionsListInput = {
   startDate: Date;
@@ -32,6 +33,9 @@ type TransactionItem = {
   // The type of item involved in the transaction.
   type: string;
 
+  // The link to the item details page.
+  link?: URL;
+
   // How many times the item has sold (excluding resales).
   sales: number;
 
@@ -40,6 +44,30 @@ type TransactionItem = {
 
   // Net revenue from this item.
   revenue: number;
+};
+
+const getItemUrl = (transaction: Transaction): URL | undefined => {
+  if (transaction.item_type === 'Game Pass') {
+    return getGamePassLink(transaction.item_id, transaction.item_name);
+  }
+
+  if (transaction.item_type === 'Developer Product') {
+    return new URL(
+      `https://create.roblox.com/dashboard/creations/experiences/${transaction.universe_id}/developer-products/${transaction.item_id}/configure`
+    );
+  }
+
+  if (transaction.item_type === 'Private Server Product') {
+    return new URL(
+      `https://create.roblox.com/dashboard/creations/experiences/${transaction.universe_id}/overview`
+    );
+  }
+
+  if (Object.keys(AssetType).includes(transaction.item_type)) {
+    return getCatalogLink(transaction.item_id, transaction.item_name);
+  }
+
+  return undefined;
 };
 
 export default function TransactionsList({
@@ -80,6 +108,7 @@ export default function TransactionsList({
           name: transaction.item_name,
           type: transaction.item_type,
           revenue: transaction.net_revenue,
+          link: getItemUrl(transaction),
           sales: isResale ? 0 : 1,
           resales: isResale ? 1 : 0,
         };
@@ -135,18 +164,9 @@ export default function TransactionsList({
       ) : null}
       {items.map((item) => {
         return (
-          <Card
+          <TransactionCardContainer
+            link={item.link}
             key={`${item.type}:${item.id}`}
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              width: '448px',
-              minHeight: '128px',
-              float: 'left',
-              overflow: 'hidden',
-              m: 1,
-            }}
-            className="rplus-item-card"
           >
             <CardMedia
               className="rplus-item-card-media"
@@ -177,6 +197,7 @@ export default function TransactionsList({
               >
                 {item.name}
               </Typography>
+              <Typography variant="subtitle2">{item.type}</Typography>
               <List>
                 <ListItem sx={{ p: 0 }}>
                   <ListItemText>
@@ -190,7 +211,7 @@ export default function TransactionsList({
                 </ListItem>
               </List>
             </CardContent>
-          </Card>
+          </TransactionCardContainer>
         );
       })}
     </Box>

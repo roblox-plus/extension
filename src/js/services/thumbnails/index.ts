@@ -33,12 +33,48 @@ const getAssetThumbnail = (assetId: number): Promise<Thumbnail> => {
   } as BackgroundMessage);
 };
 
-// Fetches an asset thumbnail, for the given asset ID.
+// Fetches a group icon.
 const getGroupIcon = (groupId: number): Promise<Thumbnail> => {
   return sendMessage(messageDestination, {
     type: ThumbnailType.GroupIcon,
     targetId: groupId,
   } as BackgroundMessage);
+};
+
+// Fetches a game pass icon.
+const getGamePassIcon = (gamePassId: number): Promise<Thumbnail> => {
+  return sendMessage(messageDestination, {
+    type: ThumbnailType.GamePass,
+    targetId: gamePassId,
+  } as BackgroundMessage);
+};
+
+// Fetches a developer product icon.
+const getDeveloperProductIcon = (gamePassId: number): Promise<Thumbnail> => {
+  return sendMessage(messageDestination, {
+    type: ThumbnailType.DeveloperProduct,
+    targetId: gamePassId,
+  } as BackgroundMessage);
+};
+
+// Fetches a game icon.
+const getGameIcon = (gamePassId: number): Promise<Thumbnail> => {
+  return sendMessage(messageDestination, {
+    type: ThumbnailType.GameIcon,
+    targetId: gamePassId,
+  } as BackgroundMessage);
+};
+
+// Gets the default size for the thumbnail, by type.
+const getThumbnailSize = (thumbnailType: ThumbnailType) => {
+  switch (thumbnailType) {
+    case ThumbnailType.GamePass:
+      return '150x150';
+    case ThumbnailType.GameIcon:
+      return '256x256';
+    default:
+      return '420x420';
+  }
 };
 
 // Listen for messages sent to the service worker.
@@ -51,7 +87,7 @@ addListener(messageDestination, async (message: BackgroundMessage) => {
     batchProcessor.enqueue({
       type: message.type,
       targetId: message.targetId,
-      size: '420x420',
+      size: getThumbnailSize(message.type),
     })
   );
 
@@ -65,4 +101,11 @@ addListener(messageDestination, async (message: BackgroundMessage) => {
   return thumbnail;
 });
 
-export { getAvatarHeadshotThumbnail, getAssetThumbnail, getGroupIcon };
+export {
+  getAvatarHeadshotThumbnail,
+  getAssetThumbnail,
+  getGroupIcon,
+  getGamePassIcon,
+  getDeveloperProductIcon,
+  getGameIcon,
+};
