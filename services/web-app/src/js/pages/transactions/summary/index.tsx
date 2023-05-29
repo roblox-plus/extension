@@ -18,10 +18,7 @@ import useDateRange from '../hooks/useDateRange';
 
 export default function TransactionsSummary() {
   const [startDate, endDate, setStartDate, setEndDate] = useDateRange();
-  const [transactionItems, loadingState] = useTransactionItems(
-    startDate,
-    endDate
-  );
+  const [transactionItems, loadingState] = useTransactionItems();
 
   const [totalSales, totalResales, totalRevenue] = useMemo<
     [number, number, number]

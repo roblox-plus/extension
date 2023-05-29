@@ -3,11 +3,10 @@ import LoadingState from '../../../enums/loadingState';
 import Transaction from '../../../types/transaction';
 import useSelectedCreator from './useSelectedCreator';
 import { getTransactionsByOwner } from '../../../services/transactions';
+import useDateRange from './useDateRange';
 
-export default function useTransactions(
-  startDate: Date,
-  endDate: Date
-): [Transaction[], LoadingState] {
+export default function useTransactions(): [Transaction[], LoadingState] {
+  const [startDate, endDate] = useDateRange();
   const [loadingState, setLoadingState] = useState<LoadingState>(
     LoadingState.Loading
   );

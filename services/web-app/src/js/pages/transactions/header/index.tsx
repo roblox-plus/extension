@@ -51,6 +51,10 @@ export default function TransactionsHeader() {
         This page will visualize your transactions from your user, or groups.
         Drag and drop transaction CSV files from that Roblox emails you here, to
         visualize your revenue data.
+        <br />
+        <br />
+        All data on this page is stored in your browser, and is never sent to a
+        backend server.
       </Typography>
       <Box
         sx={{

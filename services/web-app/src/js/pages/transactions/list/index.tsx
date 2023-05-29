@@ -13,11 +13,9 @@ import { Fragment } from 'react';
 import LoadingState from '../../../enums/loadingState';
 import TransactionCardContainer from './card';
 import useTransactionItems from '../hooks/useTransactionItems';
-import useDateRange from '../hooks/useDateRange';
 
 export default function TransactionsList() {
-  const [startDate, endDate] = useDateRange();
-  const [items, loadingState] = useTransactionItems(startDate, endDate);
+  const [items, loadingState] = useTransactionItems();
 
   return (
     <Fragment>
@@ -57,7 +55,9 @@ export default function TransactionsList() {
                   width: '128px',
                   p: 1,
                 }}
-              />
+              >
+                <Fragment />
+              </CardMedia>
               <CardContent
                 sx={{
                   display: 'flex',

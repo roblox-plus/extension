@@ -38,18 +38,14 @@ const isResaleTransaction = (transaction: Transaction): boolean => {
 
   // HACK: Determine if the transaction is from a resale, by checking if the creator
   // received only 10% of the revenue for this transaction.
-  // If the gross revenue for this transaction is over 10, subtract one, to account for
-  // the 10% fee rounding up.
-  let netRevenue =
-    transaction.net_revenue - (transaction.gross_revenue > 10 ? 1 : 0);
-  return netRevenue <= transaction.gross_revenue * 0.1;
+  return transaction.net_revenue <= Math.ceil(transaction.gross_revenue * 0.1);
 };
 
-export default function useTransactionItems(
-  startDate: Date,
-  endDate: Date
-): [TransactionItem[], LoadingState] {
-  const [transactions, loadingState] = useTransactions(startDate, endDate);
+export default function useTransactionItems(): [
+  TransactionItem[],
+  LoadingState
+] {
+  const [transactions, loadingState] = useTransactions();
   const items = useMemo<TransactionItem[]>(() => {
     const transactionItems: { [key: string]: TransactionItem } = {};
 
