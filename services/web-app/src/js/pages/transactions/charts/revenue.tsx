@@ -8,7 +8,7 @@ import HighchartsReact from 'highcharts-react-official';
 import isResaleTransaction from '../../../utils/is-resale-transaction';
 import getBucketedDate from '../../../utils/get-bucketed-date';
 
-export default function VolumeChart() {
+export default function RevenueChart() {
   const [startDate, endDate] = useDateRange();
   const [transactions, loadingState] = useTransactions();
   const theme = useTheme();
@@ -28,15 +28,17 @@ export default function VolumeChart() {
       if (seriesData) {
         const lastDataPoint = seriesData[seriesData.length - 1];
         if (lastDataPoint[0] !== date.getTime()) {
-          seriesData.push([date.getTime(), 1]);
+          seriesData.push([date.getTime(), transaction.net_revenue]);
         } else {
-          lastDataPoint[1]++;
+          lastDataPoint[1] += transaction.net_revenue;
         }
       } else {
         series.push({
           name: seriesName,
           type: 'line',
-          data: (seriesByType[seriesName] = [[date.getTime(), 1]]),
+          data: (seriesByType[seriesName] = [
+            [date.getTime(), transaction.net_revenue],
+          ]),
         });
       }
     });
@@ -49,7 +51,7 @@ export default function VolumeChart() {
         enabled: false,
       },
       title: {
-        text: 'Transaction Volume',
+        text: 'Transaction Revenue',
         style: {
           color: theme.palette.text.primary,
         },

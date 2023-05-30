@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material';
 import { Fragment } from 'react';
 import VolumeChart from './volume';
+import RevenueChart from './revenue';
 
 export default function TransactionsCharts() {
   return (
@@ -16,6 +17,7 @@ export default function TransactionsCharts() {
         visible in the summary.
       </Typography>
       <VolumeChart />
+      <RevenueChart />
     </Fragment>
   );
 }
