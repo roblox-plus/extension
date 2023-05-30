@@ -8,6 +8,7 @@ import TransactionsHeader from './header';
 import { extensionId } from '../../constants';
 import '../../../css/transactions.scss';
 import TransactionsList from './list';
+import TransactionsCharts from './charts';
 import TransactionsSummary from './summary';
 
 export default function Transactions() {
@@ -46,6 +47,7 @@ export default function Transactions() {
       <Box sx={{ p: 1, flexGrow: 1, flexWrap: 'wrap' }}>
         <TransactionsHeader />
         <TransactionsSummary />
+        <TransactionsCharts />
         <TransactionsList />
       </Box>
     </Box>

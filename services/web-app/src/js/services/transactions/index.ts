@@ -136,9 +136,14 @@ const getTransactionsByOwner = async (
     'owner',
     IDBKeyRange.only([ownerType, ownerId])
   );
-  return rows.filter(
-    (row: Transaction) => row.created >= startDate && row.created <= endDate
-  );
+
+  return rows
+    .filter(
+      (row: Transaction) => row.created >= startDate && row.created <= endDate
+    )
+    .sort((a, b) => {
+      return a.created < b.created ? -1 : 1;
+    });
 };
 
 export { importTransactions, getTransactionsByOwner };

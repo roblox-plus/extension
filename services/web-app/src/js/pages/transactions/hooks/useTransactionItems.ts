@@ -5,6 +5,7 @@ import useTransactions from './useTransactions';
 import { getCatalogLink, getGamePassLink } from '../../../utils/linkify';
 import AssetType from '../../../enums/assetType';
 import Transaction from '../../../types/transaction';
+import isResaleTransaction from '../../../utils/is-resale-transaction';
 
 const getItemUrl = (transaction: Transaction): URL | undefined => {
   if (transaction.item_type === 'Game Pass') {
@@ -28,17 +29,6 @@ const getItemUrl = (transaction: Transaction): URL | undefined => {
   }
 
   return undefined;
-};
-
-const isResaleTransaction = (transaction: Transaction): boolean => {
-  if (transaction.gross_revenue === 0) {
-    // The gross price was free, must not be a resale... right?
-    return false;
-  }
-
-  // HACK: Determine if the transaction is from a resale, by checking if the creator
-  // received only 10% of the revenue for this transaction.
-  return transaction.net_revenue <= Math.ceil(transaction.gross_revenue * 0.1);
 };
 
 export default function useTransactionItems(): [
