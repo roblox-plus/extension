@@ -62,10 +62,6 @@
 
         "/js/vendors/react.production.min.js",
         "/js/vendors/react-dom.production.min.js",
-        "/js/vendors/highcharts-8.0.0.min.js",
-
-        "/js/plugins/HighchartsExtensions.js",
-        "/js/output/react/vendors/HighchartsReact.js",
 
         "/js/roblox/thumbnails.js",
         "/js/roblox/users.js",
@@ -83,8 +79,7 @@
 
         "/js/rplus/RobloxPlus.js",
         "/js/rplus/settings.js",
-        "/js/rplus/premium.js",
-        "/js/rplus/bucketedSales.js"
+        "/js/rplus/premium.js"
       ],
       "css": [
         "/css/icons.css",
@@ -173,36 +168,6 @@
       "matches": [
         "https://www.roblox.com/groups/*/*",
         "https://web.roblox.com/groups/*/*"
-      ],
-      "run_at": "document_end"
-    },
-
-    {
-      "js": [
-        "/js/output/react/components/bucketed-sales-chart.js",
-        "/js/output/react/pages/item-configuration/item-sales.js"
-      ],
-      "css": ["dist/css/item-configuration.css"],
-      "matches": [
-        "https://www.roblox.com/catalog/configure*",
-        "https://web.roblox.com/catalog/configure*",
-        "https://www.roblox.com/library/configure*",
-        "https://web.roblox.com/library/configure*",
-        "https://www.roblox.com/game-pass/configure*",
-        "https://web.roblox.com/game-pass/configure*"
-      ],
-      "run_at": "document_end"
-    },
-
-    {
-      "js": [
-        "/js/output/react/components/bucketed-sales-chart.js",
-        "/js/output/react/pages/configure-group/revenue.js"
-      ],
-      "css": ["dist/css/group-configuration.css"],
-      "matches": [
-        "https://www.roblox.com/groups/configure*",
-        "https://web.roblox.com/groups/configure*"
       ],
       "run_at": "document_end"
     },

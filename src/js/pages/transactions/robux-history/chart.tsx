@@ -3,6 +3,7 @@ import RobuxHistory from '../../../types/robux-history';
 import { getUserRobuxHistory } from '../../../services/currency';
 import LoadingState from '../../../enums/loadingState';
 import { HighchartsReact } from 'highcharts-react-official';
+import Highcharts from 'highcharts';
 
 type ChartInput = {
   userId: number;
@@ -115,5 +116,5 @@ export default function Chart({ userId, startDate, endDate }: ChartInput) {
     );
   }
 
-  return <HighchartsReact options={chartData} />;
+  return <HighchartsReact highcharts={Highcharts} options={chartData} />;
 }
