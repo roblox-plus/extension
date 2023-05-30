@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { Avatar, Tab, Tabs } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { transactionsPath } from '../../constants';
 import useCreators from './hooks/useCreators';
 import useSelectedCreator from './hooks/useSelectedCreator';
@@ -9,6 +9,7 @@ export default function CreatorTabs() {
   const navigate = useNavigate();
   const creators = useCreators();
   const [selectedCreator, creatorIndex] = useSelectedCreator();
+  const [searchParams] = useSearchParams();
 
   if (!selectedCreator.id) {
     return <Fragment />;
@@ -20,10 +21,11 @@ export default function CreatorTabs() {
       value={creatorIndex}
       sx={{ minWidth: '256px' }}
       onChange={(_, i) => {
+        const search = searchParams ? '?' + searchParams : '';
         if (i > 0 && creators[i]) {
-          navigate(`${transactionsPath}/${creators[i].id}`);
+          navigate(`${transactionsPath}/${creators[i].id}${search}`);
         } else {
-          navigate(transactionsPath);
+          navigate(transactionsPath + search);
         }
       }}
     >

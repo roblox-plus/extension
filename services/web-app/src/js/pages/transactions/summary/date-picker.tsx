@@ -45,7 +45,7 @@ export default function TransactionDatePicker({
               setDialogOpen(false);
             }}
             openTo="day"
-            views={['day', 'month']}
+            views={['day']}
           />
         </LocalizationProvider>
       </Dialog>

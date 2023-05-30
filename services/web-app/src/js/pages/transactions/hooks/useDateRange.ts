@@ -2,7 +2,14 @@ import { useMemo } from 'react';
 import useQuery from '../../../hooks/useQuery';
 import { useSearchParams } from 'react-router-dom';
 
-const defaultStartDate = new Date('1/1/2021');
+const getDefaultStartDate = (endDate: Date) => {
+  const oneMonthAgo = new Date(endDate.getTime() - 31 * 24 * 60 * 60 * 1000);
+  return new Date(
+    oneMonthAgo.getFullYear(),
+    oneMonthAgo.getMonth(),
+    oneMonthAgo.getDate()
+  );
+};
 
 export default function useDateRange(): [
   Date,
@@ -29,8 +36,9 @@ export default function useDateRange(): [
 
   const parsedStartDate = useMemo<Date>(() => {
     const parsed = new Date(startDate);
+
     if (isNaN(parsed.getTime())) {
-      return defaultStartDate;
+      return getDefaultStartDate(parsedEndDate);
     }
 
     if (parsed > parsedEndDate) {
@@ -42,7 +50,7 @@ export default function useDateRange(): [
 
   const updateQueryParameters = (start: Date, end: Date) => {
     const params = [];
-    if (start > defaultStartDate) {
+    if (start !== getDefaultStartDate(parsedEndDate)) {
       params.push(`startDate=${start.toLocaleDateString()}`);
     }
 
