@@ -362,7 +362,6 @@ class NotificationSettings extends SettingsTab {
 							onToggle={this.setPillValue.bind(this, "tradeNotifier")} />
 						<div class="rbx-divider"></div>
 						<span class="text-description">Notifications when you get a trade, send one, or a trade closes.</span>
-						<a class="icon-Musical" onClick={this.promptChangeNotifierSound.bind(this, "tradeInbound")}></a>
 					</div>
 				</div>
 				<div class="section">
