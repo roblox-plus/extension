@@ -161,7 +161,9 @@ export default async (
   const previousEnabledStatusTypes = previousState?.enabledStatusTypes || [];
   const previousTradeStatusTypes = previousState?.tradeStatusMap || {};
   const newState: TradeNotifierState = {
-    tradeStatusMap: {},
+    // Preserve the trade statuses for the future
+    // This is definitely how memory leaks come to be, but... how many trades could someone possibly be going through.
+    tradeStatusMap: Object.assign({}, previousTradeStatusTypes),
     enabledStatusTypes: await getEnabledTradeStatusTypes(),
   };
 
@@ -171,11 +173,14 @@ export default async (
         const trades = await getTrades(tradeStatusType);
         const tradePromises: Promise<void>[] = [];
 
+        // No matter what: Keep track of this trade we have seen, for future reference.
+        trades.forEach((tradeId) => {
+          newState.tradeStatusMap[tradeId] = tradeStatusType;
+        });
+
+        // now check each of them, to see if we want to send a notification.
         for (let i = 0; i < trades.length; i++) {
           const tradeId = trades[i];
-
-          // Keep track of this trade we have seen, for future reference.
-          newState.tradeStatusMap[tradeId] = tradeStatusType;
 
           // Previously, the notifier type wasn't enabled.
           // Do nothing with the information we now know.
@@ -186,7 +191,7 @@ export default async (
           // We have seen this trade before, in this same status type
           // Because the trades are ordered in descending order, we know there are
           // no other changes further down in this list. We can break.
-          if (previousEnabledStatusTypes[tradeId] === tradeStatusType) {
+          if (previousTradeStatusTypes[tradeId] === tradeStatusType) {
             // And in fact, we have to break.
             // Because if we don't, "new" trades could come in at the bottom of the list.
             break;
@@ -211,11 +216,12 @@ export default async (
                     type: 'list',
                     iconUrl,
                     title,
-                    message:
-                      trade.tradePartner.displayName +
-                      '\n@' +
-                      trade.tradePartner.name,
+                    message: '@' + trade.tradePartner.name,
                     items: [
+                      {
+                        title: 'Partner',
+                        message: trade.tradePartner.displayName,
+                      },
                       {
                         title: 'Your Value',
                         message: getOfferValue(trade.authenticatedUserOffer),

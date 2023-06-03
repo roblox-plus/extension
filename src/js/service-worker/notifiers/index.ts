@@ -48,11 +48,12 @@ for (let name in notifiers) {
 // Attach it to the global context, so we can access it for testing.
 declare global {
   var notifiers: any;
-
+  var notifierStates: any;
   var executeNotifier: any;
 }
 
 globalThis.notifiers = notifiers;
+globalThis.notifierStates = notifierStates;
 globalThis.executeNotifier = executeNotifier;
 
 export { executeNotifier };
