@@ -1,4 +1,4 @@
-import { apiBaseUrl, extensionId } from '../../constants';
+import { apiBaseUrl } from '../../constants';
 import ThumbnailState from '../../enums/thumbnailState';
 import Thumbnail from '../../types/thumbnail';
 import wait from '../../utils/wait';
@@ -12,7 +12,7 @@ const getAuthenticatedUserThumbnail = (): Promise<Thumbnail> => {
     authenticatedUserThumbnailPromise ||
     (authenticatedUserThumbnailPromise = new Promise(
       async (resolve, reject) => {
-        if (extensionId) {
+        if (document.body.dataset.extensionId) {
           // The chrome extension is running, load the thumbnail from that.
           while (!document.body.dataset.userThumbnailState) {
             await wait(100);
