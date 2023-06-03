@@ -1,4 +1,5 @@
 import { manifest } from '../../../constants';
+import TradeStatusType from '../../../enums/tradeStatusType';
 import { getFriendRequestCount } from '../../../services/friends';
 import { getUnreadMessageCount } from '../../../services/private-messages';
 import { getToggleSettingValue } from '../../../services/settings';
@@ -50,7 +51,7 @@ const getPrivateMessageBubbleCount = async (
 const getTradeBubbleCount = async (refresh: boolean): Promise<number> => {
   const authenticatedUser = parseAuthenticatedUser();
   if (refresh && authenticatedUser) {
-    return await getTradeCount('inbound');
+    return await getTradeCount(TradeStatusType.Inbound);
   }
 
   return getBubbleValue('nav-trade');
