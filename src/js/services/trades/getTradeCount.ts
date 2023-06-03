@@ -1,8 +1,8 @@
+import TradeStatusType from '../../enums/tradeStatusType';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import wait from '../../utils/wait';
 import { addListener, sendMessage } from '../message';
 
-type TradeStatusType = 'inbound';
 const messageDestination = 'tradesService.getTradeCount';
 const cache = new ExpirableDictionary<number>(messageDestination, 30 * 1000);
 const failureDelay = 5 * 1000;

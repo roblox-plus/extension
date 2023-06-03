@@ -1,8 +1,10 @@
 import FriendPresenceNotifier from './friend-presence';
+import TradeNotifier from './trades';
 
 // Registry of all the notifiers
 const notifiers: { [name: string]: (state: any) => Promise<any> } = {};
 notifiers['notifiers/friend-presence'] = FriendPresenceNotifier;
+notifiers['notifiers/trade'] = TradeNotifier;
 
 // TODO: Update to use chrome.storage.session for manifest V3
 const notifierStates: { [name: string]: any } = {};
@@ -46,11 +48,12 @@ for (let name in notifiers) {
 // Attach it to the global context, so we can access it for testing.
 declare global {
   var notifiers: any;
-
+  var notifierStates: any;
   var executeNotifier: any;
 }
 
 globalThis.notifiers = notifiers;
+globalThis.notifierStates = notifierStates;
 globalThis.executeNotifier = executeNotifier;
 
 export { executeNotifier };

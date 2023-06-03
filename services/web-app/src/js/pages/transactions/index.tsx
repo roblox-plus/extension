@@ -5,7 +5,6 @@ import LoginRedirect from '../login/redirect';
 import CreatorTabs from './creator-tabs';
 import { Alert, Box, Link } from '@mui/material';
 import TransactionsHeader from './header';
-import { extensionId } from '../../constants';
 import '../../../css/transactions.scss';
 import TransactionsList from './list';
 import TransactionsCharts from './charts';
@@ -27,7 +26,7 @@ export default function Transactions() {
     return <LoginRedirect />;
   } else if (
     authenticatedUser.premiumExpiration === undefined ||
-    !extensionId
+    !document.body.dataset.extensionId
   ) {
     return (
       <Alert severity="warning">
