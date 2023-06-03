@@ -46,57 +46,6 @@ foreach(
   }
 );
 
-/* Some garbage that shouldn't be in this extension */
-Roblox.users
-  .getAuthenticatedUser()
-  .then(function (user) {
-    if (user && user.id === 48103520) {
-      // Ensure I don't get redirected back to the catalog for an unreleased item.
-      chrome.webRequest.onHeadersReceived.addListener(
-        function (details) {
-          var id = Roblox.catalog.getIdFromUrl(details.url);
-          if (id > 0) {
-            var redirectLocation = '';
-            details.responseHeaders.forEach(function (header) {
-              if (header.name.toLowerCase() === 'location') {
-                redirectLocation = header.value;
-              }
-            });
-
-            if (
-              redirectLocation &&
-              redirectLocation.toLowerCase().endsWith('www.roblox.com/catalog/')
-            ) {
-              return { cancel: true };
-            }
-          }
-        },
-        { urls: ['*://www.roblox.com/catalog/*/*'] },
-        ['blocking', 'responseHeaders']
-      );
-
-      chrome.webRequest.onBeforeRequest.addListener(
-        function (details) {
-          let url = new URL(details.url);
-
-          // dumb stupid in the way parameter
-          if (url.searchParams.has('refPageId')) {
-            url.searchParams.delete('refPageId');
-            return {
-              redirectUrl: url.toString(),
-            };
-          }
-        },
-        { urls: ['*://www.roblox.com/games/*'] },
-        ['blocking']
-      );
-    }
-  })
-  .catch(function (e) {
-    // oh well..
-    console.error(e);
-  });
-
 /* Startup Notification */
 Extension.Storage.Singleton.get('startupNotification')
   .then((startnote) => {
