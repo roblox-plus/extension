@@ -25,3 +25,11 @@
 .MuiAlert-root {
   align-items: center;
 }
+
+@media (max-width: 800px) {
+  // If the screen is too small.. don't show the navigation options for now.
+  // Probably a bad idea, but right now I don't really care, because it looks better than stacking them.
+  .navigation-link {
+    display: none;
+  }
+}

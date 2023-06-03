@@ -1,11 +1,12 @@
-import { Fragment } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Login from './login';
-import { loginPath } from '../constants';
+import { loginPath, settingsPath, transactionsPath } from '../constants';
 import useAuthenticatedUser from '../hooks/useAuthenticatedUser';
 import LoadingState from '../enums/loadingState';
 import { Alert, CircularProgress } from '@mui/material';
 import Settings from './settings';
+import Transactions from './transactions';
+import LoginRedirect from './login/redirect';
 
 export default function Pages() {
   const location = useLocation();
@@ -32,10 +33,29 @@ export default function Pages() {
     );
   }
 
+  if (
+    authenticatedUser.user &&
+    document.body.dataset.userId &&
+    `${authenticatedUser.user.id}` !== document.body.dataset.userId
+  ) {
+    console.warn(
+      'Redirecting to login because',
+      document.body.dataset.userId,
+      `doesn't match`,
+      authenticatedUser.user.id
+    );
+
+    // If the extension is enabled, and gives us a user ID, and the user isn't the same
+    // as the currently logged in Roblox+ user.. send them to the login page to reauthenticate.
+    return <LoginRedirect />;
+  }
+
   return (
     <Routes>
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/settings/:tab" element={<Settings />} />
+      <Route path={settingsPath} element={<Settings />} />
+      <Route path={`${settingsPath}/:tab`} element={<Settings />} />
+      <Route path={transactionsPath} element={<Transactions />} />
+      <Route path={`${transactionsPath}/:groupId`} element={<Transactions />} />
     </Routes>
   );
 }

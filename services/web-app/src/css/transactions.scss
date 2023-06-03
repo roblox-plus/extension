@@ -1,0 +1,14 @@
+#transactions-page {
+  .transactions-panel {
+    float: left;
+    overflow: hidden;
+    display: flex;
+
+    .rplus-item-card-media {
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}

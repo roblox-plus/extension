@@ -1,6 +1,9 @@
 // The Roblox OAuth2 client ID.
 const clientId = '2147861207470534820';
 
+// The Roblox+ extension ID, if it's running.
+const extensionId = document.body.dataset.extensionId;
+
 // The scopes to request when logging in.
 const requestedScopes = ['openid', 'profile'];
 
@@ -13,7 +16,17 @@ const apiBaseUrl = new URL(
   }/api/`
 );
 
-// The path for the login page.
+// Page paths
 const loginPath = '/login';
+const settingsPath = '/settings';
+const transactionsPath = '/transactions';
 
-export { clientId, requestedScopes, apiBaseUrl, loginPath };
+export {
+  clientId,
+  extensionId,
+  requestedScopes,
+  apiBaseUrl,
+  loginPath,
+  settingsPath,
+  transactionsPath,
+};
