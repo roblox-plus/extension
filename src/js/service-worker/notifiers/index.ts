@@ -1,8 +1,10 @@
 import FriendPresenceNotifier from './friend-presence';
+import TradeNotifier from './trades';
 
 // Registry of all the notifiers
 const notifiers: { [name: string]: (state: any) => Promise<any> } = {};
 notifiers['notifiers/friend-presence'] = FriendPresenceNotifier;
+notifiers['notifiers/trade'] = TradeNotifier;
 
 // TODO: Update to use chrome.storage.session for manifest V3
 const notifierStates: { [name: string]: any } = {};
