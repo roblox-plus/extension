@@ -1,8 +1,8 @@
 import { Batch, BatchItem } from '@tix-factory/batch';
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import { User } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import xsrfFetch from '../../utils/xsrfFetch';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'usersService.getUserById';
 

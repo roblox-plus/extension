@@ -1,0 +1,34 @@
+{
+  "name": "@tix-factory/messaging",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local module hosting the logic for messaging between service workers, tabs, and content scripts.",
+  "browser": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@tix-factory/extension-utils": "file:../extension-utils"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.237",
+    "typescript": "^5.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roblox-plus/extension.git"
+  },
+  "keywords": [
+    "roblox"
+  ],
+  "author": {
+    "name": "WebGL3D"
+  },
+  "bugs": {
+    "url": "https://github.com/roblox-plus/extension/issues"
+  },
+  "files": [
+    "dist/"
+  ]
+}

@@ -1,6 +1,6 @@
 import { wait } from '@tix-factory/extension-utils';
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 import { recordUserRobux } from './history';
 
 const messageDestination = 'currencyService.getRobuxBalance';

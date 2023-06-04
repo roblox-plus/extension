@@ -1,6 +1,6 @@
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import Group from '../../types/group';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'groupsService.getUserPrimaryGroup';
 const cache = new ExpirableDictionary<Group | null>(

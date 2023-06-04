@@ -1,6 +1,6 @@
 import { wait } from '@tix-factory/extension-utils';
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'friendsService.getFriendRequestCount';
 const cache = new ExpirableDictionary<number>(messageDestination, 30 * 1000);

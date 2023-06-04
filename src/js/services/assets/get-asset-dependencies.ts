@@ -1,5 +1,5 @@
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 import getAssetContentsUrl from './get-asset-contents-url';
 
 const messageDestination = 'assetsService.getAssetDependencies';

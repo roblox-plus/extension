@@ -1,7 +1,7 @@
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import PremiumPayoutType from '../../enums/premiumPayoutType';
 import PremiumPayout from '../../types/premiumPayout';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'premiumPayoutsService.getPremiumPayoutsSummary';
 const cache = new ExpirableDictionary<PremiumPayout[]>(

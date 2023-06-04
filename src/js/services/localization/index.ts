@@ -1,5 +1,5 @@
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import TranslationResource from '../../types/translationResource';
-import { addListener, sendMessage } from '../message';
 
 const englishLocale = 'en_us';
 const messageDestination = 'localizationService.getTranslationResources';

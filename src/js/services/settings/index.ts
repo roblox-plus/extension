@@ -1,4 +1,4 @@
-import { sendMessage, addListener } from '../message';
+import { addListener, sendMessage } from '@tix-factory/messaging';
 
 // Destination to be used with messaging.
 const messageDestinationPrefix = 'settingsService';

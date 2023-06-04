@@ -1,5 +1,5 @@
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 import BadgeAwardBatchProcessor, {
   BadgeAwardBatchItem,
 } from './batchProcessor';

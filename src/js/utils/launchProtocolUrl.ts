@@ -4,7 +4,7 @@ import {
   getWorkerTab,
   sendMessage,
   sendMessageToTab,
-} from '../services/message';
+} from '@tix-factory/messaging';
 
 const messageDestination = 'launchProtocolUrl';
 

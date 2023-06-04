@@ -1,6 +1,6 @@
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import { UserPresence } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 import PresenceBatchProcessor from './batchProcessor';
 
 const messageDestination = 'presenceService.getUserPresence';

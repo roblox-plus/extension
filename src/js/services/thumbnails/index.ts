@@ -1,6 +1,6 @@
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import { Thumbnail, ThumbnailState, ThumbnailType } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 import batchProcessor from './batchProcessor';
 
 const messageDestination = 'thumbnailsService.getAvatarHeadshotThumbnail';

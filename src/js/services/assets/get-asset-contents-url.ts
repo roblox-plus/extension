@@ -1,8 +1,8 @@
 import { Batch, BatchItem } from '@tix-factory/batch';
 import { manifest } from '@tix-factory/extension-utils';
+import { addListener, sendMessage } from '@tix-factory/messaging';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import xsrfFetch from '../../utils/xsrfFetch';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'assetsService.getAssetContentsUrl';
 
