@@ -1,5 +1,4 @@
-import { User } from 'roblox';
-import PresenceType from '../../../enums/presenceType';
+import { PresenceType, User } from 'roblox';
 import { isAuthenticatedUserFollowing } from '../../../services/followings';
 import { getUserFriends } from '../../../services/friends';
 import { followUser } from '../../../services/game-launch';

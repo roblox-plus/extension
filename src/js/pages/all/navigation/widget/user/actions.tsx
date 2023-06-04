@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
-import { User } from 'roblox';
-import PresenceType from '../../../../../enums/presenceType';
+import { PresenceType, User } from 'roblox';
 import { followUser } from '../../../../../services/game-launch';
 import { getTranslationResource } from '../../../../../services/localization';
 import { getUserPresence } from '../../../../../services/presence';

@@ -1,4 +1,4 @@
-import PresenceType from '../enums/presenceType';
+import { PresenceType } from 'roblox';
 
 type PresenceLocation = {
   // The place ID of the location where the user currently is.
