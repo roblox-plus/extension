@@ -1,4 +1,4 @@
-import { addListener, sendMessage } from '@tix-factory/messaging';
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { Thumbnail, ThumbnailState, ThumbnailType } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import batchProcessor from './batchProcessor';

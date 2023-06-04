@@ -1,4 +1,4 @@
-import { addListener, sendMessage } from '@tix-factory/messaging';
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import AuthenticatedUserFollowingProcessor from './authenticatedUserFollowingProcessor';
 

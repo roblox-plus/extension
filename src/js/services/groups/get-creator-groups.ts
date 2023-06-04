@@ -1,4 +1,4 @@
-import { addListener, sendMessage } from '@tix-factory/messaging';
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import Group from '../../types/group';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@tix-factory/messaging",
+  "name": "@tix-factory/extension-messaging",
   "version": "1.0.0",
   "private": true,
   "description": "A local module hosting the logic for messaging between service workers, tabs, and content scripts.",

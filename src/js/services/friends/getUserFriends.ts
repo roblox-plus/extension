@@ -1,4 +1,4 @@
-import { addListener, sendMessage } from '@tix-factory/messaging';
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { User } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 

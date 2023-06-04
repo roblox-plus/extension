@@ -1,5 +1,5 @@
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { wait } from '@tix-factory/extension-utils';
-import { addListener, sendMessage } from '@tix-factory/messaging';
 import OwnedLimitedAsset from '../../types/ownedLimitedAsset';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 

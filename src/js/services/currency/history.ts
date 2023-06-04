@@ -1,5 +1,5 @@
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { isBackgroundPage } from '@tix-factory/extension-utils';
-import { addListener, sendMessage } from '@tix-factory/messaging';
 import { open } from 'db.js';
 import RobuxHistory from '../../types/robux-history';
 import { getToggleSettingValue } from '../settings';

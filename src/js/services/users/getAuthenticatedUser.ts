@@ -1,4 +1,4 @@
-import { addListener, sendMessage } from '@tix-factory/messaging';
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { User } from 'roblox';
 
 const messageDestination = 'usersService.getAuthenticatedUser';

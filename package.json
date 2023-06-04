@@ -23,7 +23,7 @@
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.2",
     "@tix-factory/extension-utils": "file:./libs/extension-utils",
-    "@tix-factory/messaging": "file:./libs/messaging",
+    "@tix-factory/extension-messaging": "file:./libs/extension-messaging",
     "@types/chrome": "^0.0.237",
     "@types/db.js": "^0.14.7",
     "@types/react": "^18.0.26",

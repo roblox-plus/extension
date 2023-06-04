@@ -1,4 +1,4 @@
-import { addListener, sendMessage } from '@tix-factory/messaging';
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import PremiumPayoutType from '../../enums/premiumPayoutType';
 import PremiumPayout from '../../types/premiumPayout';
 import ExpirableDictionary from '../../utils/expireableDictionary';
