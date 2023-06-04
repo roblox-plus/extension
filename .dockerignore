@@ -1,5 +1,8 @@
 # Ensure we don't copy node_modules from the host, and that we have to run npm ci
-node_modules/
+
+node_modules
 
 # Ensure we don't copy built files from the host, and that we have to run npm run build
-build/
+
+build
+dist

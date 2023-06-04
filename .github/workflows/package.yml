@@ -27,13 +27,21 @@ jobs:
         working-directory: src
 
       # Build local modules
-      - name: '🚚 npm install (local modules)'
+      - name: '🚚 npm install (libs/roblox)'
         run: npm ci
         working-directory: ./libs/roblox
 
-      - name: '🏗️ Build local modules'
+      - name: '🏗️ Build libs/roblox'
         run: npm run build
         working-directory: ./libs/roblox
+
+      - name: '🚚 npm install (libs/extension-utils)'
+        run: npm ci
+        working-directory: ./libs/extension-utils
+
+      - name: '🏗️ Build libs/extension-utils'
+        run: npm run build
+        working-directory: ./libs/extension-utils
 
       # Build extension itself
       - name: '🚚 npm install'
