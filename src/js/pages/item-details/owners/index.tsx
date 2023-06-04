@@ -3,12 +3,12 @@ import { getAssetOwners } from '../../../services/inventory';
 import AssetOwnershipRecord from '../../../types/asset-ownership-record';
 import { LoadingState } from '@tix-factory/extension-utils';
 import { getUserProfileLink } from '../../../utils/linkify';
-import { Thumbnail } from 'roblox';
 import ThumbnailType from '../../../enums/thumbnailType';
 import {
   getTranslationResource,
   getTranslationResourceWithFallback,
 } from '../../../services/localization';
+import Thumbnail from '../../../components/thumbnail';
 
 type AssetOwnersInput = {
   assetId: number;

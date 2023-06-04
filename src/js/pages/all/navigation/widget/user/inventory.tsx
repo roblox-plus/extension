@@ -5,7 +5,7 @@ import OwnedLimitedAsset from '../../../../../types/ownedLimitedAsset';
 import { LoadingState } from '@tix-factory/extension-utils';
 import { getCatalogLink } from '../../../../../utils/linkify';
 import ThumbnailType from '../../../../../enums/thumbnailType';
-import { Thumbnail } from 'roblox';
+import Thumbnail from '../../../../../components/thumbnail';
 
 type UserInventoryInput = {
   user: User;

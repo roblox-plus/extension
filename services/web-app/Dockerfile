@@ -7,16 +7,25 @@ FROM node:19 AS build-module
 # Setup build image
 FROM node:19 AS build
 
-# Copy in the roblox module, so it can be restored.
-COPY ./libs ./libs
+# Copy in only the package.json files for the install step, to enable higher docker cache hit rate.
+COPY ./libs/roblox/package.json ./libs/roblox/package-lock.json /libs/roblox/
+COPY ./libs/extension-utils/package.json ./libs/extension-utils/package-lock.json /libs/extension-utils/
 
-# Build the local modules
+# Restore library modules
 WORKDIR /libs/roblox
 RUN npm ci
-RUN npm run build
 
 WORKDIR /libs/extension-utils
 RUN npm ci
+
+# Copy in the local module contents, so we can build them.
+COPY ./libs /libs
+
+# Build the local modules
+WORKDIR /libs/roblox
+RUN npm run build
+
+WORKDIR /libs/extension-utils
 RUN npm run build
 
 # Copy in only the package.json files for the install step, to enable higher docker cache hit rate.
@@ -27,7 +36,8 @@ WORKDIR /services/app
 RUN npm ci
 
 # Build the app
-COPY ./services/web-app .
+COPY ./services/web-app/ /services/app/
+RUN ls && sleep 5
 RUN npm run build
 # RUN npm run test
 
