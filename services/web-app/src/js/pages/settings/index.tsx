@@ -23,7 +23,7 @@ export default function Settings() {
   }
 
   return (
-    <Alert>
+    <Alert severity="info">
       Hello, and welcome. If you are reading this, then you should know.. this
       site is not quite ready yet. The extension can be downloaded{' '}
       <Link href="https://chrome.google.com/webstore/detail/roblox%20/jfbnmfgkohlfclfnplnlenbalpppohkm">

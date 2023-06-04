@@ -3,7 +3,7 @@ import { Link, Typography } from '@mui/material';
 export default function TermsOfService() {
   return (
     <Typography>
-      This page exists because it has to I guess? The terms are simple: I make
+      This page exists because it has to I guess? The terms are simple: I make{' '}
       <Link href="https://chrome.google.com/webstore/detail/roblox%20/jfbnmfgkohlfclfnplnlenbalpppohkm">
         the extension
       </Link>
