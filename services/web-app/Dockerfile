@@ -20,7 +20,7 @@ RUN npm ci
 RUN npm run build
 
 # Copy in only the package.json files for the install step, to enable higher docker cache hit rate.
-COPY ./services/web-app/package.json ./services/web-app/package-lock.json ./services/app/
+COPY ./services/web-app/package.json ./services/web-app/package-lock.json /services/app/
 
 # Install the packages
 WORKDIR /services/app
@@ -35,7 +35,7 @@ RUN npm run build
 FROM base as final
 
 # Copy the package.json for the final image.
-COPY ./docker /app
+COPY ./services/web-app/docker /app
 WORKDIR /app
 
 # Install serve, to serve the created frontend files with.
