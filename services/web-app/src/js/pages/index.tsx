@@ -7,6 +7,8 @@ import { Alert, CircularProgress } from '@mui/material';
 import Settings from './settings';
 import Transactions from './transactions';
 import LoginRedirect from './login/redirect';
+import PrivacyPolicy from './privacy-policy';
+import TermsOfService from './terms-of-service';
 
 export default function Pages() {
   const location = useLocation();
@@ -56,6 +58,8 @@ export default function Pages() {
       <Route path={`${settingsPath}/:tab`} element={<Settings />} />
       <Route path={transactionsPath} element={<Transactions />} />
       <Route path={`${transactionsPath}/:groupId`} element={<Transactions />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
     </Routes>
   );
 }
