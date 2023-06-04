@@ -283,6 +283,43 @@ if (isBackgroundPage) {
       });
     });
   }
+
+  // chrome.runtime is available, and we got a message from the window
+  // this could be a tab trying to get information from the extension
+  window.addEventListener('message', (messageEvent) => {
+    const { extensionId, messageId, destination, message } = messageEvent.data;
+    if (
+      extensionId !== chrome.runtime.id ||
+      !messageId ||
+      !destination ||
+      !message
+    ) {
+      // They didn't want to contact us.
+      // Or if they did, they didn't have the required fields.
+      return;
+    }
+
+    if (messageEvent.data.version !== version) {
+      // They did want to contact us, but there was a version mismatch.
+      // We can't handle this message.
+      window.postMessage({
+        extensionId: messageEvent.data.extensionId,
+        messageId: messageEvent.data.messageId,
+        success: false,
+        data: `Extension message receiver is incompatible with message sender`,
+      });
+
+      return;
+    }
+
+    console.log('Received message for', destination, message);
+  });
+} else {
+  // Not a background page, and not a content script.
+  // This could be a page where we want to listen for calls from the tab.
+  window.addEventListener('message', (messageEvent) => {
+    // TODO: Process the message responses
+  });
 }
 
 // Ensures that the same tab won't connect multiple times.
