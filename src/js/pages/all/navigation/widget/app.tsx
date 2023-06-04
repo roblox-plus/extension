@@ -1,7 +1,6 @@
 import { LoadingState } from '@tix-factory/extension-utils';
 import { Fragment, useEffect, useState } from 'react';
-import { User } from 'roblox';
-import { getIdFromUrl } from '../../../../utils/linkify';
+import { User, getIdFromUrl } from 'roblox';
 import loadUser from './load-user';
 import { openClassName } from './panel';
 import Search from './search';

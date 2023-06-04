@@ -1,6 +1,5 @@
-import { User } from 'roblox';
+import { User, getIdFromUrl } from 'roblox';
 import { getUserById, getUserByName } from '../../../../services/users';
-import { getIdFromUrl } from '../../../../utils/linkify';
 
 const userSearchPrefix = 'user:';
 

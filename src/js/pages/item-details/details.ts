@@ -1,5 +1,4 @@
-import { AssetType } from 'roblox';
-import { getIdFromUrl } from '../../utils/linkify';
+import { AssetType, getIdFromUrl } from 'roblox';
 import wait from '../../utils/wait';
 
 const itemContainer = document.querySelector('#item-container');

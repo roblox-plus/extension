@@ -1,4 +1,4 @@
-import { PresenceType, User, UserPresence } from 'roblox';
+import { PresenceType, User, UserPresence, getUserProfileLink } from 'roblox';
 import { isAuthenticatedUserFollowing } from '../../../services/followings';
 import { getUserFriends } from '../../../services/friends';
 import { followUser } from '../../../services/game-launch';
@@ -8,7 +8,6 @@ import { getSettingValue } from '../../../services/settings';
 import { getAvatarHeadshotThumbnail } from '../../../services/thumbnails';
 import { getAuthenticatedUser } from '../../../services/users';
 import fetchDataUri from '../../../utils/fetchDataUri';
-import { getUserProfileLink } from '../../../utils/linkify';
 
 // The prefix for the ID of the notification to display.
 const notificationIdPrefix = 'friend-notifier-';

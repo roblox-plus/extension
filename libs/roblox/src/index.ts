@@ -9,3 +9,5 @@ export { default as PresenceLocation } from './types/presence-location';
 export { default as Thumbnail } from './types/thumbnail';
 export { default as User } from './types/user';
 export { default as UserPresence } from './types/user-presence';
+// Export utils
+export * from './utils/linkify';

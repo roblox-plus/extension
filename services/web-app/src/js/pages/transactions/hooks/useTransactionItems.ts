@@ -1,11 +1,10 @@
-import { useMemo } from 'react';
 import { LoadingState } from '@tix-factory/extension-utils';
-import TransactionItem from '../../../types/transaction-item';
-import useTransactions from './useTransactions';
-import { getCatalogLink, getGamePassLink } from '../../../utils/linkify';
-import { AssetType } from 'roblox';
+import { useMemo } from 'react';
+import { AssetType, getCatalogLink, getGamePassLink } from 'roblox';
 import Transaction from '../../../types/transaction';
+import TransactionItem from '../../../types/transaction-item';
 import isResaleTransaction from '../../../utils/is-resale-transaction';
+import useTransactions from './useTransactions';
 
 const getItemUrl = (transaction: Transaction): URL | undefined => {
   if (transaction.item_type === 'Game Pass') {
