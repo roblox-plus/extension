@@ -1,4 +1,4 @@
-import { isBackgroundPage } from '../constants';
+import { isBackgroundPage } from '@tix-factory/extension-utils';
 import {
   addListener,
   getWorkerTab,

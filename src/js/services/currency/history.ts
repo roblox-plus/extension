@@ -1,8 +1,8 @@
+import { isBackgroundPage } from '@tix-factory/extension-utils';
 import { open } from 'db.js';
-import { isBackgroundPage } from '../../constants';
+import RobuxHistory from '../../types/robux-history';
 import { addListener, sendMessage } from '../message';
 import { getToggleSettingValue } from '../settings';
-import RobuxHistory from '../../types/robux-history';
 
 const messageDestination = 'currencyService.history.';
 

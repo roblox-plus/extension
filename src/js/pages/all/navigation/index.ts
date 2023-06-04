@@ -1,5 +1,5 @@
+import { manifest } from '@tix-factory/extension-utils';
 import { TradeStatusType } from 'roblox';
-import { manifest } from '../../../constants';
 import { getFriendRequestCount } from '../../../services/friends';
 import { getUnreadMessageCount } from '../../../services/private-messages';
 import { getToggleSettingValue } from '../../../services/settings';

@@ -1,4 +1,4 @@
-import { isBackgroundPage } from '../../constants';
+import { isBackgroundPage } from '@tix-factory/extension-utils';
 
 // The type for representing a listener that can be attached by any service.
 type MessageListener = (message: any) => Promise<any>;
