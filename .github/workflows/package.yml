@@ -26,11 +26,20 @@ jobs:
           cat manifest.json
         working-directory: src
 
-      # Bundling
-      - name: npm install
+      # Build local modules
+      - name: '🚚 npm install (local modules)'
+        run: npm ci
+        working-directory: ./libs/roblox
+
+      - name: '🏗️ Build local modules'
+        run: npm run build
+        working-directory: ./libs/roblox
+
+      # Build extension itself
+      - name: '🚚 npm install'
         run: npm ci
 
-      - name: bundle JavaScript
+      - name: bundle react
         run: npm run react
 
       - name: '🏗️ Build'

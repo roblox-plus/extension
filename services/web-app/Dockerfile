@@ -10,6 +10,11 @@ FROM node:19 AS build
 # Copy in the roblox module, so it can be restored.
 COPY ./libs/roblox ./libs/roblox
 
+# Build the local modules
+WORKDIR /libs/roblox
+RUN npm ci
+RUN npm run build
+
 # Copy in only the package.json files for the install step, to enable higher docker cache hit rate.
 COPY ./services/web-app/package.json ./services/web-app/package-lock.json ./services/app/
 
