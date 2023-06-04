@@ -1,4 +1,4 @@
-import TradeStatusType from '../../enums/tradeStatusType';
+import { TradeStatusType } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import wait from '../../utils/wait';
 import { addListener, sendMessage } from '../message';

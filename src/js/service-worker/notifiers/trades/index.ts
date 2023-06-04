@@ -1,5 +1,4 @@
-import { User } from 'roblox';
-import TradeStatusType from '../../../enums/tradeStatusType';
+import { TradeStatusType, User } from 'roblox';
 import { getToggleSettingValue } from '../../../services/settings';
 import { getAvatarHeadshotThumbnail } from '../../../services/thumbnails';
 import Trade from '../../../types/trade';
