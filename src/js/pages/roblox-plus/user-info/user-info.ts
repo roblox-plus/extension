@@ -1,5 +1,4 @@
-import { Thumbnail } from 'roblox';
-import User from '../../../types/user';
+import { Thumbnail, User } from 'roblox';
 import DetailedGroup from './detailed-group';
 
 // User info to be loaded into the roblox.plus domain.

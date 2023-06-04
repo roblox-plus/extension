@@ -1,11 +1,11 @@
 import { Alert, CircularProgress, Link } from '@mui/material';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { login } from '../../services/authentication';
-import User from '../../types/user';
-import useQuery from '../../hooks/useQuery';
+import { User } from 'roblox';
 import { clientId, requestedScopes } from '../../constants';
-import { LoadingState } from '@tix-factory/extension-utils';
+import useQuery from '../../hooks/useQuery';
+import { login } from '../../services/authentication';
 
 export default function Login() {
   const [loadingState, setLoadingState] = useState<LoadingState>(

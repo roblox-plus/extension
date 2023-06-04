@@ -1,13 +1,13 @@
+import { User } from 'roblox';
 import PresenceType from '../../../enums/presenceType';
+import { isAuthenticatedUserFollowing } from '../../../services/followings';
 import { getUserFriends } from '../../../services/friends';
 import { followUser } from '../../../services/game-launch';
 import { getTranslationResource } from '../../../services/localization';
 import { getUserPresence } from '../../../services/presence';
 import { getSettingValue } from '../../../services/settings';
 import { getAvatarHeadshotThumbnail } from '../../../services/thumbnails';
-import { isAuthenticatedUserFollowing } from '../../../services/followings';
 import { getAuthenticatedUser } from '../../../services/users';
-import User from '../../../types/user';
 import UserPresence from '../../../types/userPresence';
 import fetchDataUri from '../../../utils/fetchDataUri';
 import { getUserProfileLink } from '../../../utils/linkify';

@@ -1,4 +1,4 @@
-import User from '../../types/user';
+import { User } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import { addListener, sendMessage } from '../message';
 

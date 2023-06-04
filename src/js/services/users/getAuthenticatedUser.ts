@@ -1,4 +1,4 @@
-import User from '../../types/user';
+import { User } from 'roblox';
 import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'usersService.getAuthenticatedUser';

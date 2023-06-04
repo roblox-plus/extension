@@ -1,4 +1,4 @@
-import User from '../../types/user';
+import { User } from 'roblox';
 import { getIdFromUrl } from '../../utils/linkify';
 
 const displayNameElement = document.querySelector(

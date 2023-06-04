@@ -1,4 +1,4 @@
-import User from './user';
+import { User } from 'roblox';
 
 type AssetOwnershipRecord = {
   // A unique identifier for the ownership record.

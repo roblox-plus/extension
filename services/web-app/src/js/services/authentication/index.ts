@@ -1,5 +1,5 @@
+import { User } from 'roblox';
 import { apiBaseUrl } from '../../constants';
-import User from '../../types/user';
 
 let authenticatedUserPromise: Promise<User | null>;
 const loginsByCode: { [code: string]: Promise<User> } = {};

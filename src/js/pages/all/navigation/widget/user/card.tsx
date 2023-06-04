@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
-import User from '../../../../../types/user';
-import { getUserProfileLink } from '../../../../../utils/linkify';
 import { LoadingState } from '@tix-factory/extension-utils';
-import { getLimitedInventory } from '../../../../../services/inventory';
-import OwnedLimitedAsset from '../../../../../types/ownedLimitedAsset';
+import { useEffect, useMemo, useState } from 'react';
+import { User } from 'roblox';
 import PresenceThumbnail from '../../../../../components/presence-thumbnail';
-import UserActions from './actions';
+import { getLimitedInventory } from '../../../../../services/inventory';
 import { getPremiumExpirationDate } from '../../../../../services/premium';
+import OwnedLimitedAsset from '../../../../../types/ownedLimitedAsset';
+import { getUserProfileLink } from '../../../../../utils/linkify';
+import UserActions from './actions';
 
 type UserCardInput = {
   user: User;
