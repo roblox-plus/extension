@@ -1,4 +1,4 @@
-import AssetType from '../enums/assetType';
+import { AssetType } from 'roblox';
 
 type AvatarAssetRule = {
   // The max number of this item the avatar is allowed to wear at the same time.

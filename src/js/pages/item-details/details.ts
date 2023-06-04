@@ -1,4 +1,4 @@
-import AssetType from '../../enums/assetType';
+import { AssetType } from 'roblox';
 import { getIdFromUrl } from '../../utils/linkify';
 import wait from '../../utils/wait';
 

@@ -20,7 +20,7 @@ services:
 
   app:
     build:
-      context: './services/web-app'
+      context: '.'
       dockerfile: 'Dockerfile'
 
     container_name: 'app'

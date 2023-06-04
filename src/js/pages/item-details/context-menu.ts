@@ -1,4 +1,4 @@
-import AssetType from '../../enums/assetType';
+import { AssetType } from 'roblox';
 import authenticatedUser from '../../utils/authenticatedUser';
 import { initializeContextMenu } from './avatar';
 import {

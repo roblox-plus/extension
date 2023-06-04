@@ -1,4 +1,4 @@
-import AssetType from '../../../enums/assetType';
+import { AssetType } from 'roblox';
 import ThumbnailState from '../../../enums/thumbnailState';
 import {
   getAssetThumbnail,

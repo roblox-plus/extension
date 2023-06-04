@@ -3,7 +3,7 @@ import LoadingState from '../../../enums/loadingState';
 import TransactionItem from '../../../types/transaction-item';
 import useTransactions from './useTransactions';
 import { getCatalogLink, getGamePassLink } from '../../../utils/linkify';
-import AssetType from '../../../enums/assetType';
+import { AssetType } from 'roblox';
 import Transaction from '../../../types/transaction';
 import isResaleTransaction from '../../../utils/is-resale-transaction';
 
