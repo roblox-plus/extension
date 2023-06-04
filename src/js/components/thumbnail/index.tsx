@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import ThumbnailState from '../../enums/thumbnailState';
+import { ThumbnailState } from 'roblox';
 import ThumbnailType from '../../enums/thumbnailType';
 import {
   getAssetThumbnail,

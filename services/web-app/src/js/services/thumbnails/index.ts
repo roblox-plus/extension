@@ -1,5 +1,5 @@
 import { apiBaseUrl } from '../../constants';
-import ThumbnailState from '../../enums/thumbnailState';
+import { ThumbnailState } from 'roblox';
 import Thumbnail from '../../types/thumbnail';
 import wait from '../../utils/wait';
 import { getAuthenticatedUser } from '../authentication';

@@ -1,4 +1,4 @@
-import ThumbnailState from '../../../enums/thumbnailState';
+import { ThumbnailState } from 'roblox';
 import DetailedGroup from './detailed-group';
 import UserInfo from './user-info';
 

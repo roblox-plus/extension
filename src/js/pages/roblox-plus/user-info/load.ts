@@ -1,4 +1,4 @@
-import ThumbnailState from '../../../enums/thumbnailState';
+import { ThumbnailState } from 'roblox';
 import {
   getCreatorGroups,
   getUserGroups,
