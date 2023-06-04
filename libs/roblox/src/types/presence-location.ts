@@ -1,5 +1,3 @@
-import { PresenceType } from 'roblox';
-
 type PresenceLocation = {
   // The place ID of the location where the user currently is.
   placeId: number;
@@ -14,12 +12,4 @@ type PresenceLocation = {
   serverId?: string;
 };
 
-type UserPresence = {
-  // What the user is currently doing.
-  type: PresenceType;
-
-  // The location where the user is.
-  location?: PresenceLocation;
-};
-
-export default UserPresence;
+export default PresenceLocation;

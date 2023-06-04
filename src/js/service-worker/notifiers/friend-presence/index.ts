@@ -1,4 +1,4 @@
-import { PresenceType, User } from 'roblox';
+import { PresenceType, User, UserPresence } from 'roblox';
 import { isAuthenticatedUserFollowing } from '../../../services/followings';
 import { getUserFriends } from '../../../services/friends';
 import { followUser } from '../../../services/game-launch';
@@ -7,7 +7,6 @@ import { getUserPresence } from '../../../services/presence';
 import { getSettingValue } from '../../../services/settings';
 import { getAvatarHeadshotThumbnail } from '../../../services/thumbnails';
 import { getAuthenticatedUser } from '../../../services/users';
-import UserPresence from '../../../types/userPresence';
 import fetchDataUri from '../../../utils/fetchDataUri';
 import { getUserProfileLink } from '../../../utils/linkify';
 

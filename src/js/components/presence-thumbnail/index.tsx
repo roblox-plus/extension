@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { PresenceType, ThumbnailType } from 'roblox';
+import { PresenceType, ThumbnailType, UserPresence } from 'roblox';
 import { getUserPresence } from '../../services/presence';
-import UserPresence from '../../types/userPresence';
 import { getPlaceLink } from '../../utils/linkify';
 import Thumbnail from '../thumbnail';
 

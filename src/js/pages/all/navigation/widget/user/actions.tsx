@@ -1,9 +1,8 @@
 import { Fragment, useEffect, useState } from 'react';
-import { PresenceType, User } from 'roblox';
+import { PresenceType, User, UserPresence } from 'roblox';
 import { followUser } from '../../../../../services/game-launch';
 import { getTranslationResource } from '../../../../../services/localization';
 import { getUserPresence } from '../../../../../services/presence';
-import UserPresence from '../../../../../types/userPresence';
 
 type UserActionsInput = {
   user: User;
