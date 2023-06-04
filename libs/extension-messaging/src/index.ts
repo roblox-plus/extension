@@ -1,4 +1,5 @@
 import { isBackgroundPage } from '@tix-factory/extension-utils';
+import { version } from './constants';
 import MessageListener from './types/message-listener';
 import MessageListenerOptions from './types/message-listener-options';
 import MessageResult from './types/message-result';
@@ -7,13 +8,6 @@ import MessageResult from './types/message-result';
 const listeners: {
   [destination: string]: (message: object) => Promise<MessageResult>;
 } = {};
-
-// All the tabs actively connected to the message service.
-const tabs: { [key: string]: chrome.runtime.Port } = {};
-
-// An identifier that tells us which version of the messaging service we're using,
-// to ensure we don't try to process a message not intended for us.
-const version = 2.5;
 
 // Send a message to a destination, and get back the result.
 const sendMessage = async (
@@ -78,34 +72,6 @@ const sendMessage = async (
       });
     }
   });
-};
-
-// Fetches a tab that we can send a message to, for work processing.
-const getWorkerTab = (): chrome.runtime.Port | undefined => {
-  const keys = Object.keys(tabs);
-  return keys.length > 0 ? tabs[keys[0]] : undefined;
-};
-
-// Sends a message to a tab.
-const sendMessageToTab = async (
-  destination: string,
-  message: object,
-  tab: chrome.runtime.Port
-): Promise<void> => {
-  const serializedMessage = JSON.stringify(message);
-  const outboundMessage = JSON.stringify({
-    version,
-    destination,
-    message: serializedMessage,
-  });
-
-  console.debug(
-    `Sending message to '${destination}' in tab`,
-    serializedMessage,
-    tab
-  );
-
-  tab.postMessage(outboundMessage);
 };
 
 // Listen for messages at a specific destination.
@@ -228,18 +194,7 @@ if (isBackgroundPage) {
     // https://stackoverflow.com/a/20077854/1663648
     return true;
   });
-
-  chrome.runtime.onConnect.addListener((port) => {
-    const id = crypto.randomUUID();
-    console.debug('Tab connected', id, port);
-    tabs[id] = port;
-
-    port.onDisconnect.addListener(() => {
-      console.debug('Disconnecting tab', id, port);
-      delete tabs[id];
-    });
-  });
-} else {
+} else if (chrome?.runtime) {
   console.debug(
     `Not attaching listener for messages, because we're not in the background.`
   );
@@ -293,5 +248,6 @@ declare global {
   var messageServiceConnection: chrome.runtime.Port;
 }
 
+export { getWorkerTab, sendMessageToTab } from './tabs';
 export type { MessageListener };
-export { sendMessage, addListener, getWorkerTab, sendMessageToTab };
+export { sendMessage, addListener };
