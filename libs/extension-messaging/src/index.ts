@@ -1,20 +1,7 @@
 import { isBackgroundPage } from '@tix-factory/extension-utils';
-
-// The type for representing a listener that can be attached by any service.
-type MessageListener = (message: any) => Promise<any>;
-
-// The internal result of processing a message.
-type MessageResult = {
-  success: boolean;
-  data: string;
-};
-
-// Message listener options about how to handle messages.
-type MessageListenerOptions = {
-  // How many messages can be processed in parallel.
-  // When set to -1, all messages can processed in parallel.
-  levelOfParallelism: -1 | 1;
-};
+import MessageListener from './types/message-listener';
+import MessageListenerOptions from './types/message-listener-options';
+import MessageResult from './types/message-result';
 
 // All the listeners, set in the background page.
 const listeners: {
