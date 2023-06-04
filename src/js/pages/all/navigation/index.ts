@@ -1,5 +1,5 @@
+import { TradeStatusType } from 'roblox';
 import { manifest } from '../../../constants';
-import TradeStatusType from '../../../enums/tradeStatusType';
 import { getFriendRequestCount } from '../../../services/friends';
 import { getUnreadMessageCount } from '../../../services/private-messages';
 import { getToggleSettingValue } from '../../../services/settings';
@@ -8,7 +8,7 @@ import { parseAuthenticatedUser } from '../../../utils/authenticatedUser';
 import { getBubbleValue, setBubbleValue } from './bubble';
 import { getLinkOverrides, updateNavigationLink } from './links';
 import { getRobux, setRobux } from './robux';
-import { button as widgetButton, render as renderWidget } from './widget';
+import { render as renderWidget, button as widgetButton } from './widget';
 
 // Check if we should be refreshing the counter values.
 const refreshEnabled = async (): Promise<boolean> => {

@@ -1,12 +1,12 @@
+import { wait } from '@tix-factory/extension-utils';
 import '../../../css/pages/item-details.scss';
 import { getAssetSalesCount } from '../../services/assets';
 import { getTranslationResource } from '../../services/localization';
 import { getToggleSettingValue } from '../../services/settings';
-import wait from '../../utils/wait';
-import { assetId, isLimited, isOwnCreatedItem } from './details';
-import { createStat } from './stats';
 import calculateRecentAveragePriceAfterSale from './calculate-rap-after-sale';
 import { initializeContextMenu } from './context-menu';
+import { assetId, isLimited, isOwnCreatedItem } from './details';
+import { createStat } from './stats';
 import { render as renderTabs } from './tabs';
 
 // Add sales counter onto the page.

@@ -1,6 +1,5 @@
-import AssetType from '../../enums/assetType';
-import { getIdFromUrl } from '../../utils/linkify';
-import wait from '../../utils/wait';
+import { wait } from '@tix-factory/extension-utils';
+import { AssetType, getIdFromUrl } from 'roblox';
 
 const itemContainer = document.querySelector('#item-container');
 

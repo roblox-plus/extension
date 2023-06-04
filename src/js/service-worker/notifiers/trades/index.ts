@@ -1,10 +1,9 @@
+import { TradeStatusType, User } from 'roblox';
 import { getToggleSettingValue } from '../../../services/settings';
 import { getAvatarHeadshotThumbnail } from '../../../services/thumbnails';
-import User from '../../../types/user';
-import fetchDataUri from '../../../utils/fetchDataUri';
-import TradeStatusType from '../../../enums/tradeStatusType';
 import Trade from '../../../types/trade';
 import TradeOffer from '../../../types/trade-offer';
+import fetchDataUri from '../../../utils/fetchDataUri';
 
 // The prefix for the ID of the notification to display.
 const notificationIdPrefix = 'trade-notifier-';

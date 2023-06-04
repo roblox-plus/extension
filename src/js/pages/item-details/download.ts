@@ -1,4 +1,4 @@
-import AssetType from '../../enums/assetType';
+import { AssetType } from 'roblox';
 import { getAssetContentsUrl } from '../../services/assets';
 import { getTranslationResource } from '../../services/localization';
 import { assetId, assetType, parseCreatorId } from './details';

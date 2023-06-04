@@ -1,4 +1,4 @@
-import User from '../types/user';
+import { User } from 'roblox';
 
 // Fetches the user who is currently authenticated on the loaded web page.
 const parseAuthenticatedUser = (): User | null => {

@@ -1,5 +1,4 @@
-import User from '../../types/user';
-import { getIdFromUrl } from '../../utils/linkify';
+import { User, getIdFromUrl } from 'roblox';
 
 const displayNameElement = document.querySelector(
   '.header-title>h1:first-of-type'

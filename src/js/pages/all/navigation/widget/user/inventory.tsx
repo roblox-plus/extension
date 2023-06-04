@@ -1,11 +1,9 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
-import User from '../../../../../types/user';
+import { LoadingState } from '@tix-factory/extension-utils';
+import { useEffect, useMemo, useState } from 'react';
+import { ThumbnailType, User, getCatalogLink } from 'roblox';
+import Thumbnail from '../../../../../components/thumbnail';
 import { getLimitedInventory } from '../../../../../services/inventory';
 import OwnedLimitedAsset from '../../../../../types/ownedLimitedAsset';
-import LoadingState from '../../../../../enums/loadingState';
-import { getCatalogLink } from '../../../../../utils/linkify';
-import ThumbnailType from '../../../../../enums/thumbnailType';
-import Thumbnail from '../../../../../components/thumbnail';
 
 type UserInventoryInput = {
   user: User;

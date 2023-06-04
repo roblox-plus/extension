@@ -1,6 +1,5 @@
-import TradeStatusType from '../enums/tradeStatusType';
+import { TradeStatusType, User } from 'roblox';
 import TradeOffer from './trade-offer';
-import User from './user';
 
 type Trade = {
   // The ID of the trade.

@@ -1,6 +1,6 @@
 import { Box, Divider, LinearProgress, Typography } from '@mui/material';
 import { Fragment, useEffect, useState } from 'react';
-import LoadingState from '../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { importTransactions } from '../../../services/transactions';
 
 type TransactionUploaderInput = {

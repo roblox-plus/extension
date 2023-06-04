@@ -1,6 +1,5 @@
-import LoadingState from '../enums/loadingState';
-import Thumbnail from './thumbnail';
-import User from './user';
+import { LoadingState } from '@tix-factory/extension-utils';
+import { Thumbnail, User } from 'roblox';
 
 type AuthenticatedUser = {
   // The currently authenticated user.

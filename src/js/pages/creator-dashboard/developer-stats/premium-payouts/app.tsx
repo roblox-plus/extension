@@ -14,7 +14,7 @@ import useDate from './useDate';
 import usePremiumPayouts from './usePremiumPayouts';
 import PremiumPayoutType from '../../../../enums/premiumPayoutType';
 import PremiumPayout from '../../../../types/premiumPayout';
-import LoadingState from '../../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 
 type PremiumPayoutsSummaryInput = {
   container: HTMLElement;

@@ -1,0 +1,29 @@
+{
+  "name": "roblox",
+  "version": "2.0.0",
+  "description": "An unofficial module for Roblox-related things.",
+  "browser": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roblox-plus/extension.git"
+  },
+  "keywords": [
+    "roblox"
+  ],
+  "author": {
+    "name": "WebGL3D"
+  },
+  "bugs": {
+    "url": "https://github.com/roblox-plus/extension/issues"
+  },
+  "files": [
+    "dist/"
+  ]
+}

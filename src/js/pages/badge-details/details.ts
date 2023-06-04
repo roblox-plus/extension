@@ -1,4 +1,4 @@
-import { getIdFromUrl } from '../../utils/linkify';
+import { getIdFromUrl } from 'roblox';
 
 const badgeId = getIdFromUrl(new URL(location.href));
 

@@ -1,4 +1,4 @@
-import UserPresence from '../../types/userPresence';
+import { UserPresence } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import { addListener, sendMessage } from '../message';
 import PresenceBatchProcessor from './batchProcessor';

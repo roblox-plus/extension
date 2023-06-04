@@ -1,4 +1,4 @@
-import AssetType from '../../enums/assetType';
+import { AssetType } from 'roblox';
 import AvatarAsset from '../../types/avatar-asset';
 import xsrfFetch from '../../utils/xsrfFetch';
 import getAvatarAssetRules from './get-avatar-asset-rules';

@@ -1,13 +1,11 @@
+import { LoadingState } from '@tix-factory/extension-utils';
 import { useEffect, useState } from 'react';
-import ThumbnailState from '../enums/thumbnailState';
-import AuthenticatedUser from '../types/authenticated-user';
-import Thumbnail from '../types/thumbnail';
-import User from '../types/user';
-import LoadingState from '../enums/loadingState';
 import { useLocation } from 'react-router-dom';
+import { Thumbnail, ThumbnailState, User } from 'roblox';
 import { loginPath } from '../constants';
 import { getAuthenticatedUser } from '../services/authentication';
 import { getAuthenticatedUserThumbnail } from '../services/thumbnails';
+import AuthenticatedUser from '../types/authenticated-user';
 
 function useAuthenticatedUser(): AuthenticatedUser {
   const location = useLocation();

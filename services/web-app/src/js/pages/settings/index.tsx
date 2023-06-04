@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import useAuthenticatedUser from '../../hooks/useAuthenticatedUser';
-import LoadingState from '../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { useParams } from 'react-router-dom';
 import LoginRedirect from '../login/redirect';
 import { Alert, Link, Typography } from '@mui/material';

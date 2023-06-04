@@ -1,11 +1,10 @@
+import { LoadingState } from '@tix-factory/extension-utils';
 import { Fragment, useEffect, useState } from 'react';
-import Search from './search';
-import { getIdFromUrl } from '../../../../utils/linkify';
-import UserInfo from './user';
-import LoadingState from '../../../../enums/loadingState';
-import User from '../../../../types/user';
+import { User, getIdFromUrl } from 'roblox';
 import loadUser from './load-user';
 import { openClassName } from './panel';
+import Search from './search';
+import UserInfo from './user';
 
 type AppInput = {
   button: HTMLButtonElement;

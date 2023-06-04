@@ -1,5 +1,5 @@
+import { wait } from '@tix-factory/extension-utils';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import wait from '../../utils/wait';
 import { addListener, sendMessage } from '../message';
 import { recordUserRobux } from './history';
 

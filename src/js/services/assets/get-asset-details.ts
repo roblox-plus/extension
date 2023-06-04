@@ -1,7 +1,7 @@
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import { addListener, sendMessage } from '../message';
 import AssetDetails from '../../types/asset-details';
-import AssetType from '../../enums/assetType';
+import { AssetType } from 'roblox';
 
 const messageDestination = 'assetsService.getAssetDetails';
 const cache = new ExpirableDictionary<AssetDetails>(

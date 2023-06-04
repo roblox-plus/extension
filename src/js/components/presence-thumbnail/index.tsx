@@ -1,10 +1,12 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import ThumbnailType from '../../enums/thumbnailType';
-import Thumbnail from '../thumbnail';
-import UserPresence from '../../types/userPresence';
-import PresenceType from '../../enums/presenceType';
+import {
+  PresenceType,
+  ThumbnailType,
+  UserPresence,
+  getPlaceLink,
+} from 'roblox';
 import { getUserPresence } from '../../services/presence';
-import { getPlaceLink } from '../../utils/linkify';
+import Thumbnail from '../thumbnail';
 
 type PresenceThumbnailInput = {
   userId: number;

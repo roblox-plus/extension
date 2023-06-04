@@ -1,4 +1,4 @@
-import AssetType from '../../enums/assetType';
+import { AssetType } from 'roblox';
 import AvatarAssetRule from '../../types/avatar-asset-rule';
 import { addListener, sendMessage } from '../message';
 

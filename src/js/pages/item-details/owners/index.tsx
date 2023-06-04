@@ -1,14 +1,10 @@
-import { Fragment, useEffect, useState } from 'react';
-import { getAssetOwners } from '../../../services/inventory';
-import AssetOwnershipRecord from '../../../types/asset-ownership-record';
-import LoadingState from '../../../enums/loadingState';
-import { getUserProfileLink } from '../../../utils/linkify';
+import { LoadingState } from '@tix-factory/extension-utils';
+import { useEffect, useState } from 'react';
+import { ThumbnailType, getUserProfileLink } from 'roblox';
 import Thumbnail from '../../../components/thumbnail';
-import ThumbnailType from '../../../enums/thumbnailType';
-import {
-  getTranslationResource,
-  getTranslationResourceWithFallback,
-} from '../../../services/localization';
+import { getAssetOwners } from '../../../services/inventory';
+import { getTranslationResource } from '../../../services/localization';
+import AssetOwnershipRecord from '../../../types/asset-ownership-record';
 
 type AssetOwnersInput = {
   assetId: number;

@@ -2,7 +2,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Login from './login';
 import { loginPath, settingsPath, transactionsPath } from '../constants';
 import useAuthenticatedUser from '../hooks/useAuthenticatedUser';
-import LoadingState from '../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { Alert, CircularProgress } from '@mui/material';
 import Settings from './settings';
 import Transactions from './transactions';

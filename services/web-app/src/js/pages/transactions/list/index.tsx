@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Fragment } from 'react';
-import LoadingState from '../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import TransactionCardContainer from './card';
 import useTransactionItems from '../hooks/useTransactionItems';
 

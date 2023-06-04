@@ -1,4 +1,4 @@
-import ThumbnailState from '../../enums/thumbnailState';
+import { ThumbnailState } from 'roblox';
 import Group from '../../types/group';
 
 const getAuthenticatedUserGroups = (): Promise<Group[]> => {

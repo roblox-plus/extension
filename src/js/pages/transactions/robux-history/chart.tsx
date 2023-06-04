@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import RobuxHistory from '../../../types/robux-history';
 import { getUserRobuxHistory } from '../../../services/currency';
-import LoadingState from '../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { HighchartsReact } from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 

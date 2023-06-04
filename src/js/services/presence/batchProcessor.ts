@@ -1,6 +1,5 @@
 import { Batch, BatchItem } from '@tix-factory/batch';
-import PresenceType from '../../enums/presenceType';
-import UserPresence from '../../types/userPresence';
+import { PresenceType, UserPresence } from 'roblox';
 
 const getPresenceType = (presenceType: number) => {
   switch (presenceType) {
