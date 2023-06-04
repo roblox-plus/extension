@@ -1,7 +1,10 @@
-import { Navigate } from 'react-router-dom';
+import { Fragment, useEffect } from 'react';
 
 export default function PrivacyPolicy() {
-  return (
-    <Navigate to="https://github.com/roblox-plus/extension/blob/master/PrivacyPolicy.md" />
-  );
+  useEffect(() => {
+    window.location.href =
+      'https://github.com/roblox-plus/extension/blob/master/PrivacyPolicy.md';
+  }, []);
+
+  return <Fragment />;
 }
