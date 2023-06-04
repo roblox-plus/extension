@@ -72,6 +72,9 @@ export default function VolumeChart() {
         tickLength: 0,
         labels: {
           format: '{value:%m/%d}',
+          style: {
+            color: theme.palette.text.primary,
+          },
         },
         min: (transactions.length > 0
           ? transactions[0].created
@@ -85,6 +88,11 @@ export default function VolumeChart() {
       yAxis: {
         title: {
           text: '',
+        },
+        labels: {
+          style: {
+            color: theme.palette.text.primary,
+          },
         },
       },
       series,
