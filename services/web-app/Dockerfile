@@ -37,7 +37,6 @@ RUN npm ci
 
 # Build the app
 COPY ./services/web-app/ /services/app/
-RUN ls && sleep 5
 RUN npm run build
 # RUN npm run test
 
