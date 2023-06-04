@@ -9,6 +9,13 @@ const listeners: {
   [destination: string]: (message: object) => Promise<MessageResult>;
 } = {};
 
+const externalResponseHandlers: {
+  [messageId: string]: {
+    resolve: (result: any) => void;
+    reject: (error: any) => void;
+  };
+} = {};
+
 // Send a message to a destination, and get back the result.
 const sendMessage = async (
   destination: string,
@@ -44,7 +51,8 @@ const sendMessage = async (
       } catch (e) {
         reject(e);
       }
-    } else {
+    } else if (chrome?.runtime) {
+      // Message is being sent from the content script
       const outboundMessage = JSON.stringify({
         version,
         destination,
@@ -70,6 +78,40 @@ const sendMessage = async (
           reject(data);
         }
       });
+    } else if (document.body?.dataset.extensionId) {
+      // Message is being sent by the native browser tab.
+      const messageId = crypto.randomUUID();
+      const timeout = setTimeout(() => {
+        if (externalResponseHandlers[messageId]) {
+          delete externalResponseHandlers[messageId];
+          reject(`Message timed out trying to contact extension`);
+        }
+      }, 15 * 1000);
+
+      externalResponseHandlers[messageId] = {
+        resolve: (result) => {
+          clearTimeout(timeout);
+          delete externalResponseHandlers[messageId];
+
+          resolve(result);
+        },
+        reject: (error) => {
+          clearTimeout(timeout);
+          delete externalResponseHandlers[messageId];
+
+          reject(error);
+        },
+      };
+
+      window.postMessage({
+        version,
+        extensionId: document.body.dataset.extensionId,
+        destination,
+        message,
+        messageId,
+      });
+    } else {
+      reject(`Could not find a way to transport the message to the extension.`);
     }
   });
 };
