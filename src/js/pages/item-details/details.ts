@@ -1,5 +1,5 @@
+import { wait } from '@tix-factory/extension-utils';
 import { AssetType, getIdFromUrl } from 'roblox';
-import wait from '../../utils/wait';
 
 const itemContainer = document.querySelector('#item-container');
 

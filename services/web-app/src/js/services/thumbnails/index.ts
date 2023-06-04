@@ -1,7 +1,6 @@
+import { wait } from '@tix-factory/extension-utils';
+import { Thumbnail, ThumbnailState } from 'roblox';
 import { apiBaseUrl } from '../../constants';
-import { ThumbnailState } from 'roblox';
-import { Thumbnail } from 'roblox';
-import wait from '../../utils/wait';
 import { getAuthenticatedUser } from '../authentication';
 
 let authenticatedUserThumbnailPromise: Promise<Thumbnail>;
