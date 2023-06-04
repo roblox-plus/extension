@@ -3,7 +3,7 @@ import { ThumbnailState } from 'roblox';
 import AuthenticatedUser from '../types/authenticated-user';
 import Thumbnail from '../types/thumbnail';
 import User from '../types/user';
-import LoadingState from '../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { useLocation } from 'react-router-dom';
 import { loginPath } from '../constants';
 import { getAuthenticatedUser } from '../services/authentication';

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import User from '../../../../../types/user';
 import { getUserProfileLink } from '../../../../../utils/linkify';
-import LoadingState from '../../../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { getLimitedInventory } from '../../../../../services/inventory';
 import OwnedLimitedAsset from '../../../../../types/ownedLimitedAsset';
 import PresenceThumbnail from '../../../../../components/presence-thumbnail';

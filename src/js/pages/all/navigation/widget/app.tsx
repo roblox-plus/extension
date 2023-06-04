@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react';
 import Search from './search';
 import { getIdFromUrl } from '../../../../utils/linkify';
 import UserInfo from './user';
-import LoadingState from '../../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import User from '../../../../types/user';
 import loadUser from './load-user';
 import { openClassName } from './panel';

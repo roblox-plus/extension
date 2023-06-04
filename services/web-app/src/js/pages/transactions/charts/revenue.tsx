@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import Highcharts from 'highcharts';
 import useDateRange from '../hooks/useDateRange';
 import useTransactions from '../hooks/useTransactions';
-import LoadingState from '../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import HighchartsReact from 'highcharts-react-official';
 import isResaleTransaction from '../../../utils/is-resale-transaction';
 import getBucketedDate from '../../../utils/get-bucketed-date';

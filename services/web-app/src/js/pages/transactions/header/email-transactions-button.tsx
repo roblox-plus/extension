@@ -18,7 +18,7 @@ import {
 } from '@mui/x-date-pickers';
 import useSelectedCreator from '../hooks/useSelectedCreator';
 import AgentType from '../../../enums/agentType';
-import LoadingState from '../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 
 export default function EmailTransactionsButton() {
   const [selectedCreator] = useSelectedCreator();

@@ -8,10 +8,14 @@ FROM node:19 AS build-module
 FROM node:19 AS build
 
 # Copy in the roblox module, so it can be restored.
-COPY ./libs/roblox ./libs/roblox
+COPY ./libs ./libs
 
 # Build the local modules
 WORKDIR /libs/roblox
+RUN npm ci
+RUN npm run build
+
+WORKDIR /libs/extension-utils
 RUN npm ci
 RUN npm run build
 

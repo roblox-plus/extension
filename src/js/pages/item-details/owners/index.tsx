@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { getAssetOwners } from '../../../services/inventory';
 import AssetOwnershipRecord from '../../../types/asset-ownership-record';
-import LoadingState from '../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { getUserProfileLink } from '../../../utils/linkify';
 import Thumbnail from '../../../components/thumbnail';
 import ThumbnailType from '../../../enums/thumbnailType';

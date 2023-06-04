@@ -2,7 +2,7 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 import User from '../../../../../types/user';
 import { getLimitedInventory } from '../../../../../services/inventory';
 import OwnedLimitedAsset from '../../../../../types/ownedLimitedAsset';
-import LoadingState from '../../../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { getCatalogLink } from '../../../../../utils/linkify';
 import ThumbnailType from '../../../../../enums/thumbnailType';
 import Thumbnail from '../../../../../components/thumbnail';

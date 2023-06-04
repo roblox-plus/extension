@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import LoadingState from '../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import Transaction from '../../../types/transaction';
 import useSelectedCreator from './useSelectedCreator';
 import { getTransactionsByOwner } from '../../../services/transactions';

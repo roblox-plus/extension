@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
-import LoadingState from '../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { getAssetDependencies } from '../../../services/assets';
 import List from './list';
 import { AssetType } from 'roblox';

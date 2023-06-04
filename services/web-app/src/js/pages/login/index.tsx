@@ -5,7 +5,7 @@ import { login } from '../../services/authentication';
 import User from '../../types/user';
 import useQuery from '../../hooks/useQuery';
 import { clientId, requestedScopes } from '../../constants';
-import LoadingState from '../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 
 export default function Login() {
   const [loadingState, setLoadingState] = useState<LoadingState>(

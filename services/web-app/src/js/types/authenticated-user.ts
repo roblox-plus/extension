@@ -1,4 +1,4 @@
-import LoadingState from '../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import Thumbnail from './thumbnail';
 import User from './user';
 

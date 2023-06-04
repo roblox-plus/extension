@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import useTransactionItems from '../hooks/useTransactionItems';
-import LoadingState from '../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import { useMemo } from 'react';
 import TransactionDatePicker from './date-picker';
 import useDateRange from '../hooks/useDateRange';

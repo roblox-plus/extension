@@ -1,0 +1,30 @@
+{
+  "name": "@tix-factory/extension-utils",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local module where I am sharing code between the extension, and the web-app.",
+  "browser": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roblox-plus/extension.git"
+  },
+  "keywords": [
+    "roblox"
+  ],
+  "author": {
+    "name": "WebGL3D"
+  },
+  "bugs": {
+    "url": "https://github.com/roblox-plus/extension/issues"
+  },
+  "files": [
+    "dist/"
+  ]
+}

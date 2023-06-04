@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getPremiumPayoutsSummary } from '../../../../services/premium-payouts';
 import PremiumPayout from '../../../../types/premiumPayout';
-import LoadingState from '../../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 
 export default function usePremiumPayouts(
   universeId: number,

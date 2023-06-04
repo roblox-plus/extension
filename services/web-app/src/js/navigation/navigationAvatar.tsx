@@ -13,7 +13,7 @@ import {
 import React, { Fragment, useState } from 'react';
 import { logout } from '../services/authentication';
 import useAuthenticatedUser from '../hooks/useAuthenticatedUser';
-import LoadingState from '../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 
 export default function NavigationAvatar() {
   const authenticatedUser = useAuthenticatedUser();

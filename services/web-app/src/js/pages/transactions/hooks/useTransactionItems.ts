@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import LoadingState from '../../../enums/loadingState';
+import { LoadingState } from '@tix-factory/extension-utils';
 import TransactionItem from '../../../types/transaction-item';
 import useTransactions from './useTransactions';
 import { getCatalogLink, getGamePassLink } from '../../../utils/linkify';
