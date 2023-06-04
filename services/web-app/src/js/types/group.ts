@@ -1,4 +1,4 @@
-import Thumbnail from './thumbnail';
+import { Thumbnail } from 'roblox';
 
 type Group = {
   // The group ID.

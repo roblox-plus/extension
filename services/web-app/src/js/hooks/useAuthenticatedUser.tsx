@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ThumbnailState } from 'roblox';
 import AuthenticatedUser from '../types/authenticated-user';
-import Thumbnail from '../types/thumbnail';
+import { Thumbnail } from 'roblox';
 import User from '../types/user';
 import { LoadingState } from '@tix-factory/extension-utils';
 import { useLocation } from 'react-router-dom';

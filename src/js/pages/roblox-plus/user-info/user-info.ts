@@ -1,4 +1,4 @@
-import Thumbnail from '../../../types/thumbnail';
+import { Thumbnail } from 'roblox';
 import User from '../../../types/user';
 import DetailedGroup from './detailed-group';
 

@@ -5,7 +5,7 @@ import {
   getAssetThumbnail,
   getAvatarHeadshotThumbnail,
 } from '../../services/thumbnails';
-import Thumbnail from '../../types/thumbnail';
+import { Thumbnail } from 'roblox';
 
 type ThumbnailInput = {
   targetId: number;

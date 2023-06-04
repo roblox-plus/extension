@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { getLibraryLink } from '../../utils/linkify';
 import AssetDetails from '../../types/asset-details';
 import { getAssetDetails } from '../../services/assets';
-import Thumbnail from '../thumbnail';
+import { Thumbnail } from 'roblox';
 import ThumbnailType from '../../enums/thumbnailType';
 
 type AssetItemCardInput = {

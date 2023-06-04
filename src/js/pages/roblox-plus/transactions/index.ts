@@ -9,7 +9,7 @@ import {
   emailGroupTransactionSales,
   emailUserTransactionSales,
 } from '../../../services/transactions';
-import Thumbnail from '../../../types/thumbnail';
+import { Thumbnail } from 'roblox';
 
 const respond = (success: boolean, message: string) => {
   window.postMessage({

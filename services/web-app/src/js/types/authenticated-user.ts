@@ -1,5 +1,5 @@
 import { LoadingState } from '@tix-factory/extension-utils';
-import Thumbnail from './thumbnail';
+import { Thumbnail } from 'roblox';
 import User from './user';
 
 type AuthenticatedUser = {

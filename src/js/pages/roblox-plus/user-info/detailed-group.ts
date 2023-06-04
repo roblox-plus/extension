@@ -1,5 +1,5 @@
 import Group from '../../../types/group';
-import Thumbnail from '../../../types/thumbnail';
+import { Thumbnail } from 'roblox';
 
 // Group information, specifically detailed for the roblox.plus domain.
 type DetailedGroup = Group & {
