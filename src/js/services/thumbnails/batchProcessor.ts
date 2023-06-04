@@ -1,7 +1,5 @@
 import { Batch, BatchItem } from '@tix-factory/batch';
-import { Thumbnail } from 'roblox';
-import ThumbnailType from '../../enums/thumbnailType';
-import { ThumbnailState } from 'roblox';
+import { Thumbnail, ThumbnailState, ThumbnailType } from 'roblox';
 
 type ThumbnailBatchItem = {
   type: ThumbnailType;

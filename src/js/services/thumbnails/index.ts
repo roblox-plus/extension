@@ -1,5 +1,4 @@
-import { Thumbnail, ThumbnailState } from 'roblox';
-import ThumbnailType from '../../enums/thumbnailType';
+import { Thumbnail, ThumbnailState, ThumbnailType } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import { addListener, sendMessage } from '../message';
 import batchProcessor from './batchProcessor';

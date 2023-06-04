@@ -1,8 +1,8 @@
 import { Fragment, useEffect, useState } from 'react';
-import { getLibraryLink } from '../../utils/linkify';
-import AssetDetails from '../../types/asset-details';
+import { ThumbnailType } from 'roblox';
 import { getAssetDetails } from '../../services/assets';
-import ThumbnailType from '../../enums/thumbnailType';
+import AssetDetails from '../../types/asset-details';
+import { getLibraryLink } from '../../utils/linkify';
 import Thumbnail from '../thumbnail';
 
 type AssetItemCardInput = {

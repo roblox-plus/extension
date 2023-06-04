@@ -1,8 +1,7 @@
 import { LoadingState } from '@tix-factory/extension-utils';
 import { useEffect, useMemo, useState } from 'react';
-import { User } from 'roblox';
+import { ThumbnailType, User } from 'roblox';
 import Thumbnail from '../../../../../components/thumbnail';
-import ThumbnailType from '../../../../../enums/thumbnailType';
 import { getLimitedInventory } from '../../../../../services/inventory';
 import OwnedLimitedAsset from '../../../../../types/ownedLimitedAsset';
 import { getCatalogLink } from '../../../../../utils/linkify';

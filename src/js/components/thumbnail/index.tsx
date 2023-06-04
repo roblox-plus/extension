@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
-import { ThumbnailState } from 'roblox';
-import ThumbnailType from '../../enums/thumbnailType';
+import { Thumbnail, ThumbnailState, ThumbnailType } from 'roblox';
 import {
   getAssetThumbnail,
   getAvatarHeadshotThumbnail,
 } from '../../services/thumbnails';
-import { Thumbnail } from 'roblox';
 
 type ThumbnailInput = {
   targetId: number;
