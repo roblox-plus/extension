@@ -71,6 +71,7 @@ addListener(
   },
   {
     levelOfParallelism: 1,
+    allowExternalConnections: true,
   }
 );
 

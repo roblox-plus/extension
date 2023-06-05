@@ -76,28 +76,35 @@ const getThumbnailSize = (thumbnailType: ThumbnailType) => {
 };
 
 // Listen for messages sent to the service worker.
-addListener(messageDestination, async (message: BackgroundMessage) => {
-  const cacheKey = `${message.type}:${message.targetId}`;
+addListener(
+  messageDestination,
+  async (message: BackgroundMessage) => {
+    const cacheKey = `${message.type}:${message.targetId}`;
 
-  // Check the cache
-  const thumbnail = await cache.getOrAdd(cacheKey, () =>
-    // Queue up the fetch request, when not in the cache
-    batchProcessor.enqueue({
-      type: message.type,
-      targetId: message.targetId,
-      size: getThumbnailSize(message.type),
-    })
-  );
+    // Check the cache
+    const thumbnail = await cache.getOrAdd(cacheKey, () =>
+      // Queue up the fetch request, when not in the cache
+      batchProcessor.enqueue({
+        type: message.type,
+        targetId: message.targetId,
+        size: getThumbnailSize(message.type),
+      })
+    );
 
-  if (thumbnail.state !== ThumbnailState.Completed) {
-    setTimeout(() => {
-      // If the thumbnail isn't complete, evict it from the cache early.
-      cache.evict(cacheKey);
-    }, 30 * 1000);
+    if (thumbnail.state !== ThumbnailState.Completed) {
+      setTimeout(() => {
+        // If the thumbnail isn't complete, evict it from the cache early.
+        cache.evict(cacheKey);
+      }, 30 * 1000);
+    }
+
+    return thumbnail;
+  },
+  {
+    levelOfParallelism: -1,
+    allowExternalConnections: true,
   }
-
-  return thumbnail;
-});
+);
 
 export {
   getAvatarHeadshotThumbnail,

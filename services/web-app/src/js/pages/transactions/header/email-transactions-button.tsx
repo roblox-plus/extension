@@ -60,7 +60,7 @@ export default function EmailTransactionsButton() {
         'Please check your email for your transactions, then come back to this page to upload the CSV.'
       );
     } catch (e) {
-      console.log('Failed to send transactions email', e);
+      console.warn('Failed to send transactions email', e);
       setDownloadState(LoadingState.Error);
       setDownloadMessage(
         'An unexpected error occurred while attempting to email your transactions. Please try again.'
