@@ -31,11 +31,6 @@ const sendMessage = async (
     if (isBackgroundPage) {
       // Message is from the background page, to the background page.
       try {
-        if (external && !externalListeners[destination]) {
-          reject('Listener does not accept external callers.');
-          return;
-        }
-
         if (listeners[destination]) {
           const message = JSON.parse(serializedMessage);
           const result = await listeners[destination](message);
@@ -65,6 +60,7 @@ const sendMessage = async (
       const outboundMessage = JSON.stringify({
         version,
         destination,
+        external,
         message: serializedMessage,
       });
 
@@ -214,6 +210,15 @@ if (isBackgroundPage) {
       return;
     }
 
+    if (fullMessage.external && !externalListeners[fullMessage.destination]) {
+      sendResponse({
+        success: false,
+        data: JSON.stringify('Listener does not accept external callers.'),
+      });
+
+      return;
+    }
+
     const listener = listeners[fullMessage.destination];
     if (!listener) {
       sendResponse({
@@ -328,7 +333,7 @@ if (isBackgroundPage) {
     console.debug('Received message for', destination, message);
 
     try {
-      const response = await sendMessage(destination, message);
+      const response = await sendMessage(destination, message, true);
 
       // Success! Now go tell the client they got everything they wanted.
       window.postMessage({
