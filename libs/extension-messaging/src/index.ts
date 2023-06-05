@@ -1,37 +1,29 @@
-import { isBackgroundPage } from '../../constants';
-
-// The type for representing a listener that can be attached by any service.
-type MessageListener = (message: any) => Promise<any>;
-
-// The internal result of processing a message.
-type MessageResult = {
-  success: boolean;
-  data: string;
-};
-
-// Message listener options about how to handle messages.
-type MessageListenerOptions = {
-  // How many messages can be processed in parallel.
-  // When set to -1, all messages can processed in parallel.
-  levelOfParallelism: -1 | 1;
-};
+import { isBackgroundPage } from '@tix-factory/extension-utils';
+import { version } from './constants';
+import MessageListener from './types/message-listener';
+import MessageListenerOptions from './types/message-listener-options';
+import MessageResult from './types/message-result';
 
 // All the listeners, set in the background page.
 const listeners: {
   [destination: string]: (message: object) => Promise<MessageResult>;
 } = {};
 
-// All the tabs actively connected to the message service.
-const tabs: { [key: string]: chrome.runtime.Port } = {};
+// Keep track of all the listeners that accept external calls.
+const externalListeners: { [destination: string]: boolean } = {};
 
-// An identifier that tells us which version of the messaging service we're using,
-// to ensure we don't try to process a message not intended for us.
-const version = 2.5;
+const externalResponseHandlers: {
+  [messageId: string]: {
+    resolve: (result: any) => void;
+    reject: (error: any) => void;
+  };
+} = {};
 
 // Send a message to a destination, and get back the result.
 const sendMessage = async (
   destination: string,
-  message: object
+  message: object,
+  external?: boolean
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     const serializedMessage = JSON.stringify(message);
@@ -63,10 +55,12 @@ const sendMessage = async (
       } catch (e) {
         reject(e);
       }
-    } else {
+    } else if (chrome?.runtime) {
+      // Message is being sent from the content script
       const outboundMessage = JSON.stringify({
         version,
         destination,
+        external,
         message: serializedMessage,
       });
 
@@ -89,36 +83,42 @@ const sendMessage = async (
           reject(data);
         }
       });
+    } else if (document.body?.dataset.extensionId) {
+      // Message is being sent by the native browser tab.
+      const messageId = crypto.randomUUID();
+      const timeout = setTimeout(() => {
+        if (externalResponseHandlers[messageId]) {
+          delete externalResponseHandlers[messageId];
+          reject(`Message timed out trying to contact extension`);
+        }
+      }, 15 * 1000);
+
+      externalResponseHandlers[messageId] = {
+        resolve: (result) => {
+          clearTimeout(timeout);
+          delete externalResponseHandlers[messageId];
+
+          resolve(result);
+        },
+        reject: (error) => {
+          clearTimeout(timeout);
+          delete externalResponseHandlers[messageId];
+
+          reject(error);
+        },
+      };
+
+      window.postMessage({
+        version,
+        extensionId: document.body.dataset.extensionId,
+        destination,
+        message,
+        messageId,
+      });
+    } else {
+      reject(`Could not find a way to transport the message to the extension.`);
     }
   });
-};
-
-// Fetches a tab that we can send a message to, for work processing.
-const getWorkerTab = (): chrome.runtime.Port | undefined => {
-  const keys = Object.keys(tabs);
-  return keys.length > 0 ? tabs[keys[0]] : undefined;
-};
-
-// Sends a message to a tab.
-const sendMessageToTab = async (
-  destination: string,
-  message: object,
-  tab: chrome.runtime.Port
-): Promise<void> => {
-  const serializedMessage = JSON.stringify(message);
-  const outboundMessage = JSON.stringify({
-    version,
-    destination,
-    message: serializedMessage,
-  });
-
-  console.debug(
-    `Sending message to '${destination}' in tab`,
-    serializedMessage,
-    tab
-  );
-
-  tab.postMessage(outboundMessage);
 };
 
 // Listen for messages at a specific destination.
@@ -186,6 +186,10 @@ const addListener = (
         .catch(reject);
     });
   };
+
+  if (options.allowExternalConnections) {
+    externalListeners[destination] = true;
+  }
 };
 
 // If we're currently in the background page, listen for messages.
@@ -203,6 +207,15 @@ if (isBackgroundPage) {
       !fullMessage.message
     ) {
       // Not for us.
+      return;
+    }
+
+    if (fullMessage.external && !externalListeners[fullMessage.destination]) {
+      sendResponse({
+        success: false,
+        data: JSON.stringify('Listener does not accept external callers.'),
+      });
+
       return;
     }
 
@@ -241,18 +254,7 @@ if (isBackgroundPage) {
     // https://stackoverflow.com/a/20077854/1663648
     return true;
   });
-
-  chrome.runtime.onConnect.addListener((port) => {
-    const id = crypto.randomUUID();
-    console.debug('Tab connected', id, port);
-    tabs[id] = port;
-
-    port.onDisconnect.addListener(() => {
-      console.debug('Disconnecting tab', id, port);
-      delete tabs[id];
-    });
-  });
-} else {
+} else if (chrome?.runtime) {
   console.debug(
     `Not attaching listener for messages, because we're not in the background.`
   );
@@ -299,6 +301,94 @@ if (isBackgroundPage) {
       });
     });
   }
+
+  // chrome.runtime is available, and we got a message from the window
+  // this could be a tab trying to get information from the extension
+  window.addEventListener('message', async (messageEvent) => {
+    const { extensionId, messageId, destination, message } = messageEvent.data;
+    if (
+      extensionId !== chrome.runtime.id ||
+      !messageId ||
+      !destination ||
+      !message
+    ) {
+      // They didn't want to contact us.
+      // Or if they did, they didn't have the required fields.
+      return;
+    }
+
+    if (messageEvent.data.version !== version) {
+      // They did want to contact us, but there was a version mismatch.
+      // We can't handle this message.
+      window.postMessage({
+        extensionId,
+        messageId,
+        success: false,
+        data: `Extension message receiver is incompatible with message sender`,
+      });
+
+      return;
+    }
+
+    console.debug('Received message for', destination, message);
+
+    try {
+      const response = await sendMessage(destination, message, true);
+
+      // Success! Now go tell the client they got everything they wanted.
+      window.postMessage({
+        extensionId,
+        messageId,
+        success: true,
+        data: response,
+      });
+    } catch (e) {
+      console.debug('Failed to send message to', destination, e);
+
+      // :coffin:
+      window.postMessage({
+        extensionId,
+        messageId,
+        success: false,
+        data: e,
+      });
+    }
+  });
+} else {
+  // Not a background page, and not a content script.
+  // This could be a page where we want to listen for calls from the tab.
+  window.addEventListener('message', (messageEvent) => {
+    const { extensionId, messageId, success, data } = messageEvent.data;
+    if (
+      extensionId !== document.body.dataset.extensionId ||
+      !messageId ||
+      typeof success !== 'boolean'
+    ) {
+      // Not for us.
+      return;
+    }
+
+    // Check to see if we have a handler waiting for this message response...
+    const responseHandler = externalResponseHandlers[messageId];
+    if (!responseHandler) {
+      console.warn(
+        'We got a response back for a message we no longer have a handler for.',
+        extensionId,
+        messageId,
+        success,
+        data
+      );
+      return;
+    }
+
+    // Yay! Tell the krustomer we have their data, from the extension.
+    console.debug('We received a response for', messageId, success, data);
+    if (success) {
+      responseHandler.resolve(data);
+    } else {
+      responseHandler.reject(data);
+    }
+  });
 }
 
 // Ensures that the same tab won't connect multiple times.
@@ -306,5 +396,6 @@ declare global {
   var messageServiceConnection: chrome.runtime.Port;
 }
 
+export { getWorkerTab, sendMessageToTab } from './tabs';
 export type { MessageListener };
-export { sendMessage, addListener, getWorkerTab, sendMessageToTab };
+export { sendMessage, addListener };

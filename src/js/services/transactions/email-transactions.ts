@@ -1,5 +1,5 @@
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import xsrfFetch from '../../utils/xsrfFetch';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'transactionsService.emailTransactions';
 
@@ -71,6 +71,7 @@ addListener(
   },
   {
     levelOfParallelism: 1,
+    allowExternalConnections: true,
   }
 );
 

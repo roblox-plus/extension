@@ -1,6 +1,6 @@
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { wait } from '@tix-factory/extension-utils';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'privateMessagesService.getUnreadMessageCount';
 const cache = new ExpirableDictionary<number>(messageDestination, 30 * 1000);

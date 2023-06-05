@@ -1,6 +1,6 @@
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { AssetType } from 'roblox';
 import AvatarAssetRule from '../../types/avatar-asset-rule';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'avatarService.getAvatarRules';
 let avatarAssetRules: AvatarAssetRule[] = [];

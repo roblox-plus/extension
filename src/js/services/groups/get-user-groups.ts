@@ -1,6 +1,6 @@
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import Group from '../../types/group';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'groupsService.getUserGroups';
 const cache = new ExpirableDictionary<Group[]>(messageDestination, 30 * 1000);
@@ -46,6 +46,7 @@ addListener(
   },
   {
     levelOfParallelism: 1,
+    allowExternalConnections: true,
   }
 );
 

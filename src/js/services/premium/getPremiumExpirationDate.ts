@@ -1,5 +1,5 @@
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'premiumService.getPremiumExpirationDate';
 const definitelyPremium: { [userId: number]: string | null } = {};
@@ -133,6 +133,7 @@ addListener(
   },
   {
     levelOfParallelism: 1,
+    allowExternalConnections: true,
   }
 );
 

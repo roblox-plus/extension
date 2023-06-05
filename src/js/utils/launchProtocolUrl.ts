@@ -1,10 +1,10 @@
-import { isBackgroundPage } from '../constants';
 import {
   addListener,
   getWorkerTab,
   sendMessage,
   sendMessageToTab,
-} from '../services/message';
+} from '@tix-factory/extension-messaging';
+import { isBackgroundPage } from '@tix-factory/extension-utils';
 
 const messageDestination = 'launchProtocolUrl';
 

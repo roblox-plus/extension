@@ -1,7 +1,7 @@
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { wait } from '@tix-factory/extension-utils';
 import { TradeStatusType } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'tradesService.getTradeCount';
 const cache = new ExpirableDictionary<number>(messageDestination, 30 * 1000);

@@ -1,12 +1,15 @@
 {
-  "name": "@tix-factory/extension-utils",
+  "name": "@tix-factory/extension-messaging",
   "version": "1.0.0",
   "private": true,
-  "description": "A local module where I am sharing code between the extension, and the web-app.",
+  "description": "A local module hosting the logic for messaging between service workers, tabs, and content scripts.",
   "browser": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc"
+  },
+  "dependencies": {
+    "@tix-factory/extension-utils": "file:../extension-utils"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.237",

@@ -1,4 +1,4 @@
-import { sendMessage, addListener } from '../message';
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 
 // Destination to be used with messaging.
 const messageDestinationPrefix = 'settingsService';
@@ -82,6 +82,10 @@ addListener(
         });
       }
     });
+  },
+  {
+    levelOfParallelism: -1,
+    allowExternalConnections: true,
   }
 );
 
@@ -108,6 +112,10 @@ addListener(
         );
       }
     });
+  },
+  {
+    levelOfParallelism: -1,
+    allowExternalConnections: true,
   }
 );
 

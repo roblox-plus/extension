@@ -1,5 +1,5 @@
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { User } from 'roblox';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'usersService.getAuthenticatedUser';
 const cacheDuration = 60 * 1000;

@@ -2,7 +2,6 @@ import {
   load as loadUserInfo,
   populate as populateUserInfo,
 } from './user-info';
-export * from './transactions';
 
 const load = async () => {
   if (!document.body) {

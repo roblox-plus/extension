@@ -1,6 +1,6 @@
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { User } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
-import { addListener, sendMessage } from '../message';
 
 const messageDestination = 'friendsService.getUserFriends';
 const cache = new ExpirableDictionary<User[]>(messageDestination, 60 * 1000);

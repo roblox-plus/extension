@@ -1,6 +1,11 @@
 import { LoadingState } from '@tix-factory/extension-utils';
 import { useMemo } from 'react';
-import { AssetType, getCatalogLink, getGamePassLink } from 'roblox';
+import {
+  AssetType,
+  ThumbnailType,
+  getCatalogLink,
+  getGamePassLink,
+} from 'roblox';
 import Transaction from '../../../types/transaction';
 import TransactionItem from '../../../types/transaction-item';
 import isResaleTransaction from '../../../utils/is-resale-transaction';
@@ -30,6 +35,21 @@ const getItemUrl = (transaction: Transaction): URL | undefined => {
   return undefined;
 };
 
+const getThumbnailType = (itemType: string): ThumbnailType | undefined => {
+  switch (itemType) {
+    case 'Game Pass':
+      return ThumbnailType.GamePass;
+    case 'Developer Product':
+      return ThumbnailType.DeveloperProduct;
+    case 'Private Server Product':
+      return ThumbnailType.GameIcon;
+    default:
+      if (Object.keys(AssetType).includes(itemType)) {
+        return ThumbnailType.Asset;
+      }
+  }
+};
+
 export default function useTransactionItems(): [
   TransactionItem[],
   LoadingState
@@ -56,6 +76,7 @@ export default function useTransactionItems(): [
           id: transaction.item_id,
           name: transaction.item_name,
           type: transaction.item_type,
+          thumbnailType: getThumbnailType(transaction.item_type),
           revenue: transaction.net_revenue,
           link: getItemUrl(transaction),
           saleTransactions: isResale ? [] : [transaction],

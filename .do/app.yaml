@@ -70,7 +70,6 @@ static_sites:
       branch: 'master'
       deploy_on_push: true
       repo: 'roblox-plus/extension'
-    source_dir: 'services/web-app'
     output_dir: '/app/build'
     dockerfile_path: 'services/web-app/Dockerfile'
     routes:

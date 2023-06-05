@@ -43,6 +43,14 @@ jobs:
         run: npm run build
         working-directory: ./libs/extension-utils
 
+      - name: '🚚 npm install (libs/extension-messaging)'
+        run: npm ci
+        working-directory: ./libs/extension-messaging
+
+      - name: '🏗️ Build libs/extension-messaging'
+        run: npm run build
+        working-directory: ./libs/extension-messaging
+
       # Build extension itself
       - name: '🚚 npm install'
         run: npm ci

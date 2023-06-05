@@ -1,4 +1,4 @@
-import { manifest } from '../constants';
+import { manifest } from '@tix-factory/extension-utils';
 export * from './notifiers';
 
 chrome.browserAction.setTitle({

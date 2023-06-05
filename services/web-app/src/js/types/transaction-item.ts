@@ -1,3 +1,4 @@
+import { ThumbnailType } from 'roblox';
 import Transaction from './transaction';
 
 type TransactionItem = {
@@ -9,6 +10,8 @@ type TransactionItem = {
 
   // The type of item involved in the transaction.
   type: string;
+
+  thumbnailType?: ThumbnailType;
 
   // The link to the item details page.
   link?: URL;
