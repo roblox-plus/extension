@@ -35,14 +35,6 @@ jobs:
         run: npm run build
         working-directory: ./libs/roblox
 
-      - name: '🚚 npm install (libs/extension-messaging)'
-        run: npm ci
-        working-directory: ./libs/extension-messaging
-
-      - name: '🏗️ Build libs/extension-messaging'
-        run: npm run build
-        working-directory: ./libs/extension-messaging
-
       - name: '🚚 npm install (libs/extension-utils)'
         run: npm ci
         working-directory: ./libs/extension-utils
@@ -50,6 +42,14 @@ jobs:
       - name: '🏗️ Build libs/extension-utils'
         run: npm run build
         working-directory: ./libs/extension-utils
+
+      - name: '🚚 npm install (libs/extension-messaging)'
+        run: npm ci
+        working-directory: ./libs/extension-messaging
+
+      - name: '🏗️ Build libs/extension-messaging'
+        run: npm run build
+        working-directory: ./libs/extension-messaging
 
       # Build extension itself
       - name: '🚚 npm install'
