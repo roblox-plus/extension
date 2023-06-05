@@ -82,6 +82,10 @@ addListener(
         });
       }
     });
+  },
+  {
+    levelOfParallelism: -1,
+    allowExternalConnections: true,
   }
 );
 
@@ -108,6 +112,10 @@ addListener(
         );
       }
     });
+  },
+  {
+    levelOfParallelism: -1,
+    allowExternalConnections: true,
   }
 );
 
