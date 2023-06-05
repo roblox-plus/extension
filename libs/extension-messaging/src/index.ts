@@ -9,6 +9,9 @@ const listeners: {
   [destination: string]: (message: object) => Promise<MessageResult>;
 } = {};
 
+// Keep track of all the listeners that accept external calls.
+const externalListeners: { [destination: string]: boolean } = {};
+
 const externalResponseHandlers: {
   [messageId: string]: {
     resolve: (result: any) => void;
@@ -19,7 +22,8 @@ const externalResponseHandlers: {
 // Send a message to a destination, and get back the result.
 const sendMessage = async (
   destination: string,
-  message: object
+  message: object,
+  external?: boolean
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     const serializedMessage = JSON.stringify(message);
@@ -27,6 +31,11 @@ const sendMessage = async (
     if (isBackgroundPage) {
       // Message is from the background page, to the background page.
       try {
+        if (external && !externalListeners[destination]) {
+          reject('Listener does not accept external callers.');
+          return;
+        }
+
         if (listeners[destination]) {
           const message = JSON.parse(serializedMessage);
           const result = await listeners[destination](message);
@@ -181,6 +190,10 @@ const addListener = (
         .catch(reject);
     });
   };
+
+  if (options.allowExternalConnections) {
+    externalListeners[destination] = true;
+  }
 };
 
 // If we're currently in the background page, listen for messages.
@@ -286,7 +299,7 @@ if (isBackgroundPage) {
 
   // chrome.runtime is available, and we got a message from the window
   // this could be a tab trying to get information from the extension
-  window.addEventListener('message', (messageEvent) => {
+  window.addEventListener('message', async (messageEvent) => {
     const { extensionId, messageId, destination, message } = messageEvent.data;
     if (
       extensionId !== chrome.runtime.id ||
@@ -303,8 +316,8 @@ if (isBackgroundPage) {
       // They did want to contact us, but there was a version mismatch.
       // We can't handle this message.
       window.postMessage({
-        extensionId: messageEvent.data.extensionId,
-        messageId: messageEvent.data.messageId,
+        extensionId,
+        messageId,
         success: false,
         data: `Extension message receiver is incompatible with message sender`,
       });
@@ -312,13 +325,64 @@ if (isBackgroundPage) {
       return;
     }
 
-    console.log('Received message for', destination, message);
+    console.debug('Received message for', destination, message);
+
+    try {
+      const response = await sendMessage(destination, message);
+
+      // Success! Now go tell the client they got everything they wanted.
+      window.postMessage({
+        extensionId,
+        messageId,
+        success: true,
+        data: response,
+      });
+    } catch (e) {
+      console.debug('Failed to send message to', destination, e);
+
+      // :coffin:
+      window.postMessage({
+        extensionId,
+        messageId,
+        success: false,
+        data: e,
+      });
+    }
   });
 } else {
   // Not a background page, and not a content script.
   // This could be a page where we want to listen for calls from the tab.
   window.addEventListener('message', (messageEvent) => {
-    // TODO: Process the message responses
+    const { extensionId, messageId, success, data } = messageEvent.data;
+    if (
+      extensionId !== document.body.dataset.extensionId ||
+      !messageId ||
+      typeof success !== 'boolean'
+    ) {
+      // Not for us.
+      return;
+    }
+
+    // Check to see if we have a handler waiting for this message response...
+    const responseHandler = externalResponseHandlers[messageId];
+    if (!responseHandler) {
+      console.warn(
+        'We got a response back for a message we no longer have a handler for.',
+        extensionId,
+        messageId,
+        success,
+        data
+      );
+      return;
+    }
+
+    // Yay! Tell the krustomer we have their data, from the extension.
+    console.debug('We received a response for', messageId, success, data);
+    if (success) {
+      responseHandler.resolve(data);
+    } else {
+      responseHandler.reject(data);
+    }
   });
 }
 
