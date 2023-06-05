@@ -10,15 +10,16 @@ import {
   Link,
   Typography,
 } from '@mui/material';
-import { Fragment, useEffect, useMemo, useState } from 'react';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import {
   LocalizationProvider,
   StaticDateTimePicker,
 } from '@mui/x-date-pickers';
-import useSelectedCreator from '../hooks/useSelectedCreator';
-import AgentType from '../../../enums/agentType';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { sendMessage } from '@tix-factory/extension-messaging';
 import { LoadingState } from '@tix-factory/extension-utils';
+import { Fragment, useMemo, useState } from 'react';
+import AgentType from '../../../enums/agentType';
+import useSelectedCreator from '../hooks/useSelectedCreator';
 
 export default function EmailTransactionsButton() {
   const [selectedCreator] = useSelectedCreator();
@@ -36,7 +37,7 @@ export default function EmailTransactionsButton() {
     ];
   }, [date]);
 
-  const downloadTransactions = () => {
+  const downloadTransactions = async () => {
     console.log(
       'Download transactions for',
       selectedCreator,
@@ -46,13 +47,25 @@ export default function EmailTransactionsButton() {
 
     setDownloadState(LoadingState.Loading);
 
-    window.postMessage({
-      type: 'download-transactions',
-      targetType: selectedCreator.type,
-      targetId: selectedCreator.id,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-    });
+    try {
+      await sendMessage('transactionsService.emailTransactions', {
+        targetType: selectedCreator.type,
+        targetId: selectedCreator.id,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      });
+
+      setDownloadState(LoadingState.Success);
+      setDownloadMessage(
+        'Please check your email for your transactions, then come back to this page to upload the CSV.'
+      );
+    } catch (e) {
+      console.log('Failed to send transactions email', e);
+      setDownloadState(LoadingState.Error);
+      setDownloadMessage(
+        'An unexpected error occurred while attempting to email your transactions. Please try again.'
+      );
+    }
   };
 
   const reset = () => {
@@ -70,28 +83,6 @@ export default function EmailTransactionsButton() {
     reset();
     setDiaglogOpen(true);
   };
-
-  useEffect(() => {
-    const listener = (event: MessageEvent<any>) => {
-      if (event.data?.type !== 'download-transactions' || !event.data.message) {
-        return;
-      }
-
-      if (event.data.success) {
-        setDownloadState(LoadingState.Success);
-      } else {
-        setDownloadState(LoadingState.Error);
-      }
-
-      setDownloadMessage(event.data.message);
-    };
-
-    window.addEventListener('message', listener);
-
-    return () => {
-      window.removeEventListener('message', listener);
-    };
-  }, []);
 
   const renderDialogContent = () => {
     switch (downloadState) {

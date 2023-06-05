@@ -10,6 +10,7 @@
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.12",
     "@mui/x-date-pickers": "^6.5.0",
+    "@tix-factory/extension-messaging": "file:../../libs/extension-messaging",
     "@tix-factory/extension-utils": "file:../../libs/extension-utils",
     "@types/node": "^16.18.14",
     "@types/react": "^18.0.28",
