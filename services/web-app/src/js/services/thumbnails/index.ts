@@ -1,9 +1,22 @@
+import { sendMessage } from '@tix-factory/extension-messaging';
 import { wait } from '@tix-factory/extension-utils';
-import { Thumbnail, ThumbnailState } from 'roblox';
+import { Thumbnail, ThumbnailState, ThumbnailType } from 'roblox';
 import { apiBaseUrl } from '../../constants';
 import { getAuthenticatedUser } from '../authentication';
 
 let authenticatedUserThumbnailPromise: Promise<Thumbnail>;
+
+// Fetches a thumbnail, loaded via the extension, when available.
+// Otherwise, fails.
+const getThumbnail = (
+  type: ThumbnailType,
+  targetId: number
+): Promise<Thumbnail> => {
+  return sendMessage('thumbnailsService.getThumbnail', {
+    type,
+    targetId,
+  });
+};
 
 // Retrieves the thumbnail for the authenticated user.
 const getAuthenticatedUserThumbnail = (): Promise<Thumbnail> => {
@@ -64,4 +77,4 @@ const getAuthenticatedUserThumbnail = (): Promise<Thumbnail> => {
   );
 };
 
-export { getAuthenticatedUserThumbnail };
+export { getAuthenticatedUserThumbnail, getThumbnail };

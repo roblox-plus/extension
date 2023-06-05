@@ -3,7 +3,7 @@ import { Thumbnail, ThumbnailState, ThumbnailType } from 'roblox';
 import ExpirableDictionary from '../../utils/expireableDictionary';
 import batchProcessor from './batchProcessor';
 
-const messageDestination = 'thumbnailsService.getAvatarHeadshotThumbnail';
+const messageDestination = 'thumbnailsService.getThumbnail';
 const cache = new ExpirableDictionary<Thumbnail>(
   messageDestination,
   5 * 60 * 1000

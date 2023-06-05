@@ -9,10 +9,11 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import { Fragment } from 'react';
 import { LoadingState } from '@tix-factory/extension-utils';
-import TransactionCardContainer from './card';
+import { Fragment } from 'react';
+import Thumbnail from '../../../components/thumbnail';
 import useTransactionItems from '../hooks/useTransactionItems';
+import TransactionCardContainer from './card';
 
 export default function TransactionsList() {
   const [items, loadingState] = useTransactionItems();
@@ -56,7 +57,11 @@ export default function TransactionsList() {
                   p: 1,
                 }}
               >
-                <Fragment />
+                {item.thumbnailType !== undefined ? (
+                  <Thumbnail type={item.thumbnailType} targetId={item.id} />
+                ) : (
+                  <Fragment />
+                )}
               </CardMedia>
               <CardContent
                 sx={{
