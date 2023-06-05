@@ -114,7 +114,25 @@ export default function EmailTransactionsButton() {
       case LoadingState.Loading:
         return <CircularProgress />;
       case LoadingState.Error:
-        return <Alert severity="error">{downloadMessage}</Alert>;
+        return (
+          <Alert severity="error">
+            {downloadMessage}
+            <br />
+            <br />
+            If this issue is consistent, try downloading your transactions from
+            the{' '}
+            <Link
+              href={
+                selectedCreator.type === AgentType.User
+                  ? 'https://www.roblox.com/transactions'
+                  : `https://www.roblox.com/groups/configure?id=${selectedCreator.id}#!/revenue/sales`
+              }
+            >
+              transactions page
+            </Link>
+            {' directly.'}
+          </Alert>
+        );
       case LoadingState.Success:
         return <Typography>{downloadMessage}</Typography>;
       default:
