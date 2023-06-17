@@ -3,6 +3,7 @@ const markdownJsonFile = './src/markdown.json';
 
 const markdownFiles = {
   privacyPolicy: '../../PRIVACY.md',
+  support: '../../SUPPORT.md',
   termsOfService: '../../TERMS_OF_SERVICE.md',
 };
 
