@@ -96,11 +96,13 @@ export default function Markdown({ children }: MarkdownInput) {
         },
       }}
     >
-      {twemoji.parse(
-        children.replace(/:\w+:/g, (str) =>
-          getEmoji(str.substring(1, str.length - 1))
+      {twemoji
+        .parse(
+          children.replace(/:\w+:/g, (str) =>
+            getEmoji(str.substring(1, str.length - 1))
+          )
         )
-      )}
+        .replace(/class=/g, 'className=')}
     </ReactMarkdown>
   );
 }

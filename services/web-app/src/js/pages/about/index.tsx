@@ -49,16 +49,13 @@ export default function About() {
         })}
       </Tabs>
       <Box sx={{ p: 1, ml: 1 }}>
-        {tab === 'privacy-policy' ? (
-          <Markdown>{markdown.privacyPolicy}</Markdown>
-        ) : (
-          <Fragment />
-        )}
-        {tab === 'terms-of-service' ? (
-          <Markdown>{markdown.termsOfService}</Markdown>
-        ) : (
-          <Fragment />
-        )}
+        {Object.entries(markdown).map(([markdownKey, markdownText]) => {
+          if (tab === markdownKey.replace(/([A-Z])/g, '-$1').toLowerCase()) {
+            return <Markdown key={markdownKey}>{markdownText}</Markdown>;
+          }
+
+          return <Fragment key={markdownKey} />;
+        })}
       </Box>
     </Box>
   );
