@@ -41,7 +41,7 @@ RUN npm ci
 
 # Build the app
 COPY ./services/web-app/ /services/app/
-COPY ./PRIVACY.md /PRIVACY.md
+COPY ./*.md /
 RUN node markdown.cjs
 RUN npm run build
 # RUN npm run test
