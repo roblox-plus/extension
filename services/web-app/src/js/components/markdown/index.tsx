@@ -11,6 +11,9 @@ type MarkdownInput = {
 const emojiOverrides: { [markdownName: string]: string } = {
   roll_eyes: 'eyeroll',
   white_check_mark: 'check_mark_button',
+  new: 'new_button',
+  arrows_counterclockwise: 'counterclockwise_arrows_button',
+  sweat_smile: 'grinning_face_with_sweat',
 };
 
 const uncleanAlias = (name: string): string => {
@@ -44,7 +47,7 @@ const getEmoji = (name: string) => {
     }
   }
 
-  return name;
+  return `:${name}:`;
 };
 
 export default function Markdown({ children }: MarkdownInput) {

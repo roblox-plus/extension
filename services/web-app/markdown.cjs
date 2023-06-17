@@ -3,6 +3,7 @@ const markdownJsonFile = './src/markdown.json';
 
 const markdownFiles = {
   about: '../../README.md',
+  changes: '../../CHANGELOG.md',
   privacyPolicy: '../../PRIVACY.md',
   premium: '../../PREMIUM.md',
   support: '../../SUPPORT.md',
