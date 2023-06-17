@@ -4,7 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import markdown from '../../../markdown.json';
 import Markdown from '../../components/markdown';
 import { aboutPath } from '../../constants';
-import AboutTabs from './about-tabs';
+
+const AboutTabs: { [path: string]: string } = {
+  '': 'About',
+  support: 'Support',
+  'privacy-policy': 'Privacy Policy',
+  'terms-of-service': 'Terms of Service',
+};
 
 const aboutTabPaths = Object.keys(AboutTabs);
 
@@ -32,7 +38,7 @@ export default function About() {
           }
         }}
       >
-        {Object.keys(AboutTabs).map((path, i) => {
+        {aboutTabPaths.map((path, i) => {
           return (
             <Tab
               key={path}
