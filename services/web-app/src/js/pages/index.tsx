@@ -1,14 +1,18 @@
-import { Route, Routes, useLocation } from 'react-router-dom';
-import Login from './login';
-import { loginPath, settingsPath, transactionsPath } from '../constants';
-import useAuthenticatedUser from '../hooks/useAuthenticatedUser';
-import { LoadingState } from '@tix-factory/extension-utils';
 import { Alert, CircularProgress } from '@mui/material';
+import { LoadingState } from '@tix-factory/extension-utils';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import {
+  aboutPath,
+  loginPath,
+  settingsPath,
+  transactionsPath,
+} from '../constants';
+import useAuthenticatedUser from '../hooks/useAuthenticatedUser';
+import About from './about';
+import Login from './login';
+import LoginRedirect from './login/redirect';
 import Settings from './settings';
 import Transactions from './transactions';
-import LoginRedirect from './login/redirect';
-import PrivacyPolicy from './privacy-policy';
-import TermsOfService from './terms-of-service';
 
 export default function Pages() {
   const location = useLocation();
@@ -58,8 +62,18 @@ export default function Pages() {
       <Route path={`${settingsPath}/:tab`} element={<Settings />} />
       <Route path={transactionsPath} element={<Transactions />} />
       <Route path={`${transactionsPath}/:groupId`} element={<Transactions />} />
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/terms-of-service" element={<TermsOfService />} />
+
+      {/* About page, and related redirects */}
+      <Route path={aboutPath} element={<About />} />
+      <Route path={`${aboutPath}/:tab`} element={<About />} />
+      <Route
+        path="/privacy-policy"
+        element={<Navigate to={aboutPath + '/privacy-policy'} />}
+      />
+      <Route
+        path="/terms-of-service"
+        element={<Navigate to={aboutPath + '/terms-of-service'} />}
+      />
     </Routes>
   );
 }
