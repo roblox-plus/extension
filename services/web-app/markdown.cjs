@@ -2,6 +2,7 @@ const fs = require('fs/promises');
 const markdownJsonFile = './src/markdown.json';
 
 const markdownFiles = {
+  about: '../../README.md',
   privacyPolicy: '../../PRIVACY.md',
   support: '../../SUPPORT.md',
   termsOfService: '../../TERMS_OF_SERVICE.md',

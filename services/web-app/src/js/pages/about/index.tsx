@@ -50,7 +50,10 @@ export default function About() {
       </Tabs>
       <Box sx={{ p: 1, ml: 1 }}>
         {Object.entries(markdown).map(([markdownKey, markdownText]) => {
-          if (tab === markdownKey.replace(/([A-Z])/g, '-$1').toLowerCase()) {
+          if (
+            (!tab && markdownKey === 'about') ||
+            tab === markdownKey.replace(/([A-Z])/g, '-$1').toLowerCase()
+          ) {
             return <Markdown key={markdownKey}>{markdownText}</Markdown>;
           }
 
