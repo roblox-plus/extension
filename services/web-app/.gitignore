@@ -24,3 +24,4 @@ yarn-error.log*
 
 # Repository Specific
 secrets/
+src/markdown.json

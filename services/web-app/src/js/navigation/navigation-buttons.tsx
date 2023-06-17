@@ -1,12 +1,11 @@
-import { useLocation, Link as AppLink } from 'react-router-dom';
-import { settingsPath } from '../constants';
-import { Button, Link } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
+import { Button, Link } from '@mui/material';
 import { Fragment } from 'react';
+import { Link as AppLink } from 'react-router-dom';
+import { aboutPath, settingsPath } from '../constants';
 import useAuthenticatedUser from '../hooks/useAuthenticatedUser';
 
 export default function NavigationButtons() {
-  const location = useLocation();
   const authenticatedUser = useAuthenticatedUser();
 
   return (
@@ -27,6 +26,9 @@ export default function NavigationButtons() {
           <Button sx={{ color: 'text.primary', ml: 2 }}>Transactions</Button>
         </AppLink>
       ) : null}
+      <AppLink className="navigation-link" to={aboutPath}>
+        <Button sx={{ color: 'text.primary', ml: 2 }}>About</Button>
+      </AppLink>
     </Fragment>
   );
 }

@@ -1,20 +1,122 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "npm",
-			"script": "react",
-			"problemMatcher": [
-				"$eslint-stylish"
-			],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
-		},
-		{
-			"type": "npm",
-			"script": "install"
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Package (extension-utils)",
+      "type": "shell",
+      "command": "npm ci; npm run build",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "options": {
+        "cwd": "${workspaceFolder}/libs/extension-utils"
+      }
+    },
+    {
+      "label": "Build Package (extension-messaging)",
+      "type": "shell",
+      "command": "npm ci; npm run build",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "options": {
+        "cwd": "${workspaceFolder}/libs/extension-messaging"
+      }
+    },
+    {
+      "label": "Build Package (roblox)",
+      "type": "shell",
+      "command": "npm ci; npm run build",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "options": {
+        "cwd": "${workspaceFolder}/libs/roblox"
+      }
+    },
+    {
+      "label": "Build Markdown",
+      "type": "shell",
+      "command": "node markdown.cjs",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "options": {
+        "cwd": "${workspaceFolder}/services/web-app"
+      }
+    },
+    {
+      "label": "Install Packages (extension)",
+      "type": "shell",
+      "command": "npm ci",
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Install Packages (web-app)",
+      "type": "shell",
+      "command": "npm ci",
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}/services/web-app"
+      }
+    },
+    {
+      "label": "Build Extension (react)",
+      "type": "npm",
+      "script": "react",
+      "problemMatcher": ["$tsc"],
+      "group": "build"
+    },
+    {
+      "label": "Build Extension (TypeScript)",
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": ["$tsc"],
+      "group": "build"
+    },
+    {
+      "label": "Build web-app (react-scripts)",
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": ["$tsc"],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}/services/web-app"
+      }
+    },
+    {
+      "label": "Build Extension",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Build Package (roblox)",
+        "Build Package (extension-utils)",
+        "Build Package (extension-messaging)",
+
+        "Install Packages (extension)",
+        "Build Extension (react)",
+        "Build Extension (TypeScript)"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Build web-app",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Build Package (roblox)",
+        "Build Package (extension-utils)",
+        "Build Package (extension-messaging)",
+
+        "Build Markdown",
+
+        "Install Packages (web-app)",
+        "Build web-app (react-scripts)"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
 }
