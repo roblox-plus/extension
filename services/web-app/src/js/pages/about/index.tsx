@@ -1,9 +1,10 @@
 import { Box, Tab, Tabs } from '@mui/material';
 import { Fragment, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import markdown from '../../../markdown.json';
+import Markdown from '../../components/markdown';
 import { aboutPath } from '../../constants';
 import AboutTabs from './about-tabs';
-import PrivacyPolicy from './privacy-policy';
 
 const aboutTabPaths = Object.keys(AboutTabs);
 
@@ -48,7 +49,11 @@ export default function About() {
         })}
       </Tabs>
       <Box sx={{ p: 1, ml: 1 }}>
-        {tab === 'privacy-policy' ? <PrivacyPolicy /> : <Fragment />}
+        {tab === 'privacy-policy' ? (
+          <Markdown>{markdown.privacyPolicy}</Markdown>
+        ) : (
+          <Fragment />
+        )}
       </Box>
     </Box>
   );
