@@ -54,6 +54,11 @@ export default function About() {
         ) : (
           <Fragment />
         )}
+        {tab === 'terms-of-service' ? (
+          <Markdown>{markdown.termsOfService}</Markdown>
+        ) : (
+          <Fragment />
+        )}
       </Box>
     </Box>
   );

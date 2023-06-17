@@ -1,11 +1,15 @@
 const fs = require('fs/promises');
 const markdownJsonFile = './src/markdown.json';
 
+const markdownFiles = {
+  privacyPolicy: '../../PRIVACY.md',
+  termsOfService: '../../TERMS_OF_SERVICE.md',
+};
+
 const updateMarkdown = async (markdownJson) => {
-  markdownJson['privacyPolicy'] = await fs.readFile(
-    '../../PRIVACY.md',
-    'utf-8'
-  );
+  for (let key in markdownFiles) {
+    markdownJson[key] = await fs.readFile(markdownFiles[key], 'utf-8');
+  }
 
   await fs.writeFile(
     markdownJsonFile,
