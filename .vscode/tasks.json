@@ -32,6 +32,16 @@
       }
     },
     {
+      "label": "Build Markdown",
+      "type": "shell",
+      "command": "node markdown.cjs",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "options": {
+        "cwd": "${workspaceFolder}/services/web-app"
+      }
+    },
+    {
       "label": "Install Packages (extension)",
       "type": "shell",
       "command": "npm ci",
@@ -97,6 +107,8 @@
         "Build Package (roblox)",
         "Build Package (extension-utils)",
         "Build Package (extension-messaging)",
+
+        "Build Markdown",
 
         "Install Packages (web-app)",
         "Build web-app (react-scripts)"

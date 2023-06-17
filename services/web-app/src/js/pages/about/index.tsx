@@ -1,8 +1,9 @@
-import { Tab, Tabs } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import { Fragment, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { aboutPath } from '../../constants';
 import AboutTabs from './about-tabs';
+import PrivacyPolicy from './privacy-policy';
 
 const aboutTabPaths = Object.keys(AboutTabs);
 
@@ -15,10 +16,13 @@ export default function About() {
   }, [tab]);
 
   return (
-    <Fragment>
+    <Box sx={{ display: 'flex' }}>
       <Tabs
         value={tabIndex}
         orientation="vertical"
+        sx={{
+          minWidth: 200,
+        }}
         onChange={(_, i) => {
           if (i > 0) {
             navigate(`${aboutPath}/${aboutTabPaths[i]}`);
@@ -43,6 +47,9 @@ export default function About() {
           );
         })}
       </Tabs>
-    </Fragment>
+      <Box sx={{ p: 1, ml: 1 }}>
+        {tab === 'privacy-policy' ? <PrivacyPolicy /> : <Fragment />}
+      </Box>
+    </Box>
   );
 }
