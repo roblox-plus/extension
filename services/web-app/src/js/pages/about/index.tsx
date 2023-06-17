@@ -7,6 +7,7 @@ import { aboutPath } from '../../constants';
 
 const AboutTabs: { [path: string]: string } = {
   '': 'About',
+  premium: 'Premium',
   support: 'Support',
   'privacy-policy': 'Privacy Policy',
   'terms-of-service': 'Terms of Service',
