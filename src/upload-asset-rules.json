@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "User-Agent",
+          "value": "Roblox/WinInet",
+          "operation": "set"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "https://data.roblox.com/Data/Upload.ashx?assetid=311113112&type=Model",
+      "resourceTypes": ["xmlhttprequest"]
+    }
+  }
+]
