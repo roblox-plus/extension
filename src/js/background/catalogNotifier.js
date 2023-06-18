@@ -37,10 +37,10 @@ RPlus.notifiers.catalog = (function () {
 		});
 	}
 
-	function showNotification(notification, metadata, assetId) {
-		console.log("showNotification", notification, metadata, assetId);
+	function showNotification(notification, metadata) {
+		console.log("showNotification", notification, metadata);
 
-		if (!isNaN(assetId) && notification.buttons && notification.buttons.length === 1 && notification.buttons[0].includes("Buy for")) {
+		if (notification.buttons && notification.buttons.length === 1 && notification.buttons[0].includes("Buy for")) {
 			// No longer supported.
 			delete notification.buttons;
 		}
@@ -64,18 +64,11 @@ RPlus.notifiers.catalog = (function () {
 	function processNotification(notification) {
 		Extension.Storage.Singleton.get("notifierSounds").then(notifierSounds => {
 			notifierSounds = notifierSounds || {};
-			var assetId = NaN;
-
 			var metadata = {};
 
 			if (notification.url) {
 				metadata.url = notification.url;
-				assetId = Roblox.catalog.getIdFromUrl(notification.url) || NaN;
-				if (!isNaN(assetId)) {
-					metadata.robloxSound = (notification.title || "").toLowerCase().includes("it's free")
-						? 130771265
-						: Number(notifierSounds.item) || 205318910;
-				}
+				metadata.robloxSound = Number(notifierSounds.item) || 205318910;
 			}
 
 			var creatorName = notification.items && notification.items.Creator;
@@ -87,7 +80,7 @@ RPlus.notifiers.catalog = (function () {
 					}
 
 					if (creatorName === user.username) {
-						showNotification(notification, metadata, assetId);
+						showNotification(notification, metadata);
 						return;
 					}
 
@@ -98,7 +91,7 @@ RPlus.notifiers.catalog = (function () {
 						}
 
 						if (creatorId === user.id) {
-							showNotification(notification, metadata, assetId);
+							showNotification(notification, metadata);
 							return;
 						}
 
@@ -108,7 +101,7 @@ RPlus.notifiers.catalog = (function () {
 								return;
 							}
 
-							showNotification(notification, metadata, assetId);
+							showNotification(notification, metadata);
 						}).catch(function(err) {
 							console.error("Skipping notification for failure to check following creator", creatorName, notification, err);
 						});
@@ -119,7 +112,7 @@ RPlus.notifiers.catalog = (function () {
 					console.error("Skipping notification because could not check user is not logged in", notification, err);
 				});
 			} else {
-				showNotification(notification, metadata, assetId);
+				showNotification(notification, metadata);
 			}
 		}).catch(err => {
 			console.warn("Not showing notification", err, notification);
@@ -160,44 +153,6 @@ RPlus.notifiers.catalog = (function () {
 	return {
 		processMessage: processMessage,
 		updateToken: updateToken,
-		testLimitedNotification: function() {
-			processMessage({
-				"data": {
-					"notification": JSON.stringify({
-						"metadata": {},
-						"buttons": [
-							"Buy for R$70"
-						],
-						"icon": "https://www.roblox.com/asset-thumbnail/image?width=420&height=420&assetId=4484418472",
-						"title": "New Hat",
-						"message": "Epic Block Head",
-						"items": {
-							"Price": "R$70"
-						},
-						"url": "https://www.roblox.com/catalog/4484418472/Epic-Block-Head?rbxp=48103520"
-					})
-				},
-				"from":"/topics/catalog-notifier-premium"
-			});
-		},
-		testFreeItemNotification: function() {
-			processMessage({
-				"data": {
-					"notification": JSON.stringify({
-						"metadata": {},
-						"buttons": [],
-						"icon": "https://www.roblox.com/asset-thumbnail/image?width=420&height=420&assetId=4484418472",
-						"title": "IT'S FREE",
-						"message": "Epic Block Head",
-						"items": {
-							"Price": "Free"
-						},
-						"url": "https://www.roblox.com/catalog/4484418472/Epic-Block-Head?rbxp=48103520"
-					})
-				},
-				"from":"/topics/catalog-notifier-premium"
-			});
-		},
 		getLastRegistration: function () {
 			return new Date(lastRegistration);
 		}
