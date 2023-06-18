@@ -24,6 +24,9 @@ type ToggleCardInput = {
   // Whether or not the card is disabled.
   disabled?: boolean;
 
+  // If the setting name is not specified, and the value needs to be loaded, this will be used.
+  loadValue?: () => Promise<boolean>;
+
   // A custom handler for modifying the setting.
   setValue?: (value: boolean) => Promise<void>;
 
@@ -37,6 +40,7 @@ export default function ToggleCard({
   settingName,
   defaultValue,
   disabled,
+  loadValue,
   setValue,
   onChange,
 }: ToggleCardInput) {
@@ -58,6 +62,18 @@ export default function ToggleCard({
 
   useEffect(() => {
     if (!settingName) {
+      if (loadValue) {
+        loadValue()
+          .then((v) => {
+            update(v);
+            setState(LoadingState.Success);
+          })
+          .catch((err) => {
+            console.error('Failed to load custom setting value', label, err);
+            setState(LoadingState.Error);
+          });
+      }
+
       return;
     }
 

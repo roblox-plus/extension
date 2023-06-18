@@ -4,6 +4,7 @@ import Emoji from '../../../components/emoji';
 import ToggleCard from '../components/toggle-card';
 import ExtensionNotificationSettings from './extension-notifications';
 import FriendNotificationSettings from './friend-notifications';
+import GroupNotificationSettings from './group-notifications';
 
 export default function NotificationSettings() {
   return (
@@ -27,6 +28,8 @@ export default function NotificationSettings() {
         description="Notifications when you get a trade, send one, or a trade closes."
         settingName="tradeNotifier"
       />
+
+      <GroupNotificationSettings />
 
       <ExtensionNotificationSettings />
     </Fragment>
