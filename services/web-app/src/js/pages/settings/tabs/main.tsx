@@ -6,7 +6,7 @@ import { aboutPath } from '../../../constants';
 import useAuthenticatedUser from '../../../hooks/useAuthenticatedUser';
 import ToggleCard from '../components/toggle-card';
 
-export default function OtherSettings() {
+export default function MainSettings() {
   const authenticatedUser = useAuthenticatedUser();
 
   return (

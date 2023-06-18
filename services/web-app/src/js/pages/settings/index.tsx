@@ -6,11 +6,11 @@ import '../../../css/settings.scss';
 import { extensionUrl, settingsPath } from '../../constants';
 import useAuthenticatedUser from '../../hooks/useAuthenticatedUser';
 import LoginRedirect from '../login/redirect';
+import MainSettings from './tabs/main';
 import NavigationSettings from './tabs/navigation';
 import NotificationSettings from './tabs/notifications';
-import OtherSettings from './tabs/other';
 
-const tabs = ['navigation', 'notifications', 'other'];
+const tabs = ['main', 'navigation', 'notifications'];
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -30,8 +30,8 @@ export default function Settings() {
     return <LoginRedirect />;
   }
 
-  if (!tabs.includes(tab || '')) {
-    return <Navigate to={`${settingsPath}/${tabs[0]}`} />;
+  if (tab && !tabs.includes(tab || '')) {
+    return <Navigate to={settingsPath} />;
   }
 
   return (
@@ -51,12 +51,16 @@ export default function Settings() {
       <Box sx={{ display: 'flex', mt: 1 }}>
         <Tabs
           orientation="vertical"
-          value={tabs.indexOf(tab || '')}
+          value={tab ? tabs.indexOf(tab || '') : 0}
           sx={{
             minWidth: 200,
           }}
           onChange={(_, i) => {
-            navigate(`${settingsPath}/${tabs[i]}`);
+            if (i > 0) {
+              navigate(`${settingsPath}/${tabs[i]}`);
+            } else {
+              navigate(settingsPath);
+            }
           }}
         >
           {tabs.map((tab, i) => {
@@ -76,9 +80,9 @@ export default function Settings() {
           })}
         </Tabs>
         <Box className="extension-settings-container" sx={{ pl: 1 }}>
+          {!tab ? <MainSettings /> : <Fragment />}
           {tab === 'navigation' ? <NavigationSettings /> : <Fragment />}
           {tab === 'notifications' ? <NotificationSettings /> : <Fragment />}
-          {tab === 'other' ? <OtherSettings /> : <Fragment />}
         </Box>
       </Box>
     </Box>
