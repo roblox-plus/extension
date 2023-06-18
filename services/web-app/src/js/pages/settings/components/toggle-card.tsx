@@ -1,6 +1,6 @@
 import { Divider, Paper, Switch, Typography } from '@mui/material';
 import { LoadingState } from '@tix-factory/extension-utils';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   getSettingValue,
   getToggleSettingValue,
@@ -25,7 +25,10 @@ type ToggleCardInput = {
   disabled?: boolean;
 
   // A custom handler for modifying the setting.
-  onChange?: (value: boolean) => Promise<void>;
+  setValue?: (value: boolean) => Promise<void>;
+
+  // A handler for when the setting value changes.
+  onChange?: (value: boolean) => void;
 };
 
 export default function ToggleCard({
@@ -34,11 +37,23 @@ export default function ToggleCard({
   settingName,
   defaultValue,
   disabled,
+  setValue,
   onChange,
 }: ToggleCardInput) {
-  const [value, setValue] = useState<boolean>(defaultValue || false);
+  const [value, setValueState] = useState<boolean>(defaultValue || false);
   const [state, setState] = useState<LoadingState>(
     defaultValue === undefined ? LoadingState.Loading : LoadingState.Success
+  );
+
+  const update = useCallback(
+    (newValue: boolean): void => {
+      setValueState(newValue);
+
+      if (onChange) {
+        onChange(newValue);
+      }
+    },
+    [setValueState, onChange]
   );
 
   useEffect(() => {
@@ -53,9 +68,9 @@ export default function ToggleCard({
         .then((data) => {
           if (typeof data === 'object') {
             if (data.hasOwnProperty(settingNameSplit[1])) {
-              setValue(!!data[settingNameSplit[1]]);
+              update(!!data[settingNameSplit[1]]);
             } else {
-              setValue(!!defaultValue);
+              update(!!defaultValue);
             }
           }
 
@@ -68,7 +83,7 @@ export default function ToggleCard({
     } else {
       getToggleSettingValue(settingName)
         .then((loadedValue) => {
-          setValue(loadedValue);
+          update(loadedValue);
           setState(LoadingState.Success);
         })
         .catch((err) => {
@@ -76,7 +91,7 @@ export default function ToggleCard({
           setState(LoadingState.Error);
         });
     }
-  }, [settingName]);
+  }, [settingName, defaultValue, update]);
 
   const changeSetting = async (newValue: boolean): Promise<void> => {
     setState(LoadingState.Loading);
@@ -96,10 +111,10 @@ export default function ToggleCard({
           await setSettingValue(settingName, newValue);
         }
 
-        setValue(newValue);
-      } else if (onChange) {
-        await onChange(newValue);
-        setValue(newValue);
+        update(newValue);
+      } else if (setValue) {
+        await setValue(newValue);
+        update(newValue);
       } else {
         console.error('No settings handler', label);
         setState(LoadingState.Error);

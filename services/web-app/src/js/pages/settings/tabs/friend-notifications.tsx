@@ -1,32 +1,10 @@
 import { Typography } from '@mui/material';
-import { LoadingState } from '@tix-factory/extension-utils';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import Emoji from '../../../components/emoji';
-import { getSettingValue, setSettingValue } from '../../../services/settings';
 import ToggleCard from '../components/toggle-card';
 
 export default function FriendNotificationSettings() {
   const [enabled, setEnabled] = useState<boolean>(false);
-  const [state, setState] = useState<LoadingState>(LoadingState.Loading);
-
-  useEffect(() => {
-    getSettingValue('friendNotifier')
-      .then((data) => {
-        if (data?.on) {
-          setEnabled(true);
-        }
-
-        setState(LoadingState.Success);
-      })
-      .catch((err) => {
-        console.error('Failed to load friend notifier settings');
-        setState(LoadingState.Error);
-      });
-  }, []);
-
-  if (state === LoadingState.Loading) {
-    return <Fragment />;
-  }
 
   return (
     <Fragment>
@@ -36,25 +14,8 @@ export default function FriendNotificationSettings() {
       <ToggleCard
         label="Friend Notifications"
         description="Get notified when your friends come online, or play a game."
-        defaultValue={enabled}
-        onChange={async (value) => {
-          const data = await getSettingValue('friendNotifier');
-          if (typeof data !== 'object') {
-            await setSettingValue('friendNotifier', {
-              on: value,
-            });
-          } else {
-            await setSettingValue(
-              'friendNotifier',
-              Object.assign({}, data, {
-                on: value,
-              })
-            );
-          }
-
-          setEnabled(value);
-        }}
-        disabled={state !== LoadingState.Success}
+        settingName="friendNotifier.on"
+        onChange={setEnabled}
       />
       {enabled ? (
         <Fragment>
