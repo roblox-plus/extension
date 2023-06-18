@@ -6,6 +6,7 @@ import Markdown from '../../components/markdown';
 import { aboutPath } from '../../constants';
 import ChangeLog from './tabs/change-log';
 import AboutPremium from './tabs/premium';
+import AboutSupport from './tabs/support';
 
 const AboutTabs: { [path: string]: string } = {
   '': 'About',
@@ -79,6 +80,8 @@ export default function About() {
               return <ChangeLog key={markdownKey} />;
             case 'premium':
               return <AboutPremium key={markdownKey} />;
+            case 'support':
+              return <AboutSupport key={markdownKey} />;
             default:
               return <Markdown key={markdownKey}>{markdownText}</Markdown>;
           }
