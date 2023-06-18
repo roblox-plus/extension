@@ -2,6 +2,7 @@ import { Divider, Paper, Switch, Typography } from '@mui/material';
 import { LoadingState } from '@tix-factory/extension-utils';
 import { useEffect, useState } from 'react';
 import {
+  getSettingValue,
   getToggleSettingValue,
   setSettingValue,
 } from '../../../services/settings';
@@ -17,7 +18,7 @@ type ToggleCardInput = {
   settingName?: string;
 
   // The default value for the card.
-  // Ignored if settingName is specified.
+  // Ignored if settingName is specified - except for the dumb legacy setting case.
   defaultValue?: boolean;
 
   // Whether or not the card is disabled.
@@ -45,15 +46,36 @@ export default function ToggleCard({
       return;
     }
 
-    getToggleSettingValue(settingName)
-      .then((loadedValue) => {
-        setValue(loadedValue);
-        setState(LoadingState.Success);
-      })
-      .catch((err) => {
-        console.error('Failed to load setting value', settingName, err);
-        setState(LoadingState.Error);
-      });
+    const settingNameSplit = settingName.split('.');
+    if (settingNameSplit.length === 2) {
+      // Dumb legacy settings..
+      getSettingValue(settingNameSplit[0])
+        .then((data) => {
+          if (typeof data === 'object') {
+            if (data.hasOwnProperty(settingNameSplit[1])) {
+              setValue(!!data[settingNameSplit[1]]);
+            } else {
+              setValue(!!defaultValue);
+            }
+          }
+
+          setState(LoadingState.Success);
+        })
+        .catch((err) => {
+          console.error('Failed to load split setting value', settingName, err);
+          setState(LoadingState.Error);
+        });
+    } else {
+      getToggleSettingValue(settingName)
+        .then((loadedValue) => {
+          setValue(loadedValue);
+          setState(LoadingState.Success);
+        })
+        .catch((err) => {
+          console.error('Failed to load setting value', settingName, err);
+          setState(LoadingState.Error);
+        });
+    }
   }, [settingName]);
 
   const changeSetting = async (newValue: boolean): Promise<void> => {
@@ -61,7 +83,19 @@ export default function ToggleCard({
 
     try {
       if (settingName) {
-        await setSettingValue(settingName, newValue);
+        const settingNameSplit = settingName.split('.');
+        if (settingNameSplit.length === 2) {
+          // Dumb legacy settings..
+          const container = await getSettingValue(settingNameSplit[0]);
+          const updatedContainer = Object.assign({}, container || {}, {
+            [settingNameSplit[1]]: newValue,
+          });
+
+          await setSettingValue(settingNameSplit[0], updatedContainer);
+        } else {
+          await setSettingValue(settingName, newValue);
+        }
+
         setValue(newValue);
       } else if (onChange) {
         await onChange(newValue);
