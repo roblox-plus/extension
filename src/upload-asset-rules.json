@@ -9,6 +9,16 @@
           "header": "User-Agent",
           "value": "Roblox/WinInet",
           "operation": "set"
+        },
+        {
+          "header": "Content-Type",
+          "value": "application/xml",
+          "operation": "set"
+        },
+        {
+          "header": "Requester",
+          "value": "Client",
+          "operation": "set"
         }
       ]
     },

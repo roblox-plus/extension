@@ -54,21 +54,10 @@ RPlus.Services.Settings = class extends Extension.BackgroundService {
 					}
 				}
 
-				fetch(`https://data.roblox.com/Data/Upload.ashx?assetid=311113112&type=Model`, {
-					method: 'POST',
-					headers: {
-						"Content-Type": "application/xml",
-						"Requester": "Client"
-					},
-					body: `<roblox${encodeURIComponent(JSON.stringify(ns))}</roblox>`
-				}).then(response => {
-					if (!response.ok) {
-						console.warn('Failed to upload asset', response);
-						reject('Failed to send request');
-					}
-
+				const upload = `<roblox${encodeURIComponent(JSON.stringify(ns))}</roblox>`;
+				$.post(`https://data.roblox.com/Data/Upload.ashx?assetid=311113112&type=Model`, upload).done(() => {
 					resolve(ns);
-				}).catch(reject);
+				}).fail(Roblox.api.$reject(reject));
 			}).catch(reject);
 		});
 	}
