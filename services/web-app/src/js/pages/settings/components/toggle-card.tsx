@@ -149,7 +149,11 @@ export default function ToggleCard({
       <Switch
         sx={{ float: 'right' }}
         checked={value}
-        disabled={state !== LoadingState.Success || disabled}
+        disabled={
+          !document.body.dataset.extensionId ||
+          state !== LoadingState.Success ||
+          disabled
+        }
         onChange={async (e) => {
           await changeSetting(e.target.checked);
         }}
