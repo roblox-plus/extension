@@ -1,7 +1,9 @@
 body:not([data-extension-id]) {
   .extension-settings-container {
-    pointer-events: unset;
     opacity: 0.9;
-    z-index: -1;
   }
+}
+
+.settings-section-header:first-child {
+  margin-top: 0;
 }

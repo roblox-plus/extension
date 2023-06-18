@@ -1,16 +1,12 @@
-import { Typography } from '@mui/material';
 import { Fragment, useState } from 'react';
-import Emoji from '../../../components/emoji';
+import SettingsSection from '../components/settings-section';
 import ToggleCard from '../components/toggle-card';
 
 export default function ExtensionNotificationSettings() {
   const [enabled, setEnabled] = useState<boolean>(false);
 
   return (
-    <Fragment>
-      <Typography variant="h4" sx={{ mt: 1 }}>
-        <Emoji emoji="⚙️" /> Extension
-      </Typography>
+    <SettingsSection emoji="⚙️" title="Extension">
       <ToggleCard
         label="Startup Notifications"
         description="Notifications when Roblox+ starts or updates."
@@ -26,6 +22,6 @@ export default function ExtensionNotificationSettings() {
       ) : (
         <Fragment />
       )}
-    </Fragment>
+    </SettingsSection>
   );
 }

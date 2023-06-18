@@ -1,16 +1,18 @@
-import { Typography } from '@mui/material';
 import { Fragment, useState } from 'react';
-import Emoji from '../../../components/emoji';
+import SettingsSection from '../components/settings-section';
 import ToggleCard from '../components/toggle-card';
 
 export default function FriendNotificationSettings() {
   const [enabled, setEnabled] = useState<boolean>(false);
 
   return (
-    <Fragment>
-      <Typography variant="h4" sx={{ mt: 1 }}>
-        <Emoji emoji="🧑‍🤝‍🧑" /> Friends
-      </Typography>
+    <SettingsSection emoji="🧑‍🤝‍🧑" title="Friends">
+      <ToggleCard
+        label="Trade Notifications"
+        description="Notifications when you get a trade, send one, or a trade closes."
+        settingName="tradeNotifier"
+      />
+
       <ToggleCard
         label="Friend Notifications"
         description="Get notified when your friends come online, or play a game."
@@ -39,6 +41,6 @@ export default function FriendNotificationSettings() {
       ) : (
         <Fragment />
       )}
-    </Fragment>
+    </SettingsSection>
   );
 }

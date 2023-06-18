@@ -37,11 +37,12 @@ RPlus.notifiers.catalog = (function () {
 		});
 	}
 
-	function showNotification(notification, metadata, assetId) {
-		console.log("showNotification", notification, metadata, assetId);
+	function showNotification(notification, metadata) {
+		console.log("showNotification", notification, metadata);
 
-		if (!isNaN(assetId) && notification.buttons && notification.buttons.length === 1 && notification.buttons[0].includes("Buy for")) {
-			metadata.purchaseAssetId = assetId;
+		if (notification.buttons && notification.buttons.length === 1 && notification.buttons[0].includes("Buy for")) {
+			// No longer supported.
+			delete notification.buttons;
 		}
 
 		Extension.NotificationService.Singleton.createNotification({
@@ -63,18 +64,11 @@ RPlus.notifiers.catalog = (function () {
 	function processNotification(notification) {
 		Extension.Storage.Singleton.get("notifierSounds").then(notifierSounds => {
 			notifierSounds = notifierSounds || {};
-			var assetId = NaN;
-
 			var metadata = {};
 
 			if (notification.url) {
 				metadata.url = notification.url;
-				assetId = Roblox.catalog.getIdFromUrl(notification.url) || NaN;
-				if (!isNaN(assetId)) {
-					metadata.robloxSound = (notification.title || "").toLowerCase().includes("it's free")
-						? 130771265
-						: Number(notifierSounds.item) || 205318910;
-				}
+				metadata.robloxSound = Number(notifierSounds.item) || 205318910;
 			}
 
 			var creatorName = notification.items && notification.items.Creator;
@@ -86,7 +80,7 @@ RPlus.notifiers.catalog = (function () {
 					}
 
 					if (creatorName === user.username) {
-						showNotification(notification, metadata, assetId);
+						showNotification(notification, metadata);
 						return;
 					}
 
@@ -97,7 +91,7 @@ RPlus.notifiers.catalog = (function () {
 						}
 
 						if (creatorId === user.id) {
-							showNotification(notification, metadata, assetId);
+							showNotification(notification, metadata);
 							return;
 						}
 
@@ -107,7 +101,7 @@ RPlus.notifiers.catalog = (function () {
 								return;
 							}
 
-							showNotification(notification, metadata, assetId);
+							showNotification(notification, metadata);
 						}).catch(function(err) {
 							console.error("Skipping notification for failure to check following creator", creatorName, notification, err);
 						});
@@ -118,7 +112,7 @@ RPlus.notifiers.catalog = (function () {
 					console.error("Skipping notification because could not check user is not logged in", notification, err);
 				});
 			} else {
-				showNotification(notification, metadata, assetId);
+				showNotification(notification, metadata);
 			}
 		}).catch(err => {
 			console.warn("Not showing notification", err, notification);
@@ -144,112 +138,8 @@ RPlus.notifiers.catalog = (function () {
 					console.warn(err, message);
 				});
 			}
-		} else if (message.from === "/topics/catalog-notifier-freebies") {
-			try {
-				Extension.Storage.Singleton.get("autoTakeFreeItems").then(function (autoTake) {
-					if(!autoTake) {
-						return;
-					}
-					
-					console.log("IT'S FREE!", message.data);
-					Roblox.economy.purchaseProduct(Number(message.data.productId), 0).then(function (receipt) {
-						console.log("Got me a freebie", receipt);
-
-						var notification = {
-							title: "Purchased new free item!",
-							context: "Item Notifier",
-							message: message.data.name,
-							displayExpiration: 30 * 1000,
-							metadata: {}
-						};
-
-						const createNotification = () => {
-							Extension.NotificationService.Singleton.createNotification({
-							}).then(() => {
-								// Notification created
-							}).catch(console.warn);
-						};
-
-						if (message.data.itemType === "Asset") {
-							notification.metadata.url = Roblox.catalog.getAssetUrl(message.data.id, "Roblox-Plus");
-
-							Roblox.thumbnails.getAssetThumbnailUrl(message.data.id, 150, 150).then(function(assetThumbnailUrl) {
-								notification.icon = assetThumbnailUrl;
-								createNotification();
-							}).catch(function(err) {
-								console.error(message, err);
-								createNotification();
-							});
-						} else if (message.data.itemType === "Bundle") {
-							notification.metadata.url = Roblox.catalog.getBundleUrl(message.data.id, "Roblox-Plus");
-
-							Roblox.thumbnails.getBundleThumbnailUrl(message.data.id, 150, 150).then(function(bundleThumbnailUrl) {
-								notification.icon = bundleThumbnailUrl;
-								createNotification();
-							}).catch(function(err) {
-								console.error(message, err);
-								createNotification();
-							});
-						} else {
-							createNotification();
-						}
-					}).catch(function (e) {
-						console.error("Did a new item really come out? Why did this fail to purchase?", e);
-					});
-				}).catch(console.warn);
-			} catch (e) {
-				console.error("Failed to parse asset.", message);
-			}
 		}
 	}
-
-	Extension.NotificationService.Singleton.onNotificationButtonClicked.addEventListener(e => {
-		let notification = e.notification;
-		let assetId = notification.metadata.purchaseAssetId;
-		if (assetId) {
-			let start = performance.now();
-			let price = pround(e.notification.items.Price);
-
-			const purchaseFailed = function (e) {
-				Extension.NotificationService.Singleton.createNotification({
-					title: "Item Notifier",
-					context: "Item Purchase",
-					message: "Purchase failed: " + (e[0] && e[0].message ? e[0].message : "Unknown issue"),
-					icon: notification.icon,
-					displayExpiration: 30 * 1000,
-					metadata: {
-						url: notification.metadata.url
-					}
-				}).then(() => {
-					// Notification created
-				}).catch(console.warn);
-			};
-
-			Roblox.catalog.getAssetInfo(assetId).then(function (asset) {
-				// Use the price from the notification - worst case scenario it fails but we don't want to charge the user more than they think they're being charged.
-				Roblox.economy.purchaseProduct(asset.productId, price).then(function (receipt) {
-					console.log("Purchased!", receipt);
-					var speed = performance.now() - start;
-					Extension.NotificationService.Singleton.createNotification({
-						title: "Item Notifier",
-						context: "Item Purchase",
-						message: `${asset.name} purchased in ${speed.toFixed(3)}ms`,
-						icon: notification.icon,
-						displayExpiration: 30 * 1000,
-						metadata: {
-							url: notification.metadata.url
-						}
-					}).then(() => {
-						// Notification created
-					}).catch(console.warn);
-				}).catch(purchaseFailed);
-			}).catch(purchaseFailed);
-
-			Extension.NotificationService.Singleton.closeNotification(notification.id).then(() => {
-				// Original notification closed
-			}).catch(console.warn);
-		}
-	});
 	
 	chrome.gcm.onMessage.addListener(processMessage);
 	chrome.instanceID.onTokenRefresh.addListener(updateToken);
@@ -263,44 +153,6 @@ RPlus.notifiers.catalog = (function () {
 	return {
 		processMessage: processMessage,
 		updateToken: updateToken,
-		testLimitedNotification: function() {
-			processMessage({
-				"data": {
-					"notification": JSON.stringify({
-						"metadata": {},
-						"buttons": [
-							"Buy for R$70"
-						],
-						"icon": "https://www.roblox.com/asset-thumbnail/image?width=420&height=420&assetId=4484418472",
-						"title": "New Hat",
-						"message": "Epic Block Head",
-						"items": {
-							"Price": "R$70"
-						},
-						"url": "https://www.roblox.com/catalog/4484418472/Epic-Block-Head?rbxp=48103520"
-					})
-				},
-				"from":"/topics/catalog-notifier-premium"
-			});
-		},
-		testFreeItemNotification: function() {
-			processMessage({
-				"data": {
-					"notification": JSON.stringify({
-						"metadata": {},
-						"buttons": [],
-						"icon": "https://www.roblox.com/asset-thumbnail/image?width=420&height=420&assetId=4484418472",
-						"title": "IT'S FREE",
-						"message": "Epic Block Head",
-						"items": {
-							"Price": "Free"
-						},
-						"url": "https://www.roblox.com/catalog/4484418472/Epic-Block-Head?rbxp=48103520"
-					})
-				},
-				"from":"/topics/catalog-notifier-premium"
-			});
-		},
 		getLastRegistration: function () {
 			return new Date(lastRegistration);
 		}

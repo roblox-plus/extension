@@ -62,17 +62,10 @@
 
         "/js/roblox/thumbnails.js",
         "/js/roblox/users.js",
-        "/js/roblox/catalog.js",
-        "/js/roblox/games.js",
-        "/js/roblox/content.js",
-        "/js/roblox/audio.js",
         "/js/roblox/groups.js",
-        "/js/roblox/economy.js",
-        "/js/roblox/ui.js",
         "/js/archive/preroblox.js",
 
         "/js/rplus/RobloxPlus.js",
-        "/js/rplus/settings.js",
         "/js/rplus/premium.js"
       ],
       "css": [

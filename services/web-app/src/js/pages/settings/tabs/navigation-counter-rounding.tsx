@@ -61,7 +61,9 @@ export default function NavigationCounterRoundingSetting() {
         onChange={(e) => {
           update(Number(e.target.value) || counterRoundAtOptions[0]);
         }}
-        disabled={state !== LoadingState.Success}
+        disabled={
+          !document.body.dataset.extensionId || state !== LoadingState.Success
+        }
       >
         {counterRoundAtOptions.map((roundAt) => {
           return (

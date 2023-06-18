@@ -1,8 +1,8 @@
-import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline, useMediaQuery } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Pages from './pages';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { BrowserRouter } from 'react-router-dom';
 import Navigation from './navigation';
+import Pages from './pages';
 
 function App() {
   const useLightTheme = useMediaQuery('(prefers-color-scheme: light)');

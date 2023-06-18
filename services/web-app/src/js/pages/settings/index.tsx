@@ -36,7 +36,9 @@ export default function Settings() {
 
   return (
     <Box sx={{ p: 1 }}>
-      <Typography variant="h2">Roblox+ Settings</Typography>
+      <Typography variant="h4" component="h1" sx={{ mb: 1 }}>
+        Roblox+ Settings
+      </Typography>
       {document.body.dataset.extensionId ? (
         <Typography variant="body1">
           On this page, you can modify settings for{' '}
