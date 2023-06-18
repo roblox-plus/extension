@@ -2,6 +2,7 @@ import { Typography } from '@mui/material';
 import { Fragment } from 'react';
 import Emoji from '../../../components/emoji';
 import ToggleCard from '../components/toggle-card';
+import ExtensionNotificationSettings from './extension-notifications';
 import FriendNotificationSettings from './friend-notifications';
 
 export default function NotificationSettings() {
@@ -26,6 +27,8 @@ export default function NotificationSettings() {
         description="Notifications when you get a trade, send one, or a trade closes."
         settingName="tradeNotifier"
       />
+
+      <ExtensionNotificationSettings />
     </Fragment>
   );
 }
