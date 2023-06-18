@@ -33,6 +33,10 @@ This thing has been updated to better support that manifest V3 thing I was talki
 
 This update removed the remaining usages of one of the older chrome APIs that was being used by this extension: [chrome.webRequest](https://developer.chrome.com/docs/extensions/reference/webRequest). The remaining usages were replaced with [chrome.declarativeNetRequest](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest), which is compatible with manifest V3.
 
+### :knife: Removed Navigation Overrides
+
+I have decided to remove the feature that let you override the right two navigation links. Mainly because I didn't feel like adding them to the new settings page, and I don't use this feature myself. If I am in the wrong.. voice your concerns on [GitHub](https://github.com/roblox-plus/extension/issues), make an argument for why it should stay.
+
 # 2.4.157
 
 good morning good morning good morning<br/>
