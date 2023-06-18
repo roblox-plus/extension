@@ -8,7 +8,6 @@ import useAuthenticatedUser from '../../../hooks/useAuthenticatedUser';
 export default function AboutPremium() {
   const authenticatedUser = useAuthenticatedUser();
   const premiumAlert = useMemo<JSX.Element>(() => {
-    console.log(authenticatedUser);
     if (authenticatedUser.premiumExpiration === undefined) {
       return <Fragment />;
     }
