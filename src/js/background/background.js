@@ -104,15 +104,30 @@ Extension.Storage.Singleton.get('startupNotification')
     if (startnote.on && !startnote.visit) {
       makenote();
     } else if (startnote.on) {
-      var listener;
-      listener = function () {
-        chrome.webRequest.onCompleted.removeListener(listener);
-        makenote();
+      let createdListener;
+      let updatedListener;
+      const takeAction = (tab) => {
+        try {
+          const tabURL = new URL(tab.url);
+          if (!tabURL.hostname.endsWith('.roblox.com')) {
+            return;
+          }
+
+          chrome.tabs.onCreated.removeListener(createdListener);
+          chrome.tabs.onUpdated.removeListener(updatedListener);
+          makenote();
+        } catch {
+          // don't care for now
+        }
       };
-      chrome.webRequest.onCompleted.addListener(listener, {
-        types: ['main_frame'],
-        urls: ['*://*.roblox.com/*'],
-      });
+      createdListener = (tab) => {
+        takeAction(tab);
+      };
+      updatedListener = (tabId, changes, tab) => {
+        takeAction(tab);
+      };
+      chrome.tabs.onCreated.addListener(createdListener);
+      chrome.tabs.onUpdated.addListener(updatedListener);
     }
   })
   .catch((e) => {
