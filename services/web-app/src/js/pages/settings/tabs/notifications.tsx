@@ -17,6 +17,15 @@ export default function NotificationSettings() {
       />
 
       <FriendNotificationSettings />
+
+      <Typography variant="h4" sx={{ mt: 1 }}>
+        <Emoji emoji="🔀" /> Trades
+      </Typography>
+      <ToggleCard
+        label="Trade Notifications"
+        description="Notifications when you get a trade, send one, or a trade closes."
+        settingName="tradeNotifier"
+      />
     </Fragment>
   );
 }
