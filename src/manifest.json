@@ -256,8 +256,6 @@
     "alarms",
     "gcm",
     "contextMenus",
-    "webRequest",
-    "webRequestBlocking",
     "declarativeNetRequest",
     "tts",
     "notifications",

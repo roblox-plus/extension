@@ -66,6 +66,6 @@ The [extension manifest](https://github.com/roblox-plus/extension/blob/master/sr
 
 - [alarms](https://developer.chrome.com/docs/extensions/reference/alarms/): This one is used for the notifier features which execute in the background
 - [gcm](https://developer.chrome.com/docs/extensions/reference/gcm/), [notifications](https://developer.chrome.com/docs/extensions/reference/notifications/): These are used to send notifications to the browser extension
-- [webRequest](https://developer.chrome.com/docs/extensions/reference/webRequest/), [webRequestBlocking](https://developer.chrome.com/docs/extensions/reference/webRequest/), [declarativeNetRequest](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/): These are used for the web request interception mentioned above
+- [declarativeNetRequest](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/): This is used for the web request interception mentioned above
 - [tts](https://developer.chrome.com/docs/extensions/reference/tts/): Sometimes the notifications this extension sends speak when they are sent, and this permission is required for that
 - [storage](https://developer.chrome.com/docs/extensions/reference/storage/): The extension uses this one to store things like settings preferences
