@@ -1,9 +1,9 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Fragment, useEffect, useState } from 'react';
-import Emoji from '../../../components/emoji';
 import { getAuthenticatedUserGroups } from '../../../services/groups';
 import { getSettingValue, setSettingValue } from '../../../services/settings';
 import Group from '../../../types/group';
+import SettingsSection from '../components/settings-section';
 import ToggleCard from '../components/toggle-card';
 import GroupNotificationCard from './group-notification-card';
 
@@ -21,10 +21,7 @@ export default function GroupNotificationSettings() {
   }, []);
 
   return (
-    <Fragment>
-      <Typography variant="h4" sx={{ mt: 1 }}>
-        <Emoji emoji="👥" /> Groups
-      </Typography>
+    <SettingsSection emoji="👥" title="Groups">
       <ToggleCard
         label="Group Shout Notifications"
         description="Notifications when a group you're in changes their shout."
@@ -70,6 +67,6 @@ export default function GroupNotificationSettings() {
       ) : (
         <Fragment />
       )}
-    </Fragment>
+    </SettingsSection>
   );
 }

@@ -1,15 +1,10 @@
-import { Typography } from '@mui/material';
-import { Fragment } from 'react';
-import Emoji from '../../../components/emoji';
+import SettingsSection from '../components/settings-section';
 import ToggleCard from '../components/toggle-card';
 import NavigationCounterRoundingSetting from './navigation-counter-rounding';
 
 export default function NavigationSettings() {
   return (
-    <Fragment>
-      <Typography variant="h4">
-        <Emoji emoji="🔘" /> Navigation Bar Options
-      </Typography>
+    <SettingsSection emoji="🔘" title="Navigation Bar Options">
       <ToggleCard
         label="Show DevEx Rates"
         description="When you click your Robux in the navigation bar, the DevEx amount will be visible below your Robux."
@@ -21,6 +16,6 @@ export default function NavigationSettings() {
         settingName="navcounter"
       />
       <NavigationCounterRoundingSetting />
-    </Fragment>
+    </SettingsSection>
   );
 }
