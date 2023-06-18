@@ -25,6 +25,10 @@ TODO: Fill this in with the next pull request, when there is actually settings i
 
 This thing has been updated to better support that manifest V3 thing I was talking about. Pretty much works the same as it did before, except you can't pick a sound for it anymore. Sorry.
 
+### :axe: Removed chrome.webRequest
+
+This update removed the remaining usages of one of the older chrome APIs that was being used by this extension: [chrome.webRequest](https://developer.chrome.com/docs/extensions/reference/webRequest). The remaining usages were replaced with [chrome.declarativeNetRequest](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest), which is compatible with manifest V3.
+
 # 2.4.157
 
 good morning good morning good morning

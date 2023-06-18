@@ -105,3 +105,4 @@ dist
 
 # Custom
 src/js/output/
+src/_metadata/

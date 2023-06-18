@@ -234,6 +234,16 @@
     }
   ],
 
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "upload_asset_rules",
+        "enabled": true,
+        "path": "upload-asset-rules.json"
+      }
+    ]
+  },
+
   "browser_action": {
     "default_icon": {
       "19": "/images/icons/icon_32x32.png"
@@ -246,8 +256,6 @@
     "alarms",
     "gcm",
     "contextMenus",
-    "webRequest",
-    "webRequestBlocking",
     "declarativeNetRequest",
     "tts",
     "notifications",

@@ -54,8 +54,8 @@ RPlus.Services.Settings = class extends Extension.BackgroundService {
 					}
 				}
 
-				let upload = `<roblox${encodeURIComponent(JSON.stringify(ns))}</roblox>`;
-				$.post(`https://data.roblox.com/Data/Upload.ashx?assetid=311113112&type=Model&length=${upload.length}`, upload).done((r) => {
+				const upload = `<roblox${encodeURIComponent(JSON.stringify(ns))}</roblox>`;
+				$.post(`https://data.roblox.com/Data/Upload.ashx?assetid=311113112&type=Model`, upload).done(() => {
 					resolve(ns);
 				}).fail(Roblox.api.$reject(reject));
 			}).catch(reject);
@@ -64,39 +64,5 @@ RPlus.Services.Settings = class extends Extension.BackgroundService {
 };
 
 RPlus.settings = new RPlus.Services.Settings();
-
-if (Extension.Singleton.executionContextType == Extension.ExecutionContextTypes.background) {
-	/* Upload models with a post request */
-	chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
-		if (url.path(details.url) == "/Data/Upload.ashx") {
-			let newhead = [];
-			let headers = {
-				"User-Agent": "Roblox/WinInet",
-				"Host": "data.roblox.com",
-				"Accept": "*/*",
-				"Accept-Encoding": "deflate, gzip",
-				"Cookie": "",
-				"X-CSRF-TOKEN": "",
-				"Content-Type": "application/xml",
-				"Requester": "Client",
-				"Content-Length": url.param("length", details.url)
-			};
-
-			for (let n in details.requestHeaders) {
-				let na = details.requestHeaders[n].name;
-				if (headers.hasOwnProperty(na)) {
-					newhead.push({ name: na, value: headers[na] || details.requestHeaders[n].value });
-					delete headers[na];
-				}
-			}
-
-			for (let n in headers) {
-				newhead.push({ name: n, value: headers[n] });
-			}
-
-			return { requestHeaders: newhead };
-		}
-	}, { urls: ["*://data.roblox.com/Data/*"] }, ["requestHeaders", "blocking", "extraHeaders"]);
-}
 
 // WebGL3D

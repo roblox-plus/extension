@@ -330,7 +330,7 @@ class About extends React.Component {
 									</ul>
 								</li>
 								<li>
-									<span>webRequest (and webRequestBlocking)</span>
+									<span>declarativeNetRequest</span>
 									<ul>
 										<li>See Web Request Interception</li>
 									</ul>
@@ -366,7 +366,7 @@ class About extends React.Component {
 						<p class="text-description">
 							<span>Some requests to roblox.com are intercepted!</span>
 							<br />
-							<span>Yup. This extension uses webRequest and webRequestBlocking permissions to intercept and modify some requests that go to Roblox. For example: To load the authentication token for game launch additional headers are needed that are not typically accessible via XMLHttpRequest. webRequest is needed for this to add the additional request parameters necessary to launch you into game as... you!</span>
+							<span>Yup. This extension uses declarativeNetRequest permissions to intercept and modify some requests that go to Roblox. For example: To load the authentication token for game launch additional headers are needed that are not typically accessible via XMLHttpRequest. declarativeNetRequest is needed for this to add the additional request parameters necessary to launch you into game as... you!</span>
 							<br />
 							<span>There are other requests being intercepted (like knowing when you visit Roblox for the first time for the extension start notification when enabled) and I could list them all out but imagine being me for a second... what if I missed one? What if I add a new feature and forget to update the privacy policy? I don't know what's legally required or not. How much do I need to specify or forget to specify before Google pulls me off the chrome web store? Instead of me trying to go into the implementation details of every feature this extension has I invite you to the extensions source.</span>
 							<br />
