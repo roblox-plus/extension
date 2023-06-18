@@ -72,7 +72,6 @@
         "/js/archive/preroblox.js",
 
         "/js/rplus/RobloxPlus.js",
-        "/js/rplus/settings.js",
         "/js/rplus/premium.js"
       ],
       "css": [
