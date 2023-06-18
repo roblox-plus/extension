@@ -69,34 +69,24 @@ Extension.Storage.Singleton.get('startupNotification')
           }
         }
 
-        let startNotificationId = `${Extension.Singleton.id}.startNotification`;
-        RPlus.settings
-          .get()
-          .then(function (ul) {
-            Extension.NotificationService.Singleton.createNotification({
-              id: startNotificationId,
-              title: user
-                ? `Hello, ${user.username}!`
-                : "You're currently signed out",
-              message: 'Made by WebGL3D',
-              context: `${Extension.Singleton.manifest.name} ${Extension.Singleton.manifest.version} started`,
-              expiration: 15 * 1000,
-              buttons: [
-                {
-                  text: 'Problems? Suggestions? Post here!',
-                  url: 'https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group?rbxp=48103520',
-                },
-              ],
-              metadata: {
-                url:
-                  ul.updateLog ||
-                  'https://www.roblox.com/users/48103520/profile?rbxp=48103520',
-              },
-            });
-          })
-          .catch(function (e) {
-            console.warn('no startup notification', e);
-          });
+        Extension.NotificationService.Singleton.createNotification({
+          id: `${Extension.Singleton.id}.startNotification`,
+          title: user
+            ? `Hello, ${user.username}!`
+            : "You're currently signed out",
+          message: 'Made by WebGL3D',
+          context: `${Extension.Singleton.manifest.name} ${Extension.Singleton.manifest.version} started`,
+          expiration: 15 * 1000,
+          buttons: [
+            {
+              text: 'Problems? Suggestions? Post here!',
+              url: 'https://www.roblox.com/groups/2518656/ROBLOX-Fan-Group?rbxp=48103520',
+            },
+          ],
+          metadata: {
+            url: `https://roblox.plus/about/changes?version=${Extension.Singleton.manifest.version}`,
+          },
+        });
       });
     };
 
