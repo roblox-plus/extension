@@ -15,7 +15,7 @@ export default function NavigationButtons() {
         sx={{ textDecoration: 'none' }}
       >
         <Button startIcon={<ArrowBack />} sx={{ color: 'text.primary' }}>
-          Roblox Settings
+          Back to Roblox
         </Button>
       </Link>
       <AppLink className="navigation-link" to={settingsPath}>
