@@ -61,8 +61,8 @@
     },
     {
       "label": "Build Extension (TypeScript)",
-      "type": "npm",
-      "script": "build",
+      "type": "shell",
+      "command": "npm run build",
       "problemMatcher": ["$tsc"],
       "group": "build",
       "options": {
