@@ -8,7 +8,7 @@ type ToggleCardInput = {
   label: string;
 
   // The description for the setting.
-  description: string;
+  description: JSX.Element | string;
 
   // The name of the setting this card belongs to.
   settingName?: string;
@@ -80,7 +80,7 @@ export default function ToggleCard({
   };
 
   return (
-    <Paper sx={{ p: 1, minWidth: 600 }}>
+    <Paper sx={{ p: 1, minWidth: 600, mt: 1 }}>
       <Switch
         sx={{ float: 'right' }}
         checked={value}
@@ -91,7 +91,7 @@ export default function ToggleCard({
       />
       <Typography variant="h6">{label}</Typography>
       <Divider sx={{ mt: 1, mb: 1 }} />
-      <Typography variant="body2">{description}</Typography>
+      <Typography variant="body1">{description}</Typography>
     </Paper>
   );
 }

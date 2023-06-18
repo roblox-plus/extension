@@ -1,7 +1,8 @@
 import ReactDOM from 'react-dom/client';
-import mountPremiumPayoutsSummary from './premium-payouts';
 import { isPremiumUser } from '../../../services/premium';
+import { getToggleSettingValue } from '../../../services/settings';
 import { getAuthenticatedUser } from '../../../services/users';
+import mountPremiumPayoutsSummary from './premium-payouts';
 
 let mount: ReactDOM.Root | undefined = undefined;
 
@@ -22,6 +23,12 @@ setInterval(async () => {
       const isPremium = await isPremiumUser(authenticatedUser.id);
       if (!isPremium) {
         // No premium, no feature.
+        return;
+      }
+
+      const enabled = await getToggleSettingValue('premiumPayoutsSummary');
+      if (!enabled) {
+        // Feature is not enabled, do nothing.
         return;
       }
 

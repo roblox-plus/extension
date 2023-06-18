@@ -48,7 +48,7 @@ export default function Settings() {
           to modify these settings.
         </Alert>
       )}
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', mt: 1 }}>
         <Tabs
           orientation="vertical"
           value={tabs.indexOf(tab || '')}
@@ -75,7 +75,7 @@ export default function Settings() {
             );
           })}
         </Tabs>
-        <Box className="extension-settings-container" sx={{ p: 1 }}>
+        <Box className="extension-settings-container" sx={{ pl: 1 }}>
           {tab === 'navigation' ? <NavigationSettings /> : <Fragment />}
           {tab === 'notifications' ? <NotificationSettings /> : <Fragment />}
           {tab === 'other' ? <OtherSettings /> : <Fragment />}
