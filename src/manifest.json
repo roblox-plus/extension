@@ -222,7 +222,7 @@
     "default_title": "Roblox+"
   },
 
-  "homepage_url": "https://www.roblox.com/my/account?tab=rplus",
+  "homepage_url": "https://roblox.plus/settings",
   "permissions": [
     "alarms",
     "gcm",
