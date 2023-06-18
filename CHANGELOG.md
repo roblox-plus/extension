@@ -6,6 +6,8 @@ See what I did there? That's an emoji.. and whoa.. where are we? Welcome to [rob
 
 Going forward, this page is where you will get information about what has updated in the extension. This page will also be based on the [CHANGELOG.md](https://github.com/roblox-plus/extension/blob/master/CHANGELOG.md), where you can then find information about previous versions and stuffs.. assuming I populate it. I have all the data about previous versions somewhere, I promise.
 
+Also also, there's a little selector in the top right, in case you didn't notice it - and you can view the update logs for the other versions.
+
 ## :tada: Updates
 
 ### :new: roblox.plus/about
@@ -17,9 +19,11 @@ okay fine, I put in absolute minimal effort into each of those tabs _except for_
 
 but whatever man
 
-### :new: roblox.plus/settings
+### :gear: roblox.plus/settings
 
-TODO: Fill this in with the next pull request, when there is actually settings in here
+For as long as this extension has been around, there have been settings. This page has seen many iterations over the years, and it's onto the next. For a long time the settings page has existed in the [Roblox account settings page](https://www.roblox.com/my/account) as its own tab. But no longer - welcome to [roblox.plus/settings](https://roblox.plus/settings).
+
+The settings for this extension now live under this domain. And in the future, as a result, we may be able to have settings that can be enabled for Roblox without having the extension installed. But for now that is only a dream. For now it's the same settings we had before, just with more emojis, in a new home.
 
 ### :arrows_counterclockwise: Trade Notifier Updated
 
@@ -31,16 +35,16 @@ This update removed the remaining usages of one of the older chrome APIs that wa
 
 # 2.4.157
 
-good morning good morning good morning
-i bet some of you were like "where was our update last week bro, you said an update every week"
-well i was cookin up somethin big
-somethin fierce
-somethin that took two weekends worth of time to put together
-and you're like "omg what could this update be, what is he about to drop omg"
-ladies and gentlemen, I bring to you the update that applies only to the 1%ers out there
+good morning good morning good morning<br/>
+i bet some of you were like "where was our update last week bro, you said an update every week"<br/>
+well i was cookin up somethin big<br/>
+somethin fierce<br/>
+somethin that took two weekends worth of time to put together<br/>
+and you're like "omg what could this update be, what is he about to drop omg"<br/>
+ladies and gentlemen, I bring to you the update that applies only to the 1%ers out there<br/>
 
-may i present to you.... roblox.plus/transactions
-this page will start working once the extension updates to 2.4.157
+may i present to you.... roblox.plus/transactions<br/>
+this page will start working once the extension updates to 2.4.157<br/>
 
-no update next week, i'm takin next weekend off
+no update next week, i'm takin next weekend off<br/>
 duces
