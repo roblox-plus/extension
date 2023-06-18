@@ -4,7 +4,7 @@
 
 This extension provides some features behind a paid subscription. By having a private server active for [this place](https://www.roblox.com/games/258257446/Roblox-Hub), some extra features will be unlocked in the extension.
 
-The only notable feature this includes right now is the [transactions page](https://roblox.plus/transactions).
+Besides a subset of the settings which can only be enabled with Roblox+ Premium, the only other notable feature included with Roblox+ Premium is the [transactions page](https://roblox.plus/transactions).
 
 This is all subject to change in the future. I do my best to keep any premium features working, but sometimes they break. Sorry.
 

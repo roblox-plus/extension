@@ -12,7 +12,7 @@ export default function Login() {
     LoadingState.Loading
   );
   const [user, setUser] = useState<User | null>();
-  const { code, returnUrl, state } = useQuery();
+  const [{ code, returnUrl, state }] = useQuery();
 
   useEffect(() => {
     if (!code) {

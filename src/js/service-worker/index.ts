@@ -1,3 +1,4 @@
+import { addListener } from '@tix-factory/extension-messaging';
 import { manifest } from '@tix-factory/extension-utils';
 export * from './notifiers';
 
@@ -11,3 +12,16 @@ chrome.browserAction.onClicked.addListener(() => {
     active: true,
   });
 });
+
+addListener(
+  'extension.reload',
+  async () => {
+    setTimeout(() => {
+      chrome.runtime.reload();
+    }, 250);
+  },
+  {
+    levelOfParallelism: 1,
+    allowExternalConnections: true,
+  }
+);
