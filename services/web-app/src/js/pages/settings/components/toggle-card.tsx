@@ -1,7 +1,10 @@
 import { Divider, Paper, Switch, Typography } from '@mui/material';
-import { sendMessage } from '@tix-factory/extension-messaging';
 import { LoadingState } from '@tix-factory/extension-utils';
 import { useEffect, useState } from 'react';
+import {
+  getToggleSettingValue,
+  setSettingValue,
+} from '../../../services/settings';
 
 type ToggleCardInput = {
   // The name of the setting, as displayed on the screen.
@@ -33,18 +36,18 @@ export default function ToggleCard({
   onChange,
 }: ToggleCardInput) {
   const [value, setValue] = useState<boolean>(defaultValue || false);
-  const [state, setState] = useState<LoadingState>(LoadingState.Loading);
+  const [state, setState] = useState<LoadingState>(
+    defaultValue === undefined ? LoadingState.Loading : LoadingState.Success
+  );
 
   useEffect(() => {
     if (!settingName) {
       return;
     }
 
-    sendMessage('settingsService.getSettingValue', {
-      key: settingName,
-    })
-      .then((rawValue) => {
-        setValue(!!rawValue);
+    getToggleSettingValue(settingName)
+      .then((loadedValue) => {
+        setValue(loadedValue);
         setState(LoadingState.Success);
       })
       .catch((err) => {
@@ -58,14 +61,11 @@ export default function ToggleCard({
 
     try {
       if (settingName) {
-        await sendMessage('settingsService.setSettingValue', {
-          key: settingName,
-          value: newValue,
-        });
-
+        await setSettingValue(settingName, newValue);
         setValue(newValue);
       } else if (onChange) {
         await onChange(newValue);
+        setValue(newValue);
       } else {
         console.error('No settings handler', label);
         setState(LoadingState.Error);
