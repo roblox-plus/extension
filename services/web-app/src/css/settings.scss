@@ -1,7 +1,7 @@
 body:not([data-extension-id]) {
   .extension-settings-container {
     pointer-events: unset;
-    opacity: 0.8;
+    opacity: 0.9;
     z-index: -1;
   }
 }

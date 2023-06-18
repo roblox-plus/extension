@@ -75,12 +75,10 @@ export default function Settings() {
             );
           })}
         </Tabs>
-        <Box>
-          <Box className="extension-settings-container">
-            {tab === 'navigation' ? <NavigationSettings /> : <Fragment />}
-            {tab === 'notifications' ? <NotificationSettings /> : <Fragment />}
-            {tab === 'other' ? <OtherSettings /> : <Fragment />}
-          </Box>
+        <Box className="extension-settings-container" sx={{ p: 1 }}>
+          {tab === 'navigation' ? <NavigationSettings /> : <Fragment />}
+          {tab === 'notifications' ? <NotificationSettings /> : <Fragment />}
+          {tab === 'other' ? <OtherSettings /> : <Fragment />}
         </Box>
       </Box>
     </Box>
