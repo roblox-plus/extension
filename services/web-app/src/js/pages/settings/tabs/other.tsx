@@ -30,7 +30,7 @@ export default function OtherSettings() {
       </Typography>
       <ToggleCard
         label="RAP on Profile"
-        description="Show the value of a users inventory on their profile."
+        description="Show the value of the inventory of the user on their profile."
         settingName="profileRAP"
       />
 

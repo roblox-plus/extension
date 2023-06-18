@@ -8,7 +8,7 @@ export default function NotificationSettings() {
   return (
     <Fragment>
       <Typography variant="h4">
-        <Emoji emoji="🛒" /> Marketplace Notifications
+        <Emoji emoji="🛒" /> Marketplace
       </Typography>
       <ToggleCard
         label="Avatar Marketplace Notifications"
