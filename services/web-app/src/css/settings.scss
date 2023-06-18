@@ -3,3 +3,7 @@ body:not([data-extension-id]) {
     opacity: 0.9;
   }
 }
+
+.settings-section-header:first-child {
+  margin-top: 0;
+}

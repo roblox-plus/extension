@@ -158,9 +158,9 @@ export default function ToggleCard({
           await changeSetting(e.target.checked);
         }}
       />
-      <Typography variant="h6">{label}</Typography>
+      <Typography variant="body1">{label}</Typography>
       <Divider sx={{ mt: 1, mb: 1 }} />
-      <Typography variant="body1">{description}</Typography>
+      <Typography variant="body2">{description}</Typography>
     </Paper>
   );
 }
