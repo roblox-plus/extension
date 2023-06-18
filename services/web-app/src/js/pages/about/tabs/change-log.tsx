@@ -1,4 +1,4 @@
-import { MenuItem, Select } from '@mui/material';
+import { MenuItem, Select, Typography } from '@mui/material';
 import { Fragment, useMemo } from 'react';
 import markdown from '../../../../markdown.json';
 import Markdown from '../../../components/markdown';
@@ -52,6 +52,7 @@ export default function ChangeLog() {
   return (
     <Fragment>
       <Select
+        variant="outlined"
         value={selectedVersion}
         onChange={(e) => {
           if (e.target.value === 'latest') {
@@ -73,6 +74,7 @@ export default function ChangeLog() {
           );
         })}
       </Select>
+      <Typography variant="h3">Update Log</Typography>
       <Markdown>{changeLog}</Markdown>
     </Fragment>
   );
