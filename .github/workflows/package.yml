@@ -12,11 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Setup
-      - uses: actions/checkout@v1
-      - name: Setup Node
+      - name: '📥 Clone Repository'
+        uses: actions/checkout@v3
+
+      - name: '🟩 Setup Node'
         uses: actions/setup-node@v1
         with:
-          node-version: '14'
+          node-version: '18'
           registry-url: 'https://registry.npmjs.org'
 
       # Extension Versioning
