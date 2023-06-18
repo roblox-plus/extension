@@ -28,6 +28,7 @@
     "css-loader": "^6.8.1",
     "extension-service-loader": "file:./libs/extension-service-loader",
     "mini-css-extract-plugin": "^2.7.6",
+    "node-sass": "^9.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "resolve-url-loader": "^5.0.0",
