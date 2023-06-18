@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "webpack --mode development --progress",
-    "react": ".\\node_modules\\.bin\\babel src/js/react --out-dir src/js/output/react"
+    "build": "webpack --mode development --progress"
   },
   "dependencies": {
     "@tix-factory/batch": "^1.1.0",

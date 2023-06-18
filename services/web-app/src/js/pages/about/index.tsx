@@ -69,7 +69,7 @@ export default function About() {
           );
         })}
       </Tabs>
-      <Box sx={{ p: 1, ml: 1 }}>
+      <Box sx={{ p: 1, ml: 1, flexGrow: 1 }}>
         {Object.entries(markdown).map(([markdownKey, markdownText]) => {
           if (!isTabVisible(markdownKey)) {
             return <Fragment key={markdownKey} />;

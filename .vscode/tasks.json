@@ -60,18 +60,14 @@
       }
     },
     {
-      "label": "Build Extension (react)",
-      "type": "npm",
-      "script": "react",
-      "problemMatcher": ["$tsc"],
-      "group": "build"
-    },
-    {
       "label": "Build Extension (TypeScript)",
-      "type": "npm",
-      "script": "build",
+      "type": "shell",
+      "command": "npm run build",
       "problemMatcher": ["$tsc"],
-      "group": "build"
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
     },
     {
       "label": "Build web-app (react-scripts)",
@@ -92,7 +88,6 @@
         "Build Package (extension-messaging)",
 
         "Install Packages (extension)",
-        "Build Extension (react)",
         "Build Extension (TypeScript)"
       ],
       "group": {

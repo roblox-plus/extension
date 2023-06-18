@@ -6,7 +6,6 @@ import { getToggleSettingValue } from '../../../services/settings';
 import { getTradeCount } from '../../../services/trades';
 import { parseAuthenticatedUser } from '../../../utils/authenticatedUser';
 import { getBubbleValue, setBubbleValue } from './bubble';
-import { getLinkOverrides, updateNavigationLink } from './links';
 import { getRobux, setRobux } from './robux';
 import { render as renderWidget, button as widgetButton } from './widget';
 
@@ -79,22 +78,6 @@ setInterval(async () => {
   const trades = await getTradeBubbleCount(shouldRefresh);
   setBubbleValue('nav-trade', trades);
 
-  // Update navigation links.
-  const links = await getLinkOverrides();
-  if (links.length === 2) {
-    // First element in the array is the third link in the navigation bar.
-    // Which is also the link that is second to last.
-    if (links[0].override) {
-      updateNavigationLink(-2, links[0].text, links[0].href);
-    }
-
-    // Second element in the array is the fourth link in the navigation bar.
-    // Which is also the link that is also the last link in the navigation bar.
-    if (links[1].override) {
-      updateNavigationLink(-1, links[1].text, links[1].href);
-    }
-  }
-
   // Control panel link.
   let controlPanelLink = document.querySelector(
     'a#nav-rplus'
@@ -157,5 +140,4 @@ window.navigationBar = {
   setRobux,
   getBubbleValue,
   setBubbleValue,
-  updateNavigationLink,
 };

@@ -55,9 +55,6 @@ jobs:
       - name: '🚚 npm install'
         run: npm ci
 
-      - name: bundle react
-        run: npm run react
-
       - name: '🏗️ Build'
         run: |
           npm run build
