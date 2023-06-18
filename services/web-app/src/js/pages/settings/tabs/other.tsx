@@ -23,7 +23,6 @@ export default function OtherSettings() {
           </Fragment>
         }
         settingName="twemoji"
-        disabled={authenticatedUser.premiumExpiration === undefined}
       />
 
       <Typography variant="h4" sx={{ mt: 1 }}>
