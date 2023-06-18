@@ -210,7 +210,7 @@
       {
         "id": "upload_asset_rules",
         "enabled": true,
-        "path": "upload-asset-rules.json"
+        "path": "redirect-settings-page.json"
       }
     ]
   },
