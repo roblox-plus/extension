@@ -37,6 +37,10 @@ This update removed the remaining usages of one of the older chrome APIs that wa
 
 I have decided to remove the feature that let you override the right two navigation links. Mainly because I didn't feel like adding them to the new settings page, and I don't use this feature myself. If I am in the wrong.. voice your concerns on [GitHub](https://github.com/roblox-plus/extension/issues), make an argument for why it should stay.
 
+### :mute: Notification Sounds Removed
+
+What you may have also noticed... is that you can no longer pick a custom sound to play when you get a notification. This is in preparation for maybe notifications working without having the extension installed, and then being in line with what browsers support by default, without extensions. Sorry.
+
 # 2.4.157
 
 good morning good morning good morning<br/>
