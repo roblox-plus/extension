@@ -1,21 +1,22 @@
-import { useMemo } from 'react';
+import { MenuItem, Select } from '@mui/material';
+import { Fragment, useMemo } from 'react';
 import markdown from '../../../../markdown.json';
 import Markdown from '../../../components/markdown';
 import useQuery from '../../../hooks/useQuery';
 
-type VersionChangeLog = {
+type ChangeLogVersion = {
   version: string;
   content: string;
 };
 
-const splitChangeLog = (changeLog: string): VersionChangeLog[] => {
-  const changes: VersionChangeLog[] = [];
+const splitChangeLog = (changeLog: string): ChangeLogVersion[] => {
+  const changes: ChangeLogVersion[] = [];
 
   changeLog.split('\n').forEach((line) => {
     if (line.startsWith('# ')) {
       changes.push({
         version: line.substring(1).trim(),
-        content: line,
+        content: '',
       });
     } else if (changes.length > 0) {
       changes[changes.length - 1].content += `\n` + line;
@@ -28,7 +29,7 @@ const splitChangeLog = (changeLog: string): VersionChangeLog[] => {
 const changes = splitChangeLog(markdown.changes);
 
 export default function ChangeLog() {
-  const { version } = useQuery();
+  const [{ version }, setQueryParameter] = useQuery();
   const changeLog = useMemo(() => {
     for (let i = 0; i < changes.length; i++) {
       if (version === changes[i].version) {
@@ -38,6 +39,41 @@ export default function ChangeLog() {
 
     return changes[0].content;
   }, [version]);
+  const selectedVersion = useMemo(() => {
+    for (let i = 0; i < changes.length; i++) {
+      if (changes[i].version === version) {
+        return version;
+      }
+    }
 
-  return <Markdown>{changeLog}</Markdown>;
+    return changes[0].version;
+  }, [version]);
+
+  return (
+    <Fragment>
+      <Select
+        value={selectedVersion}
+        onChange={(e) => {
+          if (e.target.value === 'latest') {
+            setQueryParameter('version', '');
+          } else {
+            setQueryParameter('version', e.target.value);
+          }
+        }}
+        sx={{ float: 'right', m: 1 }}
+      >
+        {changes.map((changeLogVersion) => {
+          return (
+            <MenuItem
+              value={changeLogVersion.version}
+              key={changeLogVersion.version}
+            >
+              {changeLogVersion.version}
+            </MenuItem>
+          );
+        })}
+      </Select>
+      <Markdown>{changeLog}</Markdown>
+    </Fragment>
+  );
 }
