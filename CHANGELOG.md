@@ -1,5 +1,15 @@
 # latest
 
+:boom: Anotha one
+
+## :see_no_evil: Restored Navigation Link Overrides
+
+okay I put the setting back to allow the navigation links to be overridden because you asked
+
+I was too lazy to add the setting yesterday, but today I... did it, enjoyyyyy
+
+# 2.4.210
+
 Good morning :sweat_smile:
 
 See what I did there? That's an emoji.. and whoa.. where are we? Welcome to [roblox.plus](https://roblox.plus/about/changes)! This is the new domain where some parts of the extension will exist going forward. At the end of last year, Roblox launched their beta OAuth2 project, and I was invited to join it. Since October 2022 I have been working every weekend to make the extension compatible with both [Roblox OAuth2](https://create.roblox.com/docs/cloud/open-cloud/oauth2-overview), and [Google Chrome - Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/). It has been... a motivational struggle, as I'm sure you've seen in the update logs, if you've been paying attention. But here we are I guess. We're getting close enough to finishing up more than half a years worth of work, enough so that I'm finally ready to start sending you all to this page.
