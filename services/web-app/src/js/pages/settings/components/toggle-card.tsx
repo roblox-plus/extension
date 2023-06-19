@@ -1,4 +1,4 @@
-import { Divider, Paper, Switch, Typography } from '@mui/material';
+import { Divider, Switch, Typography } from '@mui/material';
 import { LoadingState } from '@tix-factory/extension-utils';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -6,6 +6,7 @@ import {
   getToggleSettingValue,
   setSettingValue,
 } from '../../../services/settings';
+import SettingPaper from './setting-paper';
 
 type ToggleCardInput = {
   // The name of the setting, as displayed on the screen.
@@ -145,7 +146,7 @@ export default function ToggleCard({
   };
 
   return (
-    <Paper sx={{ p: 1, minWidth: 600, mt: 1 }}>
+    <SettingPaper>
       <Switch
         sx={{ float: 'right' }}
         checked={value}
@@ -161,6 +162,6 @@ export default function ToggleCard({
       <Typography variant="body1">{label}</Typography>
       <Divider sx={{ mt: 1, mb: 1 }} />
       <Typography variant="body2">{description}</Typography>
-    </Paper>
+    </SettingPaper>
   );
 }
