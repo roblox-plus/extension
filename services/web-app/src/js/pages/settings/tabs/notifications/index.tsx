@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
-import SettingsSection from '../components/settings-section';
-import ToggleCard from '../components/toggle-card';
+import SettingsSection from '../../components/settings-section';
+import ToggleCard from '../../components/toggle-card';
 import ExtensionNotificationSettings from './extension-notifications';
 import FriendNotificationSettings from './friend-notifications';
 import GroupNotificationSettings from './group-notifications';

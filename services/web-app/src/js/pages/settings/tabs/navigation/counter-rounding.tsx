@@ -1,7 +1,10 @@
 import { Divider, MenuItem, Paper, Select, Typography } from '@mui/material';
 import { LoadingState } from '@tix-factory/extension-utils';
 import { useEffect, useState } from 'react';
-import { getSettingValue, setSettingValue } from '../../../services/settings';
+import {
+  getSettingValue,
+  setSettingValue,
+} from '../../../../services/settings';
 
 const counterRoundAtOptions = [
   10_000, 100_000, 1_000_000, 10_000_000, 100_000_000,

@@ -1,10 +1,13 @@
 import { Grid } from '@mui/material';
 import { Fragment, useEffect, useState } from 'react';
-import { getAuthenticatedUserGroups } from '../../../services/groups';
-import { getSettingValue, setSettingValue } from '../../../services/settings';
-import Group from '../../../types/group';
-import SettingsSection from '../components/settings-section';
-import ToggleCard from '../components/toggle-card';
+import { getAuthenticatedUserGroups } from '../../../../services/groups';
+import {
+  getSettingValue,
+  setSettingValue,
+} from '../../../../services/settings';
+import Group from '../../../../types/group';
+import SettingsSection from '../../components/settings-section';
+import ToggleCard from '../../components/toggle-card';
 import GroupNotificationCard from './group-notification-card';
 
 export default function GroupNotificationSettings() {
