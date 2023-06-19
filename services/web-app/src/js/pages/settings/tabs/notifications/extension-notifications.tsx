@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react';
-import SettingsSection from '../components/settings-section';
-import ToggleCard from '../components/toggle-card';
+import SettingsSection from '../../components/settings-section';
+import ToggleCard from '../../components/toggle-card';
 
 export default function ExtensionNotificationSettings() {
   const [enabled, setEnabled] = useState<boolean>(false);

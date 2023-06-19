@@ -1,10 +1,10 @@
 import { Alert, Link } from '@mui/material';
 import { Fragment } from 'react';
 import { Link as InternalLink } from 'react-router-dom';
-import { aboutPath } from '../../../constants';
-import useAuthenticatedUser from '../../../hooks/useAuthenticatedUser';
-import SettingsSection from '../components/settings-section';
-import ToggleCard from '../components/toggle-card';
+import { aboutPath } from '../../../../constants';
+import useAuthenticatedUser from '../../../../hooks/useAuthenticatedUser';
+import SettingsSection from '../../components/settings-section';
+import ToggleCard from '../../components/toggle-card';
 
 export default function MainSettings() {
   const authenticatedUser = useAuthenticatedUser();

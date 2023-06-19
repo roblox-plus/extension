@@ -1,6 +1,6 @@
-import SettingsSection from '../components/settings-section';
-import ToggleCard from '../components/toggle-card';
-import NavigationCounterRoundingSetting from './navigation-counter-rounding';
+import SettingsSection from '../../components/settings-section';
+import ToggleCard from '../../components/toggle-card';
+import NavigationCounterRoundingSetting from './counter-rounding';
 
 export default function NavigationSettings() {
   return (
