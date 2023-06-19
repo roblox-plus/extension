@@ -74,7 +74,9 @@ export default function ChangeLog() {
           );
         })}
       </Select>
-      <Typography variant="h3">Update Log</Typography>
+      <Typography variant="h3" component="h1" sx={{ mb: 2 }}>
+        Update Log
+      </Typography>
       <Markdown>{changeLog}</Markdown>
     </Fragment>
   );

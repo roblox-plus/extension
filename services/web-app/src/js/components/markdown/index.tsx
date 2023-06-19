@@ -70,19 +70,25 @@ export default function Markdown({ children }: MarkdownInput) {
           h1: {
             component: Typography,
             props: {
+              component: 'h1',
               variant: 'h3',
+              sx: { mb: 1 },
             },
           },
           h2: {
             component: Typography,
             props: {
+              component: 'h2',
               variant: 'h4',
+              sx: { mb: 1, mt: 2 },
             },
           },
           h3: {
             component: Typography,
             props: {
+              component: 'h3',
               variant: 'h5',
+              sx: { mb: 1, mt: 2 },
             },
           },
           a: {
