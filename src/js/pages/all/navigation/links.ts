@@ -13,6 +13,15 @@ const getLinkOverrides = async (): Promise<NavigationLink[]> => {
     const setting = await getSettingValue('navigation');
     if (setting.buttons) {
       return setting.buttons.map((button: any) => {
+        if (!button.href || !button.text) {
+          // Blank value, do not override.
+          return {
+            href: '',
+            text: '',
+            override: false,
+          } as NavigationLink;
+        }
+
         if (
           (button.href === '/develop' && button.text === 'Create') ||
           (button.href.startsWith('/robux') && button.text === 'Robux')
@@ -59,4 +68,4 @@ const updateNavigationLink = (index: number, text: string, href: string) => {
     });
 };
 
-export { updateNavigationLink, getLinkOverrides };
+export { getLinkOverrides, updateNavigationLink };
