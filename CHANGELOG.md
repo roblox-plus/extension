@@ -2,7 +2,9 @@
 
 :boom: Anotha one
 
-## :see_no_evil: Restored Navigation Link Overrides
+## :tada: Updates
+
+### :see_no_evil: Restored Navigation Link Overrides
 
 okay I put the setting back to allow the navigation links to be overridden because you asked
 
