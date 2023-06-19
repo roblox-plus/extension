@@ -47,6 +47,18 @@ const getEmoji = (name: string) => {
     }
   }
 
+  // And if we still can't find it... look for partial matches?
+  for (let i = 0; i < entries.length; i++) {
+    for (let x = 0; x < entries[i][1].length; x++) {
+      if (
+        entries[i][1][x].includes(name) ||
+        uncleanAlias(entries[i][1][x]).includes(uncleanAlias(name))
+      ) {
+        return entries[i][0];
+      }
+    }
+  }
+
   return `:${name}:`;
 };
 
