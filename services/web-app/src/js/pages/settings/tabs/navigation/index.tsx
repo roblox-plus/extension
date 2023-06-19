@@ -1,6 +1,7 @@
 import SettingsSection from '../../components/settings-section';
 import ToggleCard from '../../components/toggle-card';
 import NavigationCounterRoundingSetting from './counter-rounding';
+import NavigationLinkSetting from './navigation-link';
 
 export default function NavigationSettings() {
   return (
@@ -16,6 +17,16 @@ export default function NavigationSettings() {
         settingName="navcounter"
       />
       <NavigationCounterRoundingSetting />
+      <NavigationLinkSetting
+        index={0}
+        defaultText="Create"
+        defaultLink="/develop"
+      />
+      <NavigationLinkSetting
+        index={1}
+        defaultText="Robux"
+        defaultLink="/robux"
+      />
     </SettingsSection>
   );
 }
