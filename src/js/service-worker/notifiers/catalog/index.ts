@@ -190,6 +190,15 @@ chrome.notifications.onClicked.addListener((notificationId) => {
   });
 });
 
+/*
+// Exists for debugging
+declare global {
+  var processMessage: any;
+}
+
+window.processMessage = processMessage;
+//*/
+
 export default async function (
   nextTokenUpdate: number | null
 ): Promise<number> {
