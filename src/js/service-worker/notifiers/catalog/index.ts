@@ -107,7 +107,8 @@ const processNotification = async (notification: any): Promise<any> => {
     }
   }
 
-  const iconUrl = await fetchDataUri(notification.icon);
+  //console.log('Building notification', notification);
+  const iconUrl = await fetchDataUri(new URL(notification.icon));
   const notificationOptions: chrome.notifications.NotificationOptions<true> = {
     type: 'basic',
     iconUrl,
@@ -118,6 +119,8 @@ const processNotification = async (notification: any): Promise<any> => {
   if (notification.items && Object.keys(notification.items).length > 0) {
     notificationOptions.type = 'list';
     notificationOptions.items = [];
+    notificationOptions.contextMessage = notification.message;
+
     for (let title in notification.items) {
       notificationOptions.items.push({
         title,
@@ -126,6 +129,7 @@ const processNotification = async (notification: any): Promise<any> => {
     }
   }
 
+  console.log('Displaying notification', notificationOptions, notification);
   chrome.notifications.create(
     `${notificationIdPrefix}${notification.url}`,
     notificationOptions,
