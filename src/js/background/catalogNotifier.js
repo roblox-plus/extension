@@ -1,42 +1,5 @@
 ﻿/* background/notifiers/catalogNotifier.js [06/03/2017] */
 RPlus.notifiers.catalog = (function () {
-	var lastRegistration = 0;
-	var maxTokenBackoff = 5 * 60 * 1000;
-	var minTokenBackoff = 7500;
-	var tokenBackoff = minTokenBackoff;
-	var tokenExpiration = 30 * 60 * 1000;
-
-	function updateToken() {
-		Extension.Storage.Singleton.get("itemNotifier").then(itemNotifierOn => {
-			if (!itemNotifierOn) {
-				setTimeout(updateToken, minTokenBackoff);
-				return;
-			}
-
-			Roblox.users.getAuthenticatedUser().then(function (user) {
-				chrome.instanceID.getToken({ authorizedEntity: "303497097698", scope: "FCM" }, function (token) {
-					$.post("https://api.roblox.plus/v2/itemnotifier/registertoken", {
-						token: token,
-						robloxUserId: user ? user.id : null
-					}).done(function () {
-						tokenBackoff = minTokenBackoff;
-						lastRegistration = +new Date;
-						setTimeout(updateToken, tokenExpiration);
-					}).fail(function () {
-						tokenBackoff = Math.min(maxTokenBackoff, tokenBackoff * 2);
-						setTimeout(updateToken, tokenBackoff);
-					});
-				});
-			}).catch(function () {
-				tokenBackoff = Math.min(maxTokenBackoff, tokenBackoff * 2);
-				setTimeout(updateToken, tokenBackoff);
-			});
-		}).catch(err => {
-			console.warn(err);
-			setTimeout(updateToken, minTokenBackoff);
-		});
-	}
-
 	function showNotification(notification, metadata, assetId) {
 		console.log("showNotification", notification, metadata, assetId);
 
@@ -252,17 +215,9 @@ RPlus.notifiers.catalog = (function () {
 	});
 	
 	chrome.gcm.onMessage.addListener(processMessage);
-	chrome.instanceID.onTokenRefresh.addListener(updateToken);
-
-	function init() {
-		updateToken();
-	}
-
-	init();
 
 	return {
 		processMessage: processMessage,
-		updateToken: updateToken,
 		testLimitedNotification: function() {
 			processMessage({
 				"data": {
@@ -300,9 +255,6 @@ RPlus.notifiers.catalog = (function () {
 				},
 				"from":"/topics/catalog-notifier-premium"
 			});
-		},
-		getLastRegistration: function () {
-			return new Date(lastRegistration);
 		}
 	};
 })();
