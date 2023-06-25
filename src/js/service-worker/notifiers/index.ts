@@ -1,8 +1,10 @@
+import CatalogNotifier from './catalog';
 import FriendPresenceNotifier from './friend-presence';
 import TradeNotifier from './trades';
 
 // Registry of all the notifiers
 const notifiers: { [name: string]: (state: any) => Promise<any> } = {};
+notifiers['notifiers/catalog'] = CatalogNotifier;
 notifiers['notifiers/friend-presence'] = FriendPresenceNotifier;
 notifiers['notifiers/trade'] = TradeNotifier;
 
