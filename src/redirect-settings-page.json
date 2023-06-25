@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": { "url": "https://roblox.plus/settings" }
+    },
+    "condition": {
+      "urlFilter": "https://*.roblox.com/my/account?tab=rplus*",
+      "resourceTypes": ["main_frame"]
+    }
+  }
+]

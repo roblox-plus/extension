@@ -16,13 +16,7 @@
 			}
 
 			if (notification.metadata.robloxSound) {
-				Roblox.audio.getSoundPlayer(notification.metadata.robloxSound).then((player) => {
-					audioPlayers[notification.id] = player;
-
-					player.play(volume).stop(audioStopped.bind(audioStopped, notification.id));
-				}).catch((e) => {
-					console.error("Failed to play audio", notification.metadata.robloxSound, e);
-				});
+				// This is no longer supported
 			} else if (notification.metadata.speak) {
 				if (chrome.tts.isSpeaking) {
 					chrome.tts.stop();

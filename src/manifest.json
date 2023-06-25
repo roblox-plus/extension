@@ -60,22 +60,12 @@
         "/js/vanilla/timedCache.js",
         "/js/vanilla/batchItemProcessor.js",
 
-        "/js/vendors/react.production.min.js",
-        "/js/vendors/react-dom.production.min.js",
-
         "/js/roblox/thumbnails.js",
         "/js/roblox/users.js",
-        "/js/roblox/catalog.js",
-        "/js/roblox/games.js",
-        "/js/roblox/content.js",
-        "/js/roblox/audio.js",
         "/js/roblox/groups.js",
-        "/js/roblox/economy.js",
-        "/js/roblox/ui.js",
         "/js/archive/preroblox.js",
 
         "/js/rplus/RobloxPlus.js",
-        "/js/rplus/settings.js",
         "/js/rplus/premium.js"
       ],
       "css": [
@@ -93,15 +83,6 @@
       "js": ["/js/jquery/loadPages.js"],
       "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
       "run_at": "document_end"
-    },
-
-    {
-      "js": [
-        "/js/output/react/components/vertical-tabs.js",
-        "/js/output/react/components/pill-toggle.js"
-      ],
-      "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
-      "run_at": "document_start"
     },
 
     {
@@ -138,23 +119,6 @@
       "matches": [
         "https://www.roblox.com/discover",
         "https://web.roblox.com/discover"
-      ],
-      "run_at": "document_end"
-    },
-
-    {
-      "js": [
-        "/js/output/react/pages/settings/settings-tab.js",
-        "/js/output/react/pages/settings/about.js",
-        "/js/output/react/pages/settings/navigation-settings.js",
-        "/js/output/react/pages/settings/notification-settings.js",
-        "/js/output/react/pages/settings/other-settings.js",
-        "/js/output/react/pages/settings/settings.js"
-      ],
-      "css": ["dist/css/account-settings.css"],
-      "matches": [
-        "https://www.roblox.com/my/account*",
-        "https://web.roblox.com/my/account*"
       ],
       "run_at": "document_end"
     },
@@ -239,7 +203,7 @@
       {
         "id": "upload_asset_rules",
         "enabled": true,
-        "path": "upload-asset-rules.json"
+        "path": "redirect-settings-page.json"
       }
     ]
   },
@@ -251,7 +215,7 @@
     "default_title": "Roblox+"
   },
 
-  "homepage_url": "https://www.roblox.com/my/account?tab=rplus",
+  "homepage_url": "https://roblox.plus/settings",
   "permissions": [
     "alarms",
     "gcm",

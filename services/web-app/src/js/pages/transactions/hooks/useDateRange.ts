@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import useQuery from '../../../hooks/useQuery';
 import { useSearchParams } from 'react-router-dom';
+import useQuery from '../../../hooks/useQuery';
 
 const getDefaultStartDate = (endDate: Date) => {
   const oneMonthAgo = new Date(endDate.getTime() - 31 * 24 * 60 * 60 * 1000);
@@ -17,8 +17,8 @@ export default function useDateRange(): [
   (startDate: Date) => void,
   (endDate: Date) => void
 ] {
-  const { startDate, endDate } = useQuery();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [{ startDate, endDate }] = useQuery();
+  const [, setSearchParams] = useSearchParams();
 
   const parsedEndDate = useMemo<Date>(() => {
     const parsed = new Date(endDate);

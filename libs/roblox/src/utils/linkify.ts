@@ -13,6 +13,10 @@ const getSEOLink = (id: number, name: string, path: string): URL => {
   return new URL(`https://www.roblox.com/${path}/${id}/${name}`);
 };
 
+const getGroupLink = (groupId: number, groupName: string): URL => {
+  return getSEOLink(groupId, groupName, 'groups');
+};
+
 const getGamePassLink = (gamePassId: number, gamePassName: string): URL => {
   return getSEOLink(gamePassId, gamePassName, 'game-pass');
 };
@@ -44,10 +48,11 @@ const getIdFromUrl = (url: URL): number => {
 };
 
 export {
-  getGamePassLink,
   getCatalogLink,
+  getGamePassLink,
+  getGroupLink,
+  getIdFromUrl,
   getLibraryLink,
   getPlaceLink,
   getUserProfileLink,
-  getIdFromUrl,
 };

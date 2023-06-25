@@ -254,7 +254,7 @@ if (isBackgroundPage) {
     // https://stackoverflow.com/a/20077854/1663648
     return true;
   });
-} else if (chrome?.runtime) {
+} else if (globalThis.chrome?.runtime) {
   console.debug(
     `Not attaching listener for messages, because we're not in the background.`
   );
@@ -397,5 +397,5 @@ declare global {
 }
 
 export { getWorkerTab, sendMessageToTab } from './tabs';
+export { addListener, sendMessage };
 export type { MessageListener };
-export { sendMessage, addListener };
