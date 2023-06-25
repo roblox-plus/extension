@@ -1,5 +1,17 @@
 # latest
 
+:boom: Anotha one
+
+## :tada: Updates
+
+### :shopping_cart: Catalog Notifier -> TypeScript
+
+As mentioned in the previous update log, we're slowly moving the extension to be compatible with [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/). As part of that, the catalog item notifier has been upgraded in this update. There aren't really any functional changes in how this works in this update, minor stuff you wouldn't notice anyway.
+
+See [roblox-plus/extension#108](https://github.com/roblox-plus/extension/pull/108/files) if interested.
+
+# 2.4.210
+
 Good morning :sweat_smile:
 
 See what I did there? That's an emoji.. and whoa.. where are we? Welcome to [roblox.plus](https://roblox.plus/about/changes)! This is the new domain where some parts of the extension will exist going forward. At the end of last year, Roblox launched their beta OAuth2 project, and I was invited to join it. Since October 2022 I have been working every weekend to make the extension compatible with both [Roblox OAuth2](https://create.roblox.com/docs/cloud/open-cloud/oauth2-overview), and [Google Chrome - Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/). It has been... a motivational struggle, as I'm sure you've seen in the update logs, if you've been paying attention. But here we are I guess. We're getting close enough to finishing up more than half a years worth of work, enough so that I'm finally ready to start sending you all to this page.
