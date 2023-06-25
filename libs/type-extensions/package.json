@@ -1,0 +1,13 @@
+{
+  "name": "@tix-factory/type-extensions",
+  "version": "0.0.237",
+  "description": "Additions that should really be in @types/chrome",
+  "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/chrome",
+  "main": "",
+  "types": "index.d.ts",
+  "scripts": {},
+  "dependencies": {
+    "@types/chrome": "0.0.237"
+  },
+  "typeScriptVersion": "4.3"
+}
