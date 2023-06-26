@@ -14,7 +14,7 @@ I was too lazy to add the setting yesterday, but today I... did it, enjoyyyyy
 
 As mentioned in the previous update log, we're slowly moving the extension to be compatible with [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/). As part of that, the catalog item notifier and group notifier have been upgraded in this update. There aren't really any functional changes in how these work in this update, minor stuff you wouldn't notice anyway.
 
-See [roblox-plus/extension#108](https://github.com/roblox-plus/extension/pull/108/files) + [roblox-plus/extension#109](https://github.com/roblox-plus/extension/pull/109/files) if interested.
+See [roblox-plus/extension#108](https://github.com/roblox-plus/extension/pull/108/files) + [roblox-plus/extension#109](https://github.com/roblox-plus/extension/pull/109/files) + [roblox-plus/extension#111](https://github.com/roblox-plus/extension/pull/111/files) if interested.
 
 # 2.4.210
 
