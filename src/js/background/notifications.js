@@ -2,10 +2,6 @@
 	let audioPlayers = {};
 	let speaking = "";
 
-	const audioStopped = (notificationId) => {
-		delete audioPlayers[notificationId];
-	};
-
 	Extension.NotificationService.Singleton.onNotificationCreated.addEventListener(notification => {
 		Extension.Storage.Singleton.get("notificationVolume").then(storedVolume => {
 			var volume = 0.5;
