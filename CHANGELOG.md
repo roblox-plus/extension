@@ -10,6 +10,10 @@ As mentioned in the previous update log, we're slowly moving the extension to be
 
 See [roblox-plus/extension#108](https://github.com/roblox-plus/extension/pull/108/files) + [roblox-plus/extension#109](https://github.com/roblox-plus/extension/pull/109/files) + [roblox-plus/extension#111](https://github.com/roblox-plus/extension/pull/111/files) if interested.
 
+### :coffin: Dark Theme Support Loss
+
+Dark theme is no longer supported on the [develop](https://www.roblox.com/develop?Page=ads) page. Not worth maintaining anymore, most of Roblox supports dark theme, except for this page, and I will not be supporting this signular page going forward.
+
 # 2.4.210
 
 Good morning :sweat_smile:
