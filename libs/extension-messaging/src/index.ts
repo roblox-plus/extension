@@ -1,4 +1,4 @@
-import { isBackgroundPage } from '@tix-factory/extension-utils';
+import { isServiceWorker } from '@tix-factory/extension-utils';
 import { version } from './constants';
 import MessageListener from './types/message-listener';
 import MessageListenerOptions from './types/message-listener-options';
@@ -28,7 +28,7 @@ const sendMessage = async (
   return new Promise(async (resolve, reject) => {
     const serializedMessage = JSON.stringify(message);
 
-    if (isBackgroundPage) {
+    if (isServiceWorker) {
       // Message is from the background page, to the background page.
       try {
         if (listeners[destination]) {
@@ -193,7 +193,7 @@ const addListener = (
 };
 
 // If we're currently in the background page, listen for messages.
-if (isBackgroundPage) {
+if (isServiceWorker) {
   chrome.runtime.onMessage.addListener((rawMessage, sender, sendResponse) => {
     if (typeof rawMessage !== 'string') {
       // Not for us.

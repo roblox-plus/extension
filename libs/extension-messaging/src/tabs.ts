@@ -1,4 +1,4 @@
-import { isBackgroundPage } from '@tix-factory/extension-utils';
+import { isServiceWorker } from '@tix-factory/extension-utils';
 import { version } from './constants';
 
 // All the tabs actively connected to the message service.
@@ -32,7 +32,7 @@ const getWorkerTab = (): chrome.runtime.Port | undefined => {
   return keys.length > 0 ? tabs[keys[0]] : undefined;
 };
 
-if (isBackgroundPage) {
+if (isServiceWorker) {
   chrome.runtime.onConnect.addListener((port) => {
     const id = crypto.randomUUID();
     console.debug('Tab connected', id, port);

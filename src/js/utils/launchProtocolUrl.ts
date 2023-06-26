@@ -4,7 +4,7 @@ import {
   sendMessage,
   sendMessageToTab,
 } from '@tix-factory/extension-messaging';
-import { isBackgroundPage } from '@tix-factory/extension-utils';
+import { isServiceWorker } from '@tix-factory/extension-utils';
 
 const messageDestination = 'launchProtocolUrl';
 
@@ -19,7 +19,7 @@ let protocolLauncherTab: chrome.tabs.Tab | undefined = undefined;
 
 // Attempt to launch the protocol URL in the current tab.
 const tryDirectLaunch = (protocolUrl: string): boolean => {
-  if (!isBackgroundPage && location) {
+  if (!isServiceWorker && location) {
     location.href = protocolUrl;
     return true;
   }
@@ -86,7 +86,7 @@ const launchProtocolUrl = (protocolUrl: string): Promise<void> => {
   return Promise.resolve();
 };
 
-if (isBackgroundPage) {
+if (isServiceWorker) {
   chrome.tabs.onRemoved.addListener((tabId) => {
     // Return the user to the tab they were on before, when we're done launching the protocol URL.
     // chrome self-closes the protocol URL tab when opened.

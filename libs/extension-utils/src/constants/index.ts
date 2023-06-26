@@ -1,8 +1,6 @@
 const manifest =
-  globalThis.chrome?.runtime?.getManifest() as chrome.runtime.ManifestV2;
+  globalThis.chrome?.runtime?.getManifest() as chrome.runtime.ManifestV3;
 
-const isBackgroundPage =
-  globalThis.chrome?.runtime?.getURL(manifest?.background?.page || '') ===
-  location.href;
+const isServiceWorker = !globalThis.window;
 
-export { isBackgroundPage, manifest };
+export { isServiceWorker, manifest };
