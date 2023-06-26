@@ -396,6 +396,6 @@ declare global {
   var messageServiceConnection: chrome.runtime.Port;
 }
 
-export { getWorkerTab, sendMessageToTab } from './tabs';
+export { sendMessageToTab } from './tabs';
 export { addListener, sendMessage };
 export type { MessageListener };
