@@ -31,7 +31,6 @@
         "/js/vanilla/extension/messaging.js",
         "/js/vanilla/extension/event.js",
         "/js/vanilla/extension/backgroundService.js",
-        "/js/vanilla/extension/reload.js",
         "/js/vanilla/extension/storage.js",
         "/js/vanilla/queuedPromise.js",
         "/js/archive/global.js",
