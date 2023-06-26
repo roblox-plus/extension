@@ -10,6 +10,16 @@ const displayStartupNotification = async (): Promise<void> => {
     return;
   }
 
+  const done = await chrome.storage.session.get(manifest.version);
+  if (done[manifest.version]) {
+    // Already showed this notification...
+    return;
+  }
+
+  await chrome.storage.session.set({
+    [manifest.version]: +new Date(),
+  });
+
   const authenticatedUser = await getAuthenticatedUser();
   chrome.notifications.create(notificationId, {
     type: 'basic',
