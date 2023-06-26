@@ -24,19 +24,7 @@
     },
 
     {
-      "js": [
-        "dist/pages/all.js",
-
-        "/js/vanilla/extension/extension.js",
-        "/js/vanilla/extension/messaging.js",
-        "/js/vanilla/extension/event.js",
-        "/js/vanilla/extension/backgroundService.js",
-        "/js/vanilla/extension/storage.js",
-        "/js/vanilla/queuedPromise.js",
-        "/js/archive/global.js",
-
-        "/js/vanilla/batchItemProcessor.js"
-      ],
+      "js": ["dist/pages/all.js", "/js/archive/global.js"],
       "css": ["dist/css/all.css"],
       "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
       "run_at": "document_start"

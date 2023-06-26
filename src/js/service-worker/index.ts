@@ -25,3 +25,10 @@ addListener(
     allowExternalConnections: true,
   }
 );
+
+console.log(
+  manifest.name,
+  manifest.version,
+  'started',
+  chrome.extension.inIncognitoContext ? ' in icognito' : ''
+);
