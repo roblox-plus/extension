@@ -1,9 +1,4 @@
-import {
-  addListener,
-  getWorkerTab,
-  sendMessage,
-  sendMessageToTab,
-} from '@tix-factory/extension-messaging';
+import { addListener, sendMessage } from '@tix-factory/extension-messaging';
 import { isServiceWorker } from '@tix-factory/extension-utils';
 
 const messageDestination = 'launchProtocolUrl';
@@ -32,22 +27,6 @@ const launchProtocolUrl = async (protocolUrl: string): Promise<void> => {
   if (tryDirectLaunch(protocolUrl)) {
     // We were able to directly launch the protocol URL.
     // Nothing more to do.
-    return;
-  }
-
-  const workerTab = getWorkerTab();
-  if (workerTab) {
-    // If we're in the background, and we have a tab that can process the protocol URL, use that instead.
-    // This will ensure that when we use the protocol launcher to launch Roblox, that they have the highest
-    // likihood of already having accepted the protocol launcher permission.
-    sendMessageToTab(
-      messageDestination,
-      {
-        protocolUrl,
-      } as BackgroundMessage,
-      workerTab
-    );
-
     return;
   }
 
