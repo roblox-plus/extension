@@ -34,10 +34,8 @@
         "/js/vanilla/extension/reload.js",
         "/js/vanilla/extension/storage.js",
         "/js/vanilla/queuedPromise.js",
-        "/js/vanilla/cachedPromise.js",
         "/js/archive/global.js",
 
-        "/js/vanilla/timedCache.js",
         "/js/vanilla/batchItemProcessor.js"
       ],
       "css": ["dist/css/all.css"],
