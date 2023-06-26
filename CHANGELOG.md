@@ -4,6 +4,12 @@
 
 ## :tada: Updates
 
+### :see_no_evil: Restored Navigation Link Overrides
+
+okay I put the setting back to allow the navigation links to be overridden because you asked
+
+I was too lazy to add the setting yesterday, but today I... did it, enjoyyyyy
+
 ### :arrow_double_up: Remaining Notifiers -> TypeScript
 
 As mentioned in the previous update log, we're slowly moving the extension to be compatible with [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/). As part of that, the catalog item notifier and group notifier have been upgraded in this update. There aren't really any functional changes in how these work in this update, minor stuff you wouldn't notice anyway.
