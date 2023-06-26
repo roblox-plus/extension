@@ -60,10 +60,7 @@
         "/js/vanilla/timedCache.js",
         "/js/vanilla/batchItemProcessor.js",
 
-        "/js/roblox/thumbnails.js",
         "/js/roblox/users.js",
-        "/js/roblox/groups.js",
-        "/js/archive/preroblox.js",
 
         "/js/rplus/RobloxPlus.js",
         "/js/rplus/premium.js"

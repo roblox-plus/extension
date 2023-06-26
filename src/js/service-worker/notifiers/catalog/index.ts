@@ -199,9 +199,7 @@ declare global {
 window.processMessage = processMessage;
 //*/
 
-export default async function (
-  nextTokenUpdate: number | null
-): Promise<number> {
+export default async (nextTokenUpdate: number | null): Promise<number> => {
   const enabled = await isEnabled();
   if (!enabled) {
     return 0;
@@ -218,4 +216,4 @@ export default async function (
 
   // Update the token again later
   return now + tokenRefreshInterval;
-}
+};
