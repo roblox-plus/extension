@@ -51,9 +51,7 @@
         "/js/archive/prefunc.js",
 
         "/js/vanilla/timedCache.js",
-        "/js/vanilla/batchItemProcessor.js",
-
-        "/js/roblox/users.js"
+        "/js/vanilla/batchItemProcessor.js"
       ],
       "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
       "run_at": "document_start"
