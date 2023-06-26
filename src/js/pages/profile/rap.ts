@@ -53,8 +53,4 @@ getToggleSettingValue('profileRAP')
     console.error('Failed to check RAP setting.', err);
   });
 
-declare global {
-  var RPlus: any;
-}
-
 export default {};

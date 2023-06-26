@@ -24,61 +24,10 @@
     },
 
     {
-      "js": [
-        "/js/jquery/style.js",
-        "/js/jquery/loadStylesheets.js",
-
-        "/js/vendors/jquery-3.4.1.min.js",
-        "/js/jquery/styleAfterJquery.js"
-      ],
+      "js": ["dist/pages/all.js"],
       "css": ["dist/css/all.css"],
       "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
-      "all_frames": true,
       "run_at": "document_start"
-    },
-
-    {
-      "js": [
-        "dist/pages/all.js",
-
-        "/js/vanilla/extension/extension.js",
-        "/js/vanilla/extension/messaging.js",
-        "/js/vanilla/extension/event.js",
-        "/js/vanilla/extension/backgroundService.js",
-        "/js/vanilla/extension/reload.js",
-        "/js/vanilla/extension/storage.js",
-        "/js/vanilla/queuedPromise.js",
-        "/js/vanilla/cachedPromise.js",
-        "/js/archive/global.js",
-
-        "/js/roblox/api.js",
-        "/js/roblox/xsrfHandler.js",
-        "/js/roblox/apiSiteContentHandler.js",
-        "/js/archive/prefunc.js",
-
-        "/js/vanilla/timedCache.js",
-        "/js/vanilla/batchItemProcessor.js",
-
-        "/js/roblox/users.js",
-
-        "/js/rplus/RobloxPlus.js",
-        "/js/rplus/premium.js"
-      ],
-      "css": [
-        "/css/icons.css",
-        "/css/style.css",
-
-        "/css/roblox/itemCards.css",
-        "/css/roblox/icons.css"
-      ],
-      "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
-      "run_at": "document_start"
-    },
-
-    {
-      "js": ["/js/jquery/loadPages.js"],
-      "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
-      "run_at": "document_end"
     },
 
     {
