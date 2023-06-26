@@ -152,7 +152,7 @@ declare global {
   var navigationBar: object;
 }
 
-window.navigationBar = {
+globalThis.navigationBar = {
   getRobux,
   setRobux,
   getBubbleValue,

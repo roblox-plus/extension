@@ -28,7 +28,7 @@ getToggleSettingValue('profileRAP')
       async (event) => {
         event.preventDefault();
 
-        window.postMessage({
+        globalThis.postMessage({
           messageType: 'open-roblox-plus-widget',
           searchValue: location.href,
         });

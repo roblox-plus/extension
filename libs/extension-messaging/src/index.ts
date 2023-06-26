@@ -108,7 +108,7 @@ const sendMessage = async (
         },
       };
 
-      window.postMessage({
+      globalThis.postMessage({
         version,
         extensionId: document.body.dataset.extensionId,
         destination,
@@ -259,8 +259,8 @@ if (isBackgroundPage) {
     `Not attaching listener for messages, because we're not in the background.`
   );
 
-  if (!window.messageServiceConnection) {
-    const port = (window.messageServiceConnection = chrome.runtime.connect(
+  if (!globalThis.messageServiceConnection) {
+    const port = (globalThis.messageServiceConnection = chrome.runtime.connect(
       chrome.runtime.id,
       {
         name: 'messageService',
@@ -304,7 +304,7 @@ if (isBackgroundPage) {
 
   // chrome.runtime is available, and we got a message from the window
   // this could be a tab trying to get information from the extension
-  window.addEventListener('message', async (messageEvent) => {
+  globalThis.addEventListener('message', async (messageEvent) => {
     const { extensionId, messageId, destination, message } = messageEvent.data;
     if (
       extensionId !== chrome.runtime.id ||
@@ -320,7 +320,7 @@ if (isBackgroundPage) {
     if (messageEvent.data.version !== version) {
       // They did want to contact us, but there was a version mismatch.
       // We can't handle this message.
-      window.postMessage({
+      globalThis.postMessage({
         extensionId,
         messageId,
         success: false,
@@ -336,7 +336,7 @@ if (isBackgroundPage) {
       const response = await sendMessage(destination, message, true);
 
       // Success! Now go tell the client they got everything they wanted.
-      window.postMessage({
+      globalThis.postMessage({
         extensionId,
         messageId,
         success: true,
@@ -346,7 +346,7 @@ if (isBackgroundPage) {
       console.debug('Failed to send message to', destination, e);
 
       // :coffin:
-      window.postMessage({
+      globalThis.postMessage({
         extensionId,
         messageId,
         success: false,
@@ -357,7 +357,7 @@ if (isBackgroundPage) {
 } else {
   // Not a background page, and not a content script.
   // This could be a page where we want to listen for calls from the tab.
-  window.addEventListener('message', (messageEvent) => {
+  globalThis.addEventListener('message', (messageEvent) => {
     const { extensionId, messageId, success, data } = messageEvent.data;
     if (
       extensionId !== document.body.dataset.extensionId ||
