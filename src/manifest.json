@@ -24,14 +24,6 @@
     },
 
     {
-      "js": ["/js/vendors/jquery-3.4.1.min.js"],
-      "css": ["dist/css/all.css"],
-      "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
-      "all_frames": true,
-      "run_at": "document_start"
-    },
-
-    {
       "js": [
         "dist/pages/all.js",
 
@@ -48,6 +40,7 @@
         "/js/vanilla/timedCache.js",
         "/js/vanilla/batchItemProcessor.js"
       ],
+      "css": ["dist/css/all.css"],
       "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
       "run_at": "document_start"
     },
