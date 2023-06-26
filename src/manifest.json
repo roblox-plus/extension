@@ -31,12 +31,6 @@
     },
 
     {
-      "js": ["/js/jquery/loadPages.js"],
-      "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
-      "run_at": "document_end"
-    },
-
-    {
       "js": ["./dist/pages/avatar.js"],
       "matches": [
         "https://www.roblox.com/my/avatar",
