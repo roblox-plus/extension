@@ -64,13 +64,6 @@
         "/js/rplus/RobloxPlus.js",
         "/js/rplus/premium.js"
       ],
-      "css": [
-        "/css/icons.css",
-        "/css/style.css",
-
-        "/css/roblox/itemCards.css",
-        "/css/roblox/icons.css"
-      ],
       "matches": ["https://www.roblox.com/*", "https://web.roblox.com/*"],
       "run_at": "document_start"
     },
