@@ -1,8 +1,14 @@
 # latest
 
-:boom: Anotha one
+:boom: it's the moment we've been working towards for a long time... [Google Chrome - Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/)
 
 ## :tada: Updates
+
+### :100: Manifest V3
+
+It has been over half a year in the making, but we've finally done it. We're now using [Google Chrome - Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/). This means that the extension is now up-to-date with Google Chrome's latest standards. Every update I've made this year has been in preparation for this moment. I will now take my award. :trophy:
+
+ty
 
 ### :see_no_evil: Restored Navigation Link Overrides
 

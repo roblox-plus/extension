@@ -30,10 +30,10 @@ export default function App({ button, panel }: AppInput) {
       }
     };
 
-    window.addEventListener('message', openWidget);
+    globalThis.addEventListener('message', openWidget);
 
     return () => {
-      window.removeEventListener('message', openWidget);
+      globalThis.removeEventListener('message', openWidget);
     };
   }, [setSearchValue]);
 

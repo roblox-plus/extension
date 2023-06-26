@@ -196,7 +196,7 @@ declare global {
   var processMessage: any;
 }
 
-window.processMessage = processMessage;
+globalThis.processMessage = processMessage;
 //*/
 
 export default async (nextTokenUpdate: number | null): Promise<number> => {

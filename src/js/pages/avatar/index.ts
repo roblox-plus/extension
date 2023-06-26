@@ -49,7 +49,7 @@ const filterAllItems = () => {
     });
 };
 
-window.addEventListener('DOMNodeInserted', (event) => {
+globalThis.addEventListener('DOMNodeInserted', (event) => {
   if (!(event.target instanceof HTMLElement)) {
     return;
   }

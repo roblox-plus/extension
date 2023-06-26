@@ -99,7 +99,7 @@ if (tabsContainerAfter.length > 0) {
 }
 
 // Listen for the context menu to open.
-window.addEventListener('DOMNodeInserted', async (event) => {
+globalThis.addEventListener('DOMNodeInserted', async (event) => {
   if (!(event.target instanceof HTMLElement)) {
     return;
   }

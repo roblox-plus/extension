@@ -1,19 +1,21 @@
 {
-  "version": "2.4.6",
+  "version": "3.0.0",
   "name": "Roblox+",
   "short_name": "Roblox+",
-  "description": "Adds features and notifiers made by WebGL3D to the Roblox website",
+  "description": "Extends the features available on roblox.com",
+  "author": "WebGL3D",
 
   "minimum_chrome_version": "100.0.0",
 
   "icons": {
-    "128": "/images/icons/icon_128x128.png",
-    "16": "/images/icons/icon_16x16.png",
-    "48": "/images/icons/icon_64x64.png"
+    "16": "./images/icons/logo16.png",
+    "32": "./images/icons/logo32.png",
+    "48": "./images/icons/logo48.png",
+    "128": "./images/icons/logo128.png"
   },
 
   "background": {
-    "page": "/background.html"
+    "service_worker": "./dist/service-worker.js"
   },
 
   "content_scripts": [
@@ -153,37 +155,37 @@
     ]
   },
 
-  "browser_action": {
+  "action": {
     "default_icon": {
-      "19": "/images/icons/icon_32x32.png"
+      "16": "./images/icons/logo16.png",
+      "32": "./images/icons/logo32.png"
     },
     "default_title": "Roblox+"
   },
 
   "homepage_url": "https://roblox.plus/settings",
+
   "permissions": [
     "alarms",
     "gcm",
     "declarativeNetRequest",
     "notifications",
-    "storage",
-    "https://*.roblox.com/*",
-    "https://*.rbxcdn.com/*",
-    "https://*.roblox.plus/*"
-  ],
-  "web_accessible_resources": [
-    "*.css",
-    "*.svg",
-    "*.png",
-    "*.html",
-    "*.js",
-    "jquery.min.map",
-    "/images/icons/icon_32x32.png",
-    "https://*.roblox.com/*",
-    "https://*.rbxcdn.com/*",
-    "https://*.roblox.plus/*"
+    "storage"
   ],
 
-  "manifest_version": 2,
+  "web_accessible_resources": [
+    {
+      "resources": ["*.js.map"],
+      "matches": ["https://*.roblox.com/*", "https://roblox.plus/*"]
+    }
+  ],
+
+  "host_permissions": [
+    "https://*.roblox.com/*",
+    "https://*.roblox.plus/*",
+    "https://*.rbxcdn.com/*"
+  ],
+
+  "manifest_version": 3,
   "incognito": "split"
 }

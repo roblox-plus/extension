@@ -1,5 +1,5 @@
 import { addListener, sendMessage } from '@tix-factory/extension-messaging';
-import { isBackgroundPage } from '@tix-factory/extension-utils';
+import { isServiceWorker } from '@tix-factory/extension-utils';
 import { open } from 'db.js';
 import RobuxHistory from '../../types/robux-history';
 import { getToggleSettingValue } from '../settings';
@@ -17,7 +17,7 @@ type GetRobuxHistoryMessage = {
   endDateTime: number;
 };
 
-if (isBackgroundPage) {
+if (isServiceWorker) {
   open({
     server: 'currencyBalances',
     version: 1,
@@ -36,7 +36,7 @@ if (isBackgroundPage) {
   })
     .then((database) => {
       console.log('Database connection (for robuxHistory) opened.');
-      window.robuxHistoryDatabase = database;
+      globalThis.robuxHistoryDatabase = database;
 
       // Ensure the amount of stored data doesn't get too out of hand.
       // Only store one year of data.
@@ -151,4 +151,4 @@ addListener(
   }
 );
 
-export { recordUserRobux, getUserRobuxHistory };
+export { getUserRobuxHistory, recordUserRobux };
