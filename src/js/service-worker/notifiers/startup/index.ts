@@ -13,7 +13,7 @@ const displayStartupNotification = async (): Promise<void> => {
   const authenticatedUser = await getAuthenticatedUser();
   chrome.notifications.create(notificationId, {
     type: 'basic',
-    iconUrl: chrome.extension.getURL(manifest.icons['128']),
+    iconUrl: chrome.runtime.getURL(manifest.icons['128']),
     title: 'Roblox+ Started',
     message: authenticatedUser
       ? `Hello, ${authenticatedUser.displayName}`
