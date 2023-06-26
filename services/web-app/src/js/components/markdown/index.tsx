@@ -16,11 +16,20 @@ const emojiOverrides: { [markdownName: string]: string } = {
   sweat_smile: 'grinning_face_with_sweat',
 };
 
+const bogusOverrides: { [name: string]: string } = {
+  arrow_double_up: '⏫',
+};
+
 const uncleanAlias = (name: string): string => {
   return name.replace(/_/g, '');
 };
 
-const getEmoji = (name: string) => {
+const getEmoji = (name: string): string => {
+  const overrideValue: string = bogusOverrides[name];
+  if (overrideValue) {
+    return overrideValue;
+  }
+
   const entries = Object.entries(emojilib);
 
   if (emojiOverrides.hasOwnProperty(name)) {

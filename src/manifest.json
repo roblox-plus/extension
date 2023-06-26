@@ -46,7 +46,6 @@
         "/js/vanilla/extension/event.js",
         "/js/vanilla/extension/backgroundService.js",
         "/js/vanilla/extension/reload.js",
-        "/js/vanilla/extension/notificationService.js",
         "/js/vanilla/extension/storage.js",
         "/js/vanilla/queuedPromise.js",
         "/js/vanilla/cachedPromise.js",
@@ -216,9 +215,7 @@
   "permissions": [
     "alarms",
     "gcm",
-    "contextMenus",
     "declarativeNetRequest",
-    "tts",
     "notifications",
     "storage",
     "https://*.roblox.com/*",
