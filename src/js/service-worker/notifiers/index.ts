@@ -1,6 +1,7 @@
 import CatalogNotifier from './catalog';
 import FriendPresenceNotifier from './friend-presence';
 import GroupShoutNotifier from './group-shout';
+import './startup';
 import TradeNotifier from './trades';
 
 // Registry of all the notifiers
