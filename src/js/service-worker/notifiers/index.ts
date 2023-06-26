@@ -23,7 +23,7 @@ const executeNotifier = async (name: string) => {
     const state = await chrome.storage.session.get(name);
 
     // Run the notifier.
-    const newState = await notifier(state[name]);
+    const newState = await notifier(state[name] || null);
 
     // Save the state for the next time the notifier runs.
     if (newState) {
