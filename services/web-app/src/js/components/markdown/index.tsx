@@ -47,6 +47,18 @@ const getEmoji = (name: string) => {
     }
   }
 
+  // And if we still can't find it... look for partial matches?
+  for (let i = 0; i < entries.length; i++) {
+    for (let x = 0; x < entries[i][1].length; x++) {
+      if (
+        entries[i][1][x].includes(name) ||
+        uncleanAlias(entries[i][1][x]).includes(uncleanAlias(name))
+      ) {
+        return entries[i][0];
+      }
+    }
+  }
+
   return `:${name}:`;
 };
 
@@ -58,19 +70,25 @@ export default function Markdown({ children }: MarkdownInput) {
           h1: {
             component: Typography,
             props: {
+              component: 'h1',
               variant: 'h3',
+              sx: { mb: 1 },
             },
           },
           h2: {
             component: Typography,
             props: {
+              component: 'h2',
               variant: 'h4',
+              sx: { mb: 1, mt: 2 },
             },
           },
           h3: {
             component: Typography,
             props: {
+              component: 'h3',
               variant: 'h5',
+              sx: { mb: 1, mt: 2 },
             },
           },
           a: {

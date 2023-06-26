@@ -11,8 +11,11 @@ import {
 import { LoadingState } from '@tix-factory/extension-utils';
 import { useEffect, useState } from 'react';
 import { getGroupLink } from 'roblox';
-import { getSettingValue, setSettingValue } from '../../../services/settings';
-import Group from '../../../types/group';
+import {
+  getSettingValue,
+  setSettingValue,
+} from '../../../../services/settings';
+import Group from '../../../../types/group';
 
 type GroupNotificationCardInput = {
   group: Group;
