@@ -10,4 +10,33 @@
   height: 32px;
 }
 
+/* Navigation Icons */
+#nav-rplus {
+  .rplus-icon {
+    background-image: url(../../images/icon_outline_grey.svg);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    height: 28px;
+    width: 28px;
+    vertical-align: middle;
+    display: inline-block;
+  }
+
+  &:hover {
+    .rplus-icon {
+      background-image: url(../../images/icon_outline_black.svg);
+    }
+  }
+}
+
+#navigation.dark-theme,
+.dark-theme #navigation {
+  #nav-rplus:hover {
+    .rplus-icon {
+      // HACK: Invert black -> white
+      filter: invert(1);
+    }
+  }
+}
+
 /* WebGL3D */
