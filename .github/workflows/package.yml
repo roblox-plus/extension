@@ -24,7 +24,7 @@ jobs:
       # Extension Versioning
       - name: Set manifest version
         run: |
-          jq '.+= { "version": "2.4.${{ github.run_number }}" }' manifest.json > tmp.$$.json && mv tmp.$$.json manifest.json
+          jq '.+= { "version": "3.${{ github.run_number }}.0" }' manifest.json > tmp.$$.json && mv tmp.$$.json manifest.json
           cat manifest.json
         working-directory: src
 
