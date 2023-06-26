@@ -11,9 +11,6 @@ notifiers['notifiers/group-shouts'] = GroupShoutNotifier;
 notifiers['notifiers/friend-presence'] = FriendPresenceNotifier;
 notifiers['notifiers/trade'] = TradeNotifier;
 
-// TODO: Update to use chrome.storage.session for manifest V3
-const notifierStates: { [name: string]: any } = {};
-
 // Execute a notifier by name.
 const executeNotifier = async (name: string) => {
   const notifier = notifiers[name];
@@ -23,16 +20,18 @@ const executeNotifier = async (name: string) => {
 
   try {
     // Fetch the state from the last time the notifier ran.
-    // ...
+    const state = await chrome.storage.session.get(name);
 
     // Run the notifier.
-    const newState = await notifier(notifierStates[name]);
+    const newState = await notifier(state[name]);
 
     // Save the state for the next time the notifier runs.
     if (newState) {
-      notifierStates[name] = newState;
+      await chrome.storage.session.set({
+        [name]: newState,
+      });
     } else {
-      delete notifierStates[name];
+      chrome.storage.session.remove(name);
     }
   } catch (err) {
     console.error(name, 'failed to run', err);
@@ -53,12 +52,10 @@ for (let name in notifiers) {
 // Attach it to the global context, so we can access it for testing.
 declare global {
   var notifiers: any;
-  var notifierStates: any;
   var executeNotifier: any;
 }
 
 globalThis.notifiers = notifiers;
-globalThis.notifierStates = notifierStates;
 globalThis.executeNotifier = executeNotifier;
 
 export { executeNotifier };

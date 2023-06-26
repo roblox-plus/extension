@@ -28,11 +28,11 @@ const tryDirectLaunch = (protocolUrl: string): boolean => {
 };
 
 // Launch the protocol URL from a service worker.
-const launchProtocolUrl = (protocolUrl: string): Promise<void> => {
+const launchProtocolUrl = async (protocolUrl: string): Promise<void> => {
   if (tryDirectLaunch(protocolUrl)) {
     // We were able to directly launch the protocol URL.
     // Nothing more to do.
-    return Promise.resolve();
+    return;
   }
 
   const workerTab = getWorkerTab();
@@ -48,42 +48,30 @@ const launchProtocolUrl = (protocolUrl: string): Promise<void> => {
       workerTab
     );
 
-    return Promise.resolve();
+    return;
   }
 
-  // TODO: Convert to promise signatures when moving to manifest V3.
-  chrome.tabs.query(
-    {
-      active: true,
-      currentWindow: true,
-    },
-    (currentTab) => {
-      previousTab = currentTab[0];
+  const currentTab = await chrome.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+  previousTab = currentTab[0];
 
-      if (previousTab) {
-        // Try to open the protocol launcher tab right next to the current tab, so that when it
-        // closes, it will put the user back on the tab they are on now.
-        chrome.tabs.create(
-          {
-            url: protocolUrl,
-            index: previousTab.index + 1,
-            windowId: previousTab.windowId,
-          },
-          (tab) => {
-            protocolLauncherTab = tab;
-          }
-        );
-      } else {
-        chrome.tabs.create({ url: protocolUrl });
+  if (previousTab) {
+    // Try to open the protocol launcher tab right next to the current tab, so that when it
+    // closes, it will put the user back on the tab they are on now.
+    protocolLauncherTab = await chrome.tabs.create({
+      url: protocolUrl,
+      index: previousTab.index + 1,
+      windowId: previousTab.windowId,
+    });
+  } else {
+    await chrome.tabs.create({ url: protocolUrl });
 
-        // If we don't know where they were before, then don't try to keep track of anything.
-        previousTab = undefined;
-        protocolLauncherTab = undefined;
-      }
-    }
-  );
-
-  return Promise.resolve();
+    // If we don't know where they were before, then don't try to keep track of anything.
+    previousTab = undefined;
+    protocolLauncherTab = undefined;
+  }
 };
 
 if (isServiceWorker) {
