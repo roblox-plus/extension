@@ -1,3 +1,4 @@
+import { wait } from '@tix-factory/extension-utils';
 import { User } from 'roblox';
 import { apiBaseUrl } from '../../constants';
 
@@ -10,6 +11,30 @@ const getAuthenticatedUser = (): Promise<User | null> => {
     authenticatedUserPromise ||
     (authenticatedUserPromise = new Promise(async (resolve, reject) => {
       try {
+        if (document.body.dataset.extensionId) {
+          // Because Roblox OAuth2 doesn't support some users yet, we can't exclusively rely on it.
+          // And because we know we have the extension installed, we can check who is logged in by
+          // waiting for the extension to populate it into the page.
+          for (let i = 0; i < 10; i++) {
+            const userId = Number(document.body.dataset.userId);
+            if (!isNaN(userId)) {
+              if (userId > 0) {
+                resolve({
+                  id: userId,
+                  name: `${document.body.dataset.userName}`,
+                  displayName: `${document.body.dataset.userDisplayName}`,
+                });
+
+                return;
+              }
+
+              break;
+            }
+
+            await wait(500);
+          }
+        }
+
         const response = await fetch(
           `${apiBaseUrl.href}v1/users/authenticated`,
           {
