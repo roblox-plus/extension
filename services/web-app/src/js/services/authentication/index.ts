@@ -2,6 +2,7 @@ import { wait } from '@tix-factory/extension-utils';
 import { User } from 'roblox';
 import { apiBaseUrl } from '../../constants';
 
+let logoutAvailable = true;
 let authenticatedUserPromise: Promise<User | null>;
 const loginsByCode: { [code: string]: Promise<User> } = {};
 
@@ -19,6 +20,10 @@ const getAuthenticatedUser = (): Promise<User | null> => {
             const userId = Number(document.body.dataset.userId);
             if (!isNaN(userId)) {
               if (userId > 0) {
+                // If the extension was "logged in" because of the extension able to fetch the Roblox authentication
+                // context, then no logout option is available, because that would just be "log out of Roblox".
+                logoutAvailable = false;
+
                 resolve({
                   id: userId,
                   name: `${document.body.dataset.userName}`,
@@ -104,4 +109,9 @@ const logout = async () => {
   window.location.reload();
 };
 
-export { getAuthenticatedUser, login, logout };
+// Checks if the user is allowed to logout.
+const logoutEnabled = async () => {
+  return logoutAvailable;
+};
+
+export { getAuthenticatedUser, login, logout, logoutEnabled };
