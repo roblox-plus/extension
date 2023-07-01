@@ -1,6 +1,8 @@
+import { wait } from '@tix-factory/extension-utils';
 import { User } from 'roblox';
 import { apiBaseUrl } from '../../constants';
 
+let logoutAvailable = true;
 let authenticatedUserPromise: Promise<User | null>;
 const loginsByCode: { [code: string]: Promise<User> } = {};
 
@@ -10,6 +12,34 @@ const getAuthenticatedUser = (): Promise<User | null> => {
     authenticatedUserPromise ||
     (authenticatedUserPromise = new Promise(async (resolve, reject) => {
       try {
+        if (document.body.dataset.extensionId) {
+          // Because Roblox OAuth2 doesn't support some users yet, we can't exclusively rely on it.
+          // And because we know we have the extension installed, we can check who is logged in by
+          // waiting for the extension to populate it into the page.
+          for (let i = 0; i < 10; i++) {
+            const userId = Number(document.body.dataset.userId);
+            if (!isNaN(userId)) {
+              if (userId > 0) {
+                // If the extension was "logged in" because of the extension able to fetch the Roblox authentication
+                // context, then no logout option is available, because that would just be "log out of Roblox".
+                logoutAvailable = false;
+
+                resolve({
+                  id: userId,
+                  name: `${document.body.dataset.userName}`,
+                  displayName: `${document.body.dataset.userDisplayName}`,
+                });
+
+                return;
+              }
+
+              break;
+            }
+
+            await wait(500);
+          }
+        }
+
         const response = await fetch(
           `${apiBaseUrl.href}v1/users/authenticated`,
           {
@@ -79,4 +109,9 @@ const logout = async () => {
   window.location.reload();
 };
 
-export { getAuthenticatedUser, login, logout };
+// Checks if the user is allowed to logout.
+const logoutEnabled = async () => {
+  return logoutAvailable;
+};
+
+export { getAuthenticatedUser, login, logout, logoutEnabled };

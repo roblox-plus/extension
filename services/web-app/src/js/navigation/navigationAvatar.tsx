@@ -10,10 +10,9 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import React, { Fragment, useState } from 'react';
-import { logout } from '../services/authentication';
+import React, { Fragment, useEffect, useState } from 'react';
 import useAuthenticatedUser from '../hooks/useAuthenticatedUser';
-import { LoadingState } from '@tix-factory/extension-utils';
+import { logout, logoutEnabled } from '../services/authentication';
 
 export default function NavigationAvatar() {
   const authenticatedUser = useAuthenticatedUser();
@@ -23,6 +22,19 @@ export default function NavigationAvatar() {
   const [avatarMenuAnchor, setAvatarMenuAnchor] = useState<
     (EventTarget & Element) | null
   >(null);
+  const [showLogout, setShowLogout] = useState<boolean>(false);
+
+  useEffect(() => {
+    logoutEnabled()
+      .then(setShowLogout)
+      .catch((err) => {
+        setShowLogout(true);
+        console.error(
+          'Failed to check if logout should be shown, defaulting to true',
+          err
+        );
+      });
+  }, [authenticatedUser]);
 
   const toggleAvatarMenu = (event: React.SyntheticEvent) => {
     if (avatarMenuAnchor) {
@@ -84,7 +96,10 @@ export default function NavigationAvatar() {
         <Typography sx={{ marginRight: 1 }}>
           {authenticatedUser.user.displayName}
         </Typography>
-        <IconButton onClick={toggleAvatarMenu} disabled={logoutDebounce}>
+        <IconButton
+          onClick={toggleAvatarMenu}
+          disabled={logoutDebounce || !showLogout}
+        >
           <Avatar
             alt={authenticatedUser.user.name}
             src={authenticatedUser.thumbnail.imageUrl}
@@ -92,16 +107,20 @@ export default function NavigationAvatar() {
             {authenticatedUser.user.name.charAt(0)}
           </Avatar>
         </IconButton>
-        <Menu
-          keepMounted
-          anchorEl={avatarMenuAnchor}
-          open={!!avatarMenuAnchor}
-          onClose={() => setAvatarMenuAnchor(null)}
-        >
-          <MenuItem onClick={logoutClicked}>
-            <Typography>Logout</Typography>
-          </MenuItem>
-        </Menu>
+        {showLogout ? (
+          <Menu
+            keepMounted
+            anchorEl={avatarMenuAnchor}
+            open={!!avatarMenuAnchor}
+            onClose={() => setAvatarMenuAnchor(null)}
+          >
+            <MenuItem onClick={logoutClicked}>
+              <Typography>Logout</Typography>
+            </MenuItem>
+          </Menu>
+        ) : (
+          <Fragment />
+        )}
       </Box>
     </Fragment>
   );

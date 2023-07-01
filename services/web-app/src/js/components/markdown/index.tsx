@@ -14,6 +14,7 @@ const emojiOverrides: { [markdownName: string]: string } = {
   new: 'new_button',
   arrows_counterclockwise: 'counterclockwise_arrows_button',
   sweat_smile: 'grinning_face_with_sweat',
+  grin: 'beaming_face_with_smiling_eyes',
 };
 
 const bogusOverrides: { [name: string]: string } = {

@@ -1,6 +1,6 @@
 # latest
 
-:boom: it's the moment we've been working towards for a long time... [Google Chrome - Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/)
+:boom: it's the moment we've been working towards for a long time... V3.
 
 ## :tada: Updates
 
@@ -25,6 +25,18 @@ See [roblox-plus/extension#108](https://github.com/roblox-plus/extension/pull/10
 ### :coffin: Dark Theme Support Loss
 
 Dark theme is no longer supported on the [develop](https://www.roblox.com/develop?Page=ads) page. Not worth maintaining anymore, most of Roblox supports dark theme, except for this page, and I will not be supporting this signular page going forward.
+
+### :ticket: Login Changes
+
+I got a report from some of you that Roblox OAuth2 login wasn't working, and so you couldn't modify your settings. Sorry about that! In response I have updated how the settings page works, slightly, so as long as you are logged in on Roblox, and have the extension installed, you will be able to modify your settings. :sweat_smile:
+
+## :relieved: Break Time
+
+I've been working on this extension almost every weekend since October 2022, and I am ready to take a break. I realize I went on an extended break from March 2021 -> October 2022, but... it is time for me to disappear again. Hopefully not for as long as last time, but I have a full time job outside of this extension. So giving my weekends to this extension is a little rough.
+
+I plan to come back later in 2023 with more updates which brought me to make this extension in the first place. 🫡
+
+In the meantime, please enjoy the features provided by this extension to their fullest extent, and have a great day. :grin:
 
 # 2.4.210
 
