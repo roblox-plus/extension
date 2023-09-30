@@ -1,5 +1,9 @@
 # latest
 
+:bug: I'm backkkk, with a lil itty bitty bug fix. I fixed the premium payouts summary feature. :tada:
+
+# 3.0.0
+
 :boom: it's the moment we've been working towards for a long time... V3.
 
 ## :tada: Updates
