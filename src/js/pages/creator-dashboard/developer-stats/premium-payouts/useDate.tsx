@@ -1,28 +1,23 @@
 import { useEffect, useState } from 'react';
 
 const parseDate = (
-  container: HTMLElement,
-  selector: string
+  selector: () => HTMLInputElement | null
 ): Date | undefined => {
-  const input = container.querySelector(selector) as HTMLInputElement;
-
-  if (input.value) {
+  const input = selector();
+  if (input?.value) {
     return new Date(input.value);
   }
 };
 
 // A hook for parsing an input date from an input found in the container.
 export default function useDate(
-  container: HTMLElement,
-  selector: string
+  selector: () => HTMLInputElement | null
 ): Date | undefined {
-  const [date, setDate] = useState<Date | undefined>(
-    parseDate(container, selector)
-  );
+  const [date, setDate] = useState<Date | undefined>(parseDate(selector));
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const parsedDate = parseDate(container, selector);
+      const parsedDate = parseDate(selector);
       if (parsedDate?.getTime() !== date?.getTime()) {
         setDate(parsedDate);
       }

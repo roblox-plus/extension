@@ -1,4 +1,3 @@
-import React, { Fragment } from 'react';
 import {
   Alert,
   CircularProgress,
@@ -9,12 +8,13 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import useDate from './useDate';
-import usePremiumPayouts from './usePremiumPayouts';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { LoadingState } from '@tix-factory/extension-utils';
+import React from 'react';
 import PremiumPayoutType from '../../../../enums/premiumPayoutType';
 import PremiumPayout from '../../../../types/premiumPayout';
-import { LoadingState } from '@tix-factory/extension-utils';
+import useDate from './useDate';
+import usePremiumPayouts from './usePremiumPayouts';
 
 type PremiumPayoutsSummaryInput = {
   container: HTMLElement;
@@ -31,15 +31,30 @@ const doMath = (payouts: PremiumPayout[]): string => {
   return `R\$${sum.toLocaleString()}`;
 };
 
+const getInputs = (container: HTMLElement): HTMLInputElement[] => {
+  const chartSection = container.querySelector('.chart-section');
+  if (!chartSection) {
+    return [];
+  }
+
+  const inputs: HTMLInputElement[] = Array.from(
+    chartSection.querySelectorAll("input[placeholder*='yyyy']")
+  );
+  return inputs;
+};
+
 export default function PremiumPayoutsSummary({
   container,
   universeId,
 }: PremiumPayoutsSummaryInput) {
-  const startDate = useDate(
-    container,
-    `input[readonly][aria-label='Start Date']`
-  );
-  const endDate = useDate(container, `input[readonly][aria-label='End Date']`);
+  const startDate = useDate(() => {
+    const inputs = getInputs(container);
+    return inputs[0];
+  });
+  const endDate = useDate(() => {
+    const inputs = getInputs(container);
+    return inputs[inputs.length - 1];
+  });
   const [loadingState, premiumPayouts] = usePremiumPayouts(
     universeId,
     startDate,
