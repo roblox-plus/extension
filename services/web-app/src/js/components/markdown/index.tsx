@@ -15,10 +15,13 @@ const emojiOverrides: { [markdownName: string]: string } = {
   arrows_counterclockwise: 'counterclockwise_arrows_button',
   sweat_smile: 'grinning_face_with_sweat',
   grin: 'beaming_face_with_smiling_eyes',
+  medal_military: 'military_medal',
 };
 
+// And some emojis don't appear to exist at all.
 const bogusOverrides: { [name: string]: string } = {
   arrow_double_up: '⏫',
+  earth_asia: '🌏',
 };
 
 const uncleanAlias = (name: string): string => {
