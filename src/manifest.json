@@ -113,9 +113,7 @@
       "css": ["dist/css/item-details.css"],
       "matches": [
         "https://www.roblox.com/catalog/*/*",
-        "https://web.roblox.com/catalog/*/*",
-        "https://www.roblox.com/library/*/*",
-        "https://web.roblox.com/library/*/*"
+        "https://web.roblox.com/catalog/*/*"
       ],
       "run_at": "document_end"
     },
