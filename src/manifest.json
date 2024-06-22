@@ -1,5 +1,5 @@
 {
-  "version": "3.0.2",
+  "version": "3.0.3",
   "name": "Roblox+",
   "short_name": "Roblox+",
   "description": "Extends the features available on roblox.com",
@@ -133,12 +133,6 @@
         "https://www.roblox.com/users/*/profile*",
         "https://www.roblox.com/*/users/*/profile*"
       ],
-      "run_at": "document_end"
-    },
-
-    {
-      "js": ["./dist/pages/creator-dashboard.js"],
-      "matches": ["https://create.roblox.com/*"],
       "run_at": "document_end"
     }
   ],

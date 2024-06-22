@@ -55,12 +55,6 @@ export default function MainSettings() {
           disabled={authenticatedUser.premiumExpiration === undefined}
         />
         <ToggleCard
-          label="Premium Payouts Summary"
-          description="Adds premium payout summary to premium tab, on the developer stats pages in the creator dashboard."
-          settingName="premiumPayoutsSummary"
-          disabled={authenticatedUser.premiumExpiration === undefined}
-        />
-        <ToggleCard
           label="Track Robux History"
           description={
             <Fragment>
