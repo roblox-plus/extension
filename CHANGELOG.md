@@ -1,4 +1,23 @@
-# latest
+# 3.0.3
+
+:skull: the yearly extension drop is here, and it's not as loaded as the last time you saw me.
+
+## :tada: Updates
+
+### :medal_military: Badge Award Dates
+
+On the game details page, the badge award dates have been fixed.
+
+### :earth_asia: Localization
+
+On all Roblox pages, sometimes the URL can contain the locale code. On these pages, the extension did not work. Now it does.
+
+### :wastebasket: Code Removal
+
+- The premium payouts summary feature has been officially removed, because it now exists as a feature on [create.roblox.com](https://create.roblox.com).
+- The code to allow the extension to work on `web.roblox.com` and `www.roblox.com/library` has been removed, because these things don't exist anymore.
+
+# 3.0.0
 
 :boom: it's the moment we've been working towards for a long time... V3.
 
