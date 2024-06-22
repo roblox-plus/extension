@@ -1,3 +1,4 @@
+import { getIdFromUrl } from 'roblox';
 import { getBadgeAwardDate } from '../../services/badges';
 import { getToggleSettingValue } from '../../services/settings';
 import authenticatedUser from '../../utils/authenticatedUser';
@@ -15,7 +16,7 @@ const addBadgeAwardedDates = async () => {
   const awardedAttribute = 'rplus-awarded-date';
   document
     .querySelectorAll(
-      `thumbnail-2d>span[thumbnail-type='BadgeIcon']:not([${awardedAttribute}])`
+      `.thumbnail-2d-container.badge-image-container:not([${awardedAttribute}])`
     )
     .forEach((badgeIcon) => {
       if (!authenticatedUser) {
@@ -24,7 +25,8 @@ const addBadgeAwardedDates = async () => {
 
       badgeIcon.setAttribute(awardedAttribute, '0');
 
-      const badgeId = Number(badgeIcon.getAttribute('thumbnail-target-id'));
+      const badgeUrl = badgeIcon.parentElement?.getAttribute('href');
+      const badgeId = badgeUrl ? getIdFromUrl(new URL(badgeUrl)) : NaN;
       if (isNaN(badgeId)) {
         return;
       }
@@ -47,7 +49,7 @@ const addBadgeAwardedDates = async () => {
             `Awarded on ${awardedDate.toLocaleString()}`
           );
           awardedDateLabel.innerText = awardedDate.toLocaleDateString();
-          badgeIcon.appendChild(awardedDateLabel);
+          badgeIcon.parentElement?.parentElement?.appendChild(awardedDateLabel);
         })
         .catch((err) => {
           console.error('Failed to check badge awarded date', badgeId, err);
