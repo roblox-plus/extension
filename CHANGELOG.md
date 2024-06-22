@@ -1,4 +1,4 @@
-# 3.0.3
+# latest
 
 :skull: the yearly extension drop is here, and it's not as loaded as the last time you saw me.
 
