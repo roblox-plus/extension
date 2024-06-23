@@ -157,13 +157,7 @@
 
   "homepage_url": "https://roblox.plus/settings",
 
-  "permissions": [
-    "alarms",
-    "gcm",
-    "declarativeNetRequest",
-    "notifications",
-    "storage"
-  ],
+  "permissions": ["alarms", "gcm", "notifications", "storage"],
 
   "web_accessible_resources": [
     {
