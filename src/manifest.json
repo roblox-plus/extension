@@ -137,16 +137,6 @@
     }
   ],
 
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "upload_asset_rules",
-        "enabled": true,
-        "path": "redirect-settings-page.json"
-      }
-    ]
-  },
-
   "action": {
     "default_icon": {
       "16": "./images/icons/logo16.png",

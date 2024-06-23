@@ -21,6 +21,7 @@ Fixed an issue where the settings page was inaccessible for people with the exte
 - The premium payouts summary feature has been officially removed, because it now exists as a feature on [create.roblox.com](https://create.roblox.com).
 - The code to allow the extension to work on `web.roblox.com` and `www.roblox.com/library` has been removed, because these things don't exist anymore.
 - Removed the `declarativeNetRequest` permission, which is no longer necessary, following [developer deeplinking](https://devforum.roblox.com/t/developer-deeplinking-beta/1904069).
+- Removed redirect for the old settings page -> [new settings page](https://roblox.plus/settings), after one year of supporting the redirect.
 
 # 3.0.0
 
