@@ -56,15 +56,10 @@ This information is accessed by the Roblox+ backend servers:
 - Your avatar thumbnail
 - Your IP address
 
-## :electric_plug: Web Request Interception
-
-Sometimes the extension will intercept requests going to [roblox.com](https://www.roblox.com). This use to be necessary for things like launching games, to generate authentication sessions to open Roblox with. Following the release of [Developer Deeplinking](https://devforum.roblox.com/t/developer-deeplinking-beta/1904069), this is no longer necessary. But we still intercept some web traffic for more minor features. For example: We send a notification when Roblox+ starts, and you can configure that notification to only be sent after you visit [roblox.com](https://www.roblox.com). We listen for web traffic going to the [roblox.com](https://www.roblox.com), but we **never** save or record it.
-
 ## :white_check_mark: Permissions
 
 The [extension manifest](https://github.com/roblox-plus/extension/blob/master/src/manifest.json) a list of permissions that the extension has access to. Not including the websites, which are mentioned above, these are the browser APIs the extension has permission for:
 
 - [alarms](https://developer.chrome.com/docs/extensions/reference/alarms/): This one is used for the notifier features which execute in the background
 - [gcm](https://developer.chrome.com/docs/extensions/reference/gcm/), [notifications](https://developer.chrome.com/docs/extensions/reference/notifications/): These are used to send notifications to the browser extension
-- [declarativeNetRequest](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/): This is used for the web request interception mentioned above
 - [storage](https://developer.chrome.com/docs/extensions/reference/storage/): The extension uses this one to store things like settings preferences

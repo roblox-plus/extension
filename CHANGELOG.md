@@ -16,6 +16,7 @@ On all Roblox pages, sometimes the URL can contain the locale code. On these pag
 
 - The premium payouts summary feature has been officially removed, because it now exists as a feature on [create.roblox.com](https://create.roblox.com).
 - The code to allow the extension to work on `web.roblox.com` and `www.roblox.com/library` has been removed, because these things don't exist anymore.
+- Removed the `declarativeNetRequest` permission, which is no longer necessary, following [developer deeplinking](https://devforum.roblox.com/t/developer-deeplinking-beta/1904069).
 
 # 3.0.0
 
