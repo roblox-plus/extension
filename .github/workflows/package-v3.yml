@@ -13,16 +13,16 @@ jobs:
     steps:
       # Setup
       - name: '📥 Clone Repository'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: '🟩 Setup Node'
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v6
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
 
       # Extension Versioning
-      - name: Set manifest version
+      - name: '#️⃣ Set manifest version'
         run: |
           jq '.+= { "version": "3.${{ github.run_number }}.0" }' manifest.json > tmp.$$.json && mv tmp.$$.json manifest.json
           cat manifest.json
@@ -62,8 +62,8 @@ jobs:
           npm run build
 
       # Attach build artifacts
-      - name: Attach build artifacts
-        uses: actions/upload-artifact@v2
+      - name: '📤 Attach build artifacts'
+        uses: actions/upload-artifact@v5
         with:
           name: extension
           path: src/**
