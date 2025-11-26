@@ -2,7 +2,7 @@ import { CssBaseline, useMediaQuery } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter } from 'react-router-dom';
 import Navigation from './navigation';
-import Pages from './pages';
+import ShutdownPage from './shutdown';
 
 function App() {
   const useLightTheme = useMediaQuery('(prefers-color-scheme: light)');
@@ -17,7 +17,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Navigation />
-        <Pages />
+        <ShutdownPage />
       </ThemeProvider>
     </BrowserRouter>
   );
