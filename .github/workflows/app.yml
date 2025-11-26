@@ -16,7 +16,6 @@ jobs:
 
     env:
       ROBLOX_PLUS_APP_PORT: 3000
-      ROBLOX_PLUS_API_PORT: 5000
 
     steps:
       - name: '📥 Clone Repository'
@@ -27,11 +26,6 @@ jobs:
           docker network create roblox-plus
         continue-on-error: true
 
-      - name: '📂 Setup Files'
-        run: |
-          touch secrets.env
-        working-directory: services/web-api
-
       - name: '🏗️ Build'
         run: >-
           docker-compose build
@@ -41,18 +35,9 @@ jobs:
           docker-compose up -d
           sleep 15
 
-      - name: '🔌 Ensure Connectivity (api)'
-        run: >-
-          curl -v --fail http://localhost:${{ env.ROBLOX_PLUS_API_PORT }}/application-metadata
-
       - name: '🔌 Ensure Connectivity (app)'
         run: >-
           curl -v --fail http://localhost:${{ env.ROBLOX_PLUS_APP_PORT }}
-
-      - name: '🪵 Logs (api)'
-        if: ${{ always() }}
-        run: >-
-          docker-compose logs api
 
       - name: '🪵 Logs (app)'
         if: ${{ always() }}
