@@ -28,11 +28,11 @@ jobs:
 
       - name: '🏗️ Build'
         run: >-
-          docker-compose build
+          docker compose build
 
       - name: '🐳 Run'
         run: |
-          docker-compose up -d
+          docker compose up -d
           sleep 15
 
       - name: '🔌 Ensure Connectivity (app)'
@@ -42,10 +42,10 @@ jobs:
       - name: '🪵 Logs (app)'
         if: ${{ always() }}
         run: >-
-          docker-compose logs app
+          docker compose logs app
 
       - name: '🛑 Stop Containers'
         run: >-
-          docker-compose rm
+          docker compose rm
           --stop
           --force
